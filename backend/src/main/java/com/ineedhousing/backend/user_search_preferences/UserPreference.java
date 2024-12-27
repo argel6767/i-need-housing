@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 
 import java.time.LocalDateTime;
 
@@ -24,6 +25,9 @@ public class UserPreference {
     @Column(columnDefinition = "geometry(Point, 4326)", nullable = false, name = "city_of_employment_location")
     private Point cityOfEmploymentLocation;
 
+    @Column(columnDefinition = "geometry(Polygon, 4326)")
+    private Polygon desiredArea;
+
     @Column(nullable = false)
     private Integer maxRadius = 25;
 
@@ -39,10 +43,10 @@ public class UserPreference {
     private String travelType; //future implementation
 
     @Column(nullable = false)
-    private Integer numOfBedrooms;
+    private Integer minNumberOfBedRooms = 0;
 
     @Column(nullable = false)
-    private Integer numOfBathrooms;
+    private Integer minNumberOfBathrooms = 0;
 
     @Column(nullable = false)
     private Boolean isFurnished;
