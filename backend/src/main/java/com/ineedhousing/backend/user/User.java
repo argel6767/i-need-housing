@@ -1,5 +1,7 @@
 package com.ineedhousing.backend.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ineedhousing.backend.favorite_listings.FavoriteListing;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 @Data
@@ -43,6 +46,10 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "preference_id", referencedColumnName = "id")
     private UserPreference userPreferences;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<FavoriteListing> favoriteListings = new ArrayList<>();
 
     private LocalDateTime lastLogin;
 
