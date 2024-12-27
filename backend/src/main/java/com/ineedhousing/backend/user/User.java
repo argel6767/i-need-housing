@@ -1,6 +1,6 @@
 package com.ineedhousing.backend.user;
 
-import com.ineedhousing.backend.UserSearchPreferences.UserPreference;
+import com.ineedhousing.backend.user_search_preferences.UserPreference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
