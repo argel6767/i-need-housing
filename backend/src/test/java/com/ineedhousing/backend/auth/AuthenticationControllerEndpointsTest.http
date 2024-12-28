@@ -1,0 +1,77 @@
+### POST Register and sends email with verification code
+POST {{endpoint}}/auth/register
+Content-Type: application/json
+
+{
+   "username": "argel6767@gmail.com",
+    "password":"password123"
+}
+
+### POST Request that sumbits verification code given
+
+POST {{endpoint}}/auth/verify
+Content-Type: application/json
+
+{
+  "email": "argel6767@gmail.com",
+  "verificationToken": "272497"
+}
+
+### Post Request that will be 200 and return JWT Token and time till expiration
+
+POST {{endpoint}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "argel6767@gmail.com",
+  "password": "password123"
+}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+
+### POST Request for resend that should send a 400, because email is already verified
+
+POST http://localhost:8080/auth/resend
+Content-Type: application/json
+
+{
+  "email": "argel6767@gmail.com"
+}
+
+###
+
+### POST Request for resend that should send a 200 and send email, because email is not verified
+
+POST http://localhost:8080/auth/resend
+Content-Type: application/json
+
+{
+  "email": "tomdion35@gmail.com"
+}
+
+###
+
+### PUT request for updating password
+PUT {{endpoint}}/auth/password
+Content-Type: application/json
+
+{
+  "email": {{email}},
+  "oldPassword": {{oldPassword}},
+  "newPassword": {{newPassword}}
+}
+
+### POST request for request a verification token for forgotten password request
+POST {{endpoint}}/auth/forgot/{{email}}
+
+
+### PUT request to reset password when a user forgets their original password
+PUT {{endpoint}}/auth/reset
+Content-Type: application/json
+
+{
+  "email": {{email}},
+  "password": {{password}},
+  "verificationCode": {{code}}
+}

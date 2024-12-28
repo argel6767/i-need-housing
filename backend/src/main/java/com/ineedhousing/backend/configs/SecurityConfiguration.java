@@ -1,6 +1,7 @@
 package com.ineedhousing.backend.configs;
 
-import com.argel6767.tailor.ai.jwt.JwtAuthenticationFilter;
+
+import com.ineedhousing.backend.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;

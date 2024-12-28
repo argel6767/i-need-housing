@@ -53,7 +53,7 @@ public class AuthenticationController {
             LoginResponse response = new LoginResponse(token, jwtService.getExpirationTime());
             return ResponseEntity.ok(response);
         }
-        catch (UsernameNotFoundException enfe) {
+        catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         catch (EmailVerificationException eve) {
