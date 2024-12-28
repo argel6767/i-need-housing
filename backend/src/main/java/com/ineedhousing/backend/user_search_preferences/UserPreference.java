@@ -34,7 +34,6 @@ public class UserPreference {
     @Column(nullable = false)
     private Integer minRadius = 0;
 
-    @Column(nullable = false)
     private Integer maxRent = 5000;
 
     @Column(nullable = false)
@@ -49,7 +48,7 @@ public class UserPreference {
     private Integer minNumberOfBathrooms = 0;
 
     @Column(nullable = false)
-    private Boolean isFurnished;
+    private Boolean isFurnished = false;
 
     private LocalDateTime updatedAt;
 

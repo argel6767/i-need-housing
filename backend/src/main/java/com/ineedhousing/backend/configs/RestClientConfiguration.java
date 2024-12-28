@@ -11,7 +11,7 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class RestClientConfiguration {
 
-    //TODO THIS WILL BE USED FOR EXTERNAL API CALLS
+    //TODO THIS WILL BE USED FOR EXTERNAL API CALLS LATER!!!!
     /*
      * bean to that builds the actual RestClient and to be used in the LinkedInService
      */
