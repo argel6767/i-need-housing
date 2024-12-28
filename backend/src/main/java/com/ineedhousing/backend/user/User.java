@@ -33,7 +33,9 @@ public class User implements UserDetails {
     private String passwordHash;
 
     @Column(name = "verification_code")
-    private Integer verificationCode;
+    private String verificationCode;
+
+    private LocalDateTime codeExpiry;
 
     @Column(nullable = false)
     private Boolean isEnabled = false;
@@ -55,6 +57,11 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    public User(String email, String passwordHash) {
+        this.email = email;
+        this.passwordHash = passwordHash;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
