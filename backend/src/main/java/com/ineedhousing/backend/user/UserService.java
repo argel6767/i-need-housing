@@ -18,8 +18,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    /*
+    /**
      * get users by their email
+     * @param  email
+     * @throws UsernameNotFoundException
+     * @return User
      */
     public User getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
@@ -27,19 +30,26 @@ public class UserService {
         return user;
     }
 
-    /*
+    /**
      * update a User, can be used for entire or partial edits
+     * @param newUserDetails
+     * @param email
+     * @throws UsernameNotFoundException
+     * @return User
      */
     @Transactional
-    public User updateUser(User newUserDetails) {
-        User user = getUserByEmail(newUserDetails.getEmail());
+    public User updateUser(User newUserDetails, String email) {
+        User user = getUserByEmail(email);
         BeanUtils.copyProperties(newUserDetails, user, "id", "email");
         return userRepository.save(user);
     }
 
-    /*
+    /**
      * specifically for just updating the user's type
      * whether that be an intern, new-grad (tenant in future)
+     * @param request
+     * @throws UsernameNotFoundException
+     * @return User
      */
     @Transactional
     public User setUserType(SetUserTypeRequest request) {
