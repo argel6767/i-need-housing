@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.favorite_listings;
 
+import com.ineedhousing.backend.favorite_listings.exceptions.FavoriteListingNotFoundException;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserService;
@@ -36,10 +37,10 @@ public class FavoriteListingService {
 
     /**
      * adds any number of new favorites to a user FavoriteListings
-     * makes a new List for each call to adhere to functional style
+     * makes a new List for each call to adhere to functional programming
      * @param email
      * @param housingListings
-     * @return
+     * @return List<FavoriteListing>
      */
     @Transactional
     public List<FavoriteListing> addFavoriteListings(String email, List<HousingListing> housingListings) {
@@ -56,6 +57,38 @@ public class FavoriteListingService {
         return updatedFavorites;
     }
 
+    /**
+     * deletes any number of favorite listings from the entire List
+     * This can be used for up to the entire list
+     * returns a new list to adhere to functional programming
+     * @param email
+     * @param id
+     * @throws UsernameNotFoundException
+     * @return List<FavoriteListing>
+     */
+    @Transactional
+    public List<FavoriteListing> deleteListings(String email, List<Long> ids) {
+        User user = userService.getUserByEmail(email);
+        List<FavoriteListing> currentListings = user.getFavoriteListings();
+        List<FavoriteListing> removedListings = favoriteListingRepository.findAllById(ids);
+        currentListings.removeAll(removedListings);
 
-    //TODO delete a favorite listing, delete all a users favorite listings
+        List<FavoriteListing> newListings = new ArrayList<>(currentListings);
+        user.setFavoriteListings(newListings);
+        userService.saveUser(user);
+        return newListings;
+    }
+
+    /**
+     * deletes all favorite listing of users by set a users favoriteListings to a fresh ArrayList
+     * @param email
+     * @throws UsernameNotFoundException
+     * @return String
+     */
+    public String deleteAllUserFavoriteListings(String email) {
+        User user = userService.getUserByEmail(email);
+        user.setFavoriteListings(new ArrayList<>());
+        userService.saveUser(user);
+        return "List successfully deleted!";
+    }
 }

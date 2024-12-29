@@ -1,21 +1,19 @@
 package com.ineedhousing.backend.favorite_listings;
 
-import com.ineedhousing.backend.favorite_listings.FavoriteListing;
-import com.ineedhousing.backend.favorite_listings.FavoriteListingService;
+
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserService;
 import com.ineedhousing.backend.user.UserType;
-import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -109,4 +107,72 @@ class FavoriteListingServiceTest {
         assertThrows(UsernameNotFoundException.class, () -> favoriteListingService.addFavoriteListings(email, newListings));
         verify(userService, times(1)).getUserByEmail(email);
     }
+
+    @Test
+    void deleteListings_whenUserExists_removesListings() {
+        // Arrange
+        String email = "test@example.com";
+        List<Long> idsToDelete = Arrays.asList(1L, 2L);
+        FavoriteListing anotherListing = new FavoriteListing(testUser, new HousingListing());
+        anotherListing.setId(2L);
+
+        testUser.setFavoriteListings(new ArrayList<>(List.of(testFavoriteListing, anotherListing)));
+
+        when(userService.getUserByEmail(email)).thenReturn(testUser);
+        when(favoriteListingRepository.findAllById(idsToDelete)).thenReturn(Arrays.asList(testFavoriteListing, anotherListing));
+        when(userService.saveUser(testUser)).thenReturn(testUser);
+
+        // Act
+        List<FavoriteListing> updatedFavorites = favoriteListingService.deleteListings(email, idsToDelete);
+
+        // Assert
+        assertNotNull(updatedFavorites);
+        assertTrue(updatedFavorites.isEmpty());
+        verify(userService, times(1)).getUserByEmail(email);
+        verify(favoriteListingRepository, times(1)).findAllById(idsToDelete);
+        verify(userService, times(1)).saveUser(testUser);
+    }
+
+    @Test
+    void deleteListings_whenUserDoesNotExist_throwsException() {
+        // Arrange
+        String email = "nonexistent@example.com";
+        List<Long> idsToDelete = Arrays.asList(1L, 2L);
+
+        when(userService.getUserByEmail(email)).thenThrow(new UsernameNotFoundException("User not found"));
+
+        // Act & Assert
+        assertThrows(UsernameNotFoundException.class, () -> favoriteListingService.deleteListings(email, idsToDelete));
+        verify(userService, times(1)).getUserByEmail(email);
+    }
+
+    @Test
+    void deleteAllUserFavoriteListings_whenUserExists_clearsFavorites() {
+        // Arrange
+        String email = "test@example.com";
+        when(userService.getUserByEmail(email)).thenReturn(testUser);
+        when(userService.saveUser(testUser)).thenReturn(testUser);
+
+        // Act
+        String result = favoriteListingService.deleteAllUserFavoriteListings(email);
+
+        // Assert
+        assertEquals("List successfully deleted!", result);
+        assertTrue(testUser.getFavoriteListings().isEmpty());
+        verify(userService, times(1)).getUserByEmail(email);
+        verify(userService, times(1)).saveUser(testUser);
+    }
+
+    @Test
+    void deleteAllUserFavoriteListings_whenUserDoesNotExist_throwsException() {
+        // Arrange
+        String email = "nonexistent@example.com";
+
+        when(userService.getUserByEmail(email)).thenThrow(new UsernameNotFoundException("User not found"));
+
+        // Act & Assert
+        assertThrows(UsernameNotFoundException.class, () -> favoriteListingService.deleteAllUserFavoriteListings(email));
+        verify(userService, times(1)).getUserByEmail(email);
+    }
+    
 }
