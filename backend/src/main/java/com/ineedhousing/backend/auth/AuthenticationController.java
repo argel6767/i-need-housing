@@ -28,7 +28,7 @@ public class AuthenticationController {
         this.jwtService = jwtService;
     }
 
-    /*
+    /**
      * register user endpoint
      */
     @PostMapping("/register")
@@ -42,7 +42,7 @@ public class AuthenticationController {
         }
     }
 
-    /*
+    /**
      * login user endpoint
      */
     @PostMapping("/login")
@@ -61,7 +61,7 @@ public class AuthenticationController {
         }
     }
 
-    /*
+    /**
      * verify user endpoint via the code they input
      */
     @PostMapping("/verify")
@@ -75,7 +75,7 @@ public class AuthenticationController {
         }
     }
 
-    /*
+    /**
      * resend verification email endpoint
      */
     @PostMapping("/resend")
@@ -89,7 +89,7 @@ public class AuthenticationController {
         }
     }
 
-    /*
+    /**
      * changes passwords for user
      * THIS IS USED ONLY FOR WHEN A USER WANTS TO UPDATE PASSWORD
      */
@@ -117,7 +117,7 @@ public class AuthenticationController {
         }
     }
 
-    /*
+    /**
      * resets password
      * ONLY TO BE USED FOR WHEN USER FORGETS PASSWORD
      */

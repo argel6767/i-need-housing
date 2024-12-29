@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -57,4 +56,6 @@ public class FavoriteListingService {
         return updatedFavorites;
     }
 
+
+    //TODO delete a favorite listing, delete all a users favorite listings
 }
