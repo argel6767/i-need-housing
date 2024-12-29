@@ -4,12 +4,15 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.user.User;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jdk.jfr.Timestamp;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class FavoriteListing {
 
     @Id
@@ -17,12 +20,25 @@ public class FavoriteListing {
     @Column(unique = true, nullable = false, updatable = false)
     private Long id;
 
+    @NonNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
+    @NonNull
     @OneToOne
     @JoinColumn(name = "listing_id", referencedColumnName = "id")
     private HousingListing housingListing;
+
+    @Timestamp
+    private LocalDateTime createdAt;
+
+    /**
+     * on creation captures the time
+     */
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

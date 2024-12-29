@@ -19,6 +19,16 @@ public class UserService {
     }
 
     /**
+     * abstracted user of userRepositorySave for other Services which UserService is used
+     * such as FavoriteListing
+     * @param user
+     * @return User
+     */
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
+    /**
      * get users by their email
      * @param  email
      * @throws UsernameNotFoundException
