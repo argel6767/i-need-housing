@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
 /**
- * configures the RestClient object used for the third-party LinkedIn scraper API
+ * Houses the multiple RestClient beans for each external API
  */
 @Configuration
 public class RestClientConfiguration {
