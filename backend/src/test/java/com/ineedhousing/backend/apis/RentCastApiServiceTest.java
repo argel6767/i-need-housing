@@ -1,6 +1,7 @@
 package com.ineedhousing.backend.apis;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.net.URI;
@@ -28,6 +29,15 @@ class RentCastApiServiceTest {
 
     @Mock
     private HousingListingRepository housingListingRepository;
+
+    @Mock
+    private RestClient.RequestHeadersSpec requestHeadersSpec;
+
+    @Mock
+    private RestClient.RequestHeadersUriSpec requestHeadersUriSpec;
+
+    @Mock
+    private RestClient.ResponseSpec responseSpec;
 
     @InjectMocks
     private RentCastApiService rentCastApiService;
@@ -59,9 +69,11 @@ class RentCastApiServiceTest {
 
         List<HousingListing> savedListings = List.of(new HousingListing());
 
-        // Mock RestClient and Repository behavior
-        when(restClient.any())
-            .thenReturn(mockResponse);
+        // Setup mock behavior
+        when(restClient.get()).thenReturn(requestHeadersUriSpec);
+        when(requestHeadersUriSpec.uri(any(String.class))).thenReturn(requestHeadersSpec);
+        when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.body(Map.class)).thenReturn(mockResponse);
 
         when(housingListingRepository.saveAll(anyList())).thenReturn(savedListings);
 
