@@ -22,7 +22,7 @@ public class UserController {
     /**
      * getUser via their email
      * @param email
-     * @return User
+     * @return ResponseEntity
      */
     @GetMapping("/{email}")
     public ResponseEntity<?> getUser(@PathVariable String email) {
@@ -55,7 +55,7 @@ public class UserController {
     /**
      * specifically only updates the user type
      * @param request
-     * @return
+     * @return ResponseEntity
      */
     @PutMapping("/type")
     public ResponseEntity<?> setUserType(@RequestBody SetUserTypeRequest request) {
@@ -67,4 +67,21 @@ public class UserController {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    /**
+     * deletes User
+     * @param email
+     * @return ResponseEntity
+     */
+    @DeleteMapping("/{email}")
+    public ResponseEntity<?> deleteUser(@PathVariable String email) {
+        try {
+            String response = userService.deleteUser(email);
+            return ResponseEntity.ok(response);
+        }
+        catch(UsernameNotFoundException unfe) {
+            return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

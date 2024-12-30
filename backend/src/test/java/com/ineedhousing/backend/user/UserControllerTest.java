@@ -121,4 +121,36 @@ class UserControllerTest {
         assertEquals("User not found", response.getBody());
         verify(userService, times(1)).setUserType(request);
     }
+
+    @Test
+    void deleteUser_whenUserExists_returnsOKResponse() {
+        // Arrange
+        String success = String.format("User with email: %s, has been successfully deleted.", testUser.getEmail());
+        when(userService.deleteUser(testUser.getEmail())).thenReturn(success);
+
+        // Act
+        ResponseEntity<?> response = userController.deleteUser(testUser.getEmail());
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(success, response.getBody());
+        verify(userService, times(1)).deleteUser(testUser.getEmail());
+    }
+
+    @Test
+    void deleteUser_whenUserDoesNotExist_returnsNotFound() {
+        // Arrange
+        when(userService.deleteUser(testUser.getEmail())).thenThrow(new UsernameNotFoundException("User not found"));
+
+        // Act
+        ResponseEntity<?> response = userController.deleteUser(testUser.getEmail());
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("User not found", response.getBody());
+
+    }
+
 }
