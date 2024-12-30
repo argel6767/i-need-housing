@@ -1,6 +1,8 @@
 package com.ineedhousing.backend.user;
 
 import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
+
+import org.checkerframework.checker.units.qual.t;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -87,5 +89,33 @@ class UserServiceTest {
         assertEquals(UserType.NEW_GRAD, result.getUserType());
         verify(userRepository, times(1)).findByEmail(testUser.getEmail());
         verify(userRepository, times(1)).save(testUser);
+    }
+
+    @Test
+    void deleteUser_deletesUserAndReturnsSuccessMessage() {
+        //Arrange
+        when(userRepository.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
+        
+        //Act
+        String result = userService.deleteUser(testUser.getEmail());
+
+        //Assert
+        assertNotNull(result);
+        assertEquals(String.format("User with email: %s, has been successfully deleted.", testUser.getEmail()), result);
+        verify(userRepository, times(1)).findByEmail(testUser.getEmail());
+        verify(userRepository, times(1)).delete(testUser);
+    }
+
+    @Test
+    void deleteUser_whenUserDoesNotExist_throwsException() {
+        //Arrange
+        when(userRepository.findByEmail(testUser.getEmail())).thenReturn(Optional.empty());
+
+        //Act & Assert
+        assertThrows(UsernameNotFoundException.class, () -> {
+            userService.deleteUser(testUser.getEmail());
+        });
+        verify(userRepository, times(1)).findByEmail(testUser.getEmail());
+        verify(userRepository, times(0)).delete(testUser);
     }
 }

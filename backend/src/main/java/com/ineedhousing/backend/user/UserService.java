@@ -68,4 +68,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    /**
+     *  deletes User from db
+     * @param email
+     * @throws UsernameNotFoundException
+     * @return String
+     */
+    public String deleteUser(String email) {
+        User user = getUserByEmail(email);
+        userRepository.delete(user);
+        return String.format("User with email: %s, has been successfully deleted.", email);
+    }
+
 }
