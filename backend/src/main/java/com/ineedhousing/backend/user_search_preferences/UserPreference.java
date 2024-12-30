@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -49,6 +50,12 @@ public class UserPreference {
 
     @Column(nullable = false)
     private Boolean isFurnished = false;
+
+    @Column(nullable = false)
+    private LocalDate internshipStart;
+
+    @Column(nullable = false)
+    private LocalDate internshipEnd;
 
     private LocalDateTime updatedAt;
 
