@@ -1,5 +1,5 @@
 package com.ineedhousing.backend.apis;
-}
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -86,10 +86,10 @@ public class RentCastApiService {
             .retrieve()
             .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {});
         if (response == null) {
-            throw new FailedApiCallException("Api call failed to occur. Check usage rates, and make sure your city and state are valid.");
+            throw new FailedApiCallException("Api call failed to occur. Check usage rates, and make sure your latitude and longitude are valid.");
         }
         if (response.isEmpty()) {
-            throw new NoListingsFoundException(String.format("No listings found for %s, %s.", city, state));
+            throw new NoListingsFoundException(String.format("No listings found for coordinates (%.2f, %.2f) within radius: %d.", latitude, longitude, radius));
         }
         List<HousingListing> newListings = createNewListings(response);
         return housingListingRepository.saveAll(newListings);
