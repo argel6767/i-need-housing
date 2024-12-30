@@ -23,18 +23,27 @@ public class HousingListing {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column()
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "geometry(Point, 4326)")
     private Point location;
 
     @Column(nullable = false)
+    private String address;
+
+    @Column()
     private String listingUrl;
 
     @ElementCollection
     @CollectionTable(name = "housing_listings_pictures", joinColumns = @JoinColumn(name = "housing_listing_id"))
     private List<String> imageUrl;
+
+    private String propertyType;
+
+    private Integer numBeds;
+
+    private Double numBaths;
 
     private Boolean isPetFriendly;
 
