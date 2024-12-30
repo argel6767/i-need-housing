@@ -42,7 +42,7 @@ class AuthenticationControllerTest {
         User expectedUser = new User("test@example.com", "encodedPassword123");
         when(authenticationService.signUp(request)).thenReturn(expectedUser);
         // Act
-        ResponseEntity<User> response = authenticationController.register(request);
+        ResponseEntity<?> response = authenticationController.register(request);
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -61,7 +61,7 @@ class AuthenticationControllerTest {
         when(jwtService.generateToken(user)).thenReturn(token);
         when(jwtService.getExpirationTime()).thenReturn(expirationTime);
         // Act
-        ResponseEntity<LoginResponse> response = authenticationController.login(request);
+        ResponseEntity<LoginResponse> response = (ResponseEntity<LoginResponse>)authenticationController.login(request);
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());

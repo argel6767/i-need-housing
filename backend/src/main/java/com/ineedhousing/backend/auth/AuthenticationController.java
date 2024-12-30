@@ -32,13 +32,13 @@ public class AuthenticationController {
      * register user endpoint
      */
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody AuthenticateUserDto request) {
+    public ResponseEntity<?> register(@RequestBody AuthenticateUserDto request) {
         try {
             User registeredUser = authenticationService.signUp(request);
             return ResponseEntity.ok(registeredUser);
         }
-        catch (AuthenticationException e) {
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        catch (AuthenticationException ae) {
+            return new ResponseEntity<>(ae.getMessage(), HttpStatus.CONFLICT);
         }
     }
 
@@ -46,7 +46,7 @@ public class AuthenticationController {
      * login user endpoint
      */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody AuthenticateUserDto request) {
+    public ResponseEntity<?> login(@RequestBody AuthenticateUserDto request) {
         try {
             User user = authenticationService.authenticateUser(request);
             String token = jwtService.generateToken(user);
@@ -54,10 +54,10 @@ public class AuthenticationController {
             return ResponseEntity.ok(response);
         }
         catch (UsernameNotFoundException unfe) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
         }
         catch (EmailVerificationException eve) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(eve.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 

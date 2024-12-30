@@ -52,6 +52,7 @@ public class AuthenticationService {
         }
         log.info("Creating new user {}", request.getUsername());
         User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()));
+        user.setAuthorities("ROLE_USER");
         setVerificationCodeAndSendIt(user, this::sendVerificationEmail);
         return userRepository.save(user);
     }
