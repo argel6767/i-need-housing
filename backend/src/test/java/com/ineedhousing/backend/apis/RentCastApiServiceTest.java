@@ -22,7 +22,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClient.RequestHeadersUriSpec;
 import org.springframework.web.util.UriBuilder;
 
 import com.ineedhousing.backend.apis.exceptions.FailedApiCallException;
@@ -31,7 +30,7 @@ import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.housing_listings.HousingListingRepository;
 
 @ExtendWith(MockitoExtension.class)
-class RentCastApiServiceTest {
+class RentCastAPIServiceTest {
 
     @Mock
     private RestClient restClient;
@@ -52,7 +51,7 @@ class RentCastApiServiceTest {
     private UriBuilder uriBuilder;
 
     @InjectMocks
-    private RentCastApiService rentCastApiService;
+    private RentCastAPIService rentCastApiService;
 
     @Captor
     private ArgumentCaptor<List<HousingListing>> listingsCaptor;
