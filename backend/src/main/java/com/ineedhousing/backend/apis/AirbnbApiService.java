@@ -131,6 +131,7 @@ public class AirbnbApiService {
                 housingListing.setIsPetFriendly(false);
             }
             housingListing.setIsFurnished(true);
+            newListings.add(housingListing);
         });
         return newListings;
     }
