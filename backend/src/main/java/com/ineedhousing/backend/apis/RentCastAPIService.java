@@ -17,6 +17,10 @@ import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.housing_listings.HousingListingRepository;
 
+
+    /**
+     * Houses business logic for RentCast api calls
+     */
 @Service
 public class RentCastApiService {
     private final RestClient restClient;
@@ -24,9 +28,6 @@ public class RentCastApiService {
     private final String SOURCE = "RentCast";
     private final int LIMIT = 100;
 
-    /*
-     * Houses business logic for RentCast api calls
-     */
     public RentCastApiService (@Qualifier("RentCast API") RestClient restClient, HousingListingRepository housingListingRepository) {
         this.restClient = restClient;
         this.housingListingRepository = housingListingRepository;
