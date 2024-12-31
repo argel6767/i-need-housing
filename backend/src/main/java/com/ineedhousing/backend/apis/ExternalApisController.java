@@ -46,12 +46,11 @@ public class ExternalApisController {
             return ResponseEntity.ok(newListings);
         }
         catch (FailedApiCallException fapce) {
-            new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+            return new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
         }
         catch (NoListingsFoundException nlfe) {
-            new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>("Bad request, try again", HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -66,12 +65,11 @@ public class ExternalApisController {
             return ResponseEntity.ok(newListings);
         }
         catch (FailedApiCallException fapce) {
-            new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+            return new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
         }
         catch (NoListingsFoundException nlfe) {
-            new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>("Bad request, try again", HttpStatus.BAD_REQUEST);
     }
     
     /**
@@ -86,12 +84,11 @@ public class ExternalApisController {
             return ResponseEntity.ok(newListing);
         } 
         catch (FailedApiCallException fapce) {
-            new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+            return new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
         }
         catch (NoListingsFoundException nlfe) {
-            new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>("Bad request, try again", HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -106,12 +103,11 @@ public class ExternalApisController {
             return ResponseEntity.ok(newListing);
         } 
         catch (FailedApiCallException fapce) {
-            new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+            return new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
         }
         catch (NoListingsFoundException nlfe) {
-            new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>("Bad request, try again", HttpStatus.BAD_REQUEST);
     }
     
 }
