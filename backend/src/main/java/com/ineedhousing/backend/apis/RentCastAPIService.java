@@ -3,6 +3,7 @@ package com.ineedhousing.backend.apis;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -60,7 +61,8 @@ public class RentCastAPIService {
             throw new NoListingsFoundException(String.format("No listings found for %s, %s.", city, state));
         }
         List<HousingListing> newListings = createNewListings(response);
-        return housingListingRepository.saveAll(newListings);
+        List<HousingListing> nonDuplicateListings = removeDuplicateListings(newListings);
+        return housingListingRepository.saveAll(nonDuplicateListings);
     }
 
     /**
@@ -92,7 +94,8 @@ public class RentCastAPIService {
             throw new NoListingsFoundException(String.format("No listings found for coordinates (%.2f, %.2f) within radius: %d.", latitude, longitude, radius));
         }
         List<HousingListing> newListings = createNewListings(response);
-        return housingListingRepository.saveAll(newListings);
+        List<HousingListing> nonDuplicateListings = removeDuplicateListings(newListings);
+        return housingListingRepository.saveAll(nonDuplicateListings);
     }
 
     /**
@@ -118,6 +121,17 @@ public class RentCastAPIService {
             newListings.add(newListing);
         });
         return newListings;
+    }
+
+      /**
+     * removes all duplicate listings from newListings that are already in the db
+     * @param newListings
+     * @return List<HousingListing>
+     */
+    private List<HousingListing> removeDuplicateListings(List<HousingListing> newListings) {
+        return newListings.stream()
+        .filter(listing -> !housingListingRepository.existsByLocation(listing.getLocation()))
+        .collect(Collectors.toList());
     }
 
 }

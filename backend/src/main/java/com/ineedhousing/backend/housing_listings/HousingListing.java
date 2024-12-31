@@ -27,7 +27,7 @@ public class HousingListing {
 
     private Double rate;
 
-    @Column(nullable = false, columnDefinition = "geometry(Point, 4326)")
+    @Column(nullable = false, columnDefinition = "geometry(Point, 4326)", unique = true)
     private Point location;
 
     @Column(nullable = false)

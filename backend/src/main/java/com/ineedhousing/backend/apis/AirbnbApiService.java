@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -63,7 +65,8 @@ public class AirbnbApiService {
             throw new NoListingsFoundException(String.format("No listings found within %s, between %s - %s", city, checkIn, checkOut));
         }
         List<HousingListing> newListings = createNewListings(numOfPets, response);
-        return housingListingRepository.saveAll(newListings);
+        List<HousingListing> nonDuplicateListings = removeDuplicateListings(newListings);
+        return housingListingRepository.saveAll(nonDuplicateListings);
     }
 
     /**
@@ -95,7 +98,8 @@ public class AirbnbApiService {
             throw new NoListingsFoundException(String.format("No listings found within coordinates given, between %s - %s", checkIn, checkOut));
         }
         List<HousingListing> newListings = createNewListings(numOfPets, response);
-        return housingListingRepository.saveAll(newListings);
+        List<HousingListing> nonDuplicateListings = removeDuplicateListings(newListings);
+        return housingListingRepository.saveAll(nonDuplicateListings);
     }
 
     /**
@@ -155,5 +159,16 @@ public class AirbnbApiService {
             .queryParam("page", PAGES)
             .queryParam("currency", CURRENCY);
 }
+
+    /**
+     * removes all duplicate listings from newListings that are already in the db
+     * @param newListings
+     * @return List<HousingListing>
+     */
+    private List<HousingListing> removeDuplicateListings(List<HousingListing> newListings) {
+        return newListings.stream()
+        .filter(listing -> !housingListingRepository.existsByLocation(listing.getLocation()))
+        .collect(Collectors.toList());
+    }
 
 }
