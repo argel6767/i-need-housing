@@ -23,8 +23,9 @@ public class HousingListing {
     @Column(nullable = false)
     private String title;
 
-    @Column()
     private String description;
+
+    private Double rate;
 
     @Column(nullable = false, columnDefinition = "geometry(Point, 4326)")
     private Point location;
@@ -37,7 +38,7 @@ public class HousingListing {
 
     @ElementCollection
     @CollectionTable(name = "housing_listings_pictures", joinColumns = @JoinColumn(name = "housing_listing_id"))
-    private List<String> imageUrl;
+    private List<String> imageUrls;
 
     private String propertyType;
 

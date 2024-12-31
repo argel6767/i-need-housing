@@ -22,13 +22,13 @@ import com.ineedhousing.backend.housing_listings.HousingListingRepository;
      * Houses business logic for RentCast api calls
      */
 @Service
-public class RentCastApiService {
+public class RentCastAPIService {
     private final RestClient restClient;
     private final HousingListingRepository housingListingRepository;
     private final String SOURCE = "RentCast";
     private final int LIMIT = 100;
 
-    public RentCastApiService (@Qualifier("RentCast API") RestClient restClient, HousingListingRepository housingListingRepository) {
+    public RentCastAPIService (@Qualifier("RentCast API") RestClient restClient, HousingListingRepository housingListingRepository) {
         this.restClient = restClient;
         this.housingListingRepository = housingListingRepository;
     }
@@ -107,6 +107,7 @@ public class RentCastApiService {
             HousingListing newListing = new HousingListing();
             newListing.setSource(SOURCE);
             newListing.setTitle((String)listing.get("id"));
+            newListing.setRate((Double) listing.get("price"));
             Point point = factory.createPoint(
             new Coordinate((Double)listing.get("longitude"), (Double)listing.get("latitude")));
             newListing.setLocation(point);
@@ -120,3 +121,4 @@ public class RentCastApiService {
     }
 
 }
+
