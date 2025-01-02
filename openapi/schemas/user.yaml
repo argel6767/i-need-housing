@@ -1,0 +1,56 @@
+
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: Unique identifier for the user.
+    email:
+      type: string
+      format: email
+      description: Unique email address of the user.
+    passwordHash:
+      type: string
+      description: Hashed password for the user.
+    verificationCode:
+      type: string
+      nullable: true
+      description: Code used for email verification.
+    codeExpiry:
+      type: string
+      format: date-time
+      nullable: true
+      description: Expiration time for the verification code.
+    isEnabled:
+      type: boolean
+      description: Indicates whether the user's account is enabled.
+    authorities:
+      type: string
+      description: Comma-separated list of authorities granted to the user.
+    userType:
+      type: string
+      enum:
+        - INTERN
+        - NEW-GRAD
+      description: Type of user (Intern or New-Grad).
+    userPreferences:
+      type: UserPreference
+      description: a User preferences when selecting housing
+    favoriteListings:
+      type: array
+      description: List of favorite housing listings for the user.
+    lastLogin:
+      type: string
+      format: date-time
+      nullable: true
+      description: The timestamp of the user's last login.
+    createdAt:
+      type: string
+      format: date-time
+      description: The timestamp when the user was created.
+  required:
+    - email
+    - passwordHash
+    - isEnabled
+    - userType
+    - createdAt

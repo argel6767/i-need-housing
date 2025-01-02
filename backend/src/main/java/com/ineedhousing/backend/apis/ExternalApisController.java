@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * Houses endpoints for external apis call to gather new housing information
  */
 @RestController
-@RequestMapping("/gather-housing")
+@RequestMapping("/gather-housings")
 public class ExternalApisController {
 
     private final AirbnbApiService airbnbApiService;

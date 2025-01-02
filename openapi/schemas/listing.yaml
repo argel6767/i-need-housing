@@ -1,0 +1,76 @@
+
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: Unique identifier for the housing listing.
+    source:
+      type: string
+      description: Source of the listing (e.g., Airbnb, Zillow).
+    title:
+      type: string
+      description: Title of the housing listing.
+    description:
+      type: string
+      nullable: true
+      description: Description of the housing listing.
+    rate:
+      type: number
+      format: double
+      nullable: true
+      description: Rate or price per night for the listing.
+    location:
+      type: object
+      description: Geographic coordinates of the listing.
+      properties:
+        type:
+          type: string
+          example: Point
+        coordinates:
+          type: array
+          items:
+            type: number
+            format: double
+          description: Longitude and latitude in [longitude, latitude] format.
+    address:
+      type: string
+      description: Physical address of the housing listing.
+    listingUrl:
+      type: string
+      format: uri
+      nullable: true
+      description: URL to the original listing on the source website.
+    imageUrls:
+      type: array
+      items:
+        type: string
+        format: uri
+      description: URLs to images of the listing.
+    propertyType:
+      type: string
+      nullable: true
+      description: Type of property (e.g., Apartment, House).
+    numBeds:
+      type: integer
+      format: int32
+      nullable: true
+      description: Number of bedrooms in the property.
+    numBaths:
+      type: number
+      format: double
+      nullable: true
+      description: Number of bathrooms in the property.
+    isPetFriendly:
+      type: boolean
+      nullable: true
+      description: Indicates if the property is pet-friendly.
+    isFurnished:
+      type: boolean
+      nullable: true
+      description: Indicates if the property is furnished.
+  required:
+    - source
+    - title
+    - location
+    - address

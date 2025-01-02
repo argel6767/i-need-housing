@@ -14,7 +14,7 @@ import java.util.List;
  * Houses endpoints for Favorite Listings
  */
 @RestController
-@RequestMapping("/favorite")
+@RequestMapping("/favorites")
 public class FavoriteListingController {
 
     private final FavoriteListingService favoriteListingService;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
  * Houses endpoints for User interactions
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * holds auth endpoints that can be accessed without a JWT token
  */
-@RequestMapping("/auth")
+@RequestMapping("/auths")
 @RestController
 public class AuthenticationController {
 
