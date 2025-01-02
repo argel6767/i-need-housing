@@ -33,7 +33,7 @@ class UserPreferenceBuilderTest {
                 .addCityOfEmployment(cityPoint)
                 .build();
 
-        assertEquals(cityPoint, userPreference.getCityOfEmploymentLocation());
+        assertEquals(cityPoint, userPreference.getCityOfEmployment());
     }
 
     @Test

@@ -1,9 +1,17 @@
 package com.ineedhousing.backend.user_search_preferences;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
+import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserService;
+import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferenceRequest;
+import com.ineedhousing.backend.user_search_preferences.utils.UserPreferenceBuilder;
 
+/**
+ * Houses business logic for UserPreference
+ */
 @Service
 public class UserPreferenceService {
 
@@ -15,7 +23,26 @@ public class UserPreferenceService {
         this.userService = userService;
     }
 
-    public UserPreference createUserPreferences() {
-        return null;
+    /**
+     * creates a UserPreference entity based of the raw request data
+     * @param request
+     * @return
+     */
+    public UserPreference createUserPreferences(RawUserPreferenceRequest request) {
+        UserPreferenceBuilder builder = new UserPreferenceBuilder();
+        UserPreference userPreferences = builder.addCityOfEmployment(request.getJobLocation())
+        .addCityOfEmployment(request.getCityOfEmployment())
+        .addDesiredArea(Optional.ofNullable(request.getJobLocation())
+        .orElse(request.getCityOfEmployment()), request.getMaxRadius(), 32)
+        .addMaxRadius(request.getMaxRadius())
+        .addMaxRent(request.getMaxRent())
+        .addMinNumberOfBedrooms(request.getBedrooms())
+        .addMinNumberOfBathrooms(request.getBathrooms())
+        .addIsFurnished(request.getIsFurnished())
+        .addInternshipStart(request.getStartDate())
+        .addInternshipEnd(request.getEndDate())
+        .build();
+        return userPreferenceRepository.save(userPreferences);
     }
+
 }

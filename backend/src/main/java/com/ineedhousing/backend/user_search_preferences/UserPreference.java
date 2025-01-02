@@ -24,16 +24,17 @@ public class UserPreference {
     private Point jobLocation;
 
     @Column(columnDefinition = "geometry(Point, 4326)", nullable = false, name = "city_of_employment_location")
-    private Point cityOfEmploymentLocation;
+    private Point cityOfEmployment;
 
+    //will default to a 25 radius circle if not maxRadius is given of whether
+    //jobLocation of cityOfEmployment
     @Column(columnDefinition = "geometry(Polygon, 4326)")
     private Polygon desiredArea;
 
     @Column(nullable = false)
     private Integer maxRadius = 25;
 
-    private Integer maxRent = 5000;
-
+    private Integer maxRent;
 
     private String travelType; //future implementation
 
