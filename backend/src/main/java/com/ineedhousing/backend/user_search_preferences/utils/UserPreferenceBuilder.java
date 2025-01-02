@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 
@@ -25,6 +26,15 @@ public class UserPreferenceBuilder {
 
     public UserPreferenceBuilder addCityOfEmployment(Point cityPoint) {
         userPreference.setCityOfEmploymentLocation(cityPoint);
+        return this;
+    }
+
+    public UserPreferenceBuilder addDesiredArea(Point center, int radius, int numOfSides) {
+        Polygon area = null;
+        if (center != null) {
+            area = PolygonCreator.createCircle(center, radius, numOfSides);
+        }
+        userPreference.setDesiredArea(area);
         return this;
     }
 

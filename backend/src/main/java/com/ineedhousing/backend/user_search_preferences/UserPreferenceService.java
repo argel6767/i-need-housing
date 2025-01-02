@@ -15,5 +15,7 @@ public class UserPreferenceService {
         this.userService = userService;
     }
 
-    public UserPreference createUserPreferences()
+    public UserPreference createUserPreferences() {
+        return null;
+    }
 }
