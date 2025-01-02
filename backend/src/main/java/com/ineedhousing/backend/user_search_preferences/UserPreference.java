@@ -32,13 +32,8 @@ public class UserPreference {
     @Column(nullable = false)
     private Integer maxRadius = 25;
 
-    @Column(nullable = false)
-    private Integer minRadius = 0;
-
     private Integer maxRent = 5000;
 
-    @Column(nullable = false)
-    private Integer minRent = 0;
 
     private String travelType; //future implementation
 
@@ -46,7 +41,7 @@ public class UserPreference {
     private Integer minNumberOfBedRooms = 0;
 
     @Column(nullable = false)
-    private Integer minNumberOfBathrooms = 0;
+    private Double minNumberOfBathrooms = 1.0;
 
     @Column(nullable = false)
     private Boolean isFurnished = false;
