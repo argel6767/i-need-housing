@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "dev-tester",
+            "database": "i-need-housing",
+            "username": "myuser",
+            "password": "secret"
+        }
+    ]
+}
