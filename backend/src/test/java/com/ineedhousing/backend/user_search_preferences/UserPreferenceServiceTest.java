@@ -39,6 +39,7 @@ class UserPreferenceServiceTest {
     @Test
     void createUserPreferences_ShouldSaveUserPreference() {
         // Arrange
+        User user = new User();
         RawUserPreferenceRequest request = new RawUserPreferenceRequest();
         request.setJobLocation(factory.createPoint(new Coordinate(10.0, 11.0)));
         request.setCityOfEmployment(factory.createPoint(new Coordinate(16.0, 17.0)));
@@ -49,17 +50,17 @@ class UserPreferenceServiceTest {
         request.setIsFurnished(true);
         request.setStartDate(LocalDate.now());
         request.setEndDate(LocalDate.of(2024, 8, 22));
+        String email = "test@example.com";
 
-        UserPreference userPreference = new UserPreference();
-
-        when(userPreferenceRepository.save(any(UserPreference.class))).thenReturn(userPreference);
+        when(userService.getUserByEmail(email)).thenReturn(user);
 
         // Act
-        UserPreference result = userPreferenceService.createUserPreferences(request);
+        UserPreference result = userPreferenceService.createUserPreferences(request, email);
 
         // Assert
         assertNotNull(result);
-        verify(userPreferenceRepository).save(any(UserPreference.class));
+        verify(userService).getUserByEmail(email);
+        verify(userService).saveUser(any(User.class));
     }
 
     @Test
@@ -84,6 +85,7 @@ class UserPreferenceServiceTest {
     @Test
     void createUserPreferences_ShouldHandleNullJobLocationAndFallbackToCityOfEmployment() {
         // Arrange
+        User user = new User();
         RawUserPreferenceRequest request = new RawUserPreferenceRequest();
         request.setJobLocation(null);
         request.setCityOfEmployment(factory.createPoint(new Coordinate(14.0, 100.0)));
@@ -94,16 +96,16 @@ class UserPreferenceServiceTest {
         request.setIsFurnished(false);
         request.setStartDate(LocalDate.of(2024, 5, 11));
         request.setEndDate(LocalDate.of(2024, 9, 14));
+        String email = "test@example.com";
 
-        UserPreference userPreference = new UserPreference();
-
-        when(userPreferenceRepository.save(any(UserPreference.class))).thenReturn(userPreference);
+        when(userService.getUserByEmail(email)).thenReturn(user);
 
         // Act
-        UserPreference result = userPreferenceService.createUserPreferences(request);
+        UserPreference result = userPreferenceService.createUserPreferences(request, email);
 
         // Assert
         assertNotNull(result);
-        verify(userPreferenceRepository).save(any(UserPreference.class));
+        verify(userService).getUserByEmail(email);
+        verify(userService).saveUser(any(User.class));
     }
 }
