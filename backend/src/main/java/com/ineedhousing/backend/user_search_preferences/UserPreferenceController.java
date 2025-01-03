@@ -12,8 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 
 
+
+/**
+ * Houses UserPreference endpoints
+ */
 @RestController
 @RequestMapping("/preferences")
 public class UserPreferenceController {
@@ -24,6 +29,12 @@ public class UserPreferenceController {
         this.userPreferenceService = userPreferenceService;
     }
 
+    /**
+     * create new UserPreference
+     * @param request
+     * @param email
+     * @return
+     */
     @PostMapping("/{email}")
     public ResponseEntity<?> createUserPreferences(@RequestBody RawUserPreferenceRequest request, @PathVariable String email) {
         try {
@@ -35,13 +46,38 @@ public class UserPreferenceController {
         }
     }
 
+    /**
+     * update UserPreference
+     * @param userPreference
+     * @param email
+     * @return
+     */
     @PutMapping("/{email}")
     public ResponseEntity<?> updateUserPreferences(@RequestBody UserPreference userPreference, @PathVariable String email) {
         try {
             UserPreference updatedPreferences = userPreferenceService.updateUserPreferences(userPreference, email);
+            return ResponseEntity.ok(updatedPreferences);
         }
-        catch 
+        catch (UsernameNotFoundException unfe) {
+            return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
     
+    /**
+     * get UserPreference
+     * @param email
+     * @return
+     */
+    @GetMapping("/{email}")
+    public ResponseEntity<?> getPreferences(@PathVariable String email) {
+        try {
+            UserPreference userPreference = userPreferenceService.getUserPreferences(email);
+            return ResponseEntity.ok(userPreference);
+        }
+        catch (UsernameNotFoundException unfe) {
+            return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
     
+
 }
