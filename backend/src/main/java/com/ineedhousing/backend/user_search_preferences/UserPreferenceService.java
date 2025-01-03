@@ -28,7 +28,7 @@ public class UserPreferenceService {
      * @param request
      * @return
      */
-    public UserPreference createUserPreferences(RawUserPreferenceRequest request) {
+    public UserPreference createUserPreferences(RawUserPreferenceRequest request, String email) {
         UserPreferenceBuilder builder = new UserPreferenceBuilder();
         UserPreference userPreferences = builder.addCityOfEmployment(request.getJobLocation())
         .addCityOfEmployment(request.getCityOfEmployment())
@@ -42,7 +42,20 @@ public class UserPreferenceService {
         .addInternshipStart(request.getStartDate())
         .addInternshipEnd(request.getEndDate())
         .build();
-        return userPreferenceRepository.save(userPreferences);
+        User user = userService.getUserByEmail(email);
+        user.setUserPreferences(userPreferences);
+        userService.saveUser(user);
+        return userPreferences;
+    }
+
+    /**
+     * get a User's UserPreference object
+     * @param email
+     * @return
+     */
+    public UserPreference getUserPreferences(String email) {
+        User user = userService.getUserByEmail(email);
+        return user.getUserPreferences();
     }
 
     /**

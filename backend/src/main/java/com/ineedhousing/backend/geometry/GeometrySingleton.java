@@ -14,8 +14,8 @@ public class GeometrySingleton {
     private GeometrySingleton(){};
 
     /**
-     * static getInstance(), synchronzied to make sure threads don't make multiple
-     * id factory is null (hasnt been made yet) it is then instantiated then returned
+     * static getInstance(), synchronized to make sure threads don't make multiple
+     * id factory is null (hasn't been made yet) it is then instantiated then returned
      * @return factory
      */
     public static synchronized GeometryFactory getInstance() {
