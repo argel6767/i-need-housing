@@ -45,4 +45,17 @@ public class UserPreferenceService {
         return userPreferenceRepository.save(userPreferences);
     }
 
+    /**
+     * updates UserPreference object in User entity with newPreferences
+     * @param newPreferences
+     * @param email
+     * @return
+     */
+    public UserPreference updateUserPreferences(UserPreference newPreferences, String email) {
+        User user = userService.getUserByEmail(email);
+        user.setUserPreferences(newPreferences);
+        userService.saveUser(user);
+        return newPreferences;
+    }
+
 }

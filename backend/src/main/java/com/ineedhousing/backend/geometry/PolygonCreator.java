@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.user_search_preferences.utils;
+package com.ineedhousing.backend.geometry;
 
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;

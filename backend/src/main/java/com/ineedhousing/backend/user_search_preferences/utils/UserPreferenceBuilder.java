@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
+import com.ineedhousing.backend.geometry.PolygonCreator;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 
 import lombok.AllArgsConstructor;

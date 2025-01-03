@@ -1,10 +1,13 @@
-package com.ineedhousing.backend.user_search_preferences.utils;
+package com.ineedhousing.backend.geometry;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+
+import com.ineedhousing.backend.geometry.PolygonCreator;
+
 import org.locationtech.jts.geom.GeometryFactory;
 
 class PolygonCreatorTest {

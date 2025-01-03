@@ -15,6 +15,7 @@ import org.springframework.web.client.RestClient;
 
 import com.ineedhousing.backend.apis.exceptions.FailedApiCallException;
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
+import com.ineedhousing.backend.geometry.GeometrySingleton;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.housing_listings.HousingListingRepository;
 
