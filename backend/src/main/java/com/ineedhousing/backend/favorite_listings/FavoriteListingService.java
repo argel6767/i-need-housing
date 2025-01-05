@@ -5,10 +5,13 @@ import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserService;
 import jakarta.transaction.Transactional;
+
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -37,7 +40,6 @@ public class FavoriteListingService {
 
     /**
      * adds any number of new favorites to a user FavoriteListings
-     * makes a new List for each call to adhere to functional programming
      * @param email
      * @param housingListings
      * @return List<FavoriteListing>
@@ -51,16 +53,15 @@ public class FavoriteListingService {
             newFavoriteListings.add(favoriteListing);
         });
 
-        List<FavoriteListing> updatedFavorites = Stream.concat(user.getFavoriteListings().stream(), newFavoriteListings.stream()).toList();
-        user.setFavoriteListings(updatedFavorites);
+        List<FavoriteListing> currentFavorites = user.getFavoriteListings();
+        currentFavorites.addAll(newFavoriteListings);
         userService.saveUser(user);
-        return updatedFavorites;
+        return currentFavorites;
     }
 
     /**
      * deletes any number of favorite listings from the entire List
      * This can be used for up to the entire list
-     * returns a new list to adhere to functional programming
      * @param email
      * @param id
      * @throws UsernameNotFoundException
@@ -72,22 +73,19 @@ public class FavoriteListingService {
         List<FavoriteListing> currentListings = user.getFavoriteListings();
         List<FavoriteListing> removedListings = favoriteListingRepository.findAllById(ids);
         currentListings.removeAll(removedListings);
-
-        List<FavoriteListing> newListings = new ArrayList<>(currentListings);
-        user.setFavoriteListings(newListings);
         userService.saveUser(user);
-        return newListings;
+        return currentListings;
     }
 
     /**
-     * deletes all favorite listing of users by set a users favoriteListings to a fresh ArrayList
+     * deletes all favorite listing of users by set a users favoriteListings
      * @param email
      * @throws UsernameNotFoundException
      * @return String
      */
     public String deleteAllUserFavoriteListings(String email) {
         User user = userService.getUserByEmail(email);
-        user.setFavoriteListings(new ArrayList<>());
+        user.getFavoriteListings().clear();
         userService.saveUser(user);
         return "List successfully deleted!";
     }

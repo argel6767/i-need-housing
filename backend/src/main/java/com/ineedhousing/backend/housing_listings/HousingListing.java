@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 @Data
@@ -28,7 +31,16 @@ public class HousingListing {
     private Double rate;
 
     @Column(nullable = false, columnDefinition = "geometry(Point, 4326)", unique = true)
+    @JsonIgnore
     private Point location;
+     // Custom getter to expose coordinates in JSON
+     @JsonProperty("coordinates")
+     public double[] getCoordinates() {
+         if (location != null) {
+             return new double[]{location.getY(), location.getX()}; //returns as lat, long
+         }
+         return null;
+     }
 
     @Column(nullable = false)
     private String address;

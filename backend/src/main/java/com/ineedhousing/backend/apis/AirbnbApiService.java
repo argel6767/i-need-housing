@@ -115,7 +115,8 @@ public class AirbnbApiService {
             housingListing.setSource(SOURCE);
             housingListing.setTitle((String) listing.get("name"));
             Map<String, Object> priceInfo = (Map<String, Object>) listing.get("price");
-            housingListing.setRate((Double) priceInfo.get("rate"));
+            Integer rate = (Integer) priceInfo.get("rate");
+            housingListing.setRate(rate.doubleValue());
             Point point = factory.createPoint(
                 new Coordinate((Double)listing.get("lng"), (Double)listing.get("lat"))
             );
@@ -125,7 +126,8 @@ public class AirbnbApiService {
             housingListing.setImageUrls((List<String>)listing.get("images"));
             housingListing.setPropertyType((String)listing.get("type"));
             housingListing.setNumBeds((Integer)listing.get("bedrooms"));
-            housingListing.setNumBaths((Double)listing.get("bathrooms"));
+            Double bathrooms = ((Number)listing.get("bathrooms")).doubleValue();
+            housingListing.setNumBaths(bathrooms);
             if (numOfPets > 0) {
                 housingListing.setIsPetFriendly(true);
             }

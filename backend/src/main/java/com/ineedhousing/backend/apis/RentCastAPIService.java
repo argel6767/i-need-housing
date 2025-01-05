@@ -3,6 +3,10 @@ package com.ineedhousing.backend.apis;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -19,10 +23,13 @@ import com.ineedhousing.backend.geometry.GeometrySingleton;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.housing_listings.HousingListingRepository;
 
+import lombok.extern.java.Log;
+
 
     /**
      * Houses business logic for RentCast api calls
      */
+@Log
 @Service
 public class RentCastAPIService {
     private final RestClient restClient;
@@ -107,19 +114,25 @@ public class RentCastAPIService {
     private List<HousingListing> createNewListings(List<Map<String, Object>> response) {
         List<HousingListing> newListings = new ArrayList<>();
         GeometryFactory factory = GeometrySingleton.getInstance();
-        response.stream().forEach(listing -> {
-            HousingListing newListing = new HousingListing();
-            newListing.setSource(SOURCE);
-            newListing.setTitle((String)listing.get("id"));
-            newListing.setRate((Double) listing.get("price"));
-            Point point = factory.createPoint(
-            new Coordinate((Double)listing.get("longitude"), (Double)listing.get("latitude")));
-            newListing.setLocation(point);
-            newListing.setAddress((String)listing.get("formattedAddress"));
-            newListing.setPropertyType((String)listing.get("propertyType"));
-            newListing.setNumBeds((Integer)listing.get("bedrooms"));
-            newListing.setNumBaths((Double)listing.get("bathrooms"));
-            newListings.add(newListing);
+        response.stream()
+        .forEach(listing -> {
+            try {
+                HousingListing newListing = new HousingListing();
+                newListing.setSource(SOURCE);
+                newListing.setTitle((String)listing.get("id"));
+                newListing.setRate(((Number) listing.get("price")).doubleValue());
+                Point point = factory.createPoint(
+                new Coordinate((Double)listing.get("longitude"), (Double)listing.get("latitude")));
+                newListing.setLocation(point);
+                newListing.setAddress((String)listing.get("formattedAddress"));
+                newListing.setPropertyType((String)listing.get("propertyType"));
+                newListing.setNumBeds((Integer)listing.get("bedrooms"));
+                newListing.setNumBaths(((Number)listing.get("bathrooms")).doubleValue());
+                newListings.add(newListing); 
+            }
+            catch (NullPointerException npe) {
+                log.info(String.format("Failed to create Listing: %s.\n%n", listing, npe.getMessage()));
+            }
         });
         return newListings;
     }
@@ -131,9 +144,15 @@ public class RentCastAPIService {
      */
     private List<HousingListing> removeDuplicateListings(List<HousingListing> newListings) {
         return newListings.stream()
+        .filter(distinctByKey(HousingListing::getLocation))
         .filter(listing -> !housingListingRepository.existsByLocation(listing.getLocation()))
         .collect(Collectors.toList());
     }
+
+    private <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+    Set<Object> seen = ConcurrentHashMap.newKeySet();
+    return t -> seen.add(keyExtractor.apply(t));
+}
 
 }
 

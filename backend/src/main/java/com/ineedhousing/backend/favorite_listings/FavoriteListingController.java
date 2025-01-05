@@ -80,7 +80,7 @@ public class FavoriteListingController {
      * @throws UsernameNotFoundException
      * @return ResponseEntity
      */
-    @DeleteMapping("/{email}/all")
+    @DeleteMapping("/{email}")
     public ResponseEntity<?> deleteAllUserFavoriteListings(@PathVariable String email) {
         try {
             String response = favoriteListingService.deleteAllUserFavoriteListings(email);

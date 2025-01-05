@@ -12,7 +12,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HousingListingRepository extends JpaRepository<HousingListing, Long>{
 
-    public boolean existsByLocation(Point locationPoint);
+    @Query("SELECT CASE WHEN COUNT(l) > 0 THEN true ELSE false END FROM HousingListing l WHERE l.location = :location")
+    boolean existsByLocation(@Param("location") Point location);
+
 
     @Query("SELECT l FROM HousingListing l WHERE ST_Within(l.location, :area) = true")
     List<HousingListing> getAllListingsInsideArea(@Param("area") Polygon area);
