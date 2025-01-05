@@ -5,8 +5,31 @@ INeedHousing.com will be a website that will aide incoming interns find housing 
 find housing in the area their new jobs will be.
 
 ## Data Retrieval and Display
-INeedHousing.com will use various renter APIS (Zillow, AirBnb, Craigslist) in the attempt of finding available renting opportunities.
+INeedHousing.com will use various renter APIS (Zillow, Airbnb, Craigslist, Rent Cast) to find available rental opportunities.
 INeedHousing.com will also utilize the Google Maps API to display the various properties up for rent.
 
 ## Tech-Stack
-INeedHousing.com will be a full-stack web app utilizing Next.js, Spring Boot, and PostgreSQL
+INeedHousing.com will be a full-stack web app utilizing Next.js, Spring Boot, and PostgreSQL.
+
+## Backend
+Spring Boot is used as the main architecture for INeedHousing's backend, as well as a PostgreSQL database.
+The following will be implemented:
+- JWT authentication for endpoints
+- Email verification via JavaMail
+- Location-based querying via Hibernate Spatial and PostGIS for geospatial data handling
+
+### Status
+An MVP is currently finished with all aforementioned features implemented. The source code can be looked over in the `/backend` directory  
+
+## Frontend
+NextJs will be used as the framework for the frontend.
+The following will be implemented:
+- User registration
+- Being able to see housing options on a map via Google Maps API and backend endpoints
+- Allow a user to set preferences for housing to get their best fit
+
+### Status
+The frontend is currently under development and will be live once an MVP is made.
+
+## Feedback
+Any feedback, suggestions, tips are appreciated and can be sent to my email: [argel6767@gmail.com](mailto:argel6767@gmail.com). Thanks!
