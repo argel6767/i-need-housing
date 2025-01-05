@@ -19,7 +19,7 @@ public class HousingListingService {
     }
 
     public List<HousingListing> getListingsInArea(Polygon area) {
-        return housingListingRepository.findAllListingsInArea(area);
+        return housingListingRepository.getAllListingsInsideArea(area);
     }
 
     public HousingListing getListing(Long id) {

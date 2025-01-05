@@ -33,7 +33,7 @@ class HousingListingServiceTest {
         // Arrange
         Polygon mockPolygon = mock(Polygon.class);
         List<HousingListing> mockListings = List.of(mock(HousingListing.class), mock(HousingListing.class));
-        when(housingListingRepository.findAllListingsInArea(mockPolygon)).thenReturn(mockListings);
+        when(housingListingRepository.getAllListingsInsideArea(mockPolygon)).thenReturn(mockListings);
 
         // Act
         List<HousingListing> result = housingListingService.getListingsInArea(mockPolygon);
@@ -41,7 +41,7 @@ class HousingListingServiceTest {
         // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(housingListingRepository, times(1)).findAllListingsInArea(mockPolygon);
+        verify(housingListingRepository, times(1)).getAllListingsInsideArea(mockPolygon);
     }
 
     @Test

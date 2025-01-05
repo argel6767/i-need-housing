@@ -46,7 +46,6 @@ public class User implements UserDetails {
 
     private String authorities;
 
-    @Column(nullable = false)
     private UserType userType;
 
     @OneToOne(cascade = CascadeType.ALL)
