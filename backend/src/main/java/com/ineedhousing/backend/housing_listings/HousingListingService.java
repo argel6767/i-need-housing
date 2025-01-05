@@ -60,7 +60,7 @@ public class HousingListingService {
      */
     public String deleteListing(Long id) {
         if (!housingListingRepository.existsById(id)) {
-            throw new NoListingsFoundException(String.format("No listing found with id: ", id));
+            throw new NoListingsFoundException(String.format("No listing found with id: %d", id));
         }
         housingListingRepository.deleteById(id);
         return "Listing successfully deleted.";

@@ -13,7 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.ineedhousing.backend.housing_listings.exceptions.ListingNotFoundException;
+import com.ineedhousing.backend.housing_listings.exceptions.NoListingFoundException;
+import com.ineedhousing.backend.housing_listings.requests.GetListingsInAreaRequest;
 
 class HousingListingServiceTest {
 
@@ -28,6 +29,7 @@ class HousingListingServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+
     @Test
     void testGetListingsInArea() {
         // Arrange
@@ -36,7 +38,7 @@ class HousingListingServiceTest {
         when(housingListingRepository.getAllListingsInsideArea(mockPolygon)).thenReturn(mockListings);
 
         // Act
-        List<HousingListing> result = housingListingService.getListingsInArea(mockPolygon);
+        List<HousingListing> result = housingListingService.getListingsInArea(1.0, 1.0, 1);
 
         // Assert
         assertNotNull(result);
@@ -67,7 +69,7 @@ class HousingListingServiceTest {
         when(housingListingRepository.findById(listingId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ListingNotFoundException.class, () -> housingListingService.getListing(listingId));
+        assertThrows(NoListingFoundException.class, () -> housingListingService.getListing(listingId));
         verify(housingListingRepository, times(1)).findById(listingId);
     }
 
@@ -93,7 +95,7 @@ class HousingListingServiceTest {
         when(housingListingRepository.existsById(listingId)).thenReturn(false);
 
         // Act & Assert
-        assertThrows(ListingNotFoundException.class, () -> housingListingService.deleteListing(listingId));
+        assertThrows(NoListingFoundException.class, () -> housingListingService.deleteListing(listingId));
         verify(housingListingRepository, times(1)).existsById(listingId);
         verify(housingListingRepository, never()).deleteById(anyLong());
     }

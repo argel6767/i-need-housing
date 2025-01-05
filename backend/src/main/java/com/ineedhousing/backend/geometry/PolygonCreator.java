@@ -22,6 +22,8 @@ public class PolygonCreator {
         factory.setNumPoints(numSides);
         factory.setCentre(center.getCoordinate());
         factory.setSize(radius*2);
-        return factory.createCircle();
+        Polygon circle = factory.createCircle();
+        circle.setSRID(center.getSRID());
+        return circle;
     }
 }
