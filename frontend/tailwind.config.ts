@@ -9,10 +9,27 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: '#176087', // Lapis Lazuli
+        secondary: '#bb4430', // Persian red
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        sans: ['Arial', 'sans-serif'],
     },
   },
-  plugins: [],
+  },
+  daisyui: {
+    themes: [
+      {
+        mytheme: {
+          primary: '#176087',
+          secondary: '#bb4430',
+        },
+      },
+    ],
+  },
+  plugins: [
+    require('daisyui')
+  ],
 } satisfies Config;
