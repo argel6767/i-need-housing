@@ -1,26 +1,30 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  content: [
+    darkMode: ["class"],
+    content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        primary: '#176087', // Lapis Lazuli
-        secondary: '#bb4430', // Persian red
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-      },
-      fontFamily: {
-        sans: ['Arial', 'sans-serif'],
-    },
-    backgroundImage: {
-      'hero-pattern': "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/hero.jpg')",
-    }
-  },
+  	extend: {
+  		colors: {
+  			primary: '#176087',
+  			secondary: '#bb4430',
+  			background: '#ffffff',
+  			foreground: '#000000'
+  		},
+  		fontFamily: {
+  			sans: [
+  				'Arial',
+  				'sans-serif'
+  			]
+  		},
+  		backgroundImage: {
+			'hero-pattern': "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/hero.jpg')"
+		}
+  	}
   },
   daisyui: {
     themes: [
@@ -33,6 +37,7 @@ export default {
     ],
   },
   plugins: [
-    require('daisyui')
-  ],
+    require('daisyui'),
+      require("tailwindcss-animate")
+],
 } satisfies Config;
