@@ -16,7 +16,7 @@ export const Navbar = () => {
     </ul>
   </div>
   <div className="navbar-end">
-    <a className="btn btn-primary" href="/auth">Sign In</a>
+    <a className="btn btn-primary" href="/sign-in">Sign In</a>
   </div>
 </div> 
     )
