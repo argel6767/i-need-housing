@@ -3,6 +3,7 @@ package com.ineedhousing.backend.user_search_preferences;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ineedhousing.backend.user_search_preferences.requests.RawCoordinateUserPreferenceRequest;
 import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferenceRequest;
 
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,16 @@ public class UserPreferenceController {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/coordinates/{email}")
+    public ResponseEntity<?> createUserPreferencesWithCoordinates(@RequestBody RawCoordinateUserPreferenceRequest request, @PathVariable String email) {
+        try {
+            UserPreference userPreference = userPreferenceService.createUserPreference(request, email);
+            return ResponseEntity.ok(userPreference);
+        } catch (UsernameNotFoundException unfe) {
+            return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
+}
 
     /**
      * update UserPreference
