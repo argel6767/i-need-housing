@@ -20,10 +20,16 @@ vi.mock('next/router', () => ({
 // Mock next/image
 vi.mock('next/image', () => ({
   default: (props: any) => {
-    // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
-    return React.createElement('img', { ...props })
+    const { src, alt, width, height, ...rest } = props;
+    return React.createElement('img', { 
+      src, 
+      alt, 
+      width: width || '100', // Default width if not provided
+      height: height || '100', // Default height if not provided
+      ...rest 
+    });
   },
-}))
+}));
 
 // Cleanup after each test
 afterEach(() => {
