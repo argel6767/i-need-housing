@@ -106,6 +106,9 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * sends email for reset password request
+     */
     @PostMapping("/forgot/{email}")
     public ResponseEntity<?> forgotPassword(@PathVariable String email) {
         try {
