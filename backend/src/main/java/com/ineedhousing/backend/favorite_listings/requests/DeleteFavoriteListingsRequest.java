@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteFavoriteListingRequest {
+public class DeleteFavoriteListingsRequest {
 
     private List<Long> favoriteListingIds;
 }

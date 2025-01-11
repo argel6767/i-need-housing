@@ -1,7 +1,7 @@
 package com.ineedhousing.backend.favorite_listings;
 
 import com.ineedhousing.backend.favorite_listings.requests.AddFavoriteListingsRequest;
-import com.ineedhousing.backend.favorite_listings.requests.DeleteFavoriteListingRequest;
+import com.ineedhousing.backend.favorite_listings.requests.DeleteFavoriteListingsRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +64,7 @@ public class FavoriteListingController {
      * @return ResponseEntity
      */
     @DeleteMapping("/{email}/listings")
-    public ResponseEntity<?> deleteFavoriteListings(@PathVariable String email, @RequestBody DeleteFavoriteListingRequest request) {
+    public ResponseEntity<?> deleteFavoriteListings(@PathVariable String email, @RequestBody DeleteFavoriteListingsRequest request) {
         try {
             List<FavoriteListing> updatedListings = favoriteListingService.deleteListings(email, request.getFavoriteListingIds());
             return ResponseEntity.ok(updatedListings);

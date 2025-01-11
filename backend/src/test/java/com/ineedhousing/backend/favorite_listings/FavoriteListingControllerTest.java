@@ -1,7 +1,7 @@
 package com.ineedhousing.backend.favorite_listings;
 
 import com.ineedhousing.backend.favorite_listings.requests.AddFavoriteListingsRequest;
-import com.ineedhousing.backend.favorite_listings.requests.DeleteFavoriteListingRequest;
+import com.ineedhousing.backend.favorite_listings.requests.DeleteFavoriteListingsRequest;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ class FavoriteListingControllerTest {
 
     private FavoriteListing testFavoriteListing;
     private AddFavoriteListingsRequest addRequest;
-    private DeleteFavoriteListingRequest deleteRequest;
+    private DeleteFavoriteListingsRequest deleteRequest;
 
     @BeforeEach
     void setUp() {
@@ -39,7 +39,7 @@ class FavoriteListingControllerTest {
         testFavoriteListing.setId(1L);
 
         addRequest = new AddFavoriteListingsRequest(Collections.singletonList(new HousingListing()));
-        deleteRequest = new DeleteFavoriteListingRequest(Collections.singletonList(1L));
+        deleteRequest = new DeleteFavoriteListingsRequest(Collections.singletonList(1L));
     }
 
     @Test
