@@ -1,6 +1,8 @@
 package com.ineedhousing.backend.housing_listings;
 
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
 import com.ineedhousing.backend.geometry.GeometrySingleton;
 import com.ineedhousing.backend.geometry.PolygonCreator;
+import com.ineedhousing.backend.user_search_preferences.UserPreference;
 
 
 /**
@@ -19,9 +22,11 @@ import com.ineedhousing.backend.geometry.PolygonCreator;
 @Service
 public class HousingListingService {
     private final HousingListingRepository housingListingRepository;
+    private final UserPreferencesFilterer userPreferencesFilterer;
 
-    public HousingListingService(HousingListingRepository housingListingRepository) {
+    public HousingListingService(HousingListingRepository housingListingRepository, UserPreferencesFilterer userPreferencesFilterer) {
         this.housingListingRepository = housingListingRepository;
+        this.userPreferencesFilterer = userPreferencesFilterer;
     }
 
     /**
@@ -64,5 +69,19 @@ public class HousingListingService {
         }
         housingListingRepository.deleteById(id);
         return "Listing successfully deleted.";
+    }
+
+    /**
+     * returns List<HousingListing> that has been filtered by given method
+     * @param latitude
+     * @param longitude
+     * @param radius
+     * @param userPreference
+     * @param filterMethod
+     * @return
+     */
+    public List<HousingListing> getListingsByPreferences(double latitude, double longitude, int radius, UserPreference userPreference, BiFunction<UserPreference, List<HousingListing>, List<HousingListing>> filterMethod) {
+        List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
+        return filterMethod.apply(userPreference, listings);
     }
 }
