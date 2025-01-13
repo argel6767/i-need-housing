@@ -1,6 +1,7 @@
 package com.ineedhousing.backend.housing_listings;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
@@ -82,6 +83,22 @@ public class HousingListingService {
      */
     public List<HousingListing> getListingsByPreferences(double latitude, double longitude, int radius, UserPreference userPreference, BiFunction<UserPreference, List<HousingListing>, List<HousingListing>> filterMethod) {
         List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
-        return filterMethod.apply(userPreference, listings);
+        List<HousingListing> filteredListings = filterMethod.apply(userPreference, listings);
+        if (filteredListings.isEmpty()) {
+            throw new NoListingsFoundException("No Listings found for given preferences: " + userPreference.toString());
+        }
+        return filteredListings;
+    }
+
+    /**
+     * returns listings filter by given preference only
+     */
+    public List<HousingListing> getListingsBySpecificPreference(double latitude, double longitude, int radius, Map<String, Object> preference) {
+        List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
+        List<HousingListing> filteredListings = UserPreferencesFilterer.findBySpecificPreference(preference, listings);
+        if (filteredListings.isEmpty()) {
+            throw new NoListingsFoundException("No Listins found for given preference: " + preference.keySet().stream().findFirst().get());
+        }
+        return filteredListings;
     }
 }

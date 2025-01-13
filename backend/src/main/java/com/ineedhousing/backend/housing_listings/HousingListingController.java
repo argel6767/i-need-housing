@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
+import com.ineedhousing.backend.housing_listings.requests.GetListingsByPreferenceRequest;
+import com.ineedhousing.backend.housing_listings.requests.GetListingsBySpecificPreferenceRequest;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsInAreaRequest;
 
 import java.util.List;
@@ -63,6 +65,39 @@ public class HousingListingController {
         }
         catch (NoListingsFoundException nlfe) {
             return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/preferences/exact")
+    public ResponseEntity<?> getListingWithExactPreferences(@RequestBody GetListingsByPreferenceRequest request) {
+        try {
+            List<HousingListing> listings = housingListingService.getListingsByPreferences(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getPreferences(), UserPreferencesFilterer::findByExactPreferences);
+            return ResponseEntity.ok(listings);
+        }
+        catch(NoListingsFoundException nlfe) {
+            return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @GetMapping("/preferences/non-strict")
+    public ResponseEntity<?> getListingWithNonStrictPreferences(@RequestBody GetListingsByPreferenceRequest request) {
+        try {
+            List<HousingListing> listings = housingListingService.getListingsByPreferences(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getPreferences(), UserPreferencesFilterer::findByNonStrictPreferences);
+            return ResponseEntity.ok(listings);
+        }
+        catch(NoListingsFoundException nlfe) {
+            return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @GetMapping("/preferences/specific")
+    public ResponseEntity<?> getListingWithSpecificPreference(@RequestBody GetListingsBySpecificPreferenceRequest request) {
+        try {
+            List<HousingListing> listings = housingListingService.getListingsBySpecificPreference(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getSpecificPreference());
+            return ResponseEntity.ok(listings);
+        }
+        catch(NoListingsFoundException nlfe) {
+            return new ResponseEntity<>(nlfe, HttpStatus.NO_CONTENT);
         }
     }
 }

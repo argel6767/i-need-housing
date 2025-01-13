@@ -21,7 +21,7 @@ public class UserPreferencesFilterer {
      * @param listingsInArea
      * @return
      */
-    public List<HousingListing> findByExactPreferences(UserPreference preferences, List<HousingListing> listingsInArea) {
+    public static List<HousingListing> findByExactPreferences(UserPreference preferences, List<HousingListing> listingsInArea) {
         List<HousingListing> finalListings = listingsInArea.stream().filter(listing -> listing.getRate() <= preferences.getMaxRent())
                 .filter(listing -> listing.getNumBeds() >= preferences.getMinNumberOfBedRooms())
                 .filter(listing -> listing.getNumBaths() < preferences.getMinNumberOfBathrooms())
@@ -36,7 +36,7 @@ public class UserPreferencesFilterer {
      * @param listingsInArea
      * @return
      */
-    public List<HousingListing> findByNonStrictPreferences(UserPreference preferences, List<HousingListing> listingsInArea) {
+    public static List<HousingListing> findByNonStrictPreferences(UserPreference preferences, List<HousingListing> listingsInArea) {
         Set<HousingListing> filteredByRate = listingsInArea.stream().filter(listing -> listing.getRate() <= preferences.getMaxRent()).collect(Collectors.toSet());
         Set<HousingListing> filteredByNumBeds = listingsInArea.stream().filter(listing -> listing.getNumBeds() >= preferences.getMinNumberOfBedRooms()).collect(Collectors.toSet());
         Set<HousingListing> filteredByNumBaths = listingsInArea.stream().filter(listing -> listing.getNumBaths() >= preferences.getMinNumberOfBathrooms()).collect(Collectors.toSet());Set<HousingListing> filteredByIsFurnished = listingsInArea.stream().filter(listing -> listing.getIsFurnished().equals(preferences.getIsFurnished())).collect(Collectors.toSet());
@@ -54,7 +54,7 @@ public class UserPreferencesFilterer {
      * @param listingsInArea
      * @return
      */
-    public List<HousingListing> findBySpecificPreference(Map<String, Object> preference, List<HousingListing> listingsInArea ) {
+    public static List<HousingListing> findBySpecificPreference(Map<String, Object> preference, List<HousingListing> listingsInArea ) {
         String preferenceName = preference.keySet().stream().findFirst().get();
         Object preferenceValue = preference.get(preferenceName);
         switch (preferenceName) {
