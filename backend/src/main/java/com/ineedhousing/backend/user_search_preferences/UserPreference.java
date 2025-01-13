@@ -34,7 +34,7 @@ public class UserPreference {
     @Column(nullable = false)
     private Integer maxRadius = 25;
 
-    private Integer maxRent=10000;
+    private Double maxRent=10000.0;
 
     private String travelType; //future implementation
 

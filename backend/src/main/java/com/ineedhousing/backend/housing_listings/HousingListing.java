@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 public class HousingListing {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true, nullable = false, updatable = false)
