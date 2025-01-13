@@ -9,7 +9,7 @@ import org.locationtech.jts.geom.Polygon;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-
+//TODO add isPetFriendly field
 @Data
 @NoArgsConstructor
 @Entity
@@ -34,7 +34,7 @@ public class UserPreference {
     @Column(nullable = false)
     private Integer maxRadius = 25;
 
-    private Integer maxRent;
+    private Integer maxRent=10000;
 
     private String travelType; //future implementation
 
