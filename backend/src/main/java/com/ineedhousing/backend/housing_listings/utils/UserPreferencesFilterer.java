@@ -1,5 +1,6 @@
-package com.ineedhousing.backend.housing_listings;
+package com.ineedhousing.backend.housing_listings.utils;
 
+import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 import lombok.AllArgsConstructor;
 import lombok.Data;

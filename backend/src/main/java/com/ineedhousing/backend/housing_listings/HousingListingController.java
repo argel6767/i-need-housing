@@ -7,6 +7,7 @@ import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsByPreferenceRequest;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsBySpecificPreferenceRequest;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsInAreaRequest;
+import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
 
 import java.util.List;
 

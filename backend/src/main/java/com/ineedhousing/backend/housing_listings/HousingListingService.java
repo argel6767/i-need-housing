@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
 import com.ineedhousing.backend.geometry.GeometrySingleton;
 import com.ineedhousing.backend.geometry.PolygonCreator;
+import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 
 
