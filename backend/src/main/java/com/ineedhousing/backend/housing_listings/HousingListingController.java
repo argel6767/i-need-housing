@@ -3,6 +3,7 @@ package com.ineedhousing.backend.housing_listings;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ineedhousing.backend.housing_listings.exceptions.NoListingFoundException;
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsByPreferenceRequest;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsBySpecificPreferenceRequest;
@@ -54,7 +55,7 @@ public class HousingListingController {
             HousingListing housingListing = housingListingService.getListing(id);
             return ResponseEntity.ok(housingListing);
         }
-        catch (NoListingsFoundException nlfe) {
+        catch (NoListingFoundException nlfe) {
             return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -65,7 +66,7 @@ public class HousingListingController {
             String message = housingListingService.deleteListing(id);
             return ResponseEntity.ok(message);
         }
-        catch (NoListingsFoundException nlfe) {
+        catch (NoListingFoundException nlfe) {
             return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NOT_FOUND);
         }
     }

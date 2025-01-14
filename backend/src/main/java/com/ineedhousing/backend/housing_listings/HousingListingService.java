@@ -10,6 +10,7 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.springframework.stereotype.Service;
 
+import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
 import com.ineedhousing.backend.geometry.GeometrySingleton;
 import com.ineedhousing.backend.geometry.PolygonCreator;
 import com.ineedhousing.backend.housing_listings.exceptions.NoListingFoundException;
@@ -83,7 +84,7 @@ public class HousingListingService {
         List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
         List<HousingListing> filteredListings = filterMethod.apply(userPreference, listings);
         if (filteredListings.isEmpty()) {
-            throw new NoListingFoundException("No Listings found for given preferences: " + userPreference.toString());
+            throw new NoListingsFoundException("No Listings found for given preferences: " + userPreference.toString());
         }
         return filteredListings;
     }
@@ -95,7 +96,7 @@ public class HousingListingService {
         List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
         List<HousingListing> filteredListings = UserPreferencesFilterer.findBySpecificPreference(preference, listings);
         if (filteredListings.isEmpty()) {
-            throw new NoListingFoundException("No Listings found for given preference: " + preference.keySet().stream().findFirst().get());
+            throw new NoListingsFoundException("No Listings found for given preference: " + preference.keySet().stream().findFirst().get());
         }
         return filteredListings;
     }

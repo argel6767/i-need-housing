@@ -4,17 +4,16 @@ import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsByPreferenceRequest;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsInAreaRequest;
 import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
+import com.ineedhousing.backend.housing_listings.exceptions.NoListingFoundException;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -98,7 +97,7 @@ class HousingListingControllerTest {
     void getListing_NotFound() {
         // Arrange
         when(housingListingService.getListing(999L))
-            .thenThrow(new NoListingsFoundException("Listing not found"));
+            .thenThrow(new NoListingFoundException("Listing not found"));
 
         // Act
         ResponseEntity<?> response = controller.getListing(999L);
@@ -130,7 +129,7 @@ class HousingListingControllerTest {
     void deleteListing_NotFound() {
         // Arrange
         when(housingListingService.deleteListing(999L))
-            .thenThrow(new NoListingsFoundException("Listing not found"));
+            .thenThrow(new NoListingFoundException("Listing not found"));
 
         // Act
         ResponseEntity<?> response = controller.deleteListing(999L);

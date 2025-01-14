@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.ineedhousing.backend.housing_listings.exceptions.NoListingFoundException;
+import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 
 class HousingListingServiceTest {
@@ -193,7 +194,7 @@ class HousingListingServiceTest {
         when(housingListingRepository.getAllListingsInsideArea(any(Polygon.class))) .thenReturn(mockAreaListings);
 
         // Act & Assert
-        NoListingFoundException exception = assertThrows(NoListingFoundException.class, 
+        NoListingsFoundException exception = assertThrows(NoListingsFoundException.class, 
             () -> housingListingService.getListingsBySpecificPreference(
                 latitude, longitude, radius, preference));
         
