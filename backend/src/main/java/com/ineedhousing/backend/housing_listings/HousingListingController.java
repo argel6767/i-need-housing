@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -69,7 +70,7 @@ public class HousingListingController {
         }
     }
 
-    @GetMapping("/preferences/exact")
+    @PostMapping("/preferences/exact")
     public ResponseEntity<?> getListingWithExactPreferences(@RequestBody GetListingsByPreferenceRequest request) {
         try {
             List<HousingListing> listings = housingListingService.getListingsByPreferences(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getPreferences(), UserPreferencesFilterer::findByExactPreferences);
@@ -80,7 +81,7 @@ public class HousingListingController {
         }
     }
 
-    @GetMapping("/preferences/non-strict")
+    @PostMapping("/preferences/non-strict")
     public ResponseEntity<?> getListingWithNonStrictPreferences(@RequestBody GetListingsByPreferenceRequest request) {
         try {
             List<HousingListing> listings = housingListingService.getListingsByPreferences(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getPreferences(), UserPreferencesFilterer::findByNonStrictPreferences);
@@ -91,7 +92,7 @@ public class HousingListingController {
         }
     }
 
-    @GetMapping("/preferences/specific")
+    @PostMapping("/preferences/specific")
     public ResponseEntity<?> getListingWithSpecificPreference(@RequestBody GetListingsBySpecificPreferenceRequest request) {
         try {
             List<HousingListing> listings = housingListingService.getListingsBySpecificPreference(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getSpecificPreference());

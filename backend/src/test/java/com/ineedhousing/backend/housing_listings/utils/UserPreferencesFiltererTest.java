@@ -1,7 +1,6 @@
 package com.ineedhousing.backend.housing_listings.utils;
 
 import com.ineedhousing.backend.housing_listings.HousingListing;
-import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
