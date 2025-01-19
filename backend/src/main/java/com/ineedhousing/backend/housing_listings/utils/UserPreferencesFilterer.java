@@ -11,10 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-@Data
-@AllArgsConstructor
+
 public class UserPreferencesFilterer {
 
 
@@ -58,9 +56,11 @@ public class UserPreferencesFilterer {
      * @return
      */
     public static List<HousingListing> findByMultiplePreferences(Map<String, Object> preferences, List<HousingListing> listingsInArea) {
-        Set<HousingListing> listings = new HashSet<>();
-        preferences.keySet().stream().forEach(key -> listings.addAll(determinePreference(listingsInArea, key, preferences.get(key))));
-        return listings.stream().toList();
+       Set<String> keySet = preferences.keySet();
+       for (String key: keySet) {
+        listingsInArea = determinePreference(listingsInArea, key, preferences.get(key));
+       }
+       return listingsInArea;
     }
 
     /**
@@ -89,7 +89,7 @@ public class UserPreferencesFilterer {
                 return listingsInArea.stream().filter(listing -> listing.getRate() <= (Double) preferenceValue).toList();
             }
             case "numBeds" -> {
-                return listingsInArea.stream().filter(listing -> listing.getNumBeds() >= (Double) preferenceValue).toList();
+                return listingsInArea.stream().filter(listing -> listing.getNumBeds() >= (Integer) preferenceValue).toList();
             }
             case "numBaths" -> {
                 return listingsInArea.stream().filter(listing -> listing.getNumBaths() >= (Double) preferenceValue).toList();

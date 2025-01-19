@@ -114,6 +114,32 @@ class UserPreferencesFiltererTest {
     }
 
     @Test
+    void findByMultiplePreferences_ShouldReturnMatchingListings() {
+        Map<String, Object> preferences = new HashMap<>();
+        preferences.put("rate", 3000.0);
+        preferences.put("numBeds", 1);
+        preferences.put("isFurnished", true);
+
+        List<HousingListing> result = UserPreferencesFilterer.findByMultiplePreferences(preferences, testListings);
+
+        assertEquals(2, result.size());
+        assertTrue(result.stream().allMatch(listing -> listing.getRate() <= 3000.0));
+        assertTrue(result.stream().allMatch(listing -> listing.getNumBeds() >= 1));
+        assertTrue(result.stream().allMatch(listing -> listing.getIsFurnished().equals(true)));
+    }
+
+    @Test
+    void findByMultiplePreferences_ShouldReturnEmptyList() {
+        Map<String, Object> preferences = new HashMap<>();
+        preferences.put("rate", 500.0);
+        preferences.put("numBeds", 1);
+        preferences.put("isFurnished", true);
+
+        List<HousingListing> result = UserPreferencesFilterer.findByMultiplePreferences(preferences, testListings);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
     void findBySpecificPreference_Rate_ShouldReturnMatchingListings() {
         Map<String, Object> ratePreference = new HashMap<>();
         ratePreference.put("rate", 2000.0);
