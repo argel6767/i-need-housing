@@ -5,11 +5,13 @@ import com.ineedhousing.backend.user_search_preferences.UserPreference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Data
 @AllArgsConstructor
@@ -50,6 +52,18 @@ public class UserPreferencesFilterer {
     }
 
     /**
+     * filters by preference, any number of them
+     * @param preferences
+     * @param listingsInArea
+     * @return
+     */
+    public static List<HousingListing> findByMultiplePreferences(Map<String, Object> preferences, List<HousingListing> listingsInArea) {
+        Set<HousingListing> listings = new HashSet<>();
+        preferences.keySet().stream().forEach(key -> listings.addAll(determinePreference(listingsInArea, key, preferences.get(key))));
+        return listings.stream().toList();
+    }
+
+    /**
      * filters listings by a specific preference only
      * @param preference
      * @param listingsInArea
@@ -58,6 +72,18 @@ public class UserPreferencesFilterer {
     public static List<HousingListing> findBySpecificPreference(Map<String, Object> preference, List<HousingListing> listingsInArea ) {
         String preferenceName = preference.keySet().stream().findFirst().get();
         Object preferenceValue = preference.get(preferenceName);
+        return determinePreference(listingsInArea, preferenceName, preferenceValue);
+    }
+
+    /**
+     * Helper function that determines the preference type and applies the correct filter returning List
+     * @param listingsInArea
+     * @param preferenceName
+     * @param preferenceValue
+     * @return
+     */
+    private static List<HousingListing> determinePreference(List<HousingListing> listingsInArea, String preferenceName,
+            Object preferenceValue) {
         switch (preferenceName) {
             case "rate" -> {
                 return listingsInArea.stream().filter(listing -> listing.getRate() <= (Double) preferenceValue).toList();
