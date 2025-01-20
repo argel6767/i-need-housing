@@ -1,7 +1,7 @@
 package com.ineedhousing.backend.favorite_listings;
 
 import com.ineedhousing.backend.favorite_listings.requests.AddFavoriteListingsRequest;
-import com.ineedhousing.backend.favorite_listings.requests.DeleteFavoriteListingRequest;
+import com.ineedhousing.backend.favorite_listings.requests.DeleteFavoriteListingsRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,11 +45,11 @@ public class FavoriteListingController {
      * @param request
      * @return ResponseEntity
      */
-    @PutMapping("/{email}")
+    @PutMapping("/{email}/listings")
     public ResponseEntity<?> addNewFavoriteListings(@PathVariable String email, @RequestBody AddFavoriteListingsRequest request) {
         try {
             List<FavoriteListing> favoriteListings = favoriteListingService.addFavoriteListings(email, request.getListings());
-            return ResponseEntity.ok(favoriteListings);
+            return new ResponseEntity<>(favoriteListings, HttpStatus.CREATED);
         }
         catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
@@ -63,8 +63,8 @@ public class FavoriteListingController {
      * @throws UsernameNotFoundException
      * @return ResponseEntity
      */
-    @DeleteMapping("/{email}/listings")
-    public ResponseEntity<?> deleteFavoriteListings(@PathVariable String email, @RequestBody DeleteFavoriteListingRequest request) {
+    @PostMapping("/{email}/listings")
+    public ResponseEntity<?> deleteFavoriteListings(@PathVariable String email, @RequestBody DeleteFavoriteListingsRequest request) {
         try {
             List<FavoriteListing> updatedListings = favoriteListingService.deleteListings(email, request.getFavoriteListingIds());
             return ResponseEntity.ok(updatedListings);

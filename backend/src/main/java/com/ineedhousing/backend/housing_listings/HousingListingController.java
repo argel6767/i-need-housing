@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
@@ -33,7 +34,7 @@ public class HousingListingController {
         this.housingListingService = housingListingService;
     }
 
-    @GetMapping("/area")
+    @PostMapping("/area")
     public ResponseEntity<?> getListingsInArea(@RequestBody GetListingsInAreaRequest request) {
         try {
             List<HousingListing> listings = housingListingService.getListingsInArea(request.getLatitude(), request.getLongitude(), request.getRadius());
@@ -64,7 +65,7 @@ public class HousingListingController {
     public ResponseEntity<?> deleteListing(@PathVariable Long id) {
         try {
             String message = housingListingService.deleteListing(id);
-            return ResponseEntity.ok(message);
+            return new ResponseEntity<>(message, HttpStatus.NO_CONTENT);
         }
         catch (NoListingFoundException nlfe) {
             return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NOT_FOUND);

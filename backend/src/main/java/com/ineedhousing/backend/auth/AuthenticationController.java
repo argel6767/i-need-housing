@@ -35,7 +35,7 @@ public class AuthenticationController {
     public ResponseEntity<?> register(@RequestBody AuthenticateUserDto request) {
         try {
             User registeredUser = authenticationService.signUp(request);
-            return ResponseEntity.ok(registeredUser);
+            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
         }
         catch (AuthenticationException ae) {
             return new ResponseEntity<>(ae.getMessage(), HttpStatus.CONFLICT);
@@ -70,8 +70,8 @@ public class AuthenticationController {
             authenticationService.verifyUser(request);
             return ResponseEntity.ok("User verified!");
         }
-        catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        catch (RuntimeException re) {
+            return ResponseEntity.badRequest().body(re.getMessage());
         }
     }
 
@@ -84,8 +84,8 @@ public class AuthenticationController {
             authenticationService.resendVerificationEmail(email.getEmail());
             return ResponseEntity.ok("Verification code resent!");
         }
-        catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        catch (EmailVerificationException eve) {
+            return ResponseEntity.badRequest().body(eve.getMessage());
         }
     }
 
@@ -106,6 +106,9 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * sends email for reset password request
+     */
     @PostMapping("/forgot/{email}")
     public ResponseEntity<?> forgotPassword(@PathVariable String email) {
         try {

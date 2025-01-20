@@ -1,11 +1,17 @@
 package com.ineedhousing.backend.user_search_preferences;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 
+import com.ineedhousing.backend.geometry.GeometrySingleton;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserService;
+import com.ineedhousing.backend.user_search_preferences.requests.RawCoordinateUserPreferenceRequest;
 import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferenceRequest;
 import com.ineedhousing.backend.user_search_preferences.utils.UserPreferenceBuilder;
 
@@ -24,16 +30,49 @@ public class UserPreferenceService {
     }
 
     /**
-     * creates a UserPreference entity based of the raw request data
+     * creates a UserPreference entity based on the raw request data
      * @param request
      * @return
      */
     public UserPreference createUserPreferences(RawUserPreferenceRequest request, String email) {
         UserPreferenceBuilder builder = new UserPreferenceBuilder();
-        UserPreference userPreferences = builder.addCityOfEmployment(request.getJobLocation())
+        UserPreference userPreferences = builder.addJobLocation(request.getJobLocation())
         .addCityOfEmployment(request.getCityOfEmployment())
         .addDesiredArea(Optional.ofNullable(request.getJobLocation())
         .orElse(request.getCityOfEmployment()), request.getMaxRadius(), 32)
+        .addMaxRadius(request.getMaxRadius())
+        .addMaxRent(request.getMaxRent())
+        .addMinNumberOfBedrooms(request.getBedrooms())
+        .addMinNumberOfBathrooms(request.getBathrooms())
+        .addIsFurnished(request.getIsFurnished())
+        .addInternshipStart(request.getStartDate())
+        .addInternshipEnd(request.getEndDate())
+        .build();
+        User user = userService.getUserByEmail(email);
+        user.setUserPreferences(userPreferences);
+        userService.saveUser(user);
+        return userPreferences;
+    }
+
+    /**
+     * creates a UserPreference entity based on the raw coordinate request data
+     * @param request
+     * @return
+     */
+    public UserPreference createUserPreference(RawCoordinateUserPreferenceRequest request, String email) {
+        UserPreferenceBuilder builder = new UserPreferenceBuilder();
+        GeometryFactory factory = GeometrySingleton.getInstance();
+        Point jobLocation = null;
+        if (request.getJobLocationCoordinates() != null) {
+            Double[] coordinates = request.getJobLocationCoordinates();
+             jobLocation = factory.createPoint(new Coordinate(coordinates[1], coordinates[2]));
+        }
+        Double[] coordinates = request.getCityOfEmploymentCoordinates();
+        Point cityOfEmployment = factory.createPoint(new Coordinate(coordinates[1], coordinates[0]));
+        UserPreference userPreferences = builder.addJobLocation(jobLocation)
+        .addCityOfEmployment(cityOfEmployment)
+        .addDesiredArea(Optional.ofNullable(jobLocation)
+        .orElse(cityOfEmployment), request.getMaxRadius(), 32)
         .addMaxRadius(request.getMaxRadius())
         .addMaxRent(request.getMaxRent())
         .addMinNumberOfBedrooms(request.getBedrooms())
