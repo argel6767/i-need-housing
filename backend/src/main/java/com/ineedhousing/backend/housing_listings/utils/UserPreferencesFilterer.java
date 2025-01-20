@@ -2,10 +2,7 @@ package com.ineedhousing.backend.housing_listings.utils;
 
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;

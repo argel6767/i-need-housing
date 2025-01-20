@@ -101,4 +101,13 @@ public class HousingListingService {
         return filteredListings;
     }
 
+    public List<HousingListing> getListingsByMultiplePreferences(double latitude, double longitude, int radius, Map<String, Object> preferences) {
+        List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
+        List<HousingListing> filteredListings = UserPreferencesFilterer.findByMultiplePreferences(preferences, listings);
+        if (filteredListings.isEmpty()) {
+            throw new NoListingsFoundException("No listings found for given preferences" + preferences.toString());
+        }
+        return filteredListings;
+    }
+
 }

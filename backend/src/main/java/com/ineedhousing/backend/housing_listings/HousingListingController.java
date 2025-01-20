@@ -101,7 +101,19 @@ public class HousingListingController {
             return ResponseEntity.ok(listings);
         }
         catch(NoListingsFoundException nlfe) {
-            return new ResponseEntity<>(nlfe, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
         }
     }
+
+    @PostMapping("/preferences/multi")
+    public ResponseEntity<?> getListingsWithManyPreferences(@RequestBody GetListingsBySpecificPreferenceRequest request) {
+        try {
+            List<HousingListing> listings = housingListingService.getListingsByMultiplePreferences(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getSpecificPreference());
+            return ResponseEntity.ok(listings);
+        }
+        catch(NoListingsFoundException nlfe) {
+            return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
+        }
+    }
+    
 }
