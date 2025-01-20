@@ -1,4 +1,4 @@
-import { apiClient } from "./apiConfig";
+import { apiClient, failedCallMessage } from "./apiConfig";
 import { AuthenticateUserDto, ChangePasswordDto, ForgotPasswordDto, ResendEmailDto, VerifyUserDto } from "@/interfaces/requests/authsRequests";
 import { User } from "@/interfaces/entities";
 
@@ -12,10 +12,14 @@ const MODULE_MAPPING = "/auths"
  * register user
  * @param requestBody 
  */
-export const register = async (requestBody: AuthenticateUserDto): Promise<User> => {
+export const register = async (requestBody: AuthenticateUserDto): Promise<any> => {
     try {
         const response = await apiClient.post(MODULE_MAPPING+"/login", requestBody);
-        return response.data;
+        if (response.status === 200) {
+            return response.data;
+        }
+        console.log(response.data);
+        return null;
     }
     catch (error) {
         console.log(error);
@@ -27,15 +31,19 @@ export const register = async (requestBody: AuthenticateUserDto): Promise<User> 
  * login user
  * @param requestBody 
  */
-export const login = async (requestBody: AuthenticateUserDto): Promise<User> => {
+export const login = async (requestBody: AuthenticateUserDto): Promise<any> => {
     try {
         const response = await apiClient.post(MODULE_MAPPING +"login", requestBody);
-        sessionStorage.setItem("token", response.data.token);
-        return response.data;
+        if (response.status === 200) {
+            sessionStorage.setItem("token", response.data.token);
+            return response.data; 
+        }
+        console.log(response.data);
+        return null;
     }
     catch(error) {
         console.log(error);
-        throw (error);
+        return failedCallMessage(error);
     }
 }
 
@@ -50,7 +58,7 @@ export const verifyUser = async (requestBody: VerifyUserDto): Promise<string> =>
     }
     catch(error: any) {
         console.log(error);
-        return error.toString();
+        return failedCallMessage(error);    
     }
 }
 
@@ -58,14 +66,18 @@ export const verifyUser = async (requestBody: VerifyUserDto): Promise<string> =>
  * resends verification code email
  * @param email 
  */
-export const resendVerificationEmail = async (email: ResendEmailDto): Promise<string> => {
+export const resendVerificationEmail = async (email: ResendEmailDto): Promise<any> => {
     try {
         const response = await apiClient.post(MODULE_MAPPING+"/resend", email);
-        return response.data;
+        if (response.status === 200) {
+         return response.data;   
+        }
+        console.log(response.data);
+        return null;
     }
     catch(error:any) {
         console.log(error);
-        return error.toString();
+        return failedCallMessage(error);
     }
 }
 
@@ -76,11 +88,15 @@ export const resendVerificationEmail = async (email: ResendEmailDto): Promise<st
 export const changePassword = async (requestBody: ChangePasswordDto): Promise<any> => {
     try {
         const response = await apiClient.put(MODULE_MAPPING+"/password", requestBody);
-        return response.data;
+        if (response.status === 200) {
+            return response.data; 
+        }
+        console.log(response.data);
+        return null;
     }
     catch (error) {
         console.log(error);
-        throw(error);
+        return failedCallMessage(error);
     }
 }
 
@@ -92,11 +108,15 @@ export const changePassword = async (requestBody: ChangePasswordDto): Promise<an
 export const sendPasswordVerification = async (email: string): Promise<any> => {
     try {
         const response = await apiClient.post(`${MODULE_MAPPING}/${email}`);
-        return response.data;
+        if (response.status === 200) {
+            return response.data; 
+        }
+        console.log(response.data);
+        return null;
     }
     catch(error) {
         console.log(error);
-        throw(error);
+        return failedCallMessage(error);
     }
 }
 
@@ -107,10 +127,14 @@ export const sendPasswordVerification = async (email: string): Promise<any> => {
 export const resetPassword = async (requestBody: ForgotPasswordDto): Promise<any> => {
     try {
         const response = await apiClient.put(MODULE_MAPPING+"/reset", requestBody);
-        return response.data;
+        if (response.status === 200) {
+            return response.data;
+        }
+        console.log(response.data);
+        return null
     }
     catch(error) {
         console.log(error);
-        throw error;
+        return failedCallMessage(error);
     }
 }

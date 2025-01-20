@@ -13,3 +13,7 @@ export const bearerHeader = {
         'Authorization': 'Bearer ' + sessionStorage.getItem("token")
     }
 }
+
+export const failedCallMessage = (error: any): string => {
+    return `Something went wrong and the api call failed: ${error}`
+}

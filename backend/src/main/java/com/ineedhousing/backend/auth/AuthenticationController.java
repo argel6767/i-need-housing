@@ -70,8 +70,8 @@ public class AuthenticationController {
             authenticationService.verifyUser(request);
             return ResponseEntity.ok("User verified!");
         }
-        catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        catch (RuntimeException re) {
+            return ResponseEntity.badRequest().body(re.getMessage());
         }
     }
 
@@ -84,8 +84,8 @@ public class AuthenticationController {
             authenticationService.resendVerificationEmail(email.getEmail());
             return ResponseEntity.ok("Verification code resent!");
         }
-        catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        catch (EmailVerificationException eve) {
+            return ResponseEntity.badRequest().body(eve.getMessage());
         }
     }
 

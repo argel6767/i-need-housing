@@ -1,6 +1,7 @@
-import { apiClient, bearerHeader } from "./apiConfig";
+import { apiClient, bearerHeader, failedCallMessage } from "./apiConfig";
 import { FavoriteListing, HouseListing } from "@/interfaces/entities";
 import { favoriteListingsRequest } from "@/interfaces/requests/favoriteListingsRequests";
+import { error } from "console";
 
 const MODULE_MAPPING = "/favorites";
 
@@ -16,10 +17,14 @@ const MODULE_MAPPING = "/favorites";
 export const getAllFavoriteListings = async (email: string): Promise<Array<FavoriteListing>> => {
     try {
         const response = await apiClient.get(`${MODULE_MAPPING}/${email}`)
-        return response.data;
+        if (response.data === 200) {
+            return response.data;
+        }
+        console.log(response.data);
+        return [];
     }
     catch (error) {
-        console.log(error);
+        console.log(failedCallMessage(error));
         return [];
     }
 }
@@ -33,10 +38,14 @@ export const getAllFavoriteListings = async (email: string): Promise<Array<Favor
 export const addNewFavoriteListings = async (email: string, requestBody: favoriteListingsRequest): Promise<Array<FavoriteListing>> => {
     try {
         const response = await apiClient.put(`${MODULE_MAPPING}/${email}`, requestBody, bearerHeader);
-        return response.data;
+        if (response.status === 200) {
+            return response.data;    
+        }
+        console.log(response.data);
+        return [];
     }
     catch(error) {
-        console.log(error);
+        console.log(failedCallMessage(error));
         return [];
     }
 }
@@ -50,10 +59,14 @@ export const addNewFavoriteListings = async (email: string, requestBody: favorit
 export const deleteFavoriteListings = async (email: string, requestBody: favoriteListingsRequest): Promise<Array<FavoriteListing>> => {
     try {
         const response = await apiClient.post(`${MODULE_MAPPING}/${email}`, requestBody, bearerHeader);
-        return response.data;
+        if (response.status === 200) {
+            return response.data;    
+        }
+        console.log(response.data);
+        return [];
     }
     catch(error) {
-        console.log(error);
+        console.log(failedCallMessage(error));
         return [];
     }
 }
@@ -66,10 +79,14 @@ export const deleteFavoriteListings = async (email: string, requestBody: favorit
 export const deleteAllFavorites = async (email: string): Promise<string> => {
     try {
         const response = await apiClient.delete(`${MODULE_MAPPING}/${email}`)
+        if (response.status === 200) {
+            return response.data;  
+        }
+        console.log(response.data);
         return response.data;
     }
     catch(error) {
         console.log(error);
-        return "Something went wrong: " + error;
+        return failedCallMessage(error);
     }
 }
