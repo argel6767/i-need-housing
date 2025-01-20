@@ -60,7 +60,7 @@ public class HousingListingController {
     public ResponseEntity<?> deleteListing(@PathVariable Long id) {
         try {
             String message = housingListingService.deleteListing(id);
-            return ResponseEntity.ok(message);
+            return new ResponseEntity<>(message, HttpStatus.NO_CONTENT);
         }
         catch (NoListingsFoundException nlfe) {
             return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NOT_FOUND);

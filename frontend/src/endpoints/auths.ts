@@ -15,7 +15,7 @@ const MODULE_MAPPING = "/auths"
 export const register = async (requestBody: AuthenticateUserDto): Promise<any> => {
     try {
         const response = await apiClient.post(MODULE_MAPPING+"/login", requestBody);
-        if (response.status === 200) {
+        if (response.status === 201) {
             return response.data;
         }
         console.log(response.data);

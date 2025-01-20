@@ -49,7 +49,7 @@ public class FavoriteListingController {
     public ResponseEntity<?> addNewFavoriteListings(@PathVariable String email, @RequestBody AddFavoriteListingsRequest request) {
         try {
             List<FavoriteListing> favoriteListings = favoriteListingService.addFavoriteListings(email, request.getListings());
-            return ResponseEntity.ok(favoriteListings);
+            return new ResponseEntity<>(favoriteListings, HttpStatus.CREATED);
         }
         catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);

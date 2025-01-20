@@ -35,7 +35,7 @@ public class AuthenticationController {
     public ResponseEntity<?> register(@RequestBody AuthenticateUserDto request) {
         try {
             User registeredUser = authenticationService.signUp(request);
-            return ResponseEntity.ok(registeredUser);
+            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
         }
         catch (AuthenticationException ae) {
             return new ResponseEntity<>(ae.getMessage(), HttpStatus.CONFLICT);
