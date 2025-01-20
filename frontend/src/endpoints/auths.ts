@@ -30,7 +30,8 @@ export const register = async (requestBody: AuthenticateUserDto): Promise<User> 
  */
 export const login = async (requestBody: AuthenticateUserDto): Promise<User> => {
     try {
-        const response = await apiClientWithCredentials.post("auths/login", requestBody);
+        const response = await apiClient.post("/auths/login", requestBody);
+        sessionStorage.setItem("token", response.data.token);
         return response.data;
     }
     catch(error) {
@@ -45,7 +46,7 @@ export const login = async (requestBody: AuthenticateUserDto): Promise<User> => 
  */
 export const verifyUser = async (requestBody: VerifyUserDto): Promise<string> => {
     try {
-        const response = await apiClient.post("auths/verify", requestBody);
+        const response = await apiClient.post("/auths/verify", requestBody);
         return response.data;
     }
     catch(error: any) {
@@ -60,7 +61,7 @@ export const verifyUser = async (requestBody: VerifyUserDto): Promise<string> =>
  */
 export const resendVerificationEmail = async (email: ResendEmailDto): Promise<string> => {
     try {
-        const response = await apiClient.post("auths/resend", email);
+        const response = await apiClient.post("/auths/resend", email);
         return response.data;
     }
     catch(error:any) {
@@ -75,7 +76,7 @@ export const resendVerificationEmail = async (email: ResendEmailDto): Promise<st
  */
 export const changePassword = async (requestBody: ChangePasswordDto): Promise<any> => {
     try {
-        const response = await apiClient.put("auths/password", requestBody);
+        const response = await apiClient.put("/auths/password", requestBody);
         return response.data;
     }
     catch (error) {
@@ -91,7 +92,7 @@ export const changePassword = async (requestBody: ChangePasswordDto): Promise<an
  */
 export const sendPasswordVerification = async (email: string): Promise<any> => {
     try {
-        const response = await apiClient.post(`auths/${email}`);
+        const response = await apiClient.post(`/auths/${email}`);
         return response.data;
     }
     catch(error) {
@@ -106,7 +107,7 @@ export const sendPasswordVerification = async (email: string): Promise<any> => {
  */
 export const resetPassword = async (requestBody: ForgotPasswordDto): Promise<any> => {
     try {
-        const response = await apiClient.put("/auths/reset");
+        const response = await apiClient.put("/auths/reset", requestBody);
         return response.data;
     }
     catch(error) {
