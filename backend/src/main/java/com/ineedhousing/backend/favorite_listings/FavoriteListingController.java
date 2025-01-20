@@ -45,7 +45,7 @@ public class FavoriteListingController {
      * @param request
      * @return ResponseEntity
      */
-    @PutMapping("/{email}")
+    @PutMapping("/{email}/listings")
     public ResponseEntity<?> addNewFavoriteListings(@PathVariable String email, @RequestBody AddFavoriteListingsRequest request) {
         try {
             List<FavoriteListing> favoriteListings = favoriteListingService.addFavoriteListings(email, request.getListings());
@@ -63,7 +63,7 @@ public class FavoriteListingController {
      * @throws UsernameNotFoundException
      * @return ResponseEntity
      */
-    @DeleteMapping("/{email}/listings")
+    @PostMapping("/{email}/listings")
     public ResponseEntity<?> deleteFavoriteListings(@PathVariable String email, @RequestBody DeleteFavoriteListingsRequest request) {
         try {
             List<FavoriteListing> updatedListings = favoriteListingService.deleteListings(email, request.getFavoriteListingIds());

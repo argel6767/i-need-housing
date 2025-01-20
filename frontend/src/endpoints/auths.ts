@@ -1,21 +1,20 @@
-import { request } from "http";
 import { apiClient } from "./apiConfig";
-import { apiClientWithCredentials } from "./apiConfig";
 import { AuthenticateUserDto, ChangePasswordDto, ForgotPasswordDto, ResendEmailDto, VerifyUserDto } from "@/interfaces/requests/authsRequests";
 import { User } from "@/interfaces/entities";
+
+
+const MODULE_MAPPING = "/auths"
 
 /**
  *  Holds auths api calls
  */
-
-
 /**
  * register user
  * @param requestBody 
  */
 export const register = async (requestBody: AuthenticateUserDto): Promise<User> => {
     try {
-        const response = await apiClient.post("auths/register", requestBody);
+        const response = await apiClient.post(MODULE_MAPPING+"/login", requestBody);
         return response.data;
     }
     catch (error) {
@@ -30,7 +29,7 @@ export const register = async (requestBody: AuthenticateUserDto): Promise<User> 
  */
 export const login = async (requestBody: AuthenticateUserDto): Promise<User> => {
     try {
-        const response = await apiClient.post("/auths/login", requestBody);
+        const response = await apiClient.post(MODULE_MAPPING +"login", requestBody);
         sessionStorage.setItem("token", response.data.token);
         return response.data;
     }
@@ -46,7 +45,7 @@ export const login = async (requestBody: AuthenticateUserDto): Promise<User> => 
  */
 export const verifyUser = async (requestBody: VerifyUserDto): Promise<string> => {
     try {
-        const response = await apiClient.post("/auths/verify", requestBody);
+        const response = await apiClient.post(MODULE_MAPPING+"/verify", requestBody);
         return response.data;
     }
     catch(error: any) {
@@ -61,7 +60,7 @@ export const verifyUser = async (requestBody: VerifyUserDto): Promise<string> =>
  */
 export const resendVerificationEmail = async (email: ResendEmailDto): Promise<string> => {
     try {
-        const response = await apiClient.post("/auths/resend", email);
+        const response = await apiClient.post(MODULE_MAPPING+"/resend", email);
         return response.data;
     }
     catch(error:any) {
@@ -76,7 +75,7 @@ export const resendVerificationEmail = async (email: ResendEmailDto): Promise<st
  */
 export const changePassword = async (requestBody: ChangePasswordDto): Promise<any> => {
     try {
-        const response = await apiClient.put("/auths/password", requestBody);
+        const response = await apiClient.put(MODULE_MAPPING+"/password", requestBody);
         return response.data;
     }
     catch (error) {
@@ -92,7 +91,7 @@ export const changePassword = async (requestBody: ChangePasswordDto): Promise<an
  */
 export const sendPasswordVerification = async (email: string): Promise<any> => {
     try {
-        const response = await apiClient.post(`/auths/${email}`);
+        const response = await apiClient.post(`${MODULE_MAPPING}/${email}`);
         return response.data;
     }
     catch(error) {
@@ -107,7 +106,7 @@ export const sendPasswordVerification = async (email: string): Promise<any> => {
  */
 export const resetPassword = async (requestBody: ForgotPasswordDto): Promise<any> => {
     try {
-        const response = await apiClient.put("/auths/reset", requestBody);
+        const response = await apiClient.put(MODULE_MAPPING+"/reset", requestBody);
         return response.data;
     }
     catch(error) {
