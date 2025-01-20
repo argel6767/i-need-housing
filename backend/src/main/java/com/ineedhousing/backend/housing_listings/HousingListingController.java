@@ -34,6 +34,11 @@ public class HousingListingController {
         this.housingListingService = housingListingService;
     }
 
+    /**
+     * get listings in area
+     * @param request
+     * @return
+     */
     @PostMapping("/area")
     public ResponseEntity<?> getListingsInArea(@RequestBody GetListingsInAreaRequest request) {
         try {
@@ -61,6 +66,11 @@ public class HousingListingController {
         }
     }
     
+    /**
+     * delete listing
+     * @param id
+     * @return
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteListing(@PathVariable Long id) {
         try {
@@ -72,6 +82,11 @@ public class HousingListingController {
         }
     }
 
+    /**
+     * get listings by user preferences
+     * @param request
+     * @return
+     */
     @PostMapping("/preferences/exact")
     public ResponseEntity<?> getListingWithExactPreferences(@RequestBody GetListingsByPreferenceRequest request) {
         try {
@@ -83,6 +98,11 @@ public class HousingListingController {
         }
     }
 
+    /**
+     * get listings by non strict
+     * @param request
+     * @return
+     */
     @PostMapping("/preferences/non-strict")
     public ResponseEntity<?> getListingWithNonStrictPreferences(@RequestBody GetListingsByPreferenceRequest request) {
         try {
@@ -94,6 +114,11 @@ public class HousingListingController {
         }
     }
 
+    /**
+     * get listings with specific preference
+     * @param request
+     * @return
+     */
     @PostMapping("/preferences/specific")
     public ResponseEntity<?> getListingWithSpecificPreference(@RequestBody GetListingsBySpecificPreferenceRequest request) {
         try {
@@ -105,6 +130,11 @@ public class HousingListingController {
         }
     }
 
+    /**
+     * get listings by multiple preferences
+     * @param request
+     * @return
+     */
     @PostMapping("/preferences/multi")
     public ResponseEntity<?> getListingsWithManyPreferences(@RequestBody GetListingsBySpecificPreferenceRequest request) {
         try {

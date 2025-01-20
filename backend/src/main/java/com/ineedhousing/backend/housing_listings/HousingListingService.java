@@ -90,7 +90,7 @@ public class HousingListingService {
     }
 
     /**
-     * returns listings filter by given preference only
+     * returns listings filtered by given preference only
      */
     public List<HousingListing> getListingsBySpecificPreference(double latitude, double longitude, int radius, Map<String, Object> preference) {
         List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
@@ -101,6 +101,14 @@ public class HousingListingService {
         return filteredListings;
     }
 
+    /**
+     * returns listings filtered by given preferences only
+     * @param latitude
+     * @param longitude
+     * @param radius
+     * @param preferences
+     * @return
+     */
     public List<HousingListing> getListingsByMultiplePreferences(double latitude, double longitude, int radius, Map<String, Object> preferences) {
         List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
         List<HousingListing> filteredListings = UserPreferencesFilterer.findByMultiplePreferences(preferences, listings);
