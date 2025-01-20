@@ -9,11 +9,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
-
+//TODO add date field, such as listing or availability date
 @Data
 @NoArgsConstructor
 @Entity
 public class HousingListing {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
