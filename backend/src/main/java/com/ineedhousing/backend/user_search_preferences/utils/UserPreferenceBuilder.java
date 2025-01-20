@@ -51,7 +51,7 @@ public class UserPreferenceBuilder {
         return this;
     }
 
-    public UserPreferenceBuilder addMaxRent(int maxRent) {
+    public UserPreferenceBuilder addMaxRent(double maxRent) {
         userPreference.setMaxRent(maxRent);
         return this;
     }

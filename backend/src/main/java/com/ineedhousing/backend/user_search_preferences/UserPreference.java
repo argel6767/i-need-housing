@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+//TODO add isPetFriendly field
 @Data
 @NoArgsConstructor
 @Entity
@@ -70,7 +70,7 @@ public class UserPreference {
     @Column(nullable = false)
     private Integer maxRadius = 25;
 
-    private Integer maxRent;
+    private Double maxRent=10000.0;
 
     private String travelType; //future implementation
 
