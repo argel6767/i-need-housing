@@ -40,7 +40,7 @@ public class UserPreferenceController {
     public ResponseEntity<?> createUserPreferences(@RequestBody RawUserPreferenceRequest request, @PathVariable String email) {
         try {
             UserPreference userPreference = userPreferenceService.createUserPreferences(request, email);
-            return ResponseEntity.ok(userPreference);
+            return new ResponseEntity<>(userPreference,  HttpStatus.CREATED);
         }
         catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);

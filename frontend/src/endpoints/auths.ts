@@ -1,6 +1,5 @@
 import { apiClient, failedCallMessage } from "./apiConfig";
 import { AuthenticateUserDto, ChangePasswordDto, ForgotPasswordDto, ResendEmailDto, VerifyUserDto } from "@/interfaces/requests/authsRequests";
-import { User } from "@/interfaces/entities";
 
 
 const MODULE_MAPPING = "/auths"
