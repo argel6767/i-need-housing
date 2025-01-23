@@ -9,9 +9,12 @@ import com.ineedhousing.backend.auth.requests.ForgotPasswordDto;
 import com.ineedhousing.backend.auth.requests.VerifyUserDto;
 import com.ineedhousing.backend.email.EmailService;
 import com.ineedhousing.backend.email.EmailVerificationException;
+import com.ineedhousing.backend.email.InvalidEmailException;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserRepository;
 import jakarta.mail.MessagingException;
+
+import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,6 +53,9 @@ public class AuthenticationService {
         if (userRepository.findByEmail(request.getUsername()).isPresent()) {
             throw new AuthenticationException("Email is already in use");
         }
+        if (!isValidEmail(request.getUsername())) {
+            throw new InvalidEmailException(request.getUsername() + " is an invalid email");
+        }
         log.info("Creating new user {}", request.getUsername());
         User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()));
         user.setAuthorities("ROLE_USER");
@@ -66,6 +72,11 @@ public class AuthenticationService {
         sendEmail.accept(user);
     }
 
+    private boolean isValidEmail(String email) {
+        EmailValidator validator = EmailValidator.getInstance();
+        return validator.isValid(email);
+    }
+
     /*
      * authenticates user, usually when they are logging in
      * will throw an exception if the email is not tied to any user or the email has not been verified
@@ -75,6 +86,9 @@ public class AuthenticationService {
                 .orElseThrow(() -> new UsernameNotFoundException(request.getUsername()));
         if (!user.isEnabled()) {
             throw new EmailVerificationException("Email not verified");
+        }
+        if (!isValidEmail(request.getUsername())) {
+            throw new InvalidEmailException(request.getUsername() + " is an invalid email");
         }
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         user.setLastLogin(LocalDateTime.now());

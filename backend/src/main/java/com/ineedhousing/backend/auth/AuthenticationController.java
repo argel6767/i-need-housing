@@ -6,6 +6,7 @@ import com.ineedhousing.backend.auth.exceptions.ExpiredVerificationCodeException
 import com.ineedhousing.backend.auth.requests.*;
 import com.ineedhousing.backend.auth.responses.LoginResponse;
 import com.ineedhousing.backend.email.EmailVerificationException;
+import com.ineedhousing.backend.email.InvalidEmailException;
 import com.ineedhousing.backend.jwt.JwtService;
 import com.ineedhousing.backend.user.User;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,9 @@ public class AuthenticationController {
         catch (AuthenticationException ae) {
             return new ResponseEntity<>(ae.getMessage(), HttpStatus.CONFLICT);
         }
+        catch (InvalidEmailException ive) {
+            return new ResponseEntity<>(ive.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -58,6 +62,9 @@ public class AuthenticationController {
         }
         catch (EmailVerificationException eve) {
             return new ResponseEntity<>(eve.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+        catch (InvalidEmailException ive) {
+            return new ResponseEntity<>(ive.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
