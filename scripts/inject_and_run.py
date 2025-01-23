@@ -32,11 +32,10 @@ def find_maven_home():
 
 def main():
     load_env_file()
-    print(sys.argv[1])
-    mvn_path = os.path.join(sys.argv[1],"bin","mvn.cmd")
+    mvn_path = find_maven_home()
     print(mvn_path)
     # Run the Spring Boot application
-    process = subprocess.run([mvn_path, "spring-boot:run"], cwd=str(backend))
+    process = subprocess.run([mvn_path, "spring-boot:run"], cwd=str(backend), shell=True)
     print(process)
 
 if __name__ == "__main__":

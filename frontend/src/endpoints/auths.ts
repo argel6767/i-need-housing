@@ -42,8 +42,8 @@ export const login = async (requestBody: AuthenticateUserDto): Promise<any> => {
         return null;
     }
     catch(error) {
-        console.log(error);
-        return failedCallMessage(error);
+        console.log(failedCallMessage(error));
+        return null;
     }
 }
 

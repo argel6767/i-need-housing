@@ -5,6 +5,8 @@ import { FormHeader } from "@/components/FormHeader";
 import Link from "next/link";
 import Image from "next/image";
 import icon from "../../../public/file.svg"
+import { register } from "@/endpoints/auths";
+
 
 
 const SignUp = () => {
@@ -19,7 +21,7 @@ const SignUp = () => {
                     <div className="flex items-center justify-center my-3">
                     <div className="xl:mx-auto shadow-md p-4 xl:w-full xl:max-w-sm 2xl:max-w-md">
                         <FormHeader header="Sign up to create account" text="Already have an account? " buttonLabel="Sign In" path="sign-in"/>
-                        <Form buttonLabel="Create Account"/>
+                        <Form buttonLabel="Create Account" loadingMessage="Registering User" route="/verify" request={register}/>
                     </div>
                     </div>
                 </section>

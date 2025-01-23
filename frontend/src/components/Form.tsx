@@ -9,9 +9,11 @@ import { Loading } from "./Loading";
 interface FormProps {
     buttonLabel:string
     loadingMessage?:string
+    route:string
+    request: (credentials:AuthenticateUserDto) => Promise<any>
 }
 
-export const Form = ({buttonLabel, loadingMessage}: FormProps) => {
+export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) => {
 
     const router = useRouter();
     const [credentials, setCredentials] = useState<AuthenticateUserDto>({
@@ -40,10 +42,10 @@ export const Form = ({buttonLabel, loadingMessage}: FormProps) => {
 
     const handleRegistration = async() => {
         setIsLoading(true)
-        const data = await register(credentials);
+        const data = await request(credentials);
         setIsLoading(false);
         if(data) {
-            router.push("/verify")
+            router.push(route)
         }
         else {
             setIsCallFailed(true);
@@ -62,7 +64,7 @@ export const Form = ({buttonLabel, loadingMessage}: FormProps) => {
                         <div className="space-y-1 italic">
                             <li>The Backend server is currently down.</li>
                             <li>The email you submitted is already taken.</li>
-                            <li>The email is invalid.</li>
+                            <li>The email or password is invalid.</li>
                         </div>
                         
                     </ul>
@@ -72,7 +74,7 @@ export const Form = ({buttonLabel, loadingMessage}: FormProps) => {
     }
 
     if (isLoading) {
-        return <Loading loadingMessage="Registering User"/>
+        return <Loading loadingMessage={loadingMessage}/>
     }
         
     return (
