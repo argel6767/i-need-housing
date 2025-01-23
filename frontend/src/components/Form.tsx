@@ -21,7 +21,6 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
     });
     const [isCallFailed, setIsCallFailed] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [isAccountVerified, setIsAccountVerified] = useState<boolean>(true);
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
