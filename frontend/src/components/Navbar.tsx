@@ -1,5 +1,5 @@
 import Image from "next/image"
-import icon from "../../public/file.png"
+import icon from "../../public/file.svg"
 import Link from "next/link"
 
 export const Navbar = () => {
@@ -10,13 +10,13 @@ export const Navbar = () => {
   </div>
   <div className="navbar-center  lg:flex">
     <ul className="menu menu-horizontal px-1 items-center text-lg ">
-      <li><Link href={"/about"}>About</Link></li>
+      <li className="hover:underline"><Link href={"/about"}>About</Link></li>
       <li><Image src={icon} alt="Icon" width={75} height={75}/></li>
-      <li><Link href={"https://github.com/argel6767/i-need-housing"}>Source Code</Link></li>
+      <li><Link className="hover:underline" href={"https://github.com/argel6767/i-need-housing"}>Source Code</Link></li>
     </ul>
   </div>
   <div className="navbar-end">
-    <Link className="btn btn-primary" href="/sign-in">Sign In</Link>
+    <Link className="btn btn-primary hover:bg-[#457F9F]" href="/sign-in">Sign In</Link>
   </div>
 </div> 
     )

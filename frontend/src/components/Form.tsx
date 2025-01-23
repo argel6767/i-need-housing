@@ -4,12 +4,14 @@ import { register } from "@/endpoints/auths";
 import { AuthenticateUserDto } from "@/interfaces/requests/authsRequests";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Loading } from "./Loading";
 
 interface FormProps {
     buttonLabel:string
+    loadingMessage?:string
 }
 
-export const Form = ({buttonLabel}: FormProps) => {
+export const Form = ({buttonLabel, loadingMessage}: FormProps) => {
 
     const router = useRouter();
     const [credentials, setCredentials] = useState<AuthenticateUserDto>({
@@ -45,22 +47,37 @@ export const Form = ({buttonLabel}: FormProps) => {
         }
         else {
             setIsCallFailed(true);
-            await sleep(2000);
+            await sleep(1700);
             setIsCallFailed(false);
         }
     }
 
     if (isCallFailed) {
-        return <h1>Call failed oopsie! {/*TODO Implement this*/}</h1>
+        return (
+            <section className="flex flex-col gap-2">
+                <h1 className="flex-1 text-xl text-red-600 font-bold">Something went wrong! Please try again. {/*TODO Implement this*/}</h1>
+                <p className="text-lg">The following may be at fault:</p>
+                <span className="px-2">
+                    <ul className="list-disc">
+                        <div className="space-y-1 italic">
+                            <li>The Backend server is currently down.</li>
+                            <li>The email you submitted is already taken.</li>
+                            <li>The email is invalid.</li>
+                        </div>
+                        
+                    </ul>
+                </span>
+            </section>
+        )
     }
 
     if (isLoading) {
-        return <h1>Loading...</h1>
+        return <Loading loadingMessage="Registering User"/>
     }
         
     return (
     <form className="mt-5">
-        <div className="space-y-4">
+        <div className="space-y-6">
             <div>
             <label className="text-base font-medium text-gray-900">
                 Email Address
