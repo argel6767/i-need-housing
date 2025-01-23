@@ -6,9 +6,9 @@ export const Footer = () => {
 
   <nav>
     <h6 className="footer-title">INeedHousing</h6>
-    <Link href={"/about"} className="link link-hover">About us</Link>
-    <Link href={"/contact"} className="link link-hover">Contact</Link>
-    <Link href={"/contribute"} className="link link-hover">Contributing</Link>
+    <Link href={"/about#about"} className="link link-hover">About us</Link>
+    <Link href={"/about#contact"} className="link link-hover">Contact</Link>
+    <Link href={"/about#contribute"} className="link link-hover">Contributing</Link>
   </nav>
 </footer>
     )
