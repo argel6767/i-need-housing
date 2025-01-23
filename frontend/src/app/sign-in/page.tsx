@@ -17,7 +17,7 @@ const SignIn = () => {
                 <section className="rounded-md p-2 bg-white items-center">
                     <div className="flex items-center justify-center my-3">
                     <div className="xl:mx-auto shadow-md p-4 xl:w-full xl:max-w-sm 2xl:max-w-md">
-                        <FormHeader header="Sign In to INeedHousing" text="Not already a member? " buttonLabel="Sign Up" path="/sign-up"/>
+                        <FormHeader header="Sign in to INeedHousing" text="Not already a member? " buttonLabel="Sign Up" path="/sign-up"/>
                         <Form buttonLabel="Sign In" loadingMessage="Logging In" route="/home" request={login}/>
                     </div>
                     </div>
