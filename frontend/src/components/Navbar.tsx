@@ -6,7 +6,7 @@ export const Navbar = () => {
     return (
        <div className="navbar bg-background border-b-2 border-gray-200 shadow-md" data-testid="navbar">
   <div className="navbar-start">
-    <Link data-testid="INeedHousing" href={"/"} className="btn btn-ghost text-xl text-primary font-bold">INeedHousing</Link>
+    <Link data-testid="INeedHousing" href={"/"} className="btn btn-ghost text-3xl text-primary font-bold">INeedHousing</Link>
   </div>
   <div className="navbar-center  lg:flex">
     <ul className="menu menu-horizontal px-1 items-center text-lg ">
