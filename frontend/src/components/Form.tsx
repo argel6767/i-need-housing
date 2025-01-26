@@ -1,5 +1,5 @@
 "use client"
-import { sleep } from "@/app/utils/utils";
+import { isValidEmail, sleep } from "@/app/utils/utils";
 import { AuthenticateUserDto } from "@/interfaces/requests/authsRequests";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -22,11 +22,6 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
     const [isCallFailed, setIsCallFailed] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    const isValidEmail = (email: string): boolean => {
-        return emailRegex.test(email);
-    }
         
     const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCredentials({...credentials, username: event.target.value});
@@ -41,9 +36,14 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
 
     const handleRegistration = async() => {
         setIsLoading(true)
+        sessionStorage.setItem("email", credentials.username);
         const data = await request(credentials);
         setIsLoading(false);
         if(data) {
+            if (data.hasOwnProperty("token")) {
+                sessionStorage.setItem("token", data.token);
+            }
+            sessionStorage.setItem("email", credentials.username);
             router.push(route)
         }
         else {

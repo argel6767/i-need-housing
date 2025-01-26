@@ -54,10 +54,16 @@ export const login = async (requestBody: AuthenticateUserDto): Promise<any> => {
 export const verifyUser = async (requestBody: VerifyUserDto): Promise<string> => {
     try {
         const response = await apiClient.post(MODULE_MAPPING+"/verify", requestBody);
+        if (response.data.includes("Cannot invoke \"java.time.LocalDateTime.isBefore(java.time.chrono.ChronoLocalDateTime)\"")) {
+            return "User has already been verified!";
+        }
         return response.data;
     }
     catch(error: any) {
         console.log(error);
+        if (error.status === 400) {
+            return "User has already been verified!";
+        }
         return failedCallMessage(error);    
     }
 }
@@ -76,8 +82,8 @@ export const resendVerificationEmail = async (email: ResendEmailDto): Promise<an
         return null;
     }
     catch(error:any) {
-        console.log(error);
-        return failedCallMessage(error);
+        console.log(failedCallMessage(error));
+        return null;
     }
 }
 
