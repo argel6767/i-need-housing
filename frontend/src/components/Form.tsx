@@ -4,6 +4,7 @@ import { AuthenticateUserDto } from "@/interfaces/requests/authsRequests";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loading } from "./Loading";
+import { ResendVerificationEmail } from "./ResendEmailVerification";
 
 interface FormProps {
     buttonLabel:string
@@ -21,6 +22,7 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
     });
     const [isCallFailed, setIsCallFailed] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isRequestingEmail, setIsRequestingEmail] = useState<boolean>(false);
 
         
     const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,18 +41,24 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
         sessionStorage.setItem("email", credentials.username);
         const data = await request(credentials);
         setIsLoading(false);
-        if(data) {
-            if (data.hasOwnProperty("token")) {
-                sessionStorage.setItem("token", data.token);
-            }
+        if(data === "logged in" || data === "user created") {
             sessionStorage.setItem("email", credentials.username);
             router.push(route)
+        }
+        if (data === "user is not verified") {
+            setIsRequestingEmail(true);
         }
         else {
             setIsCallFailed(true);
             await sleep(1700);
             setIsCallFailed(false);
         }
+    }
+
+    const handleResendHref = (e:any) => {
+        e.preventDefault();
+        console.log("navigating to /sign-up/verify");
+        router.push("/sign-up/verify");
     }
 
     if (isCallFailed) {
@@ -92,6 +100,9 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
                 value={credentials.username}
                 onChange={handleUsernameChange}
                 />
+            </div>
+            <div className={`font-semibold ${isRequestingEmail ? "display" : "hidden"}`  } onClick={handleResendHref}>
+                <ResendVerificationEmail email={credentials.username} message={"Your account is not verified."} button={"Request code."}/>
             </div>
             </div>
             <div>

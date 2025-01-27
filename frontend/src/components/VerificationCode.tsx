@@ -128,7 +128,7 @@ export const VerificationCode = () => {
             </button>
             </div>
         </form>
-            <ResendVerificationEmail email={credentials.email}/>
+            <ResendVerificationEmail email={credentials.email} message={"Need another code?"} button={"Request another."}/>
         </main>
     )
 }

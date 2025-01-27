@@ -16,7 +16,7 @@ export const register = async (requestBody: AuthenticateUserDto): Promise<any> =
     try {
         const response = await apiClient.post(MODULE_MAPPING+"/register", requestBody);
         if (response.status === 201) {
-            return response.data;
+            return "user created";
         }
         console.log(response.data);
         return null;
@@ -36,13 +36,16 @@ export const login = async (requestBody: AuthenticateUserDto): Promise<any> => {
         const response = await apiClient.post(MODULE_MAPPING +"/login", requestBody);
         if (response.status === 200) {
             sessionStorage.setItem("token", response.data.token);
-            return response.data; 
+            return "logged in"; 
         }
         console.log(response.data);
         return null;
     }
-    catch(error) {
+    catch(error: any) {
         console.log(failedCallMessage(error));
+        if (error.response.status === 401) {
+            return "user is not verified";
+        }
         return null;
     }
 }

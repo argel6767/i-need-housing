@@ -4,8 +4,10 @@ import { useState } from "react"
 
 interface props {
     email:string
+    message:string
+    button:string
 }
-export const ResendVerificationEmail = ({email}:props) => {
+export const ResendVerificationEmail = ({email, message, button}:props) => {
     const [isCalledFailed, setIsCalledFailed] = useState<boolean>(false)
 
     const handleResendRequest = async() => {
@@ -13,6 +15,6 @@ export const ResendVerificationEmail = ({email}:props) => {
     }
 
     return (
-        <p className="p-4">Need another code? <button onClick={handleResendRequest} className="hover:underline">Request another</button></p>
+        <p className="p-4">{message} <button onClick={handleResendRequest} className="hover:underline">{button}</button></p>
     )
 }
