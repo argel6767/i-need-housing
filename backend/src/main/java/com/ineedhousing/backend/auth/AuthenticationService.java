@@ -3,6 +3,7 @@ package com.ineedhousing.backend.auth;
 
 import com.ineedhousing.backend.auth.exceptions.AuthenticationException;
 import com.ineedhousing.backend.auth.exceptions.ExpiredVerificationCodeException;
+import com.ineedhousing.backend.auth.exceptions.UserAlreadyVerifiedException;
 import com.ineedhousing.backend.auth.requests.AuthenticateUserDto;
 import com.ineedhousing.backend.auth.requests.ChangePasswordDto;
 import com.ineedhousing.backend.auth.requests.ForgotPasswordDto;
@@ -102,8 +103,11 @@ public class AuthenticationService {
      */
     public void verifyUser(VerifyUserDto request) {
         User user = getUser(request.getEmail());
+        if (user.getCodeExpiry() == null) {
+            throw new UserAlreadyVerifiedException("User is already verified");
+        }
         if (user.getCodeExpiry().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Verification code expired");
+            throw new ExpiredVerificationCodeException("Verification code expired");
         }
         if (request.getVerificationToken().equals(user.getVerificationCode())) {
             user.setCodeExpiry(null);

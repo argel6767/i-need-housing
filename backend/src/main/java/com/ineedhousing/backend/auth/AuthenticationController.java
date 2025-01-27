@@ -3,6 +3,7 @@ package com.ineedhousing.backend.auth;
 
 import com.ineedhousing.backend.auth.exceptions.AuthenticationException;
 import com.ineedhousing.backend.auth.exceptions.ExpiredVerificationCodeException;
+import com.ineedhousing.backend.auth.exceptions.UserAlreadyVerifiedException;
 import com.ineedhousing.backend.auth.requests.*;
 import com.ineedhousing.backend.auth.responses.LoginResponse;
 import com.ineedhousing.backend.email.EmailVerificationException;
@@ -76,6 +77,12 @@ public class AuthenticationController {
         try {
             authenticationService.verifyUser(request);
             return ResponseEntity.ok("User verified!");
+        }
+        catch (UserAlreadyVerifiedException uave) {
+            return ResponseEntity.ok("User already verified!");
+        }
+        catch (ExpiredVerificationCodeException eve) {
+            return new ResponseEntity<>(eve.getMessage(), HttpStatus.GONE);
         }
         catch (RuntimeException re) {
             return ResponseEntity.badRequest().body(re.getMessage());
