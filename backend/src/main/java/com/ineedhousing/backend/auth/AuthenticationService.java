@@ -83,13 +83,13 @@ public class AuthenticationService {
      * will throw an exception if the email is not tied to any user or the email has not been verified
      */
     public User authenticateUser(AuthenticateUserDto request) {
+        if (!isValidEmail(request.getUsername())) {
+            throw new InvalidEmailException(request.getUsername() + " is an invalid email");
+        }
         User user = userRepository.findByEmail(request.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException(request.getUsername()));
         if (!user.isEnabled()) {
             throw new EmailVerificationException("Email not verified");
-        }
-        if (!isValidEmail(request.getUsername())) {
-            throw new InvalidEmailException(request.getUsername() + " is an invalid email");
         }
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         user.setLastLogin(LocalDateTime.now());
