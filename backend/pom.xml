@@ -59,6 +59,12 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
@@ -103,6 +109,13 @@
 		<artifactId>commons-validator</artifactId>
 		<version>1.7</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-maven-plugin -->
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-spring-boot-starter</artifactId>
+			<version>24.6.2</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

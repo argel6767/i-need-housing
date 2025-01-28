@@ -48,7 +48,9 @@ public class SecurityConfiguration{
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity ) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/auths/**").permitAll()
+                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/","/auths/**").permitAll()
+                // ✅ Allow Vaadin static files
+                .requestMatchers("/VAADIN/**", "/frontend/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
