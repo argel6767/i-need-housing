@@ -41,7 +41,7 @@ public class AdminService {
             throw new EmailVerificationException("Email not verified");
         }
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword(), user.getAuthorities()));
-        if (isUserAdmin(user)) {
+        if (!isUserAdmin(user)) {
             throw new UnauthorizedAccessException(request.getUsername() + " lacks necessary privileges");
         }
         user.setLastLogin(LocalDateTime.now());
