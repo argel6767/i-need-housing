@@ -1,7 +1,7 @@
 package com.ineedhousing.backend.admin;
 
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +14,8 @@ import com.ineedhousing.backend.auth.requests.AuthenticateUserDto;
 import com.ineedhousing.backend.auth.responses.LoginResponse;
 import com.ineedhousing.backend.email.EmailVerificationException;
 import com.ineedhousing.backend.email.InvalidEmailException;
+import com.ineedhousing.backend.housing_listings.HousingListing;
+import com.ineedhousing.backend.housing_listings.HousingListingRepository;
 import com.ineedhousing.backend.jwt.JwtService;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserRepository;
@@ -22,11 +24,13 @@ import com.ineedhousing.backend.user.UserRepository;
 public class AdminService {
 
     private final UserRepository userRepository;
+    private final HousingListingRepository housingListingRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AdminService(UserRepository userRepository, JwtService jwtService, AuthenticationManager authenticationManager) {
+    public AdminService(UserRepository userRepository, HousingListingRepository housingListingRepository, JwtService jwtService, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
+        this.housingListingRepository = housingListingRepository;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
     }
@@ -61,4 +65,12 @@ public class AdminService {
             .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
     }
 
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public List<HousingListing> getAllListings() {
+        return housingListingRepository.findAll();
+    }
+    
 }

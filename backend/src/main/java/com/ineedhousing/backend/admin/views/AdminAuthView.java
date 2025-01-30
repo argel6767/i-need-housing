@@ -2,26 +2,16 @@ package com.ineedhousing.backend.admin.views;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 import com.ineedhousing.backend.admin.AdminService;
-import com.ineedhousing.backend.admin.exceptions.UnauthorizedAccessException;
 import com.ineedhousing.backend.auth.requests.AuthenticateUserDto;
 import com.ineedhousing.backend.auth.responses.LoginResponse;
-import com.ineedhousing.backend.email.EmailVerificationException;
-import com.ineedhousing.backend.email.InvalidEmailException;
+
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Input;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.html.NativeLabel;
-import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -37,7 +27,7 @@ import com.vaadin.flow.server.VaadinSession;
 
 
 @Route("")
-@PageTitle("Admin Welcome")
+@PageTitle("Admin Sign In")
 public class AdminAuthView extends VerticalLayout{
 
     private final AdminService adminService;
