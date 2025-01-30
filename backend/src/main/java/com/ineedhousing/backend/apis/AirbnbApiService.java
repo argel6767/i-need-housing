@@ -49,6 +49,9 @@ public class AirbnbApiService {
      * @return List<HousingListing>
      */
     public List<HousingListing> updateListingViaLocation(String city, LocalDate checkIn, LocalDate checkOut, Integer numOfPets) {
+        if (checkOut.isBefore(checkIn)) {
+            throw new IllegalArgumentException("End date cannot be before the start date!");
+        }
         Map response = restClient.get()
         .uri(uriBuilder -> 
             applyCommonQueryParams(uriBuilder.path("/search-location").queryParam("location", city), // Unique parameter
@@ -79,6 +82,9 @@ public class AirbnbApiService {
      * @return List<HousingListing>
      */
     public List<HousingListing> updateHousingListingsViaGeoCoordinates(Double neLat, Double neLong, Double swLat, Double swLong, LocalDate checkIn, LocalDate checkOut, Integer numOfPets) {
+        if (checkOut.isBefore(checkIn)) {
+            throw new IllegalArgumentException("End date cannot be before the start date!");
+        }
         Map response = restClient.get()
         .uri(uriBuilder -> applyCommonQueryParams(uriBuilder
         .path("/search-geo")

@@ -34,22 +34,20 @@ import com.vaadin.flow.server.VaadinSession;
 public class AdminDashboardView extends VerticalLayout{
     
     private final AdminService adminService;
-    private final RentCastAPIService rentCastAPIService;
-    private final AirbnbApiService airbnbApiService;
     private GridCreator gridBuilder = new GridCreator();
+    private final ListingRetrievalForm listingRetrievalForm;
 
 
-    public AdminDashboardView(AdminService adminService, RentCastAPIService rentCastAPIService, AirbnbApiService airbnbApiService) {
-
+    public AdminDashboardView(AdminService adminService, ListingRetrievalForm listingRetrievalForm) {
         setSizeFull();
         this.adminService = adminService;
-        this.rentCastAPIService = rentCastAPIService;
-        this.airbnbApiService = airbnbApiService;
+        this.listingRetrievalForm = listingRetrievalForm;
         Div main = new Div();
         main.add(new H1("Admin Dashboard"));
         main.add(createGridHorizontalLayout());
         main.setSizeFull();
-        add(main, new Div("hey"));
+        main.add(listingRetrievalForm.createApiForm());
+        add(main);
     }
 
 
@@ -60,7 +58,8 @@ public class AdminDashboardView extends VerticalLayout{
         Grid<HousingListing> housingList = gridBuilder.buildHousingGrid(adminService.getAllListings());
         VerticalLayout housingLayout = createGridAndLabel(housingList, "Housings");
         grids.add(List.of(userLayout, housingLayout));
-        grids.setWidth("100*");
+        grids.setWidth("100%");
+        grids.setHeight("45%");
         return grids;
     }
 
