@@ -33,7 +33,7 @@ The following will be implemented:
 The frontend is currently under development and will be live once an MVP is made. Any changes/updates to the source code can be looked over in the `/frontend` directory.
 
 ## Scripts
-Scripts are housed in the `scripts` directory. Scripts handle tasks such as injecting environment variables at runtime.
+Scripts are housed in the `scripts` directory. Scripts handle tasks such as injecting environment variables at runtime or building docker images of apps.
 
 ## Feedback
 Any feedback, suggestions, tips are appreciated and can be sent to my email: [argel6767@gmail.com](mailto:argel6767@gmail.com). Thanks!
