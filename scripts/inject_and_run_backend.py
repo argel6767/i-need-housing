@@ -3,9 +3,13 @@ import subprocess
 from pathlib import Path
 import platform
 
+'''
+loads env variables for the desired environment of the backend Dev or Prod
+'''
+
 backend = Path.cwd()/"backend"
 isOSWindows = platform.system() == "Windows"
-print(backend)
+
 def load_env_file():
     environment = input("Is this Dev? Y/N\n")
     file_path="";
