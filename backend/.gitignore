@@ -36,4 +36,9 @@ build/
 *.env
 
 ### generated files ###
-/frontend/generated/**
+src/main/frontend/**
+
+## .DS_Store
+*.DS_Store
+
+*.tar
