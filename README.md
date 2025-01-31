@@ -17,9 +17,10 @@ The following will be implemented:
 - JWT authentication for endpoints
 - Email verification via JavaMail
 - Location-based querying via Hibernate Spatial and PostGIS for geospatial data handling
+- An admin dashboard build using Vaadin.
 
 ### Status
-An MVP is currently finished with all aforementioned features implemented. The source code can be looked over in the `/backend` directory.
+An MVP is currently finished with all aforementioned features implemented. The MVP is hosted as a containerized app on Azure App Service. The source code can be looked over in the `/backend` directory.
 
 ## Frontend
 NextJs will be used as the framework for the frontend with Tailwind CSS used for styling.
