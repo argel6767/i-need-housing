@@ -2,7 +2,6 @@ import os
 import subprocess
 from pathlib import Path
 import platform
-import sys
 
 '''
 Automates the process of signing into Azure, logging into an Azure Container Registry (ACR),
