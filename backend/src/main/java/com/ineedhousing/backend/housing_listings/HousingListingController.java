@@ -1,6 +1,7 @@
 package com.ineedhousing.backend.housing_listings;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ineedhousing.backend.housing_listings.exceptions.NoListingFoundException;
@@ -39,10 +40,10 @@ public class HousingListingController {
      * @param request
      * @return
      */
-    @PostMapping("/area")
-    public ResponseEntity<?> getListingsInArea(@RequestBody GetListingsInAreaRequest request) {
+    @GetMapping("/area")
+    public ResponseEntity<?> getListingsInArea(@RequestParam double latitude, @RequestParam double longitude, @RequestParam int radius ) {
         try {
-            List<HousingListing> listings = housingListingService.getListingsInArea(request.getLatitude(), request.getLongitude(), request.getRadius());
+            List<HousingListing> listings = housingListingService.getListingsInArea(latitude, longitude, radius);
             return ResponseEntity.ok(listings);
         }
         catch (NoListingsFoundException nlfe) {
