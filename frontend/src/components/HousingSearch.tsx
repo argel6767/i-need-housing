@@ -36,7 +36,7 @@ export const HousingSearch = ({city, listings}):HousingSearchProps => {
                 } z-40 shadow-lg rounded-l-lg`}
             >
                 <div className="p-4 ">
-                    <h2 className="text-xl font-bold mb-4">View Listings in {city}</h2>
+                    <h2 className="text-2xl font-bold text-center p-2">View Listings in {city}</h2>
                     <nav>
                         <ul className="space-y-2">
                         </ul>
