@@ -1,4 +1,4 @@
-import { apiClient, bearerHeader, failedCallMessage } from "./apiConfig";
+import { apiClient, failedCallMessage, getBearerHeader } from "./apiConfig";
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
 import { HouseListing } from "@/interfaces/entities";
 
@@ -15,7 +15,14 @@ const MODULE_MAPPING = "/listings"
  */
 export const getListingsInArea = async(requestBody: GetListingsInAreaRequest): Promise<Array<HouseListing>> => {
     try {
-        const response =  await apiClient.post(MODULE_MAPPING+"/area", requestBody, bearerHeader);
+        const response =  await apiClient.get(`${MODULE_MAPPING}/area`, {
+            params: {
+                latitude: requestBody.latitude,
+                longitude: requestBody.longitude,
+                radius: requestBody.radius
+            },
+            headers: getBearerHeader(),
+        });
         if (response.status === 200) {
             return response.data;
         }
