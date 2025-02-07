@@ -7,9 +7,10 @@ import Image from "next/image";
 
 
 interface HousingSearchProps {
-
+    city: string
+    
 }
-export const HousingSearch = () => {
+export const HousingSearch = ({city}):HousingSearchProps => {
     const [isOpen, setIsOpen] = useState<boolean>(true);
     return (
         <main className="relative h-full">

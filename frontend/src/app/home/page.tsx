@@ -12,7 +12,7 @@ const Home = () => {
                 <LoggedInNavBar/>
             </nav>
             <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden">
-                <div className="relative flex-grow min-w-0"><Map/></div>
+                <div className="relative flex-grow min-w-0"><Map listings={[]}/></div>
                 <HousingSearch/>
             </span>
             <div className="w-full border-t-2">
