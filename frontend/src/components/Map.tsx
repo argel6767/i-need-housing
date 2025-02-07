@@ -4,7 +4,7 @@ export const Map = () => {
     const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
     const position = {lat:53.54, lng:10}
     const containerStyle = {
-        width: "50%",
+        width: "100%",
         height: "100%",  // Set a proper height
     };
     return (

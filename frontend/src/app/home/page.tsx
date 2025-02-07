@@ -8,11 +8,12 @@ import { LoggedInNavBar } from "@/components/Navbar";
 const Home = () => {
     return (
         <main className="flex flex-col h-screen">
-            <nav className="py-3">
+            <nav className="">
                 <LoggedInNavBar/>
             </nav>
-            <span className="h-5/6">
-                <Map/> 
+            <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden">
+                <div className="relative flex-grow min-w-0"><Map/></div>
+                <HousingSearch/>
             </span>
             <div className="w-full border-t-2">
                 <Footer/>
