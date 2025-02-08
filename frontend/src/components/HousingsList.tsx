@@ -1,9 +1,11 @@
 "use client"
 
+import { HouseListing } from "@/interfaces/entities"
+
 interface HousingCardProps {
-    
+    listing:HouseListing
 }
 
-const HousingCard = () => {
+const HousingCard = ({listings}):HousingCardProps => {
 
 }
