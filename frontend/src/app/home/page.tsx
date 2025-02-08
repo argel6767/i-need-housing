@@ -16,7 +16,7 @@ const Home = () => {
         radius:2
     });
     const [listings, setListings] = useState<HouseListing[]>([])
-    const [city, setCity] = useState<String>("San Francisco"); //TODO update this when actually fetching logic is implemented!!!
+    const [city, setCity] = useState<String>(""); //TODO update this when actually fetching logic is implemented!!!
     const {isLoading, error, data} = useListings(requestBody);
 
     /** sets state of listings should it ever change via the query call */

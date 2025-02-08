@@ -35,7 +35,7 @@ export const HousingSearch = ({city, listings, isLoading}:HousingSearchProps) =>
             <div 
                 className={`absolute top-0 right-0 w-[18rem] md:w-[25rem] lg:w-[35rem] xl:w-[40rem] h-full bg-slate-50 transform transition-transform duration-300 ease-in-out ${
                     isOpen ? 'translate-x-0' : 'translate-x-full'
-                } z-40 shadow-lg rounded-l-lg overflow-y-scroll`}
+                } z-30 shadow-lg rounded-l-lg overflow-y-scroll`}
             >
                 <div className="p-4">
                     <h2 className="text-2xl font-bold text-center p-3">View Listings in {city}</h2>
@@ -47,9 +47,7 @@ export const HousingSearch = ({city, listings, isLoading}:HousingSearchProps) =>
                         </ul>
                     </nav>
                 </div>
-            </div>
-
-            
+            </div>  
         </main>
     );
 };
