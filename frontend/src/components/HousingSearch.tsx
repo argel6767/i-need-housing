@@ -5,13 +5,15 @@ import extend from "../../public/sidebar/sidebar-extend.svg"
 import collapse from "../../public/sidebar/sidebar-collapse.svg"
 import Image from "next/image";
 import { HouseListing } from "@/interfaces/entities";
+import { HousingCard } from "./HousingsList";
 
 
 interface HousingSearchProps {
     city: string
     listings: HouseListing[]
+    isLoading: boolean
 }
-export const HousingSearch = ({city, listings}):HousingSearchProps => {
+export const HousingSearch = ({city, listings, isLoading}:HousingSearchProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(true);
     return (
         <main className="relative h-full">
@@ -33,12 +35,15 @@ export const HousingSearch = ({city, listings}):HousingSearchProps => {
             <div 
                 className={`absolute top-0 right-0 w-[18rem] md:w-[25rem] lg:w-[35rem] xl:w-[40rem] h-full bg-slate-50 transform transition-transform duration-300 ease-in-out ${
                     isOpen ? 'translate-x-0' : 'translate-x-full'
-                } z-40 shadow-lg rounded-l-lg`}
+                } z-40 shadow-lg rounded-l-lg overflow-y-scroll`}
             >
-                <div className="p-4 ">
-                    <h2 className="text-2xl font-bold text-center p-2">View Listings in {city}</h2>
-                    <nav>
-                        <ul className="space-y-2">
+                <div className="p-4">
+                    <h2 className="text-2xl font-bold text-center p-3">View Listings in {city}</h2>
+                    <nav className="flex justify-center w-full">
+                        <ul className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 ">
+                            {listings.map((listing) => (
+                                <HousingCard key={listing.id} listing={listing} isLoading={isLoading}/>
+                            ))}
                         </ul>
                     </nav>
                 </div>

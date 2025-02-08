@@ -23,6 +23,7 @@ const Home = () => {
     useEffect(() => {
         if (data) {
             setListings(data);
+            console.log(data);
         }
     }, [data]);
 
@@ -33,7 +34,7 @@ const Home = () => {
             </nav>
             <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden">
                 <div className="relative flex-grow min-w-0"><Map listings={listings}/></div>
-                <HousingSearch city={city} listings={listings}/>
+                <HousingSearch city={city} listings={listings} isLoading={isLoading}/>
             </span>
             <div className="w-full border-t-2">
                 <Footer/>

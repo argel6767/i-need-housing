@@ -30,7 +30,7 @@ export const LoggedInNavBar = () => {
   </div>
   <div className="flex-none gap-2">
     <div className="dropdown dropdown-end">
-      <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+      <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar mr-3">
         <div className="w-10 rounded-full">
           <img
             alt="Tailwind CSS Navbar component"
@@ -39,7 +39,7 @@ export const LoggedInNavBar = () => {
       </div>
       <ul
         tabIndex={0}
-        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[99] mt-3 w-52 p-2 shadow">
+        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[99] mt-3 w-52 p-2 shadow ">
         <li>
           <a className="justify-between">
             Profile

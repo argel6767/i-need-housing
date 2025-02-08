@@ -7,7 +7,7 @@ interface MapProps {
     longitude: number
     listings: Array<HouseListing>
 }
-export const Map = ({latitude, longitude, listings}):MapProps => {
+export const Map = ({latitude, longitude, listings}:MapProps) => {
     const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
     const position = {lat:37.77, lng:-122.40}
     const containerStyle = {
