@@ -26,14 +26,16 @@ export const Map = ({listings}:MapProps) => {
     if (mapRef.current) {
         const newCenter = { lat: centerLat, lng: centerLong };
         mapRef.current.panTo(newCenter);
-        console.log(centerLat + " " + centerLong);
     }
   }, [centerLat, centerLong]);
 
     return (
         <main className="h-full">
            <LoadScript googleMapsApiKey={KEY??""}>
-            <GoogleMap mapContainerStyle={containerStyle} zoom={12} center={position}>
+            <GoogleMap mapContainerStyle={containerStyle} zoom={12} center={position}  
+            onLoad={(map) => {
+          mapRef.current = map; // Initialize map reference
+        }}>
             {listings.map((listing: HouseListing, index:number) => { // Add index as key
                         const markerPosition = {
                             lat: listing.coordinates[0],
