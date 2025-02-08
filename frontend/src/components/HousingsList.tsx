@@ -4,6 +4,7 @@ import { HouseListing } from "@/interfaces/entities"
 import Image from "next/image"
 import { Loading } from "./Loading"
 import { useEffect, useRef, useState } from "react"
+import { useGlobalContext } from "./GlobalContext"
 
 interface HousingCardProps {
     listing:HouseListing
@@ -53,6 +54,7 @@ const ListingModal = ({listing, handleIsModalUp}: ListingModalProps) => {
 export const HousingCard = ({listing, isLoading}:HousingCardProps) => {
 
     const [isModalUp, setIsModalUp] = useState<boolean>(false);
+    const {setCenterLat = null, setCenterLong = null} = useGlobalContext();
 
     useEffect(() => {
 
@@ -60,6 +62,12 @@ export const HousingCard = ({listing, isLoading}:HousingCardProps) => {
 
     const handleIsModalUp = () => {
         setIsModalUp((prev:boolean) => !prev);
+    }
+
+    const handleCenterPositionChange = () => {
+        setCenterLat(listing.coordinates[0]);
+        setCenterLong(listing.coordinates[1]);
+        console.log(listing.coordinates)
     }
 
     const hasImages = ():boolean => {
@@ -71,7 +79,7 @@ export const HousingCard = ({listing, isLoading}:HousingCardProps) => {
     }
 
     return (
-        <main className="hover:scale-105 hover:cursor-pointer transition-transform duration-300 rounded-lg bg-slate-200" onClick={handleIsModalUp}>
+        <main className="hover:scale-105 hover:cursor-pointer transition-transform duration-300 rounded-lg bg-slate-200" onClick={handleCenterPositionChange}>
             <span className=" bg-base-200 shadow-xl">
                 <img className="aspect-[300/175] w-full h-auto object-cover" src={hasImages()? listing.imageUrls[0] : "https://picsum.photos/300/175"} alt="Property image"/> 
                 <h2 className="text-lg text-center">{listing.title}</h2>

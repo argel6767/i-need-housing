@@ -1,19 +1,35 @@
 "use client"
 import { HouseListing } from "@/interfaces/entities";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { useGlobalContext } from "./GlobalContext";
+import { useEffect, useRef } from "react";
 
 interface MapProps {
     latitude: number,
     longitude: number
     listings: Array<HouseListing>
 }
-export const Map = ({latitude, longitude, listings}:MapProps) => {
+export const Map = ({listings}:MapProps) => {
+
     const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-    const position = {lat:37.77, lng:-122.40}
+    const {centerLat = 0.0, centerLong = 0.0} = useGlobalContext();
+    const position = {lat:0.0, lng:0.0}
+
     const containerStyle = {
         width: "100%",
         height: "100%",  // Set a proper height
     };
+    const mapRef = useRef<google.maps.Map | null>(null);
+
+     // Smoothly pan to the new center when centerLat or centerLong changes
+    useEffect(() => {
+    if (mapRef.current) {
+        const newCenter = { lat: centerLat, lng: centerLong };
+        mapRef.current.panTo(newCenter);
+        console.log(centerLat + " " + centerLong);
+    }
+  }, [centerLat, centerLong]);
+
     return (
         <main className="h-full">
            <LoadScript googleMapsApiKey={KEY??""}>
