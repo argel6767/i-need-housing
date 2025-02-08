@@ -81,7 +81,7 @@ export const HousingCard = ({listing, isLoading}:HousingCardProps) => {
     return (
         <main className="hover:scale-105 hover:cursor-pointer transition-transform duration-300 rounded-lg bg-slate-200" onClick={handleCenterPositionChange}>
             <span className=" bg-base-200 shadow-xl">
-                <img className="aspect-[300/175] w-full h-auto object-cover" src={hasImages()? listing.imageUrls[0] : "https://picsum.photos/300/175"} alt="Property image"/> 
+                <img className="aspect-[300/175] w-full h-auto object-cover" src={hasImages()? listing.imageUrls[0] : "./placeholder.jpg"} alt="Property image"/> 
                 <h2 className="text-lg text-center">{listing.title}</h2>
             </span>
             {isModalUp && (
