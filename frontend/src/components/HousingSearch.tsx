@@ -40,7 +40,7 @@ export const HousingSearch = ({city, listings, isLoading}:HousingSearchProps) =>
                 <div className="p-4">
                     <h2 className="text-2xl font-bold text-center p-3">View Listings in {city}</h2>
                     <nav className="flex justify-center w-full">
-                        <ul className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 ">
+                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4 ">
                             {listings.map((listing) => (
                                 <HousingCard key={listing.id} listing={listing} isLoading={isLoading}/>
                             ))}

@@ -26,10 +26,11 @@ export const HousingCard = ({listing, isLoading}:HousingCardProps) => {
     }
 
     return (
-        <main className="hover:scale-105 transition-transform duration-300 rounded-lg bg-slate-200">
+        <main className="hover:scale-105 hover:cursor-pointer transition-transform duration-300 rounded-lg bg-slate-200">
             <span className=" bg-base-200 shadow-xl">
-                <img className="w-full" src={hasImages()? listing.imageUrls[0] : "https://picsum.photos/300"} alt="Property image"/> 
-                <p>{listing.title} - Sourced from {listing.source}</p>
+                <img className="aspect-[300/175] w-full h-auto object-cover" src={hasImages()? listing.imageUrls[0] : "https://picsum.photos/300/175"} alt="Property image"/> 
+                <h2 className="text-lg text-center">{listing.title}</h2>
+
             </span>
         </main>
     )
