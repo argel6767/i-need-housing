@@ -1,6 +1,6 @@
 "use client"
 import { HouseListing } from "@/interfaces/entities";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Marker, OverlayView } from "@react-google-maps/api";
 import { useGlobalContext } from "./GlobalContext";
 import { useEffect, useRef } from "react";
 
@@ -43,10 +43,12 @@ export const Map = ({listings}:MapProps) => {
                         };
 
                         return (
-                            <Marker
-                                key={index} // Important: Add a unique key!
+                            <div className="hover:cursor-pointer">
+                                <Marker
+                                key={index}
                                 position={markerPosition}
-                            />
+                                />
+                            </div>
                         );
                     })}
             </GoogleMap>
