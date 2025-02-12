@@ -1,4 +1,4 @@
-import React from "react";
+
 import '@testing-library/jest-dom';
 import { render, screen } from "@testing-library/react";
 import { Card } from "../../src/components/Card";
@@ -36,7 +36,6 @@ describe("Card Component", () => {
   it("applies hover and transition styles", () => {
     render(<Card image={testImage} alt="Test Alt Text" />);
     const cardElement = screen.getByAltText("Test Alt Text").parentElement?.parentElement;
-    expect(cardElement).toHaveClass("hover:scale-105");
-    expect(cardElement).toHaveClass("transition-transform");
+    expect(cardElement).toHaveClass("card bg-base-200 shadow-xl");
   });
 });

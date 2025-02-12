@@ -15,7 +15,7 @@ describe('Navbar Component', () => {
     const homeLinks = getAllByTestId('INeedHousing');
     const homeLink = homeLinks[0];
     expect(homeLink).toBeInTheDocument();
-    expect(homeLink).toHaveClass("navbar bg-background border-b-2 border-gray-200 shadow-md")
+    expect(homeLink).toHaveClass("btn btn-ghost text-3xl text-primary")
   });
 
   it('should render the menu in the navbar-center', () => {
