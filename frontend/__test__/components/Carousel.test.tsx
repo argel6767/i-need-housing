@@ -1,45 +1,34 @@
-import React from "react";
-import { getByRole, getByText, render } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import React from 'react';
+import '@testing-library/jest-dom';
+import { render, screen } from '@testing-library/react';
 import { Carousel } from '../../src/components/Carousel';
-import { Card } from '../../src/components/Card';
 
 describe('Carousel Component', () => {
-  it('should render four Card components', () => {
-    const { getAllByRole } = render(<Carousel />);
-    const cards = getAllByRole('img');
-    expect(cards).to.have.lengthOf(4);
-  });
+    it('renders the Carousel component with all cards', () => {
+        render(<Carousel />);
 
-  it('should pass correct props to the Card components', () => {
-    const { getByAltText } = render(<Carousel />);
+        // Check if all cards are rendered with the correct body text
+        expect(screen.getByText('Boston')).toBeInTheDocument();
+        expect(screen.getByText('New York')).toBeInTheDocument();
+        expect(screen.getByText('San Francisco')).toBeInTheDocument();
+        expect(screen.getByText('Dallas')).toBeInTheDocument();
+    });
 
-    const bostonCard = getByAltText('Boston');
-    expect(bostonCard).to.exist;
+    it('renders the correct number of cards', () => {
+        render(<Carousel />);
 
-    const newYorkCard = getByAltText('New York');
-    expect(newYorkCard).to.exist;
+        // Check if the correct number of cards are rendered
+        const cards = screen.getAllByRole('img');
+        expect(cards.length).toBe(4);
+    });
 
-    const sanFranCard = getByAltText('San Francisco');
-    expect(sanFranCard).to.exist;
+    it('renders images with the correct alt text', () => {
+        render(<Carousel />);
 
-    const dallasCard = getByAltText('Dallas');
-    expect(dallasCard).to.exist;
-  });
-
-  it('should render correct footer content in the Card components', () => {
-    const { getByRole } = render(<Carousel />);
-
-    const bostonFooter = getByRole('footer');
-    expect(bostonFooter).to.exist;
-
-    const newYorkFooter = getByRole('footer');
-    expect(newYorkFooter).to.exist;
-
-    const sanFranFooter = getByRole('footer');
-    expect(sanFranFooter).to.exist;
-
-    const dallasFooter = getByRole('footer');
-    expect(dallasFooter).to.exist;
-  });
+        // Check if images have the correct alt text
+        expect(screen.getByAltText('Boston')).toBeInTheDocument();
+        expect(screen.getByAltText('New York')).toBeInTheDocument();
+        expect(screen.getByAltText('San Francisco')).toBeInTheDocument();
+        expect(screen.getByAltText('Dallas')).toBeInTheDocument();
+    });
 });
