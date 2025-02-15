@@ -30,7 +30,7 @@ public class HousingListingService {
     }
 
     /**
-     * Finds all listings in a circle with given radius
+     * Finds all listings in a circle with given radius, and sorts them closest to center
      * @param longitude
      * @param latitude
      * @param radius
@@ -44,6 +44,11 @@ public class HousingListingService {
         if (listings.isEmpty()) {
             throw new NoListingFoundException(String.format("No listings found in the given radius of %d from point {%.2f, %.2f}", radius, latitude, longitude)) ;
         }
+        listings = listings.stream().sorted((listingOne, listingTwo) -> {
+            double distanceOne = center.distance(listingOne.getLocation());
+            double distanceTwo = center.distance(listingTwo.getLocation());
+            return Double.compare(distanceOne, distanceTwo);
+        }).toList();
         return listings;
     }
 
