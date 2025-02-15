@@ -8,12 +8,13 @@ interface MapProps {
     latitude: number,
     longitude: number
     listings: Array<HouseListing>
+    isLoading:boolean
 }
-export const Map = ({listings}:MapProps) => {
+export const Map = ({listings, isLoading}:MapProps) => {
 
     const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-    const {centerLat = 0.0, centerLong = 0.0} = useGlobalContext();
-    const position = {lat:0.0, lng:0.0}
+    const {centerLat, centerLong} = useGlobalContext();
+    const position = {lat:centerLat, long:centerLong}
 
     const containerStyle = {
         width: "100%",
@@ -23,11 +24,13 @@ export const Map = ({listings}:MapProps) => {
 
      // Smoothly pan to the new center when centerLat or centerLong changes
     useEffect(() => {
-    if (mapRef.current) {
+    if (mapRef.current && centerLat && centerLong) {
         const newCenter = { lat: centerLat, lng: centerLong };
         mapRef.current.panTo(newCenter);
     }
-  }, [centerLat, centerLong]);
+    }, [centerLat, centerLong]);
+
+
 
     return (
         <main className="h-full">

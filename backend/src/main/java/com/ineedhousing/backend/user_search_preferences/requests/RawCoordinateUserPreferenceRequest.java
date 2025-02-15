@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class RawCoordinateUserPreferenceRequest {
     private Double[] jobLocationCoordinates; //will be in lat, long order
     private Double[] cityOfEmploymentCoordinates;
+    private String cityOfEmployment;
     private Integer maxRadius;
     private Integer maxRent;
     private Integer travelType;

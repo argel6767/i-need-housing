@@ -29,8 +29,13 @@ public class UserPreferenceBuilder {
         return this;
     }
 
-    public UserPreferenceBuilder addCityOfEmployment(Point cityPoint) {
-        userPreference.setCityOfEmployment(cityPoint);
+    public UserPreferenceBuilder addCityOfEmploymentCoordinates(Point cityPoint) {
+        userPreference.setCityOfEmploymentCoordinates(cityPoint);
+        return this;
+    }
+
+    public UserPreferenceBuilder addCityOfEmployment(String city) {
+        userPreference.setCityOfEmployment(city);
         return this;
     }
 

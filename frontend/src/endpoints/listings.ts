@@ -13,7 +13,7 @@ const MODULE_MAPPING = "/listings"
  * @param requestBody 
  * @returns 
  */
-export const getListingsInArea = async(requestBody: GetListingsInAreaRequest): Promise<Array<HouseListing>> => {
+export const getListingsInArea = async(requestBody: GetListingsInAreaRequest | null): Promise<Array<HouseListing>> => {
     try {
         const response =  await apiClient.get(`${MODULE_MAPPING}/area`, {
             params: {

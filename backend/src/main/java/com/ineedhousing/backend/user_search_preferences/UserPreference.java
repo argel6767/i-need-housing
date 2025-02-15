@@ -42,15 +42,17 @@ public class UserPreference {
 
     @Column(columnDefinition = "geometry(Point, 4326)", nullable = false, name = "city_of_employment_location")
     @JsonIgnore
-    private Point cityOfEmployment;
+    private Point cityOfEmploymentCoordinates;
 
-    @JsonProperty("cityOfEmployment")
+    @JsonProperty("cityOfEmploymentCoords")
     public double[] getCityOfEmploymentCoordinates() {
-        if (cityOfEmployment != null) {
+        if (cityOfEmploymentCoordinates != null) {
             return new double[]{jobLocation.getY(), jobLocation.getX()};
         }
         return null;
     }
+
+    private String cityOfEmployment;
 
     //will default to a 25 radius circle if not maxRadius is given of whether
     //jobLocation of cityOfEmployment

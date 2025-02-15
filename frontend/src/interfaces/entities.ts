@@ -16,7 +16,8 @@ export interface User {
 export interface UserPreference {
     id: number,
     jobLocation: Array<number>,
-    cityOfEmployment: Array<number>,
+    cityOfEmploymentCoords: Array<number>,
+    cityOfEmployment:string,
     desiredArea: Array<Object>,
     maxRadius: number,
     maxRent: number,

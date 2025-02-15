@@ -2,7 +2,7 @@
 import { isValidEmail, sleep } from "@/app/utils/utils";
 import { AuthenticateUserDto } from "@/interfaces/requests/authsRequests";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { Loading } from "./Loading";
 import { ResendVerificationEmail } from "./ResendEmailVerification";
 
@@ -16,31 +16,23 @@ interface FormProps {
 export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) => {
 
     const router = useRouter();
-    const [credentials, setCredentials] = useState<AuthenticateUserDto>({
-        username:"",
-        password:"",
-    });
     const [isCallFailed, setIsCallFailed] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isRequestingEmail, setIsRequestingEmail] = useState<boolean>(false);
-
-        
-    const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCredentials({...credentials, username: event.target.value});
-        if (!isValidEmail(credentials.username)) {
-            console.log("invalid email");
-        }
-    }
+    const credentials: AuthenticateUserDto = {
+        username:"",
+        password:""
+    }   
     
-    const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCredentials({...credentials, password: event.target.value})
-    }
 
-    const handleRegistration = async() => {
+    const handleRegistration = async(e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         setIsLoading(true)
+        const formData = new FormData(e.currentTarget);
+        credentials.username = formData.get("email") as string;
+        credentials.password = formData.get("password") as string;
         sessionStorage.setItem("email", credentials.username);
         const data = await request(credentials);
-        setIsLoading(false);
         if(data === "logged in" || data === "user created") {
             sessionStorage.setItem("email", credentials.username);
             router.push(route)
@@ -85,7 +77,7 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
     }
         
     return (
-    <form className="mt-5">
+    <form className="mt-5" onSubmit={handleRegistration}>
         <div className="space-y-6">
             <div>
             <label className="text-base font-medium text-gray-900">
@@ -97,8 +89,6 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
                 type="email"
                 className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                 name="email"
-                value={credentials.username}
-                onChange={handleUsernameChange}
                 />
             </div>
             <div className={`font-semibold ${isRequestingEmail ? "display" : "hidden"}`  } onClick={handleResendHref}>
@@ -117,17 +107,13 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
                 type="password"
                 className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                 name="password"
-                value={credentials.password}
-                onChange={handlePasswordChange}
                 />
             </div>
             </div>
             <div>
             <button
                 className="inline-flex w-full items-center justify-center rounded-md bg-primary hover:bg-[#457F9F] px-3.5 py-2.5 font-semibold leading-7 text-white"
-                type="button"
-                onClick={handleRegistration}
-            >
+                type="submit">
                 {buttonLabel}
             </button>
             </div>

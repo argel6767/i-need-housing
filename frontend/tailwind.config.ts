@@ -23,7 +23,17 @@ export default {
   		},
   		backgroundImage: {
 			'hero-pattern': "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/hero.jpg')"
-		}
+		},
+    animation: {
+      fade: 'fadeIn .5s ease-in-out',
+    },
+
+    keyframes: {
+      fadeIn: {
+        from: { opacity: 0 },
+        to: { opacity: 1 },
+      },
+    },
   	}
   },
   daisyui: {

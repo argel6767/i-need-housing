@@ -37,7 +37,7 @@ public class UserPreferenceService {
     public UserPreference createUserPreferences(RawUserPreferenceRequest request, String email) {
         UserPreferenceBuilder builder = new UserPreferenceBuilder();
         UserPreference userPreferences = builder.addJobLocation(request.getJobLocation())
-        .addCityOfEmployment(request.getCityOfEmployment())
+        .addCityOfEmploymentCoordinates(request.getCityOfEmployment())
         .addDesiredArea(Optional.ofNullable(request.getJobLocation())
         .orElse(request.getCityOfEmployment()), request.getMaxRadius(), 32)
         .addMaxRadius(request.getMaxRadius())
@@ -65,12 +65,13 @@ public class UserPreferenceService {
         Point jobLocation = null;
         if (request.getJobLocationCoordinates() != null) {
             Double[] coordinates = request.getJobLocationCoordinates();
-             jobLocation = factory.createPoint(new Coordinate(coordinates[1], coordinates[2]));
+             jobLocation = factory.createPoint(new Coordinate(coordinates[1], coordinates[0]));
         }
         Double[] coordinates = request.getCityOfEmploymentCoordinates();
         Point cityOfEmployment = factory.createPoint(new Coordinate(coordinates[1], coordinates[0]));
         UserPreference userPreferences = builder.addJobLocation(jobLocation)
-        .addCityOfEmployment(cityOfEmployment)
+        .addCityOfEmploymentCoordinates(cityOfEmployment)
+        .addCityOfEmployment(request.getCityOfEmployment())
         .addDesiredArea(Optional.ofNullable(jobLocation)
         .orElse(cityOfEmployment), request.getMaxRadius(), 32)
         .addMaxRadius(request.getMaxRadius())

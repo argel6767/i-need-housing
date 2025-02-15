@@ -51,7 +51,7 @@ public class UserPreferenceController {
     public ResponseEntity<?> createUserPreferencesWithCoordinates(@RequestBody RawCoordinateUserPreferenceRequest request, @PathVariable String email) {
         try {
             UserPreference userPreference = userPreferenceService.createUserPreference(request, email);
-            return ResponseEntity.ok(userPreference);
+            return new ResponseEntity<>(userPreference,  HttpStatus.CREATED);
         } catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
         }

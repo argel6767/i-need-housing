@@ -6,6 +6,7 @@ import collapse from "../../public/sidebar/sidebar-collapse.svg"
 import Image from "next/image";
 import { HouseListing } from "@/interfaces/entities";
 import { HousingCard } from "./HousingsList";
+import { Loading } from "./Loading";
 
 
 interface HousingSearchProps {
@@ -15,6 +16,12 @@ interface HousingSearchProps {
 }
 export const HousingSearch = ({city, listings, isLoading}:HousingSearchProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(true);
+    if (isLoading) {
+        return (
+            <Loading/>
+        )
+    }
+
     return (
         <main className="relative h-full">
             {/* Wrapper div for button that follows sidebar animation */}
