@@ -4,6 +4,10 @@ import new_york from "../../public/carousel/new_york.jpg"
 import dallas from "../../public/carousel/dallas.jpg"
 import { Card } from "./Card"
 
+/**
+ * Carousel component that houses city cards for landing page
+ * @returns 
+ */
 export const Carousel = () => {
     return(
         <main className="py-5 flex justify-center h-1/2">

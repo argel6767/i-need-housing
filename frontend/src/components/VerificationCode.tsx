@@ -7,6 +7,10 @@ import { useState } from "react";
 import { Loading } from "./Loading";
 import { ResendVerificationEmail } from "./ResendEmailVerification";
 
+/**
+ * VerificationCode component for a user verifying their email
+ * @returns 
+ */
 export const VerificationCode = () => {
     const router = useRouter();
     const [credentials, setCredentials] = useState<VerifyUserDto> ({
@@ -34,17 +38,17 @@ export const VerificationCode = () => {
         setIsLoading(true);
         const data = await verifyUser(credentials);
         setIsLoading(false);
-        if (data === "User verified!") {
+        if (data === "User verified!") { //success
             setIsVerified(true);
             await sleep(1500)
             router.push("/sign-in");
         }
-        if (data.includes("Something went wrong and the api call failed")) {
+        if (data.includes("Something went wrong and the api call failed")) { //error
             setIsCalledFailed(true);
             await sleep(1500);
             setIsCalledFailed(false);
         }
-        if (data === "User has already been verified!") {
+        if (data === "User has already been verified!") { //user already verified
             setIsVerified(true);
             await sleep(1500);
             router.push("/sign-in");

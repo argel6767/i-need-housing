@@ -8,6 +8,11 @@ interface GlobalProviderProps {
     children?:ReactNode,
 }
 
+/**
+ * Houses global state variables
+ * @param param0 
+ * @returns 
+ */
 export const GlobalProvider = ({children}:GlobalProviderProps) => {
     const [centerLat, setCenterLat] = useState<number>(0.0);
     const [centerLong, setCenterLong] = useState<number>(0.0);

@@ -13,6 +13,11 @@ interface FormProps {
     request: (credentials:AuthenticateUserDto) => Promise<any>
 }
 
+/**
+ * Reusable Form component used for sign-in, sign-up, and Verify
+ * @param param
+ * @returns 
+ */
 export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) => {
 
     const router = useRouter();
@@ -33,7 +38,7 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
         credentials.password = formData.get("password") as string;
         sessionStorage.setItem("email", credentials.username);
         const data = await request(credentials);
-        if(data === "logged in" || data === "user created") {
+        if(data === "logged in" || data === "user created") { //successful
             sessionStorage.setItem("email", credentials.username);
             router.push(route)
         }
@@ -53,6 +58,7 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
         router.push("/sign-up/verify");
     }
 
+    //rendered with failed called
     if (isCallFailed) {
         return (
             <section className="flex flex-col gap-2">

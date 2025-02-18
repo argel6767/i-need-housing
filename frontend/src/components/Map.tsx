@@ -10,6 +10,12 @@ interface MapProps {
     listings: Array<HouseListing>
     isLoading:boolean
 }
+
+/**
+ * Map component utilizing @react-google-maps/api
+ * @param param0 
+ * @returns 
+ */
 export const Map = ({listings, isLoading}:MapProps) => {
 
     const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
@@ -23,6 +29,7 @@ export const Map = ({listings, isLoading}:MapProps) => {
     const mapRef = useRef<google.maps.Map | null>(null);
 
      // Smoothly pan to the new center when centerLat or centerLong changes
+     //uses global context for manipulation in HousingCard
     useEffect(() => {
     if (mapRef.current && centerLat && centerLong) {
         const newCenter = { lat: centerLat, lng: centerLong };
@@ -39,7 +46,7 @@ export const Map = ({listings, isLoading}:MapProps) => {
             onLoad={(map) => {
           mapRef.current = map; // Initialize map reference
         }}>
-            {listings.map((listing: HouseListing,) => { 
+            {listings.map((listing: HouseListing,) => {  //make marker for each listing
                         const markerPosition = {
                             lat: listing.coordinates[0],
                             lng: listing.coordinates[1],

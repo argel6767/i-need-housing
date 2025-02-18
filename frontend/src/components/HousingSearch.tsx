@@ -14,6 +14,12 @@ interface HousingSearchProps {
     listings: HouseListing[]
     isLoading: boolean
 }
+
+/**
+ * Side container that holds all Listings
+ * @param param
+ * @returns 
+ */
 export const HousingSearch = ({city, listings, isLoading}:HousingSearchProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(true);
     if (isLoading) {

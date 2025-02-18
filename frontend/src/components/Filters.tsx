@@ -19,7 +19,6 @@ const RangeBar = ({initialRange, setUpdatedPreferences}:RangeBarProps) => {
     const [range, setRange] = useState<number>(initialRange || 5);
 
     const handleRange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
         setRange(parseInt(e.target.value));
         setUpdatedPreferences((prev) => ({...prev, maxRadius: e.target.value}));
     };
@@ -62,17 +61,60 @@ interface MaxPriceProps {
     setUpdatedPreferences: any
 }
 
+/**
+ * Max price component
+ * @param param0 
+ * @returns 
+ */
 const MaxPrice = ({maxPrice, setUpdatedPreferences}: MaxPriceProps) => {
-    const [price, setPrice] = useState<number>(maxPrice | 1000)
+    const [price, setPrice] = useState<number>(maxPrice)
+
+    const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPrice(Number(event.target.value.replace(/\D/g, "").slice(0,6)));
+        setUpdatedPreferences((prev) => ({...prev, maxRent: event.target.value}));
+    }
+
     return (
         <main>
             <label className="form-control w-full max-w-xs">
             <div className="label">
                 <span className="label-text">Max Rent</span>
             </div>
-            <input inputMode="numeric" maxLength={5} placeholder="Type here" pattern="\d*" className="input input-bordered w-full max-w-xs" value={price}/>
+            <input inputMode="numeric" maxLength={5} placeholder="Type here" pattern="\d*" className="input input-bordered w-full max-w-xs" value={price} onChange={handlePriceChange}/>
             </label>
         </main>
+    )
+}
+
+interface ButtonGroupButtonProps {
+    number:number
+    label:string
+    setValue: any
+    field: keyof UserPreference
+}
+
+const ButtonGroupButton = ({number, setValue, field, label}: ButtonGroupButtonProps) => {
+    return (
+        <button onClick={() => setValue((prev) => ({...prev, [field]: number}))}
+            className="rounded-md rounded-l-none bg-slate-100 py-2 px-4 border border-transparent text-center text-sm  transition-all shadow-md hover:shadow-lg focus:bg-slate-200 focus:shadow-none active:bg-slate-200 hover:bg-slate-200 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+            type="button">{label}</button>
+    )
+}
+
+interface ValueButtonsProps {
+    setUpdatedPreferences: any
+}
+
+//TODO current work
+const ValueButtons = ({setUpdatedPreferences}: ValueButtonsProps) => {
+    return (
+        <span className="row flex">
+        <ButtonGroupButton number={0} setValue={setUpdatedPreferences} field="minNumberOfBedRooms" label="None"/>
+        <ButtonGroupButton number={1} setValue={setUpdatedPreferences} field="minNumberOfBedRooms" label="1"/>
+        <ButtonGroupButton number={2} setValue={setUpdatedPreferences} field="minNumberOfBedRooms" label="2"/>
+        <ButtonGroupButton number={3} setValue={setUpdatedPreferences} field="minNumberOfBedRooms" label="3"/>
+        <ButtonGroupButton number={4} setValue={setUpdatedPreferences} field="minNumberOfBedRooms" label="4"/>
+        </span>
     )
 }
 
@@ -111,20 +153,21 @@ interface FiltersProp {
     userPreferences:UserPreference | null
 }
 
+/**
+ * All different available filters for listings
+ * @returns 
+ */
 export const Filters = () => {
     const [openFilter, setOpenFilter] = useState<string | null>(null);
     const [isFiltersChanged, setIsFiltersChanged] = useState<boolean>(false);
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
-    const [maxRadius, setMaxRadius] = useState<number>(5);
     const {userPreferences, setUserPreferences, listings} = useGlobalContext();
     const [updatedPreferences, setUpdatedPreferences] = useState<UserPreference>();
 
     //create a deep copy for an updated userPreference for any changes
     useEffect(() => {
         if (userPreferences && !isInitialized) {
-            handleOriginalPreferences();
             setUpdatedPreferences(JSON.parse(JSON.stringify(userPreferences)));
-            setMaxRadius(userPreferences.maxRadius);
             setIsInitialized(true);
         }
     }, [userPreferences]);
@@ -138,14 +181,11 @@ export const Filters = () => {
         }
     }, [updatedPreferences, isInitialized, userPreferences]);
 
+    //checks if the CollapseDown component selected is the one currently open, if not closes the currently opened first
     const handleToggle = (filter: string) => {
         setOpenFilter(openFilter === filter ? null : filter);
     };
 
-    const handleOriginalPreferences = () => {
-        setMaxRadius(userPreferences.maxRadius);
-    }
-    
     //saves the updated preferences for user for later use
     const saveUserPreferences = async () => {
         setUserPreferences(updatedPreferences);
@@ -156,21 +196,36 @@ export const Filters = () => {
     const filterListingsByOriginalPreferences = async () => {
     }
 
+    //skeleton until updatedPreferences is set
+    if (!updatedPreferences) {
+        return (
+            <main className="flex space-x-5 px-2 relative">
+            <div className="relative animate-pulse bg-slate-100">
+            </div>
+            <div className="relative animate-pulse bg-slate-100">
+            </div>
+            <div className="relative animate-pulse bg-slate-100">
+            </div>
+            <button disabled className="animate-pulse bg-slate-100"></button>
+            </main>
+        )
+    }
+
     return (
-        <main className="flex space-x-5 px-2 relative">
+        <main className="flex space-x-5 px-2 relative animate-fade">
             <div className="relative">
                 <CollapseDown label="Change Distance" isOpen={openFilter === 'distance'}onToggle={() => handleToggle('distance')}>
-                    <RangeBar initialRange={maxRadius} setUpdatedPreferences={setUpdatedPreferences}/>
+                    <RangeBar initialRange={updatedPreferences.maxRadius} setUpdatedPreferences={setUpdatedPreferences}/>
                 </CollapseDown>
             </div>
             <div className="relative">
                 <CollapseDown label="Price"isOpen={openFilter === 'price'}onToggle={() => handleToggle('price')}>
-                    <MaxPrice/>
+                    <MaxPrice maxPrice={updatedPreferences.maxRent} setUpdatedPreferences={setUpdatedPreferences}/>
                 </CollapseDown>
             </div>
             <div className="relative">
                 <CollapseDown label="Other" isOpen={openFilter === 'other'} onToggle={() => handleToggle('other')}>
-                    <div className="w-full">Other content here</div>
+                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences}/>
                 </CollapseDown>
             </div>
             <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-20 border animate-fade ${!isInitialized && `hidden`}`}>Filter</button>

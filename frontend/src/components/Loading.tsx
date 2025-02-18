@@ -3,6 +3,7 @@ interface loadingProps {
     loadingMessage?: string
 }
 
+/** default loading component */
 export const Loading = ({loadingMessage}: loadingProps) => {
     return (
         <main className="flex flex-col items-center">

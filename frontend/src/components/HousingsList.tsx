@@ -16,6 +16,11 @@ interface ListingModalProps {
     handleIsModalUp: () => void
 }
 
+/**
+ * the modal that will render when a listing card is pressed, showing more info about the listing
+ * @param param0 
+ * @returns 
+ */
 const ListingModal = ({listing, handleIsModalUp}: ListingModalProps) => {
     return (
         <>
@@ -51,6 +56,7 @@ const ListingModal = ({listing, handleIsModalUp}: ListingModalProps) => {
     )
 }
 
+
 export const HousingCard = ({listing, isLoading}:HousingCardProps) => {
 
     const [isModalUp, setIsModalUp] = useState<boolean>(false);
@@ -64,6 +70,7 @@ export const HousingCard = ({listing, isLoading}:HousingCardProps) => {
         setIsModalUp((prev:boolean) => !prev);
     }
 
+    //changes the center point of the map to the coordinates of the listing, allowing for displaying of location on map
     const handleCenterPositionChange = () => {
         setCenterLat(listing.coordinates[0]);
         setCenterLong(listing.coordinates[1]);
