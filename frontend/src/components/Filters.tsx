@@ -103,18 +103,55 @@ const ButtonGroupButton = ({number, setValue, field, label}: ButtonGroupButtonPr
 
 interface ValueButtonsProps {
     setUpdatedPreferences: any
+    field: keyof UserPreference
 }
 
-//TODO current work
-const ValueButtons = ({setUpdatedPreferences}: ValueButtonsProps) => {
+//The value buttons for choosing the number of an item
+const ValueButtons = ({setUpdatedPreferences, field}: ValueButtonsProps) => {
+    const values = [0,1,2,3,4];
     return (
         <span className="row flex">
-        <ButtonGroupButton number={0} setValue={setUpdatedPreferences} field="minNumberOfBedRooms" label="None"/>
-        <ButtonGroupButton number={1} setValue={setUpdatedPreferences} field="minNumberOfBedRooms" label="1"/>
-        <ButtonGroupButton number={2} setValue={setUpdatedPreferences} field="minNumberOfBedRooms" label="2"/>
-        <ButtonGroupButton number={3} setValue={setUpdatedPreferences} field="minNumberOfBedRooms" label="3"/>
-        <ButtonGroupButton number={4} setValue={setUpdatedPreferences} field="minNumberOfBedRooms" label="4"/>
+        {values.map((val, index) => (
+            <ButtonGroupButton number={val} key={index} setValue={setUpdatedPreferences} field={field} label={val.toString() + "+"}/>
+        ))}
         </span>
+    )
+}
+
+interface DatePickerProps {
+    setUpdatedPreferences: any
+}
+
+const DatePicker = ({setUpdatedPreferences}: DatePickerProps) => {
+    return (
+        <input type="date"></input>
+    )
+}
+
+interface OtherFiltersProps {
+    setUpdatedPreferences: any
+}
+
+/**
+ * Component for Other Collapse down that has all other filtering
+ * @param param 
+ * @returns 
+ */
+const OtherFilters = ({setUpdatedPreferences}: OtherFiltersProps) => {
+    return (
+        <main>
+            <span className="flex flex-col gap-6">
+                <div className="flex-1 flex justify-between items-center gap-4">
+                    <label className="flex-1">Bedrooms</label>
+                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBedRooms"/>
+                </div>
+                <div className="flex justify-between items-center">
+                    <label>Bathrooms</label>
+                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBathrooms"/>
+                </div>
+                
+            </span>
+        </main>
     )
 }
 
@@ -139,7 +176,7 @@ const CollapseDown = ({children, label, isOpen, onToggle}: CollapseDownProps) =>
             </button>
         
             {isOpen && (
-                <div className="absolute z-10 w-72 bg-white border rounded-b-lg shadow-lg">
+                <div className="absolute z-10 min-w-72 w-auto bg-white border rounded-b-lg shadow-lg">
                     <div className="p-4 border-t">
                         {children}
                     </div>
@@ -225,7 +262,7 @@ export const Filters = () => {
             </div>
             <div className="relative">
                 <CollapseDown label="Other" isOpen={openFilter === 'other'} onToggle={() => handleToggle('other')}>
-                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences}/>
+                    <OtherFilters setUpdatedPreferences={setUpdatedPreferences} />
                 </CollapseDown>
             </div>
             <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-20 border animate-fade ${!isInitialized && `hidden`}`}>Filter</button>

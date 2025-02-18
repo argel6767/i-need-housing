@@ -10,7 +10,7 @@ interface GlobalProviderProps {
 
 /**
  * Houses global state variables
- * @param param0 
+ * @param param
  * @returns 
  */
 export const GlobalProvider = ({children}:GlobalProviderProps) => {

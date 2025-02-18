@@ -26,7 +26,7 @@ export const LoggedInNavBar = () => {
   return (
     <div className="navbar bg-base-100 py-4">
   <div className="flex-1">
-    <Link href={"/home"} className="btn btn-ghost text-3xl md:text-4xl text-primary font-semibold">INeedHousing</Link>
+    <Link href={"/home"} className="btn btn-ghost text-3xl sm:text-5xl text-primary font-bold">INeedHousing</Link>
   </div>
   <div className="flex-none gap-2">
     <div className="dropdown dropdown-end">

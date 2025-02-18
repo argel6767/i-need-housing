@@ -4,6 +4,7 @@ import { HouseListing, UserPreference } from "@/interfaces/entities"
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests"
 import { useQuery } from "@tanstack/react-query"
 
+// fetches listings
 export const useListings = (requestBody: GetListingsInAreaRequest | null, options?: { enabled?: boolean }) => {
     return useQuery({
         queryKey: ['listings', requestBody],
@@ -14,6 +15,7 @@ export const useListings = (requestBody: GetListingsInAreaRequest | null, option
     })
 }
 
+//fetches user's preferences
 export const useUserPreferences = (email: string) => {
     return useQuery({
         queryKey: ['userPreferences', email],
