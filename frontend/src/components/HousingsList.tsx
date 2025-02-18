@@ -86,7 +86,7 @@ export const HousingCard = ({listing, isLoading}:HousingCardProps) => {
             </span>
             {isModalUp && (
               <article>
-                {/*TODO FIX THIS <ListingModal listing={listing} handleIsModalUp={handleIsModalUp}/> */}
+                { <ListingModal listing={listing} handleIsModalUp={handleIsModalUp}/> }
             </article>  
             )}
         </main>

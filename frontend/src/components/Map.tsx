@@ -14,7 +14,7 @@ export const Map = ({listings, isLoading}:MapProps) => {
 
     const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
     const {centerLat, centerLong} = useGlobalContext();
-    const position = {lat:centerLat, long:centerLong}
+    const position = {lat:centerLat, lng:centerLong}
 
     const containerStyle = {
         width: "100%",
@@ -39,7 +39,7 @@ export const Map = ({listings, isLoading}:MapProps) => {
             onLoad={(map) => {
           mapRef.current = map; // Initialize map reference
         }}>
-            {listings.map((listing: HouseListing, index:number) => { // Add index as key
+            {listings.map((listing: HouseListing,) => { 
                         const markerPosition = {
                             lat: listing.coordinates[0],
                             lng: listing.coordinates[1],
@@ -48,7 +48,7 @@ export const Map = ({listings, isLoading}:MapProps) => {
                         return (
                             <div className="hover:cursor-pointer">
                                 <Marker
-                                key={index}
+                                key={listing.id}
                                 position={markerPosition}
                                 />
                             </div>

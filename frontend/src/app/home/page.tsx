@@ -14,8 +14,7 @@ import { useEffect, useState } from "react";
 const Home = () => {
     const [requestBody, setRequestBody] = useState<GetListingsInAreaRequest | null>(null);
     const [listings, setListings] = useState<HouseListing[]>([])
-    const [userPreferences, setUserPreferences] = useState<UserPreference | null>(null);
-    const {setCenterLat, setCenterLong} = useGlobalContext();
+    const {setCenterLat, setCenterLong, setUserPreferences} = useGlobalContext();
     const [city, setCity] = useState<String>(""); 
     const {isLoading:isFetching, isError:isFetchingFailed, data:preferences} = useUserPreferences(sessionStorage.getItem("email"));
     const {isLoading, isError, data} = useListings(requestBody, {enabled: !!requestBody});
@@ -45,7 +44,7 @@ const Home = () => {
                 <LoggedInNavBar/>
             </nav>
             <div className="">
-                <Filters />
+                <Filters/>
             </div>
             <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden min-h-[45rem]">
                 <div className="relative flex-grow min-w-0"><Map listings={listings}/></div>

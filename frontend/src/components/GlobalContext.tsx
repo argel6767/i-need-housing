@@ -1,5 +1,5 @@
 'use client'
-import { User } from "@/interfaces/entities";
+import { User, UserPreference } from "@/interfaces/entities";
 import {createContext, useContext, useMemo, useState, ReactNode, use} from "react";
 
 const GlobalContext = createContext();
@@ -12,10 +12,11 @@ export const GlobalProvider = ({children}:GlobalProviderProps) => {
     const [centerLat, setCenterLat] = useState<number>(0.0);
     const [centerLong, setCenterLong] = useState<number>(0.0);
     const [user, setUser] = useState<User | null>(null);
+    const [userPreferences, setUserPreferences] = useState<UserPreference | null>(null);
 
     const contextValue = useMemo(() => ({
-        centerLat, setCenterLat, centerLong, setCenterLong, user, setUser
-    }), [centerLat, centerLong, user]);
+        centerLat, setCenterLat, centerLong, setCenterLong, user, setUser, userPreferences, setUserPreferences
+    }), [centerLat, centerLong, user, userPreferences]);
 
     return (
         <GlobalContext.Provider value={contextValue}>
