@@ -76,8 +76,8 @@ public class UserPreference {
 
     private String travelType; //future implementation
 
-    @Column(nullable = false)
-    private Integer minNumberOfBedRooms = 0;
+    @Column(name = "min_number_of_bedrooms", nullable = false)
+    private Integer minNumberOfBedrooms = 0;
 
     @Column(nullable = false)
     private Double minNumberOfBathrooms = 1.0;

@@ -135,23 +135,24 @@ interface DatePickerProps {
     field: keyof UserPreference
 }
 
+/**
+ * Date Picker component for selecting internship start and end dates
+ * @param param
+ * @returns
+ */
 const DatePicker = ({ setUpdatedPreferences, initialValue, field }: DatePickerProps) => {
     // Initialize state with the initial value
     const [date, setDate] = useState<string>(initialValue);
 
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setDate(event.target.value);
-      setUpdatedPreferences((prev) => ({...prev, [field]: event.target.value}));
+        setDate(event.target.value);
+        setUpdatedPreferences((prev) => ({...prev, [field]: event.target.value}));
     };
-  
+
     return (
-      <input
-        type="date"
-        value={date}
-        onChange={handleDateChange}
-      />
+        <input type="date" value={date} onChange={handleDateChange}/>
     );
-  };
+};
 
 interface OtherFiltersProps {
     setUpdatedPreferences: any
@@ -169,7 +170,7 @@ const OtherFilters = ({setUpdatedPreferences, updatedPreferences}: OtherFiltersP
             <span className="flex flex-col gap-6">
                 <div className="flex-1 flex justify-between items-center gap-4">
                     <label className="flex-1">Bedrooms</label>
-                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBedRooms" initialValue={updatedPreferences.minNumberOfBedRooms}/>
+                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBedrooms" initialValue={updatedPreferences.minNumberOfBedrooms}/>
                 </div>
                 <div className="flex justify-between items-center">
                     <label>Bathrooms</label>

@@ -22,7 +22,7 @@ export interface UserPreference {
     maxRadius: number,
     maxRent: number,
     travelType?: string,
-    minNumberOfBedRooms: number,
+    minNumberOfBedrooms: number,
     minNumberOfBathrooms: number,
     isFurnished: boolean,
     internshipStart: string,

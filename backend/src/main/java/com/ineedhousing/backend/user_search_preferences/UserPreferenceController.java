@@ -3,6 +3,8 @@ package com.ineedhousing.backend.user_search_preferences;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ineedhousing.backend.user_search_preferences.exceptions.UserPreferenceNotFound;
+import com.ineedhousing.backend.user_search_preferences.requests.NewFiltersDto;
 import com.ineedhousing.backend.user_search_preferences.requests.RawCoordinateUserPreferenceRequest;
 import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferenceRequest;
 
@@ -70,6 +72,22 @@ public class UserPreferenceController {
             return ResponseEntity.ok(updatedPreferences);
         }
         catch (UsernameNotFoundException unfe) {
+            return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * update UserPreference with filters
+     * @param email
+     * @return
+     */
+    @PutMapping("/")
+    public ResponseEntity<?> updateUserPreferences(@RequestBody NewFiltersDto request) {
+        try {
+            UserPreference updatedPreferences = userPreferenceService.updateUserPreferences(request);
+            return ResponseEntity.ok(updatedPreferences);
+        }
+        catch (UserPreferenceNotFound unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
