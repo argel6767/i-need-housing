@@ -25,8 +25,8 @@ export interface UserPreference {
     minNumberOfBedRooms: number,
     minNumberOfBathrooms: number,
     isFurnished: boolean,
-    internshipStart: Date,
-    internshipEnd: Date,
+    internshipStart: string,
+    internshipEnd: string,
     updatedAt: Date
 }
 

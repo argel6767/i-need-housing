@@ -97,7 +97,7 @@ interface ButtonGroupButtonProps {
 const ButtonGroupButton = ({number, setValue, field, label, isSelected}: ButtonGroupButtonProps) => {
 
     return (
-        <button onClick={() => setValue((prev) => ({...prev, [field]: number}))}
+        <button onClick={() => {setValue(number)}}
             className={`rounded-md rounded-l-none ${isSelected? "bg-slate-200" :"bg-slate-100"} py-2 px-4 border border-transparent text-center text-sm  transition-all shadow-md hover:shadow-lg focus:bg-slate-200 focus:shadow-none active:bg-slate-200 hover:bg-slate-200 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
             type="button" >{label}</button>
     )
@@ -117,7 +117,7 @@ const ValueButtons = ({setUpdatedPreferences, field, initialValue}: ValueButtons
 
     const handleSetValue = (value: number) => {
         setSelectedValue(value);
-        setUpdatedPreferences(value)
+        setUpdatedPreferences((prev) => ({...prev, [field]: value}));
     }
 
     return (
@@ -131,14 +131,27 @@ const ValueButtons = ({setUpdatedPreferences, field, initialValue}: ValueButtons
 
 interface DatePickerProps {
     setUpdatedPreferences: any,
-    initialValue: Date
+    initialValue: string
+    field: keyof UserPreference
 }
 
-const DatePicker = ({setUpdatedPreferences, initialValue}: DatePickerProps) => {
+const DatePicker = ({ setUpdatedPreferences, initialValue, field }: DatePickerProps) => {
+    // Initialize state with the initial value
+    const [date, setDate] = useState<string>(initialValue);
+
+    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setDate(event.target.value);
+      setUpdatedPreferences((prev) => ({...prev, [field]: event.target.value}));
+    };
+  
     return (
-        <input type="date"></input>
-    )
-}
+      <input
+        type="date"
+        value={date}
+        onChange={handleDateChange}
+      />
+    );
+  };
 
 interface OtherFiltersProps {
     setUpdatedPreferences: any
@@ -164,7 +177,11 @@ const OtherFilters = ({setUpdatedPreferences, updatedPreferences}: OtherFiltersP
                 </div>
                 <div className="flex justify-between items-center">
                     <label>Internship Start Date</label>
-                    <DatePicker setUpdatedPreferences={setUpdatedPreferences} initialValue={updatedPreferences.internshipStart}/>
+                    <DatePicker setUpdatedPreferences={setUpdatedPreferences} initialValue={updatedPreferences.internshipStart} field="internshipStart"/>
+                </div>
+                <div className="flex justify-between items-center">
+                    <label>Internship End Date</label>
+                    <DatePicker setUpdatedPreferences={setUpdatedPreferences} initialValue={updatedPreferences.internshipEnd} field="internshipEnd"/>
                 </div>
             </span>
         </main>
