@@ -12,8 +12,8 @@ interface RangeBarProps {
 
 /**
  * component for choosing radius
- * @param param0 
- * @returns 
+ * @param param
+ * @returns
  */
 const RangeBar = ({initialRange, setUpdatedPreferences}:RangeBarProps) => {
     const [range, setRange] = useState<number>(initialRange || 5);
@@ -63,7 +63,7 @@ interface MaxPriceProps {
 
 /**
  * Max price component
- * @param param0 
+ * @param param
  * @returns 
  */
 const MaxPrice = ({maxPrice, setUpdatedPreferences}: MaxPriceProps) => {
@@ -91,28 +91,39 @@ interface ButtonGroupButtonProps {
     label:string
     setValue: any
     field: keyof UserPreference
+    isSelected: boolean
 }
 
-const ButtonGroupButton = ({number, setValue, field, label}: ButtonGroupButtonProps) => {
+const ButtonGroupButton = ({number, setValue, field, label, isSelected}: ButtonGroupButtonProps) => {
+
     return (
         <button onClick={() => setValue((prev) => ({...prev, [field]: number}))}
-            className="rounded-md rounded-l-none bg-slate-100 py-2 px-4 border border-transparent text-center text-sm  transition-all shadow-md hover:shadow-lg focus:bg-slate-200 focus:shadow-none active:bg-slate-200 hover:bg-slate-200 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-            type="button">{label}</button>
+            className={`rounded-md rounded-l-none ${isSelected? "bg-slate-200" :"bg-slate-100"} py-2 px-4 border border-transparent text-center text-sm  transition-all shadow-md hover:shadow-lg focus:bg-slate-200 focus:shadow-none active:bg-slate-200 hover:bg-slate-200 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
+            type="button" >{label}</button>
     )
 }
 
 interface ValueButtonsProps {
     setUpdatedPreferences: any
     field: keyof UserPreference
+    initialValue: number
 }
 
 //The value buttons for choosing the number of an item
-const ValueButtons = ({setUpdatedPreferences, field}: ValueButtonsProps) => {
+const ValueButtons = ({setUpdatedPreferences, field, initialValue}: ValueButtonsProps) => {
+
     const values = [0,1,2,3,4];
+    const [selectedValue, setSelectedValue] = useState<number>(initialValue);
+
+    const handleSetValue = (value: number) => {
+        setSelectedValue(value);
+        setUpdatedPreferences(value)
+    }
+
     return (
         <span className="row flex">
         {values.map((val, index) => (
-            <ButtonGroupButton number={val} key={index} setValue={setUpdatedPreferences} field={field} label={val.toString() + "+"}/>
+            <ButtonGroupButton number={val} key={index} setValue={handleSetValue} field={field} label={val.toString() + "+"} isSelected={selectedValue === val}/>
         ))}
         </span>
     )
@@ -130,6 +141,8 @@ const DatePicker = ({setUpdatedPreferences}: DatePickerProps) => {
 
 interface OtherFiltersProps {
     setUpdatedPreferences: any
+    initialBedrooms: number,
+    initialBathrooms:number
 }
 
 /**
@@ -137,17 +150,17 @@ interface OtherFiltersProps {
  * @param param 
  * @returns 
  */
-const OtherFilters = ({setUpdatedPreferences}: OtherFiltersProps) => {
+const OtherFilters = ({setUpdatedPreferences, initialBedrooms, initialBathrooms}: OtherFiltersProps) => {
     return (
         <main>
             <span className="flex flex-col gap-6">
                 <div className="flex-1 flex justify-between items-center gap-4">
                     <label className="flex-1">Bedrooms</label>
-                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBedRooms"/>
+                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBedRooms" initialValue={initialBedrooms}/>
                 </div>
                 <div className="flex justify-between items-center">
                     <label>Bathrooms</label>
-                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBathrooms"/>
+                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBathrooms" initialValue={initialBathrooms}/>
                 </div>
                 
             </span>
@@ -262,7 +275,7 @@ export const Filters = () => {
             </div>
             <div className="relative">
                 <CollapseDown label="Other" isOpen={openFilter === 'other'} onToggle={() => handleToggle('other')}>
-                    <OtherFilters setUpdatedPreferences={setUpdatedPreferences} />
+                    <OtherFilters setUpdatedPreferences={setUpdatedPreferences} initialBedrooms={updatedPreferences.minNumberOfBedRooms} initialBathrooms={updatedPreferences.minNumberOfBathrooms}/>
                 </CollapseDown>
             </div>
             <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-20 border animate-fade ${!isInitialized && `hidden`}`}>Filter</button>

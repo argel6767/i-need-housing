@@ -43,7 +43,7 @@ const Home = () => {
             <nav >
                 <LoggedInNavBar/>
             </nav>
-            <div className="">
+            <div className="pt-2">
                 <Filters/>
             </div>
             <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden min-h-[45rem]">
