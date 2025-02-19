@@ -130,10 +130,11 @@ const ValueButtons = ({setUpdatedPreferences, field, initialValue}: ValueButtons
 }
 
 interface DatePickerProps {
-    setUpdatedPreferences: any
+    setUpdatedPreferences: any,
+    initialValue: Date
 }
 
-const DatePicker = ({setUpdatedPreferences}: DatePickerProps) => {
+const DatePicker = ({setUpdatedPreferences, initialValue}: DatePickerProps) => {
     return (
         <input type="date"></input>
     )
@@ -141,8 +142,7 @@ const DatePicker = ({setUpdatedPreferences}: DatePickerProps) => {
 
 interface OtherFiltersProps {
     setUpdatedPreferences: any
-    initialBedrooms: number,
-    initialBathrooms:number
+    updatedPreferences: UserPreference,
 }
 
 /**
@@ -150,19 +150,22 @@ interface OtherFiltersProps {
  * @param param 
  * @returns 
  */
-const OtherFilters = ({setUpdatedPreferences, initialBedrooms, initialBathrooms}: OtherFiltersProps) => {
+const OtherFilters = ({setUpdatedPreferences, updatedPreferences}: OtherFiltersProps) => {
     return (
         <main>
             <span className="flex flex-col gap-6">
                 <div className="flex-1 flex justify-between items-center gap-4">
                     <label className="flex-1">Bedrooms</label>
-                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBedRooms" initialValue={initialBedrooms}/>
+                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBedRooms" initialValue={updatedPreferences.minNumberOfBedRooms}/>
                 </div>
                 <div className="flex justify-between items-center">
                     <label>Bathrooms</label>
-                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBathrooms" initialValue={initialBathrooms}/>
+                    <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBathrooms" initialValue={updatedPreferences.minNumberOfBathrooms}/>
                 </div>
-                
+                <div className="flex justify-between items-center">
+                    <label>Internship Start Date</label>
+                    <DatePicker setUpdatedPreferences={setUpdatedPreferences} initialValue={updatedPreferences.internshipStart}/>
+                </div>
             </span>
         </main>
     )
@@ -275,7 +278,7 @@ export const Filters = () => {
             </div>
             <div className="relative">
                 <CollapseDown label="Other" isOpen={openFilter === 'other'} onToggle={() => handleToggle('other')}>
-                    <OtherFilters setUpdatedPreferences={setUpdatedPreferences} initialBedrooms={updatedPreferences.minNumberOfBedRooms} initialBathrooms={updatedPreferences.minNumberOfBathrooms}/>
+                    <OtherFilters setUpdatedPreferences={setUpdatedPreferences} updatedPreferences={updatedPreferences}/>
                 </CollapseDown>
             </div>
             <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-20 border animate-fade ${!isInitialized && `hidden`}`}>Filter</button>
