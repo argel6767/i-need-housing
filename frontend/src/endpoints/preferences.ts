@@ -50,6 +50,17 @@ export const updateUserPreferences = async (email: string, requestBody: UserPref
     }
 }
 
+export const updateUserPreferencesViaFilters = async (requestBody: UserPreference): Promise<UserPreference> => {
+    try {
+        const response = await apiClient.put(`${MODULE_MAPPING}/`, requestBody, bearerHeader);
+        return response.data;
+    }
+    catch (error) {
+        console.log(failedCallMessage(error));
+        return requestBody;
+    }
+}
+
 /**
  * Gets a user's preferences
  * @param email 

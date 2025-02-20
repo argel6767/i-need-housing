@@ -21,7 +21,7 @@ public class UserPreferencesFilterer {
      */
     public static List<HousingListing> findByExactPreferences(UserPreference preferences, List<HousingListing> listingsInArea) {
         List<HousingListing> finalListings = listingsInArea.stream().filter(listing -> listing.getRate() <= preferences.getMaxRent())
-                .filter(listing -> listing.getNumBeds() >= preferences.getMinNumberOfBedRooms())
+                .filter(listing -> listing.getNumBeds() >= preferences.getMinNumberOfBedrooms())
                 .filter(listing -> listing.getNumBaths() >= preferences.getMinNumberOfBathrooms())
                 .filter(listing -> listing.getIsFurnished().equals(preferences.getIsFurnished()))
                 .toList(); //TODO ADD listing date for HousingListing to allow for filtering
@@ -36,7 +36,7 @@ public class UserPreferencesFilterer {
      */
     public static List<HousingListing> findByNonStrictPreferences(UserPreference preferences, List<HousingListing> listingsInArea) {
         Set<HousingListing> filteredByRate = listingsInArea.stream().filter(listing -> listing.getRate() <= preferences.getMaxRent()).collect(Collectors.toSet());
-        Set<HousingListing> filteredByNumBeds = listingsInArea.stream().filter(listing -> listing.getNumBeds() >= preferences.getMinNumberOfBedRooms()).collect(Collectors.toSet());
+        Set<HousingListing> filteredByNumBeds = listingsInArea.stream().filter(listing -> listing.getNumBeds() >= preferences.getMinNumberOfBedrooms()).collect(Collectors.toSet());
         Set<HousingListing> filteredByNumBaths = listingsInArea.stream().filter(listing -> listing.getNumBaths() >= preferences.getMinNumberOfBathrooms()).collect(Collectors.toSet());Set<HousingListing> filteredByIsFurnished = listingsInArea.stream().filter(listing -> listing.getIsFurnished().equals(preferences.getIsFurnished())).collect(Collectors.toSet());
         HashSet<HousingListing> combinedListings = new HashSet<>();
         combinedListings.addAll(filteredByRate);

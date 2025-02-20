@@ -1,9 +1,9 @@
 "use client"
 import { ReactNode, useEffect, useState } from "react"
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Loader } from 'lucide-react';
 import { UserPreference } from "@/interfaces/entities";
 import { useGlobalContext } from "./GlobalContext";
-import { updateUserPreferences } from "@/endpoints/preferences";
+import { updateUserPreferencesViaFilters } from "@/endpoints/preferences";
 
 interface RangeBarProps {
     initialRange: number
@@ -78,7 +78,7 @@ const MaxPrice = ({maxPrice, setUpdatedPreferences}: MaxPriceProps) => {
         <main>
             <label className="form-control w-full max-w-xs">
             <div className="label">
-                <span className="label-text">Max Rent</span>
+                <span className="label-text text-lg">Max Rent</span>
             </div>
             <input inputMode="numeric" maxLength={5} placeholder="Type here" pattern="\d*" className="input input-bordered w-full max-w-xs" value={price} onChange={handlePriceChange}/>
             </label>
@@ -203,7 +203,7 @@ interface CollapseDownProps {
  */
 const CollapseDown = ({children, label, isOpen, onToggle}: CollapseDownProps) => {
     return (
-        <div className="w-full border rounded-lg bg-white">
+        <div className="w-full border rounded-lg bg-white shadow-lg">
             <button onClick={onToggle}className="w-full p-4 flex justify-between items-center bg-slate-100 hover:bg-gray-50 transition-colors rounded-xl">
                 <span className="font-medium text-gray-900">{label}</span>
                 <ChevronDown className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`}/>
@@ -220,10 +220,6 @@ const CollapseDown = ({children, label, isOpen, onToggle}: CollapseDownProps) =>
     )
 }
 
-interface FiltersProp {
-    userPreferences:UserPreference | null
-}
-
 /**
  * All different available filters for listings
  * @returns 
@@ -234,6 +230,7 @@ export const Filters = () => {
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
     const {userPreferences, setUserPreferences, listings} = useGlobalContext();
     const [updatedPreferences, setUpdatedPreferences] = useState<UserPreference>();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     //create a deep copy for an updated userPreference for any changes
     useEffect(() => {
@@ -248,7 +245,6 @@ export const Filters = () => {
         if (isInitialized && updatedPreferences) {
             const hasChanged = JSON.stringify(updatedPreferences) !== JSON.stringify(userPreferences);
             setIsFiltersChanged(hasChanged);
-            console.log('Preferences updated:', updatedPreferences);
         }
     }, [updatedPreferences, isInitialized, userPreferences]);
 
@@ -259,12 +255,15 @@ export const Filters = () => {
 
     //saves the updated preferences for user for later use
     const saveUserPreferences = async () => {
-        setUserPreferences(updatedPreferences);
-        const response = await updateUserPreferences(sessionStorage.getItem("email"), updateUserPreferences);
+        setIsLoading(true);
+        const response = await updateUserPreferencesViaFilters(updatedPreferences!);
+        setUserPreferences(response);
+        setUpdatedPreferences(response);
+        setIsLoading(false);
     }
 
     //TODO implement this once the endpoint in backend is fixed and api call is written
-    const filterListingsByOriginalPreferences = async () => {
+    const filterListings = async () => {
     }
 
     //skeleton until updatedPreferences is set
@@ -299,8 +298,11 @@ export const Filters = () => {
                     <OtherFilters setUpdatedPreferences={setUpdatedPreferences} updatedPreferences={updatedPreferences}/>
                 </CollapseDown>
             </div>
-            <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-20 border animate-fade ${!isInitialized && `hidden`}`}>Filter</button>
-            <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-32 border animate-fade ${!isFiltersChanged && "hidden"}`} onClick={saveUserPreferences}>Save Changes</button>
+            <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-24 border animate-fade flex items-center justify-center gap-2 shadow-lg ${!isInitialized && `hidden`}`}>Filter
+                <Loader size={22} className={`animate-pulse ${isLoading ? "" : "hidden"}`}/></button>
+            <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-32 border animate-fade ${!isFiltersChanged && "hidden"} flex items-center justify-center gap-2 shadow-lg`} onClick={saveUserPreferences}>Save Changes
+            <Loader size={22} className={`animate-pulse ${isLoading ? "" : "hidden"}`}/>
+            </button>
         </main>
     )
 }

@@ -16,6 +16,7 @@ import com.ineedhousing.backend.geometry.PolygonCreator;
 import com.ineedhousing.backend.housing_listings.exceptions.NoListingFoundException;
 import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
+import com.ineedhousing.backend.user_search_preferences.UserPreferenceService;
 
 
 /**
@@ -24,9 +25,11 @@ import com.ineedhousing.backend.user_search_preferences.UserPreference;
 @Service
 public class HousingListingService {
     private final HousingListingRepository housingListingRepository;
+    private final UserPreferenceService userPreferenceService;
 
-    public HousingListingService(HousingListingRepository housingListingRepository) {
+    public HousingListingService(HousingListingRepository housingListingRepository, UserPreferenceService userPreferenceService) {
         this.housingListingRepository = housingListingRepository;
+        this.userPreferenceService = userPreferenceService;
     }
 
     /**
@@ -90,6 +93,15 @@ public class HousingListingService {
         List<HousingListing> filteredListings = filterMethod.apply(userPreference, listings);
         if (filteredListings.isEmpty()) {
             throw new NoListingsFoundException("No Listings found for given preferences: " + userPreference.toString());
+        }
+        return filteredListings;
+    }
+
+    public List<HousingListing> getListingsByPreferences(Long preferenceId, List<HousingListing> listings, BiFunction<UserPreference, List<HousingListing>, List<HousingListing>> filterMethod) {
+        UserPreference userPreference = userPreferenceService.getUserPreferences(preferenceId);
+        List<HousingListing> filteredListings = filterMethod.apply(userPreference, listings);
+        if (filteredListings.isEmpty()) {
+            throw new NoListingsFoundException("No Listings found for given preference: " + preferenceId);
         }
         return filteredListings;
     }

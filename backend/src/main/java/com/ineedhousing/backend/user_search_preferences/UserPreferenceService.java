@@ -102,6 +102,10 @@ public class UserPreferenceService {
         return user.getUserPreferences();
     }
 
+    public UserPreference getUserPreferences(Long id) {
+        return userPreferenceRepository.findById(id).orElseThrow( () -> new UserPreferenceNotFound("UserPreference with Id: "  + id + " does not exist."));
+    }
+
     /**
      * updates UserPreference object in User entity with newPreferences
      * @param newPreferences

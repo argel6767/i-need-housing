@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ineedhousing.backend.housing_listings.exceptions.NoListingFoundException;
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
+import com.ineedhousing.backend.housing_listings.requests.ExactPreferencesDto;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsByPreferenceRequest;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsBySpecificPreferenceRequest;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsInAreaRequest;
@@ -88,10 +89,10 @@ public class HousingListingController {
      * @param request
      * @return
      */
-    @PostMapping("/preferences/exact")
-    public ResponseEntity<?> getListingWithExactPreferences(@RequestBody GetListingsByPreferenceRequest request) {
+    @PostMapping("/filter/exact")
+    public ResponseEntity<?> getListingWithExactPreferences(@RequestBody ExactPreferencesDto request) {
         try {
-            List<HousingListing> listings = housingListingService.getListingsByPreferences(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getPreferences(), UserPreferencesFilterer::findByExactPreferences);
+            List<HousingListing> listings = housingListingService.getListingsByPreferences(request.getId(), request.getListings(), UserPreferencesFilterer::findByExactPreferences);
             return ResponseEntity.ok(listings);
         }
         catch(NoListingsFoundException nlfe) {
@@ -104,7 +105,7 @@ public class HousingListingController {
      * @param request
      * @return
      */
-    @PostMapping("/preferences/non-strict")
+    @PostMapping("/filer/non-strict")
     public ResponseEntity<?> getListingWithNonStrictPreferences(@RequestBody GetListingsByPreferenceRequest request) {
         try {
             List<HousingListing> listings = housingListingService.getListingsByPreferences(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getPreferences(), UserPreferencesFilterer::findByNonStrictPreferences);

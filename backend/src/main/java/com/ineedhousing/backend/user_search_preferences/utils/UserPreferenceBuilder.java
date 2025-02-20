@@ -68,7 +68,7 @@ public class UserPreferenceBuilder {
     }
 
     public UserPreferenceBuilder addMinNumberOfBedrooms(int numOfBedrooms) {
-        userPreference.setMinNumberOfBedRooms(numOfBedrooms);
+        userPreference.setMinNumberOfBedrooms(numOfBedrooms);
         return this;
     }
 
