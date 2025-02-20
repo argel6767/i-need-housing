@@ -19,7 +19,7 @@ public class UserPreferencesFilterer {
      * @param listingsInArea
      * @return
      */
-    public static List<HousingListing> findByExactPreferences(UserPreference preferences, List<HousingListing> listingsInArea) {
+    public static List<HousingListing> findByExactPreferences(UserPreference preferences, List<HousingListing> listingsInArea) { //TODO handle null values!!!
         List<HousingListing> finalListings = listingsInArea.stream().filter(listing -> listing.getRate() <= preferences.getMaxRent())
                 .filter(listing -> listing.getNumBeds() >= preferences.getMinNumberOfBedrooms())
                 .filter(listing -> listing.getNumBaths() >= preferences.getMinNumberOfBathrooms())

@@ -105,7 +105,7 @@ public class HousingListingController {
      * @param request
      * @return
      */
-    @PostMapping("/filer/non-strict")
+    @PostMapping("/filter/non-strict")
     public ResponseEntity<?> getListingWithNonStrictPreferences(@RequestBody GetListingsByPreferenceRequest request) {
         try {
             List<HousingListing> listings = housingListingService.getListingsByPreferences(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getPreferences(), UserPreferencesFilterer::findByNonStrictPreferences);
@@ -121,7 +121,7 @@ public class HousingListingController {
      * @param request
      * @return
      */
-    @PostMapping("/preferences/specific")
+    @PostMapping("/filter/specific")
     public ResponseEntity<?> getListingWithSpecificPreference(@RequestBody GetListingsBySpecificPreferenceRequest request) {
         try {
             List<HousingListing> listings = housingListingService.getListingsBySpecificPreference(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getSpecificPreference());
