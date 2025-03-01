@@ -1,5 +1,5 @@
 import { UserPreference } from "@/interfaces/entities";
-import { apiClient, bearerHeader, failedCallMessage } from "./apiConfig";
+import { apiClient, failedCallMessage } from "./apiConfig";
 import { RawCoordinateUserPreferenceRequest } from "@/interfaces/requests/userPreferencesRequests";
 
 const MODULE_MAPPING = "/preferences";
@@ -16,7 +16,7 @@ const MODULE_MAPPING = "/preferences";
  */
 export const createUserPreferences = async (email: string, requestBody: RawCoordinateUserPreferenceRequest): Promise<any> => {
     try {
-        const response = await apiClient.post(`${MODULE_MAPPING}/coordinates/${email}`, requestBody, bearerHeader);
+        const response = await apiClient.post(`${MODULE_MAPPING}/coordinates/${email}`, requestBody);
         if (response.status === 201) {
             return response.data;
         }
@@ -37,7 +37,7 @@ export const createUserPreferences = async (email: string, requestBody: RawCoord
  */
 export const updateUserPreferences = async (email: string, requestBody: UserPreference): Promise<any> => {
     try {
-        const response = await apiClient.put(`${MODULE_MAPPING}/${email}`, requestBody, bearerHeader);
+        const response = await apiClient.put(`${MODULE_MAPPING}/${email}`, requestBody);
         if (response.status === 200) {
             return response.data
         }
@@ -52,7 +52,7 @@ export const updateUserPreferences = async (email: string, requestBody: UserPref
 
 export const updateUserPreferencesViaFilters = async (requestBody: UserPreference): Promise<UserPreference> => {
     try {
-        const response = await apiClient.put(`${MODULE_MAPPING}/`, requestBody, bearerHeader);
+        const response = await apiClient.put(`${MODULE_MAPPING}/`, requestBody);
         return response.data;
     }
     catch (error) {
@@ -68,7 +68,7 @@ export const updateUserPreferencesViaFilters = async (requestBody: UserPreferenc
  */
 export const getUserPreferences = async (email:string) => {
     try {
-        const response = await apiClient.get(`${MODULE_MAPPING}/${email}`, bearerHeader);
+        const response = await apiClient.get(`${MODULE_MAPPING}/${email}`);
         if (response.status === 200) {
             return response.data;
         }

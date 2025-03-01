@@ -1,4 +1,4 @@
-import { apiClient, failedCallMessage, getBearerHeader } from "./apiConfig";
+import { apiClient, failedCallMessage} from "./apiConfig";
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
 import { HouseListing } from "@/interfaces/entities";
 
@@ -20,8 +20,7 @@ export const getListingsInArea = async(requestBody: GetListingsInAreaRequest | n
                 latitude: requestBody.latitude,
                 longitude: requestBody.longitude,
                 radius: requestBody.radius
-            },
-            headers: getBearerHeader(),
+            }
         });
         if (response.status === 200) {
             return response.data;

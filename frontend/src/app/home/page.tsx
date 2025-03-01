@@ -4,6 +4,7 @@ import { Filters } from "@/components/Filters";
 import { Footer } from "@/components/Footer";
 import { useGlobalContext } from "@/components/GlobalContext";
 import { HousingSearch } from "@/components/HousingSearch";
+import { Loading } from "@/components/Loading";
 import { Map } from "@/components/Map";
 import { LoggedInNavBar } from "@/components/Navbar";
 import { useListings, useUserPreferences } from "@/hooks/hooks";
@@ -32,6 +33,7 @@ const Home = () => {
         }
     }, [preferences]);
     
+    //setting listings once they're fetched
     useEffect(() => {
         if (data) {
             setListings(data);

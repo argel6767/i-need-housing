@@ -1,4 +1,4 @@
-import { apiClient, bearerHeader, failedCallMessage } from "./apiConfig";
+import { apiClient, failedCallMessage } from "./apiConfig";
 import { FavoriteListing, HouseListing } from "@/interfaces/entities";
 import { favoriteListingsRequest } from "@/interfaces/requests/favoriteListingsRequests";
 
@@ -37,7 +37,7 @@ export const getAllFavoriteListings = async (email: string): Promise<Array<Favor
  */
 export const addNewFavoriteListings = async (email: string, requestBody: favoriteListingsRequest): Promise<Array<FavoriteListing>> => {
     try {
-        const response = await apiClient.put(`${MODULE_MAPPING}/${email}`, requestBody, bearerHeader);
+        const response = await apiClient.put(`${MODULE_MAPPING}/${email}`, requestBody);
         if (response.status === 201) {
             return response.data;    
         }
@@ -58,7 +58,7 @@ export const addNewFavoriteListings = async (email: string, requestBody: favorit
  */
 export const deleteFavoriteListings = async (email: string, requestBody: favoriteListingsRequest): Promise<Array<FavoriteListing>> => {
     try {
-        const response = await apiClient.post(`${MODULE_MAPPING}/${email}`, requestBody, bearerHeader);
+        const response = await apiClient.post(`${MODULE_MAPPING}/${email}`, requestBody);
         if (response.status === 200) {
             return response.data;    
         }
