@@ -44,7 +44,7 @@ class UserPreferencesFiltererTest {
         // Create test preference
         testPreference = new UserPreference();
         testPreference.setMaxRent(2000.0);
-        testPreference.setMinNumberOfBedRooms(2);
+        testPreference.setMinNumberOfBedrooms(2);
         testPreference.setMinNumberOfBathrooms(1.0);
         testPreference.setIsFurnished(true);
         testPreference.setInternshipStart(LocalDate.now());
@@ -58,7 +58,7 @@ class UserPreferencesFiltererTest {
         assertEquals(1, result.size());
         HousingListing matchingListing = result.get(0);
         assertTrue(matchingListing.getRate() <= testPreference.getMaxRent());
-        assertTrue(matchingListing.getNumBeds() >= testPreference.getMinNumberOfBedRooms());
+        assertTrue(matchingListing.getNumBeds() >= testPreference.getMinNumberOfBedrooms());
         assertTrue(matchingListing.getIsFurnished().equals(testPreference.getIsFurnished()));
     }
 
@@ -78,7 +78,7 @@ class UserPreferencesFiltererTest {
         // Should include listings that match at least one criterion
         assertTrue(result.stream().anyMatch(listing -> 
             listing.getRate() <= testPreference.getMaxRent() ||
-            listing.getNumBeds() >= testPreference.getMinNumberOfBedRooms() ||
+            listing.getNumBeds() >= testPreference.getMinNumberOfBedrooms() ||
             listing.getNumBaths() >= testPreference.getMinNumberOfBathrooms() ||
             listing.getIsFurnished().equals(testPreference.getIsFurnished())
         ));
@@ -88,7 +88,7 @@ class UserPreferencesFiltererTest {
     void findByNonStrictPreferences_MatchesAnyPreference_ShouldReturnAllPartialMatches() {
         // Set strict conditions for all preferences except one
         testPreference.setMaxRent(-1.0);  // Impossible rent
-        testPreference.setMinNumberOfBedRooms(100);  // Impossible number of bedrooms
+        testPreference.setMinNumberOfBedrooms(100);  // Impossible number of bedrooms
         testPreference.setMinNumberOfBathrooms(100.0);  // Impossible number of bathrooms
         testPreference.setIsFurnished(true);  // But this one should match some listings
         

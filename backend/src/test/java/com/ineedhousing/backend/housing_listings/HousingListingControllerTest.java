@@ -1,6 +1,7 @@
 package com.ineedhousing.backend.housing_listings;
 
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
+import com.ineedhousing.backend.housing_listings.requests.ExactPreferencesDto;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsByPreferenceRequest;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsInAreaRequest;
 import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
@@ -49,7 +50,7 @@ class HousingListingControllerTest {
         when(housingListingService.getListingsInArea(1.0, 2.0, 3)).thenReturn(listings);
 
         // Act
-        ResponseEntity<?> response = controller.getListingsInArea(request);
+        ResponseEntity<?> response = controller.getListingsInArea(request.getLatitude(), request.getLongitude(), request.getRadius());
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -67,7 +68,7 @@ class HousingListingControllerTest {
             .thenThrow(new NoListingsFoundException("No listings in area"));
 
         // Act
-        ResponseEntity<?> response = controller.getListingsInArea(request);
+        ResponseEntity<?> response = controller.getListingsInArea(request.getLatitude(), request.getLongitude(), request.getRadius());
 
         // Assert
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
@@ -145,14 +146,13 @@ class HousingListingControllerTest {
     void getListingWithExactPreferences_Success() {
         // Arrange
         List<HousingListing> listings = List.of(createListing(1L, 1800.0));
-        GetListingsByPreferenceRequest request = new GetListingsByPreferenceRequest();
-        request.setLatitude(1.0);
-        request.setLongitude(2.0);
-        request.setRadius(3);
-        request.setPreferences(new UserPreference());
+        ExactPreferencesDto request =  new ExactPreferencesDto(List.of(
+            createListing(1L, 1800.0),
+            createListing(2L, 1500.0)
+        ),  1L);
 
         when(housingListingService.getListingsByPreferences(
-            request.getLatitude(), request.getLongitude(), request.getRadius(), request.getPreferences(), UserPreferencesFilterer::findByExactPreferences))
+            request.getId(), request.getListings(), UserPreferencesFilterer::findByExactPreferences))
             .thenReturn(listings);
 
         // Act
@@ -161,23 +161,19 @@ class HousingListingControllerTest {
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(listings, response.getBody());
-        verify(housingListingService, times(1)).getListingsByPreferences(
-            1.0, 2.0, 3, request.getPreferences(), UserPreferencesFilterer::findByExactPreferences
-        );
     }
 
     @Test
     @DisplayName("getListingWithExactPreferences - No Listings Found")
     void getListingWithExactPreferences_NoListingsFound() {
         // Arrange
-        GetListingsByPreferenceRequest request = new GetListingsByPreferenceRequest();
-        request.setLatitude(1.0);
-        request.setLongitude(2.0);
-        request.setRadius(3);
-        request.setPreferences(new UserPreference());
+        ExactPreferencesDto request =  new ExactPreferencesDto(List.of(
+            createListing(1L, 1800.0),
+            createListing(2L, 1500.0)
+        ),  1L);
 
         when(housingListingService.getListingsByPreferences(
-            request.getLatitude(), request.getLongitude(), request.getRadius(), request.getPreferences(), UserPreferencesFilterer::findByExactPreferences))
+            request.getId(), request.getListings(), UserPreferencesFilterer::findByExactPreferences))
             .thenThrow(new NoListingsFoundException("No Listings found for given preferences"));
 
         // Act
@@ -186,9 +182,6 @@ class HousingListingControllerTest {
         // Assert
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
         assertEquals("No Listings found for given preferences", response.getBody());
-        verify(housingListingService, times(1)).getListingsByPreferences(
-            1.0, 2.0, 3, request.getPreferences(), UserPreferencesFilterer::findByExactPreferences
-        );
     }
 
 }

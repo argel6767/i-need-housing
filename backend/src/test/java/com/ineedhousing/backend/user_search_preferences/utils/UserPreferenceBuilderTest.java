@@ -30,7 +30,7 @@ class UserPreferenceBuilderTest {
     void testAddCityOfEmployment() {
         Point cityPoint = geometryFactory.createPoint(new org.locationtech.jts.geom.Coordinate(30, 40));
         UserPreference userPreference = new UserPreferenceBuilder(new UserPreference())
-                .addCityOfEmployment(cityPoint)
+                .addCityOfEmploymentCoordinates(cityPoint)
                 .build();
 
         assertEquals(cityPoint, userPreference.getCityOfEmployment());
@@ -105,7 +105,7 @@ class UserPreferenceBuilderTest {
                 .addMinNumberOfBedrooms(numOfBedrooms)
                 .build();
 
-        assertEquals(numOfBedrooms, userPreference.getMinNumberOfBedRooms());
+        assertEquals(numOfBedrooms, userPreference.getMinNumberOfBedrooms());
     }
 
     @Test
