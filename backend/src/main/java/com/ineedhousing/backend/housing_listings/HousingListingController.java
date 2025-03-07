@@ -12,6 +12,9 @@ import com.ineedhousing.backend.housing_listings.requests.GetListingsBySpecificP
 import com.ineedhousing.backend.housing_listings.requests.GetListingsInAreaRequest;
 import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
 
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * HousingListing endpoints
  */
+@Log
 @RestController
 @RequestMapping("/listings")
 public class HousingListingController {
@@ -92,6 +96,7 @@ public class HousingListingController {
     @PostMapping("/filter/exact")
     public ResponseEntity<?> getListingWithExactPreferences(@RequestBody ExactPreferencesDto request) {
         try {
+            log.info(request.toString());
             List<HousingListing> listings = housingListingService.getListingsByPreferences(request.getId(), request.getListings(), UserPreferencesFilterer::findByExactPreferences);
             return ResponseEntity.ok(listings);
         }

@@ -1,9 +1,10 @@
 "use client"
 import { ReactNode, useEffect, useState } from "react"
 import { ChevronDown, Loader } from 'lucide-react';
-import { UserPreference } from "@/interfaces/entities";
+import { HouseListing, UserPreference } from "@/interfaces/entities";
 import { useGlobalContext } from "./GlobalContext";
 import { updateUserPreferencesViaFilters } from "@/endpoints/preferences";
+import { filterListingsByPreferences } from "@/endpoints/listings";
 
 interface RangeBarProps {
     initialRange: number
@@ -220,15 +221,19 @@ const CollapseDown = ({children, label, isOpen, onToggle}: CollapseDownProps) =>
     )
 }
 
+interface FiltersProps {
+    filterListings: (id: number) => Promise<void>
+}
+
 /**
  * All different available filters for listings
  * @returns 
  */
-export const Filters = () => {
+export const Filters = ({filterListings}: FiltersProps) => {
     const [openFilter, setOpenFilter] = useState<string | null>(null);
     const [isFiltersChanged, setIsFiltersChanged] = useState<boolean>(false);
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
-    const {userPreferences, setUserPreferences, listings} = useGlobalContext();
+    const {userPreferences, setUserPreferences} = useGlobalContext();
     const [updatedPreferences, setUpdatedPreferences] = useState<UserPreference>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -262,8 +267,10 @@ export const Filters = () => {
         setIsLoading(false);
     }
 
-    //TODO implement this once the endpoint in backend is fixed and api call is written
-    const filterListings = async () => {
+    const handleFiltering = async () => {
+        setIsLoading(true);
+        await filterListings(userPreferences.id);
+        setIsLoading(false);
     }
 
     //skeleton until updatedPreferences is set
@@ -298,7 +305,12 @@ export const Filters = () => {
                     <OtherFilters setUpdatedPreferences={setUpdatedPreferences} updatedPreferences={updatedPreferences}/>
                 </CollapseDown>
             </div>
-            <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-24 border animate-fade flex items-center justify-center gap-2 shadow-lg ${!isInitialized && `hidden`}`}>Filter
+            {/** //TODO Add more filtering options later
+             * <div className="relative">
+                <CollapseDown label="Filter" isOpen={openFilter === 'filter'} onToggle={() => handleToggle('filter')}>hello</CollapseDown>
+            </div>
+             */}
+            <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-24 border animate-fade flex items-center justify-center gap-2 shadow-lg ${!isInitialized && `hidden`}`} onClick={handleFiltering}>Filter
                 <Loader size={22} className={`animate-pulse ${isLoading ? "" : "hidden"}`}/></button>
             <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-32 border animate-fade ${!isFiltersChanged && "hidden"} flex items-center justify-center gap-2 shadow-lg`} onClick={saveUserPreferences}>Save Changes
             <Loader size={22} className={`animate-pulse ${isLoading ? "" : "hidden"}`}/>

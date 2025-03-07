@@ -1,6 +1,6 @@
 import { apiClient, failedCallMessage} from "./apiConfig";
-import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
-import { HouseListing } from "@/interfaces/entities";
+import { ExactPreferencesDTO, GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
+import { HouseListing, UserPreference } from "@/interfaces/entities";
 
 const MODULE_MAPPING = "/listings"
 
@@ -72,5 +72,25 @@ export const deleteListing = async(id: number): Promise<any> => {
         const errorMessage = failedCallMessage(error);
         console.log(errorMessage);
         return errorMessage;
+    }
+}
+
+/**
+ * filters listings by their preferences
+ * @param request 
+ * @returns 
+ */
+export const filterListingsByPreferences = async (request: ExactPreferencesDTO): Promise<HouseListing[]> => {
+    try {
+        console.log(request);
+        const response = await apiClient.post(`${MODULE_MAPPING}/filter/exact`, request);
+        if (response.status === 204) {
+            return [];
+        }
+        return response.data;
+    }
+    catch (error) {
+        console.log(failedCallMessage(error));
+        return request.listings
     }
 }

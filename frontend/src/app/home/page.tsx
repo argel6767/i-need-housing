@@ -7,6 +7,7 @@ import { HousingSearch } from "@/components/HousingSearch";
 import { Loading } from "@/components/Loading";
 import { Map } from "@/components/Map";
 import { LoggedInNavBar } from "@/components/Navbar";
+import { filterListingsByPreferences } from "@/endpoints/listings";
 import { useListings, useUserPreferences } from "@/hooks/hooks";
 import { HouseListing, UserPreference } from "@/interfaces/entities";
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
@@ -40,13 +41,18 @@ const Home = () => {
         }
     }, [data]);
 
+     //TODO implement this once the endpoint in backend is fixed and api call is written
+     const filterListings = async (id: number) => {
+        setListings(await filterListingsByPreferences({listings: listings, id: id}));
+    }
+
     return (
         <main className="flex flex-col h-screen">
             <nav >
                 <LoggedInNavBar/>
             </nav>
             <div className="pt-2">
-                <Filters/>
+                <Filters filterListings={filterListings}/>
             </div>
             <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden min-h-[45rem]">
                 <div className="relative flex-grow min-w-0"><Map listings={listings}/></div>
