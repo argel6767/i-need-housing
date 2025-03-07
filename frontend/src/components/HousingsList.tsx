@@ -13,6 +13,7 @@ interface ListingModalProps {
     handleIsModalUp: () => void
 }
 
+//TODO work on this Modal next!!!
 /**
  * the modal that will render when a listing card is pressed, showing more info about the listing
  * @param param0 
