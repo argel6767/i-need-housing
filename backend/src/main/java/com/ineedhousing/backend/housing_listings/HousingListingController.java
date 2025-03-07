@@ -96,8 +96,8 @@ public class HousingListingController {
     @PostMapping("/filter/exact")
     public ResponseEntity<?> getListingWithExactPreferences(@RequestBody ExactPreferencesDto request) {
         try {
-            log.info(request.toString());
             List<HousingListing> listings = housingListingService.getListingsByPreferences(request.getId(), request.getListings(), UserPreferencesFilterer::findByExactPreferences);
+            log.info("Listings found: " + listings.size());
             return ResponseEntity.ok(listings);
         }
         catch(NoListingsFoundException nlfe) {

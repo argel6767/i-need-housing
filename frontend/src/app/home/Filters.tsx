@@ -5,6 +5,7 @@ import { UserPreference } from "@/interfaces/entities";
 import { useGlobalContext } from "../../components/GlobalContext";
 import { updateUserPreferencesViaFilters } from "@/endpoints/preferences";
 import { RangeBar, MaxPrice, OtherFilters } from "@/app/home/InnerFilters";
+import { filterListingsByPreferences } from "@/endpoints/listings";
 
 interface CollapseDownProps {
     children: ReactNode;
@@ -38,8 +39,8 @@ const CollapseDown = ({children, label, isOpen, onToggle}: CollapseDownProps) =>
 }
 
 interface FiltersProps {
-    filterListings: (id: number) => Promise<void>,
     refetch: any
+    listings: any
     setListings: any
 }
 
@@ -47,7 +48,7 @@ interface FiltersProps {
  * All different available filters for listings
  * @returns 
  */
-export const Filters = ({filterListings, refetch, setListings}: FiltersProps) => {
+export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
     const [openFilter, setOpenFilter] = useState<string | null>(null);
     const [isFiltersChanged, setIsFiltersChanged] = useState<boolean>(false);
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
@@ -86,10 +87,12 @@ export const Filters = ({filterListings, refetch, setListings}: FiltersProps) =>
         setIsLoading(false);
     }
 
-    //calls the filtering endpoint from the parent component using the id of the user's preferences
+    //calls the filtering endpoint  using the id of the user's preferences and listings 
     const handleFiltering = async () => {
         setIsLoading(true);
-        await filterListings(userPreferences.id);
+        const data = await filterListingsByPreferences({listings: listings, id: userPreferences.id});
+        console.log(data);
+        setListings(data);
         setIsLoading(false);
         setIsListingsFiltered(true);
     }

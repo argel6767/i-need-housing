@@ -41,18 +41,13 @@ const Home = () => {
         }
     }, [data]);
 
-     //TODO implement this once the endpoint in backend is fixed and api call is written
-     const filterListings = async (id: number) => {
-        setListings(await filterListingsByPreferences({listings: listings, id: id}));
-    }
-
     return (
         <main className="flex flex-col h-screen">
             <nav >
                 <LoggedInNavBar/>
             </nav>
             <div className="pt-2">
-                <Filters filterListings={filterListings} refetch={refetch} setListings={setListings} />
+                <Filters refetch={refetch} listings={listings} setListings={setListings} />
             </div>
             <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden min-h-[45rem]">
                 <div className="relative flex-grow min-w-0"><Map listings={listings}/></div>

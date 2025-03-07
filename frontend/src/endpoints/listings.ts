@@ -82,7 +82,6 @@ export const deleteListing = async(id: number): Promise<any> => {
  */
 export const filterListingsByPreferences = async (request: ExactPreferencesDTO): Promise<HouseListing[]> => {
     try {
-        console.log(request);
         const response = await apiClient.post(`${MODULE_MAPPING}/filter/exact`, request);
         if (response.status === 204) {
             return [];

@@ -47,7 +47,7 @@ export const Map = ({listings, isLoading}:MapProps) => {
           mapRef.current = map; // Initialize map reference
         }}>
             {listings.map((listing: HouseListing,) => {  //make marker for each listing
-                        if (listing.coordinates[0] !== 0) {
+                        if (listing.coordinates) {
                            const markerPosition = {
                             lat: listing.coordinates[0],
                             lng: listing.coordinates[1],

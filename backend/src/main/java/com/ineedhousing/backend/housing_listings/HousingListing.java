@@ -40,7 +40,7 @@ public class HousingListing {
          if (location != null) {
              return new double[]{location.getY(), location.getX()}; //returns as lat, long
          }
-         return new double[]{0, 0};
+         return null;
      }
 
     @Column(nullable = false)

@@ -53,7 +53,9 @@ export const HousingSearch = ({city, listings, isLoading, isFetching}:HousingSea
                     <nav className="flex justify-center w-full">
                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4">
                             {isFetching || isLoading?  <GroupOfSkeletons numOfSkeletons={8}/> :
-                            listings.map((listing) => (
+                            listings
+                            .filter((listing) => (listing.coordinates !== null))
+                            .map((listing) => (
                                 <HousingCard key={listing.id} listing={listing} />
                             ))}
                         </ul>
