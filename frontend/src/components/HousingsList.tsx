@@ -6,10 +6,7 @@ import { Loading } from "./Loading"
 import { useEffect, useRef, useState } from "react"
 import { useGlobalContext } from "./GlobalContext"
 
-interface HousingCardProps {
-    listing:HouseListing
-    isLoading:boolean
-}
+
 
 interface ListingModalProps {
     listing:HouseListing
@@ -56,8 +53,11 @@ const ListingModal = ({listing, handleIsModalUp}: ListingModalProps) => {
     )
 }
 
+interface HousingCardProps {
+    listing:HouseListing
+}
 
-export const HousingCard = ({listing, isLoading}:HousingCardProps) => {
+export const HousingCard = ({listing}:HousingCardProps) => {
 
     const [isModalUp, setIsModalUp] = useState<boolean>(false);
     const {setCenterLat = null, setCenterLong = null} = useGlobalContext();
@@ -81,9 +81,6 @@ export const HousingCard = ({listing, isLoading}:HousingCardProps) => {
         return listing.imageUrls.length > 0;
     }
 
-    if (isLoading || !listing) {
-        return <Loading/>
-    }
 
     return (
         <main className="hover:scale-105 hover:cursor-pointer transition-transform duration-300 rounded-lg bg-slate-200" onClick={handleCenterPositionChange}>

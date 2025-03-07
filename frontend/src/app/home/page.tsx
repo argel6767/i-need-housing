@@ -1,6 +1,6 @@
 "use client"
 
-import { Filters } from "@/components/Filters";
+import { Filters } from "@/app/home/Filters";
 import { Footer } from "@/components/Footer";
 import { useGlobalContext } from "@/components/GlobalContext";
 import { HousingSearch } from "@/components/HousingSearch";
@@ -17,9 +17,9 @@ const Home = () => {
     const [requestBody, setRequestBody] = useState<GetListingsInAreaRequest | null>(null);
     const [listings, setListings] = useState<HouseListing[]>([])
     const {setCenterLat, setCenterLong, setUserPreferences} = useGlobalContext();
-    const [city, setCity] = useState<String>(""); 
-    const {isLoading:isFetching, isError:isFetchingFailed, data:preferences} = useUserPreferences(sessionStorage.getItem("email"));
-    const {isLoading, isError, data} = useListings(requestBody, {enabled: !!requestBody});
+    const [city, setCity] = useState<string>(""); 
+    const {isLoading:isGrabbing, isError:isFetchingFailed, data:preferences} = useUserPreferences(sessionStorage.getItem("email"));
+    const {isLoading, isError, data, refetch, isFetching} = useListings(requestBody, {enabled: !!requestBody});
 
     /** sets state of listings should it ever change via the query call */
     useEffect(() => {
@@ -52,11 +52,11 @@ const Home = () => {
                 <LoggedInNavBar/>
             </nav>
             <div className="pt-2">
-                <Filters filterListings={filterListings}/>
+                <Filters filterListings={filterListings} refetch={refetch} setListings={setListings} />
             </div>
             <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden min-h-[45rem]">
                 <div className="relative flex-grow min-w-0"><Map listings={listings}/></div>
-                <HousingSearch city={city} listings={listings} isLoading={isLoading}/>
+                <HousingSearch city={city} listings={listings} isLoading={isLoading} isFetching={isFetching}/>
             </span>
             <div className="w-full border-t-2">
                 <Footer/>

@@ -18,7 +18,7 @@ apiClient.interceptors.request.use(config => {
 // interceptor to check for any 403 ie the user's token has been expired
 apiClient.interceptors.response.use(response => response, //ie leave successful call alone
     error => {
-        if (error.response && error.response.status === 404) { //forbidden status code
+        if (error.response && error.response.status === 403) { //forbidden status code
             console.log("Token expired redirecting back landing page");
             if (typeof window != 'undefined') {
                 sessionStorage.removeItem('token');

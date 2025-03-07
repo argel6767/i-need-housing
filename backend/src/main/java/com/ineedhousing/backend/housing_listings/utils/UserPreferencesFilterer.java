@@ -21,9 +21,9 @@ public class UserPreferencesFilterer {
      */
     public static List<HousingListing> findByExactPreferences(UserPreference preferences, List<HousingListing> listingsInArea) { //TODO handle null values!!!
         List<HousingListing> finalListings = listingsInArea.stream().filter(listing -> listing.getRate() <= preferences.getMaxRent())
-                .filter(listing -> listing.getNumBeds() >= preferences.getMinNumberOfBedrooms())
-                .filter(listing -> listing.getNumBaths() >= preferences.getMinNumberOfBathrooms())
-                .filter(listing -> listing.getIsFurnished().equals(preferences.getIsFurnished()))
+                .filter(listing -> listing.getNumBeds() != null && listing.getNumBeds() >= preferences.getMinNumberOfBedrooms())
+                .filter(listing -> listing.getNumBaths() != null && listing.getNumBaths() >= preferences.getMinNumberOfBathrooms())
+                .filter(listing -> listing.getIsFurnished() != null && listing.getIsFurnished().equals(preferences.getIsFurnished()))
                 .toList(); //TODO ADD listing date for HousingListing to allow for filtering
         return finalListings;
     }
