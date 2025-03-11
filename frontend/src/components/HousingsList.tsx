@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Loading } from "./Loading"
 import { useEffect, useRef, useState } from "react"
 import { useGlobalContext } from "./GlobalContext"
+import { ArrowImageCarousel } from "./Carousel"
 
 
 
@@ -13,7 +14,7 @@ interface ListingModalProps {
     setIsModalUp:React.Dispatch<React.SetStateAction<boolean>>
 }
 
-//TODO work on this Modal next!!!
+//TODO Add listing details!!!
 /**
  * the modal that will render when a listing card is pressed, showing more info about the listing
  * @param param0 
@@ -22,15 +23,12 @@ interface ListingModalProps {
 export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
     return (
         <main>
-                    <button 
-                        onClick={(e) => {
+                    <span className="absolute top-0 right-0">
+                        <button onClick={(e) => {
                             e.stopPropagation();
-                            setIsModalUp(false);
-                        }} 
-                        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                    >
-                        ✕
-                    </button>
+                            setIsModalUp(false);}} className="btn btn-sm btn-circle btn-ghost">✕</button>
+                    </span>
+                    <ArrowImageCarousel images={listing?.imageUrls}/>
                     <h3 className="font-bold text-lg">Hello!</h3>
                     <p className="py-4">Press ESC key or click on ✕ button to close</p>
         </main>
@@ -61,6 +59,7 @@ export const HousingCard = ({listing, setRenderedListing, setIsModalUp}:HousingC
     const handlePropertySelection = () => {
         handleCenterPositionChange();
         setRenderedListing(listing);
+        console.log(listing);
         setIsModalUp(true);
     }
 

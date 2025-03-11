@@ -1,6 +1,8 @@
+"use client"
 import Image from "next/image"
 import icon from "../../public/file.svg"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export const Navbar = () => {
     return (
@@ -23,6 +25,12 @@ export const Navbar = () => {
 }
 
 export const LoggedInNavBar = () => {
+  const router = useRouter();
+  const logoutUser = () => {
+    sessionStorage.clear();
+    router.push("/");
+  }
+
   return (
     <div className="navbar bg-base-100 py-4">
   <div className="flex-1">
@@ -41,13 +49,9 @@ export const LoggedInNavBar = () => {
         tabIndex={0}
         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[99] mt-3 w-52 p-2 shadow ">
         <li>
-          <a className="justify-between">
-            Profile
-            <span className="badge">New</span>
-          </a>
         </li>
-        <li><a>Settings</a></li>
-        <li><a>Logout</a></li>
+        <li><Link href={"/settings"}>Settings</Link></li>
+        <li><a onClick={logoutUser}>Logout</a></li>
       </ul>
     </div>
   </div>

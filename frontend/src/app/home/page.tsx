@@ -53,8 +53,8 @@ const Home = () => {
                 <Filters refetch={refetch} listings={listings} setListings={setListings} />
             </div>
             {isModalUp && ( /** This modal is rendered when a user clicks on a specific listing off the listings sidebar */
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="p-6 rounded shadow-lg flex flex-col gap-5 bg-background">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade" onClick={() => setIsModalUp(false)}>
+                    <div className="relative p-6 rounded shadow-lg flex flex-col gap-5 bg-background w-[525] justify-center" onClick={(e) => e.stopPropagation()}>
                         <ListingModal listing={renderedListing} setIsModalUp={setIsModalUp}/>
                     </div>
                 </div>
