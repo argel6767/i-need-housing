@@ -2,6 +2,8 @@
 .vscode/*
 *.env
 *.DS_Store
+.qodo
+.VSCodeCounter
 
 ### generated vaadin files ###
 backend/src/main/frontend/generated/**
