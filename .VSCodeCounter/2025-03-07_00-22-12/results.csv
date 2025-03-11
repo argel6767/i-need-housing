@@ -1,0 +1,175 @@
+"filename", "language", "Python", "YAML", "Markdown", "TypeScript", "JSON with Comments", "Ignore", "Java Properties", "JavaScript", "Java", "TypeScript JSX", "JSON", "XML", "JavaScript JSX", "Batch", "Docker", "CSS", "comment", "blank", "total"
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\README.md", "Markdown", 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 40
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\.dockerignore", "Ignore", 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\.mvn\wrapper\maven-wrapper.properties", "Java Properties", 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 1, 20
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\Dockerfile", "Docker", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 10, 9, 31
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\compose.yaml", "YAML", 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 14
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\mvnw.cmd", "Batch", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 108, 0, 0, 26, 16, 150
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\pom.xml", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 199, 0, 0, 0, 0, 1, 5, 205
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\BackendApplication.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 5, 14
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\admin\AdminService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 13, 77
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\admin\exceptions\UnauthorizedAccessException.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 4, 10
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\admin\views\AdminAuthView.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 24, 88
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\admin\views\AdminDashboardView.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 91, 0, 0, 0, 0, 0, 0, 0, 0, 16, 107
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\admin\views\ListingRetrievalForm.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 115, 0, 0, 0, 0, 0, 0, 0, 28, 19, 162
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\apis\AirbnbApiService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 127, 0, 0, 0, 0, 0, 0, 0, 41, 13, 181
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\apis\ExternalApisController.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 77, 0, 0, 0, 0, 0, 0, 0, 23, 14, 114
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\apis\RentCastAPIService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 112, 0, 0, 0, 0, 0, 0, 0, 32, 15, 159
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\apis\exceptions\FailedApiCallException.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\apis\exceptions\NoListingsFoundException.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\apis\requests\AirbnbGeoCoordinateRequest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 6, 21
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\apis\requests\AirbnbLocationRequest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 5, 19
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\apis\requests\AreaRequest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 5, 17
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\apis\requests\CityAndStateRequest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 4, 15
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\auth\AuthenticationController.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 116, 0, 0, 0, 0, 0, 0, 0, 26, 14, 156
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\auth\AuthenticationService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 174, 0, 0, 0, 0, 0, 0, 0, 43, 23, 240
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\auth\exceptions\AuthenticationException.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 2, 8
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\auth\exceptions\ExpiredVerificationCodeException.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 2, 8
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\auth\exceptions\UserAlreadyVerifiedException.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 2, 8
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\auth\requests\AuthenticateUserDto.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 4, 15
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\auth\requests\ChangePasswordDto.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 4, 16
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\auth\requests\ForgotPasswordDto.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 5, 17
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\auth\requests\ResendEmailDto.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 4, 14
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\auth\requests\VerifyUserDto.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 5, 16
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\auth\responses\LoginResponse.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 6, 20
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\configs\ApplicationConfiguration.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 39, 0, 0, 0, 0, 0, 0, 0, 17, 10, 66
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\configs\RestClientConfiguration.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0, 15, 15, 81
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\configs\SecurityConfiguration.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 0, 13, 14, 80
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\email\EmailConfiguration.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 6, 9, 43
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\email\EmailService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 7, 7, 38
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\email\EmailVerificationException.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 4, 12
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\email\InvalidEmailException.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\favorite_listings\FavoriteListing.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 0, 0, 0, 3, 9, 45
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\favorite_listings\FavoriteListingController.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 56, 0, 0, 0, 0, 0, 0, 0, 27, 12, 95
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\favorite_listings\FavoriteListingRepository.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\favorite_listings\FavoriteListingService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 0, 29, 11, 93
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\favorite_listings\exceptions\FavoriteListingNotFoundException.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\favorite_listings\requests\AddFavoriteListingsRequest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 5, 17
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\favorite_listings\requests\DeleteFavoriteListingsRequest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 5, 16
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\geometry\GeometrySingleton.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 10, 5, 28
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\geometry\PolygonCreator.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 11, 4, 30
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\housing_listings\HousingListing.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 45, 0, 0, 0, 0, 0, 0, 0, 2, 20, 67
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\housing_listings\HousingListingController.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 102, 0, 0, 0, 0, 0, 0, 0, 38, 17, 157
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\housing_listings\HousingListingRepository.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 7, 22
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\housing_listings\HousingListingService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 84, 0, 0, 0, 0, 0, 0, 0, 40, 15, 139
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\housing_listings\exceptions\NoListingFoundException.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\housing_listings\exceptions\NoListingsFoundInAreaException.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\housing_listings\requests\ExactPreferencesDto.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 5, 18
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\housing_listings\requests\GetListingsByPreferenceRequest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 4, 15
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\housing_listings\requests\GetListingsBySpecificPreferenceRequest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 5, 16
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\housing_listings\requests\GetListingsInAreaRequest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\housing_listings\requests\HouseListing.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 6
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\housing_listings\utils\UserPreferencesFilterer.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 59, 0, 0, 0, 0, 0, 0, 0, 31, 12, 102
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\jwt\JwtAuthenticationFilter.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 0, 5, 11, 68
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\jwt\JwtService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 69, 0, 0, 0, 0, 0, 0, 0, 12, 20, 101
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user\User.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 73, 0, 0, 0, 0, 0, 0, 0, 3, 24, 100
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user\UserController.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 54, 0, 0, 0, 0, 0, 0, 0, 24, 10, 88
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user\UserRepository.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 6, 14
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user\UserService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 38, 0, 0, 0, 0, 0, 0, 0, 35, 11, 84
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user\UserType.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 2, 8
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user\requests\SetUserTypeRequest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user_search_preferences\UserPreference.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 70, 0, 0, 0, 0, 0, 0, 0, 3, 24, 97
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user_search_preferences\UserPreferenceController.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 25, 15, 112
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user_search_preferences\UserPreferenceRepository.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 5, 11
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user_search_preferences\UserPreferenceService.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 99, 0, 0, 0, 0, 0, 0, 0, 30, 16, 145
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user_search_preferences\exceptions\UserPreferenceNotFound.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 4, 10
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user_search_preferences\requests\NewFiltersDto.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 4, 31
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user_search_preferences\requests\RawCoordinateUserPreferenceRequest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 4, 25
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user_search_preferences\requests\RawUserPreferenceRequest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 7, 28
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\java\com\ineedhousing\backend\user_search_preferences\utils\UserPreferenceBuilder.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 75, 0, 0, 0, 0, 0, 0, 0, 5, 20, 100
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\main\resources\application.properties", "Java Properties", 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 29
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\BackendApplicationTests.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 5, 14
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\admin\AdminServiceTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 4, 11
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\admin\views\AdminAuthViewTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 6, 11
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\apis\AirbnbApiServiceTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 289, 0, 0, 0, 0, 0, 0, 0, 34, 52, 375
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\apis\ExternalApisControllerTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 136, 0, 0, 0, 0, 0, 0, 0, 21, 40, 197
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\apis\RentCastApiServiceTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 184, 0, 0, 0, 0, 0, 0, 0, 16, 42, 242
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\auth\AuthenticationControllerTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 185, 0, 0, 0, 0, 0, 0, 0, 43, 38, 266
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\auth\AuthenticationServiceTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 246, 0, 0, 0, 0, 0, 0, 0, 43, 56, 345
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\configs\ApplicationConfigurationTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 71, 0, 0, 0, 0, 0, 0, 0, 12, 21, 104
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\configs\RestClientConfigurationTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 54, 0, 0, 0, 0, 0, 0, 0, 6, 15, 75
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\configs\SecurityConfigurationTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 0, 11, 23, 117
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\email\EmailConfigurationTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0, 0, 7, 38
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\email\EmailServiceTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 38, 0, 0, 0, 0, 0, 0, 0, 0, 7, 45
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\favorite_listings\FavoriteListingControllerTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 111, 0, 0, 0, 0, 0, 0, 0, 24, 37, 172
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\favorite_listings\FavoriteListingServiceTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 119, 0, 0, 0, 0, 0, 0, 0, 20, 40, 179
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\geometry\PolygonCreatorTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 0, 2, 19, 68
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\housing_listings\HousingListingControllerTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 0, 0, 0, 24, 40, 189
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\housing_listings\HousingListingServiceTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 30, 39, 212
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\housing_listings\utils\UserPreferencesFiltererTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 149, 0, 0, 0, 0, 0, 0, 0, 5, 40, 194
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\jwt\JwtAuthenticationFilterTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 110, 0, 0, 0, 0, 0, 0, 0, 0, 14, 124
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\jwt\JwtServiceTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 84, 0, 0, 0, 0, 0, 0, 0, 20, 27, 131
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\user\UserControllerTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 99, 0, 0, 0, 0, 0, 0, 0, 24, 34, 157
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\user\UserServiceTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 80, 0, 0, 0, 0, 0, 0, 0, 16, 26, 122
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\user_search_preferences\UserPreferenceControllerTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 79, 0, 0, 0, 0, 0, 0, 0, 0, 31, 110
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\user_search_preferences\UserPreferenceServiceTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 80, 0, 0, 0, 0, 0, 0, 0, 9, 23, 112
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\backend\src\test\java\com\ineedhousing\backend\user_search_preferences\utils\UserPreferenceBuilderTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 120, 0, 0, 0, 0, 0, 0, 0, 3, 37, 160
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\README.md", "Markdown", 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 37
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\__test__\components\Card.test.jsx", "JavaScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 35, 0, 0, 0, 0, 7, 42
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\__test__\components\Carousel.test.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 3, 7, 34
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\__test__\components\Navbar.test.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 55, 0, 0, 0, 0, 0, 0, 0, 9, 64
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\__test__\setup.ts", "TypeScript", 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 38
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\eslint.config.mjs", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 17
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\jest.config.ts", "TypeScript", 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 4, 19
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\next.config.ts", "TypeScript", 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 8
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\package-lock.json", "JSON", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10887, 0, 0, 0, 0, 0, 0, 1, 10888
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\package.json", "JSON", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 1, 50
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\postcss.config.mjs", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 9
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\public\file.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\public\globe.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\public\sidebar\sidebar-collapse.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\public\sidebar\sidebar-extend.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\app\about\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 4, 33
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\app\globals.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 5, 8
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\app\home\Filters.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 122, 0, 0, 0, 0, 0, 0, 21, 13, 156
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\app\home\InnerFilters.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 22, 22, 187
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\app\home\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 55, 0, 0, 0, 0, 0, 0, 2, 7, 64
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\app\layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 34, 0, 0, 0, 0, 0, 0, 0, 7, 41
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\app\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 2, 23
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\app\providers.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 3, 14
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\app\sign-in\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 2, 32
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\app\sign-up\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 7, 37
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\app\sign-up\verify\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 4, 33
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\app\utils\utils.ts", "TypeScript", 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\Card.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 2, 25
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\Carousel.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 4, 1, 26
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\Footer.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 2, 15
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\Form.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 113, 0, 0, 0, 0, 0, 0, 6, 10, 129
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\FormHeader.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 2, 18
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\GlobalContext.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 5, 6, 33
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\Hero.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 1, 14
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\HousingSearch.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 55, 0, 0, 0, 0, 0, 0, 6, 6, 67
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\HousingsList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 74, 0, 0, 0, 0, 0, 0, 9, 16, 99
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\Loading.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 1, 11, 52
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\Map.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 54, 0, 0, 0, 0, 0, 0, 7, 9, 70
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\Navbar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 54, 0, 0, 0, 0, 0, 0, 0, 2, 56
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\ResendEmailVerification.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 0, 3, 20
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\components\VerificationCode.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 123, 0, 0, 0, 0, 0, 0, 4, 11, 138
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\endpoints\apiConfig.ts", "TypeScript", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 5, 34
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\endpoints\auths.ts", "TypeScript", 0, 0, 0, 109, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 10, 151
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\endpoints\favorites.ts", "TypeScript", 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 7, 92
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\endpoints\listings.ts", "TypeScript", 0, 0, 0, 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 6, 95
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\endpoints\preferences.ts", "TypeScript", 0, 0, 0, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 6, 82
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\hooks\hooks.ts", "TypeScript", 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 26
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\interfaces\entities.ts", "TypeScript", 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 55
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\interfaces\requests\authsRequests.ts", "TypeScript", 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 25
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\interfaces\requests\favoriteListingsRequests.ts", "TypeScript", 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\interfaces\requests\housingListingRequests.ts", "TypeScript", 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\interfaces\requests\userPreferencesRequests.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 13
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\interfaces\requests\userRequests.ts", "TypeScript", 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\src\interfaces\responses\authsResponses.ts", "TypeScript", 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\tailwind.config.ts", "TypeScript", 0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 54
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\frontend\tsconfig.json", "JSON with Comments", 0, 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 28
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\openapi\openapi.yml", "YAML", 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 29
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\openapi\parameters\email.yaml", "YAML", 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\openapi\paths\auths.yaml", "YAML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\openapi\paths\favorites.yaml", "YAML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\openapi\paths\gather-housings.yaml", "YAML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\openapi\paths\users\email.yaml", "YAML", 0, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 39
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\openapi\schemas\favoriteListing.yaml", "YAML", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 13
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\openapi\schemas\listing.yaml", "YAML", 0, 75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 76
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\openapi\schemas\user.yaml", "YAML", 0, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 56
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\openapi\schemas\userPreferences.yaml", "YAML", 0, 111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 112
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\scripts\inject_and_run_backend.py", "Python", 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 12, 53
+"c:\Users\Argel Hernandez\Desktop\Projects\i-need-housing\scripts\push_backend_image.py", "Python", 45, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 55
+"Total", "-", 85, 329, 53, 548, 27, 1, 28, 18, 5281, 1221, 10936, 205, 35, 108, 12, 3, 1205, 1704, 21799
