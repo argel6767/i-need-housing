@@ -9,8 +9,8 @@ import { useGlobalContext } from "./GlobalContext"
 
 
 interface ListingModalProps {
-    listing:HouseListing
-    handleIsModalUp: () => void
+    listing?:HouseListing
+    setIsModalUp:React.Dispatch<React.SetStateAction<boolean>>
 }
 
 //TODO work on this Modal next!!!
@@ -19,28 +19,13 @@ interface ListingModalProps {
  * @param param0 
  * @returns 
  */
-const ListingModal = ({listing, handleIsModalUp}: ListingModalProps) => {
+export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
     return (
-        <>
-            {/* Backdrop */}
-            <div 
-                className="fixed inset-0 bg-black/50 z-40"
-                onClick={handleIsModalUp}
-            />
-            
-            {/* Centered Modal */}
-            <div 
-                className="fixed inset-0 flex items-center justify-center z-50"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div 
-                    className="modal-box bg-white w-11/12 max-w-4xl"
-                    onClick={(e) => e.stopPropagation()}
-                >
+        <main>
                     <button 
                         onClick={(e) => {
                             e.stopPropagation();
-                            handleIsModalUp();
+                            setIsModalUp(false);
                         }} 
                         className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
                     >
@@ -48,28 +33,23 @@ const ListingModal = ({listing, handleIsModalUp}: ListingModalProps) => {
                     </button>
                     <h3 className="font-bold text-lg">Hello!</h3>
                     <p className="py-4">Press ESC key or click on ✕ button to close</p>
-                </div>
-            </div>
-        </>
+        </main>
     )
 }
 
 interface HousingCardProps {
-    listing:HouseListing
+    listing:HouseListing,
+    setRenderedListing:React.Dispatch<React.SetStateAction<HouseListing | undefined>>,
+    setIsModalUp:React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const HousingCard = ({listing}:HousingCardProps) => {
+export const HousingCard = ({listing, setRenderedListing, setIsModalUp}:HousingCardProps) => {
 
-    const [isModalUp, setIsModalUp] = useState<boolean>(false);
     const {setCenterLat = null, setCenterLong = null} = useGlobalContext();
 
     useEffect(() => {
 
     }, [listing])
-
-    const handleIsModalUp = () => {
-        setIsModalUp((prev:boolean) => !prev);
-    }
 
     //changes the center point of the map to the coordinates of the listing, allowing for displaying of location on map
     const handleCenterPositionChange = () => {
@@ -78,22 +58,23 @@ export const HousingCard = ({listing}:HousingCardProps) => {
         console.log(listing.coordinates)
     }
 
+    const handlePropertySelection = () => {
+        handleCenterPositionChange();
+        setRenderedListing(listing);
+        setIsModalUp(true);
+    }
+
     const hasImages = ():boolean => {
         return listing.imageUrls.length > 0;
     }
 
 
     return (
-        <main className="hover:scale-105 hover:cursor-pointer transition-transform duration-300 rounded-lg bg-slate-200" onClick={handleCenterPositionChange}>
+        <main className="hover:scale-105 hover:cursor-pointer transition-transform duration-300 rounded-lg bg-slate-200" onClick={handlePropertySelection}>
             <span className=" bg-base-200 shadow-xl">
                 <img className="aspect-[300/175] w-full h-auto object-cover" src={hasImages()? listing.imageUrls[0] : "./placeholder.jpg"} alt="Property image"/> 
                 <h2 className="text-lg text-center">{listing.title}</h2>
             </span>
-            {isModalUp && (
-              <article>
-                { <ListingModal listing={listing} handleIsModalUp={handleIsModalUp}/> }
-            </article>  
-            )}
         </main>
     )
 }

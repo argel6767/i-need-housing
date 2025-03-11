@@ -5,7 +5,7 @@ import extend from "../../public/sidebar/sidebar-extend.svg"
 import collapse from "../../public/sidebar/sidebar-collapse.svg"
 import Image from "next/image";
 import { HouseListing } from "@/interfaces/entities";
-import { HousingCard } from "./HousingsList";
+import { HousingCard, HousingItem } from "./HousingsList";
 import { GroupOfSkeletons, Loading, Skeleton, SkeletonText } from "./Loading";
 
 
@@ -14,6 +14,8 @@ interface HousingSearchProps {
     listings: HouseListing[]
     isLoading: boolean
     isFetching: boolean
+    setRenderedListing: React.Dispatch<React.SetStateAction<HouseListing | undefined>>
+    setIsModalUp: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 /**
@@ -21,7 +23,7 @@ interface HousingSearchProps {
  * @param param
  * @returns 
  */
-export const HousingSearch = ({city, listings, isLoading, isFetching}:HousingSearchProps) => {
+export const HousingSearch = ({city, listings, isLoading, isFetching, setRenderedListing, setIsModalUp}:HousingSearchProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
     return (
@@ -56,7 +58,7 @@ export const HousingSearch = ({city, listings, isLoading, isFetching}:HousingSea
                             listings
                             .filter((listing) => (listing.coordinates !== null))
                             .map((listing) => (
-                                <HousingCard key={listing.id} listing={listing} />
+                                <HousingCard key={listing.id} listing={listing} setIsModalUp={setIsModalUp} setRenderedListing={setRenderedListing}/>
                             ))}
                         </ul>
                     </nav>
