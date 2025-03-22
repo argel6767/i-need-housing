@@ -29,7 +29,7 @@ export const Carousel = () => {
 }
 
 interface ArrowImageCarouselProps  {
-    images:string[]
+    images:string[] | undefined
 }
 
 /**
@@ -38,7 +38,9 @@ interface ArrowImageCarouselProps  {
  */
 export const ArrowImageCarousel = ({images}:ArrowImageCarouselProps) => {
 
-    if(images.length === 0) {
+    const numOfImages = images?.length;
+
+    if(numOfImages == 0) {
         images = ["./placeholder.jpg"]
     }
 
@@ -46,42 +48,46 @@ export const ArrowImageCarousel = ({images}:ArrowImageCarouselProps) => {
 
     const goToPrevious = () => {
         const isFirstImage = currentIndex === 0;
-        const newIndex = isFirstImage ? images.length - 1 : currentIndex - 1;
+        const newIndex = isFirstImage ? numOfImages - 1 : currentIndex - 1;
         setCurrentIndex(newIndex);
     };
     
     const goToNext = () => {
-        const isLastImage = currentIndex === images.length - 1;
+        const isLastImage = currentIndex === numOfImages - 1;
         const newIndex = isLastImage ? 0 : currentIndex + 1;
         setCurrentIndex(newIndex);
     };
     
     return (
+        <>
         <div className="relative w-full max-w-2xl mx-auto p-1 flex justify-center">
-        <div className="w-[450px] h-72  rounded-lg shadow-lg">
+        <div className="w-10/12 h-80 rounded-lg shadow-lg">
             <img 
             src={images[currentIndex]} 
             alt={`Slide ${currentIndex + 1}`}
-            className="w-full h-full object-cover" 
+            className="w-full h-full object-cover rounded-xl" 
             />
         </div>
         
         {/* Left Arrow */}
-        <button onClick={goToPrevious} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 transition-all">
+        <button onClick={goToPrevious} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white  rounded-full p-2 hover:bg-opacity-75 transition-all" disabled={numOfImages === 0}>
             <ChevronLeft size={24} />
         </button>
         
         {/* Right Arrow */}
-        <button onClick={goToNext} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 transition-all">
+        <button onClick={goToNext} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 hover:bg-opacity-75 transition-all" disabled={numOfImages === 0}>
             <ChevronRight size={24} />
         </button>
-        
+
+        </div>
         {/* Dots Indicator */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+        <div className="flex justify-center space-x-2 py-3">
             {images.map((_, index) => (
             <button key={index} onClick={() => setCurrentIndex(index)} className={`w-3 h-3 rounded-full ${index === currentIndex ? "bg-white" : "bg-gray-400"}`}/>
         ))}
         </div>
-        </div>
+        </>
+        
+        
     );
 };

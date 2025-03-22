@@ -58,6 +58,7 @@ export const Map = ({listings, setRenderedListing, setIsModalUp}:MapProps) => {
                             setIsModalUp(true);
                             setCenterLat(listing.coordinates[0]);
                             setCenterLong(listing.coordinates[1]);
+                            console.log(listing);
                         }
 
                         return (

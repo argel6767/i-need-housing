@@ -31,7 +31,7 @@ export const HousingSearch = ({city, listings, isLoading, isFetching, setRendere
             {/* Wrapper div for button that follows sidebar animation */}
             <div className={`fixed top-1/2 -translate-y-1/2 transform transition-transform duration-300 ease-in-out ${
                 isOpen ? 'right-[calc(18rem)] md:right-[calc(25rem)] lg:right-[calc(35rem)] xl:right-[calc(40rem)]' : 'right-0'
-            } z-50`}>
+            } z-30`}>
                 <button
                     className="p-2 text-white rounded hover:bg-gray-700"
                     onClick={() => setIsOpen(!isOpen)}

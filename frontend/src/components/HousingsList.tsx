@@ -6,6 +6,7 @@ import { Loading } from "./Loading"
 import { useEffect, useRef, useState } from "react"
 import { useGlobalContext } from "./GlobalContext"
 import { ArrowImageCarousel } from "./Carousel"
+import { CircleX } from "lucide-react"
 
 
 
@@ -14,6 +15,8 @@ interface ListingModalProps {
     setIsModalUp:React.Dispatch<React.SetStateAction<boolean>>
 }
 
+
+
 //TODO Add listing details!!!
 /**
  * the modal that will render when a listing card is pressed, showing more info about the listing
@@ -21,16 +24,43 @@ interface ListingModalProps {
  * @returns 
  */
 export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
+
+    //gets description or returns default text when there is none
+    const getDescription = () => {
+        if (!listing?.description) {
+            return "No Description Available."
+        }
+        return listing.description
+    }
+
+    //gets listing url or returns default text when there is none.
+    const getOriginalListingUrl = () => {
+        if (!listing?.listingUrl) {
+            return (
+                <p>N/A</p>
+            )
+        }
+        return (
+            <a className="hover:underline" href={listing.listingUrl}>Here</a>
+        );
+    }
+
     return (
         <main>
                     <span className="absolute top-0 right-0">
                         <button onClick={(e) => {
                             e.stopPropagation();
-                            setIsModalUp(false);}} className="btn btn-sm btn-circle btn-ghost">✕</button>
+                            setIsModalUp(false);}} className="btn btn-sm btn-circle btn-ghost"><CircleX className="hover:opacity-50" width={40} height={40}/></button>
                     </span>
                     <ArrowImageCarousel images={listing?.imageUrls}/>
-                    <h3 className="font-bold text-lg">Hello!</h3>
-                    <p className="py-4">Press ESC key or click on ✕ button to close</p>
+                    <h3 className="font-bold text-2xl py-1">{listing?.title}</h3>
+                    <span className="flex justify-between text-xl border-2 border-b-black pb-2"><h2>{listing?.numBeds} Bed(s) | {listing?.numBaths} Bathroom(s)</h2><h2>${listing?.rate}/Month</h2></span>
+                    <article className="text-lg">
+                        <p className="py-4">{getDescription()}</p>
+                        <p>Address: {listing?.address}</p>
+                    <span className="flex justify-between"><p className="flex gap-2">Original Listing: {getOriginalListingUrl()}</p> <p>Source: {listing?.source}</p></span>
+                    </article>
+                    
         </main>
     )
 }
