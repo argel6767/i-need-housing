@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestClient;
 
+import com.ineedhousing.backend.apis.RestClientConfiguration;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class RestClientConfigurationTest {

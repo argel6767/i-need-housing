@@ -17,11 +17,11 @@ interface ListingModalProps {
 
 
 
-//TODO Add listing details!!!
+//
 /**
  * the modal that will render when a listing card is pressed, showing more info about the listing
- * @param param0 
- * @returns 
+ * @param param
+ * @returns
  */
 export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
 
@@ -37,7 +37,7 @@ export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
     const getOriginalListingUrl = () => {
         if (!listing?.listingUrl) {
             return (
-                <p>N/A</p>
+                "N/A"
             )
         }
         return (
