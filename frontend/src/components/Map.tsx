@@ -5,21 +5,20 @@ import { useGlobalContext } from "./GlobalContext";
 import { useEffect, useRef } from "react";
 
 interface MapProps {
-    latitude: number,
-    longitude: number
     listings: Array<HouseListing>
-    isLoading:boolean
+    setRenderedListing: React.Dispatch<React.SetStateAction<HouseListing | undefined>>
+    setIsModalUp: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 /**
  * Map component utilizing @react-google-maps/api
- * @param param0 
+ * @param param 
  * @returns 
  */
-export const Map = ({listings, isLoading}:MapProps) => {
+export const Map = ({listings, setRenderedListing, setIsModalUp}:MapProps) => {
 
     const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-    const {centerLat, centerLong} = useGlobalContext();
+    const {centerLat, setCenterLat, centerLong, setCenterLong} = useGlobalContext();
     const position = {lat:centerLat, lng:centerLong}
 
     const containerStyle = {
@@ -53,9 +52,17 @@ export const Map = ({listings, isLoading}:MapProps) => {
                             lng: listing.coordinates[1],
                         };
 
+                        //allows for clicking on marker to see housing
+                        const handleListingClicked = () => {
+                            setRenderedListing(listing);
+                            setIsModalUp(true);
+                            setCenterLat(listing.coordinates[0]);
+                            setCenterLong(listing.coordinates[1]);
+                        }
+
                         return (
                             <div className="hover:cursor-pointer">
-                                <Marker
+                                <Marker onClick={handleListingClicked}
                                 key={listing.id}
                                 position={markerPosition}
                                 />

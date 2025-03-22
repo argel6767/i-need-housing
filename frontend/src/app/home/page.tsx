@@ -60,7 +60,7 @@ const Home = () => {
                 </div>
             )}
             <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden min-h-[45rem]">
-                <div className="relative flex-grow min-w-0"><Map listings={listings}/></div>
+                <div className="relative flex-grow min-w-0"><Map listings={listings} setRenderedListing={setRenderedListing} setIsModalUp={setIsModalUp}/></div>
                 <HousingSearch city={city} listings={listings} isLoading={isLoading} isFetching={isFetching} setRenderedListing={setRenderedListing} setIsModalUp={setIsModalUp}/>
             </span>
             <div className="w-full border-t-2">
