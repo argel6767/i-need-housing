@@ -87,8 +87,14 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
         setIsLoading(false);
     }
 
-    //calls the filtering endpoint  using the id of the user's preferences and listings 
+    //calls the filtering endpoint  using the id of the user's preferences and listings
+    
     const handleFiltering = async () => {
+        if (!userPreferences) {
+            console.warn("No user preferences available");
+            return; // Early return if no preferences
+        }
+        
         setIsLoading(true);
         const data = await filterListingsByPreferences({listings: listings, id: userPreferences.id});
         console.log(data);

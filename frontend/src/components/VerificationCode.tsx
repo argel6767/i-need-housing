@@ -3,7 +3,7 @@ import { isValidEmail, sleep } from "@/app/utils/utils";
 import {verifyUser } from "@/endpoints/auths";
 import { VerifyUserDto } from "@/interfaces/requests/authsRequests";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loading } from "./Loading";
 import { ResendVerificationEmail } from "./ResendEmailVerification";
 
@@ -14,14 +14,22 @@ import { ResendVerificationEmail } from "./ResendEmailVerification";
 export const VerificationCode = () => {
     const router = useRouter();
     const [credentials, setCredentials] = useState<VerifyUserDto> ({
-        email: sessionStorage.getItem("email") || "",
+        email: "",
         verificationToken:""
     })
     const [isVerified, setIsVerified] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isCallFailed, setIsCalledFailed] = useState<boolean>(false);
 
-    const isEmailSet = !!sessionStorage.getItem("email")
+      // set email once component mounts (avoid server rendering issues)
+      useEffect(() => {
+        const email = sessionStorage.getItem("email");
+        if (email) {
+            setCredentials(prev => ({...prev, email}));
+        }
+    }, []);
+
+    const isEmailSet: boolean =  typeof window !== 'undefined' ? sessionStorage.getItem("email") === null : false;
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCredentials({...credentials, email:event.target.value});

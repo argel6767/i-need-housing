@@ -36,7 +36,7 @@ export interface HouseListing {
     title: string,
     description: string,
     rate: number,
-    coordinates: Array<Number>
+    coordinates: Array<number>
     address: string,
     listingUrl: string,
     imageUrls: Array<string>,

@@ -5,7 +5,7 @@ import extend from "../../public/sidebar/sidebar-extend.svg"
 import collapse from "../../public/sidebar/sidebar-collapse.svg"
 import Image from "next/image";
 import { HouseListing } from "@/interfaces/entities";
-import { HousingCard, HousingItem } from "./HousingsList";
+import { HousingCard} from "./HousingsList";
 import { GroupOfSkeletons, Loading, Skeleton, SkeletonText } from "./Loading";
 
 

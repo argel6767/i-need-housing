@@ -17,7 +17,7 @@ export const RangeBar = ({initialRange, setUpdatedPreferences}:RangeBarProps) =>
 
     const handleRange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setRange(parseInt(e.target.value));
-        setUpdatedPreferences((prev) => ({...prev, maxRadius: e.target.value}));
+        setUpdatedPreferences((prev:any) => ({...prev, maxRadius: e.target.value}));
     };
 
     return (
@@ -68,7 +68,7 @@ export const MaxPrice = ({maxPrice, setUpdatedPreferences}: MaxPriceProps) => {
 
     const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPrice(Number(event.target.value.replace(/\D/g, "").slice(0,6)));
-        setUpdatedPreferences((prev) => ({...prev, maxRent: event.target.value}));
+        setUpdatedPreferences((prev:any) => ({...prev, maxRent: event.target.value}));
     }
 
     return (
@@ -114,7 +114,7 @@ export const ValueButtons = ({setUpdatedPreferences, field, initialValue}: Value
 
     const handleSetValue = (value: number) => {
         setSelectedValue(value);
-        setUpdatedPreferences((prev) => ({...prev, [field]: value}));
+        setUpdatedPreferences((prev:any) => ({...prev, [field]: value}));
     }
 
     return (
@@ -143,7 +143,7 @@ const DatePicker = ({ setUpdatedPreferences, initialValue, field }: DatePickerPr
 
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDate(event.target.value);
-        setUpdatedPreferences((prev) => ({...prev, [field]: event.target.value}));
+        setUpdatedPreferences((prev:any) => ({...prev, [field]: event.target.value}));
     };
 
     return (

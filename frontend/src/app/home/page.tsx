@@ -21,8 +21,10 @@ const Home = () => {
     const [isModalUp, setIsModalUp] = useState<boolean>(false);
     const {setCenterLat, setCenterLong, setUserPreferences} = useGlobalContext();
     const [city, setCity] = useState<string>(""); 
-    const {isLoading:isGrabbing, isError:isFetchingFailed, data:preferences} = useUserPreferences(sessionStorage.getItem("email"));
-    const {isLoading, isError, data, refetch, isFetching} = useListings(requestBody, {enabled: !!requestBody});
+
+
+      const {isLoading:isGrabbing, isError:isFetchingFailed, data:preferences} = useUserPreferences();
+      const {isLoading, isError, data, refetch, isFetching} = useListings(requestBody, {enabled: !!requestBody});
 
     /** sets state of listings should it ever change via the query call */
     useEffect(() => {

@@ -81,7 +81,7 @@ interface HousingCardProps {
 
 export const HousingCard = ({listing, setRenderedListing, setIsModalUp}:HousingCardProps) => {
 
-    const {setCenterLat = null, setCenterLong = null} = useGlobalContext();
+    const {setCenterLat, setCenterLong} = useGlobalContext();
 
     useEffect(() => {
 

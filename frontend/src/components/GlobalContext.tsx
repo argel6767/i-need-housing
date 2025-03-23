@@ -2,7 +2,19 @@
 import { User, UserPreference } from "@/interfaces/entities";
 import {createContext, useContext, useMemo, useState, ReactNode, use} from "react";
 
-const GlobalContext = createContext();
+interface GlobalContextType {
+    centerLat: number;
+    setCenterLat: React.Dispatch<React.SetStateAction<number>>;
+    centerLong: number;
+    setCenterLong: React.Dispatch<React.SetStateAction<number>>;
+    user: User | null;
+    setUser: React.Dispatch<React.SetStateAction<User | null>>;
+    userPreferences: UserPreference | null;
+    setUserPreferences: React.Dispatch<React.SetStateAction<UserPreference | null>>;
+  }
+  
+  const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
+  
 
 interface GlobalProviderProps {
     children?:ReactNode,
@@ -30,4 +42,11 @@ export const GlobalProvider = ({children}:GlobalProviderProps) => {
     )
 }
 
-export const useGlobalContext = () => useContext(GlobalContext);
+export const useGlobalContext = (): GlobalContextType => {
+    const context = useContext(GlobalContext);
+    
+    if (context === undefined) {
+        throw new Error('useGlobalContext must be used within a GlobalProvider');
+    }
+    return context;
+};

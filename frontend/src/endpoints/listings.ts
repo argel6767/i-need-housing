@@ -14,6 +14,10 @@ const MODULE_MAPPING = "/listings"
  * @returns 
  */
 export const getListingsInArea = async(requestBody: GetListingsInAreaRequest | null): Promise<Array<HouseListing>> => {
+    if (!requestBody) {
+        console.warn("Null request body. Halting call!");
+        return [];
+    }
     try {
         const response =  await apiClient.get(`${MODULE_MAPPING}/area`, {
             params: {

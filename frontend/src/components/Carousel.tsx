@@ -36,14 +36,9 @@ interface ArrowImageCarouselProps  {
  * A carousel that renders an image at a time with arrows on both side to choose which to render
  * @param param
  */
-export const ArrowImageCarousel = ({images}:ArrowImageCarouselProps) => {
+export const ArrowImageCarousel = ({images = ["./placeholder.jpg"]}:ArrowImageCarouselProps) => {
 
-    const numOfImages = images?.length;
-
-    if(numOfImages == 0) {
-        images = ["./placeholder.jpg"]
-    }
-
+    const numOfImages = images?.length ?? 0;
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
     const goToPrevious = () => {

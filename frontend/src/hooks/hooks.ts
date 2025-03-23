@@ -16,11 +16,11 @@ export const useListings = (requestBody: GetListingsInAreaRequest | null, option
 }
 
 //fetches user's preferences
-export const useUserPreferences = (email: string) => {
+export const useUserPreferences = () => {
     return useQuery({
-        queryKey: ['userPreferences', email],
+        queryKey: ['userPreferences'],
         queryFn: async ():Promise<UserPreference> => {
-            return await getUserPreferences(email);
+            return await getUserPreferences();
         }
     })
 }

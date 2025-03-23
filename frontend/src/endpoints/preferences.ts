@@ -66,7 +66,8 @@ export const updateUserPreferencesViaFilters = async (requestBody: UserPreferenc
  * @param email 
  * @returns 
  */
-export const getUserPreferences = async (email:string) => {
+export const getUserPreferences = async () => {
+    const email = sessionStorage.getItem("email");
     try {
         const response = await apiClient.get(`${MODULE_MAPPING}/${email}`);
         if (response.status === 200) {
