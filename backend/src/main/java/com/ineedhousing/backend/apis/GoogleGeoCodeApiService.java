@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.apis;
 
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +9,9 @@ import org.springframework.web.client.RestClient;
 
 import com.ineedhousing.backend.apis.exceptions.FailedApiCallException;
 
+import lombok.extern.java.Log;
 
+@Log
 @Service
 public class GoogleGeoCodeApiService {
     
@@ -28,6 +31,7 @@ public class GoogleGeoCodeApiService {
      * @return
      */
     public double[] getCoordinates(String address) {
+        log.info("Running current Address" + address);
         Map response = restClient.get()
         .uri(uriBuilder -> 
         uriBuilder.queryParam("address", address)
@@ -38,8 +42,10 @@ public class GoogleGeoCodeApiService {
         if(response == null) {
             throw new FailedApiCallException("Google Geo Encoding API Failed to be Called!!! Check Usage Rates");
         }
+        log.info("response given" + response);
 
-        Map<String, Object> geometry = (Map<String, Object>) response.get("geometry");
+        List<Map<String, Object>> results = (List<Map<String, Object>>) response.get("results");
+        Map<String, Object> geometry = (Map<String, Object>) results.get(0).get("geometry");
         Map<String, Double> location = (Map<String, Double>) geometry.get("location");
 
         return new double[]{location.get("lng"), location.get("lat")}; //switch around due to Point Class format

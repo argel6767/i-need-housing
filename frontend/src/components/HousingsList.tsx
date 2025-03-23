@@ -45,6 +45,14 @@ export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
         );
     }
 
+    //gets number of bathrooms or default text
+    const getNumBaths = () => {
+        if (!listing?.numBaths) {
+            return "?";
+        }
+        return listing?.numBaths;
+    }
+
     return (
         <main>
                     <span className="absolute top-0 right-0">
@@ -54,7 +62,7 @@ export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
                     </span>
                     <ArrowImageCarousel images={listing?.imageUrls}/>
                     <h3 className="font-bold text-2xl py-1">{listing?.title}</h3>
-                    <span className="flex justify-between text-xl border-2 border-b-black pb-2"><h2>{listing?.numBeds} Bed(s) | {listing?.numBaths} Bathroom(s)</h2><h2>${listing?.rate}/Month</h2></span>
+                    <span className="flex justify-between text-xl border-2 border-b-black pb-2"><h2>{listing?.numBeds} Bed(s) | {getNumBaths()} Bathroom(s)</h2><h2>${listing?.rate}/Month</h2></span>
                     <article className="text-lg">
                         <p className="py-4">{getDescription()}</p>
                         <p>Address: {listing?.address}</p>

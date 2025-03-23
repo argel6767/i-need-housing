@@ -3,6 +3,10 @@ package com.ineedhousing.backend.apis;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -27,11 +31,13 @@ public class ZillowApiService {
 
     private final RestClient restClient;
     private final HousingListingRepository housingListingRepository;
+    private final GoogleGeoCodeApiService googleGeoCodeApiService;
     private final String SOURCE = "Zillow";
     
-    public ZillowApiService(@Qualifier("Zillow API") RestClient restClient, HousingListingRepository housingListingRepository) {
+    public ZillowApiService(@Qualifier("Zillow API") RestClient restClient, HousingListingRepository housingListingRepository, GoogleGeoCodeApiService googleGeoCodeApiService) {
         this.restClient = restClient;
         this.housingListingRepository = housingListingRepository;
+        this.googleGeoCodeApiService = googleGeoCodeApiService;
     }
 
     /**
@@ -62,7 +68,8 @@ public class ZillowApiService {
         if (response.isEmpty()) {
             throw new NoListingsFoundException(String.format("No listings found for coordinates (%.2f, %.2f) within radius: 5.", latitude, longitude));
         }
-        return removeDuplicateListings(newListings);
+        List<HousingListing> nonDuplicateListings = removeDuplicateListings(newListings);
+        return housingListingRepository.saveAll(nonDuplicateListings);
     }
 
     private List<HousingListing> createNewListings(Map response) {
@@ -138,16 +145,6 @@ public class ZillowApiService {
         HousingListing newListing = new HousingListing();
         // source and title
         newListing.setSource(SOURCE);
-        newListing.setTitle((String)property.get("title"));
-        
-        //property coordinates
-        Map<String, Double> coordinates = (Map<String, Double>) property.get("location");
-        if (coordinates != null) {
-            Point point = factory.createPoint(
-            new Coordinate(coordinates.get("longitude"), coordinates.get("latitude")));
-            newListing.setLocation(point);
-        }
-        newListing.setLocation(null);
 
         //address built using various fields
         Map<String, String> addressDetails = (Map<String, String>) property.get("address");
@@ -156,7 +153,31 @@ public class ZillowApiService {
         addressBuilder.append(addressDetails.get("city") + ", ");
         addressBuilder.append(addressDetails.get("state") + " ");
         addressBuilder.append(addressDetails.get("zipcode"));
-        newListing.setAddress(addressBuilder.toString());
+        String address = addressBuilder.toString();
+        newListing.setAddress(address);
+
+        String title = (String)property.get("title");
+        if (title != null) {
+             newListing.setTitle(title);
+        }
+        else {
+            newListing.setTitle(address);
+        };
+       
+
+        //property coordinates
+        Map<String, Double> coordinates = (Map<String, Double>) property.get("location");
+        if (coordinates != null) {
+            Point point = factory.createPoint(
+            new Coordinate(coordinates.get("longitude"), coordinates.get("latitude")));
+            newListing.setLocation(point);
+        }
+        else {
+            double[] coords = googleGeoCodeApiService.getCoordinates(address);
+            Point point = factory.createPoint(
+                new Coordinate(coords[0], coords[1]));
+                newListing.setLocation(point);
+        }
 
         //listing url built using the zpid field
         String zillowId = String.valueOf(property.get("zpid")) ;
@@ -175,14 +196,21 @@ public class ZillowApiService {
         return newListing;
     }
 
-    /**
-     * remove already present listings from created list
+    
+      /**
+     * removes all duplicate listings from newListings that are already in the db
      * @param newListings
-     * @return
+     * @return List<HousingListing>
      */
     private List<HousingListing> removeDuplicateListings(List<HousingListing> newListings) {
         return newListings.stream()
+        .filter(distinctByKey(HousingListing::getLocation))
         .filter(listing -> !housingListingRepository.existsByLocation(listing.getLocation()))
         .collect(Collectors.toList());
+    }
+
+    private <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+    Set<Object> seen = ConcurrentHashMap.newKeySet();
+    return t -> seen.add(keyExtractor.apply(t));
     }
 }
