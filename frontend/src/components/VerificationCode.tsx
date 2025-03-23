@@ -49,7 +49,7 @@ export const VerificationCode = () => {
         if (data === "User verified!") { //success
             setIsVerified(true);
             await sleep(1500)
-            router.push("/sign-in");
+            router.push("/");
         }
         if (data.includes("Something went wrong and the api call failed")) { //error
             setIsCalledFailed(true);
