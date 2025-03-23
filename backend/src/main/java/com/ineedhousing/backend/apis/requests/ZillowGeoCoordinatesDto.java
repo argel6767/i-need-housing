@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AreaRequest {
+public class ZillowGeoCoordinatesDto {
 
-    private Integer radius;
-    private Double latitude;
-    private Double longitude;
-
+    private double latitude;
+    private double longitude;
 }

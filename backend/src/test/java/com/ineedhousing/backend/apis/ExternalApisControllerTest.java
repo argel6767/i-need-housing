@@ -18,10 +18,11 @@ import org.springframework.http.ResponseEntity;
 
 import com.ineedhousing.backend.apis.exceptions.FailedApiCallException;
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
-import com.ineedhousing.backend.apis.requests.AirbnbGeoCoordinateRequest;
-import com.ineedhousing.backend.apis.requests.AirbnbLocationRequest;
-import com.ineedhousing.backend.apis.requests.AreaRequest;
-import com.ineedhousing.backend.apis.requests.CityAndStateRequest;
+import com.ineedhousing.backend.apis.requests.AirbnbGeoCoordinatesDto;
+import com.ineedhousing.backend.apis.requests.AirbnbLocationDto;
+import com.ineedhousing.backend.apis.requests.AreaDto;
+import com.ineedhousing.backend.apis.requests.CityAndStateDto;
+import com.ineedhousing.backend.apis.requests.ZillowGeoCoordinatesDto;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +33,9 @@ public class ExternalApisControllerTest {
     
     @Mock
     private RentCastAPIService rentCastApiService;
+
+    @Mock
+    private ZillowApiService zillowApiService;
     
     private ExternalApisController controller;
     
@@ -39,7 +43,7 @@ public class ExternalApisControllerTest {
     
     @BeforeEach
     void setUp() {
-        controller = new ExternalApisController(airbnbApiService, rentCastApiService);
+        controller = new ExternalApisController(airbnbApiService, rentCastApiService, zillowApiService);
         mockListings = Arrays.asList(new HousingListing(), new HousingListing());
     }
     
@@ -48,7 +52,7 @@ public class ExternalApisControllerTest {
         // Arrange
         LocalDate checkIn = LocalDate.of(2024, 1, 1);
         LocalDate checkOut = LocalDate.of(2024, 1, 7);
-        AirbnbLocationRequest request = new AirbnbLocationRequest();
+        AirbnbLocationDto request = new AirbnbLocationDto();
         request.setCity("New York");
         request.setCheckIn(checkIn);
         request.setCheckOut(checkOut);
@@ -62,7 +66,7 @@ public class ExternalApisControllerTest {
         ResponseEntity<?> response = controller.callAirbnbViaLocation(request);
         
         // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(mockListings, response.getBody());
     }
     
@@ -71,7 +75,7 @@ public class ExternalApisControllerTest {
         // Arrange
         LocalDate checkIn = LocalDate.of(2024, 1, 1);
         LocalDate checkOut = LocalDate.of(2024, 1, 7);
-        AirbnbLocationRequest request = new AirbnbLocationRequest();
+        AirbnbLocationDto request = new AirbnbLocationDto();
         request.setCity("New York");
         request.setCheckIn(checkIn);
         request.setCheckOut(checkOut);
@@ -93,7 +97,7 @@ public class ExternalApisControllerTest {
         // Arrange
         LocalDate checkIn = LocalDate.of(2024, 1, 1);
         LocalDate checkOut = LocalDate.of(2024, 1, 7);
-        AirbnbLocationRequest request = new AirbnbLocationRequest();
+        AirbnbLocationDto request = new AirbnbLocationDto();
         request.setCity("New York");
         request.setCheckIn(checkIn);
         request.setCheckOut(checkOut);
@@ -115,7 +119,7 @@ public class ExternalApisControllerTest {
         // Arrange
         LocalDate checkIn = LocalDate.of(2024, 1, 1);
         LocalDate checkOut = LocalDate.of(2024, 1, 7);
-        AirbnbGeoCoordinateRequest request = new AirbnbGeoCoordinateRequest();
+        AirbnbGeoCoordinatesDto request = new AirbnbGeoCoordinatesDto();
         List<Double> corners = Arrays.asList(1.0, 2.0, 3.0, 4.0);
         request.setAreaCorners(corners);
         request.setCheckIn(checkIn);
@@ -131,14 +135,14 @@ public class ExternalApisControllerTest {
         ResponseEntity<?> response = controller.callAirbnbViaGeoLocation(request);
         
         // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(mockListings, response.getBody());
     }
     
     @Test
     void testCallRentCastViaLocation_Success() {
         // Arrange
-        CityAndStateRequest request = new CityAndStateRequest();
+        CityAndStateDto request = new CityAndStateDto();
         request.setCity("New York");
         request.setStateAbv("NY");
         
@@ -150,14 +154,14 @@ public class ExternalApisControllerTest {
         ResponseEntity<?> response = controller.callRentCastViaLocation(request);
         
         // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(mockListings, response.getBody());
     }
     
     @Test
     void testCallRentCastViaArea_Success() {
         // Arrange
-        AreaRequest request = new AreaRequest();
+        AreaDto request = new AreaDto();
         request.setRadius(10);
         request.setLatitude(40.7128);
         request.setLongitude(-74.0060);
@@ -170,25 +174,61 @@ public class ExternalApisControllerTest {
         ResponseEntity<?> response = controller.callRentCastViaArea(request);
         
         // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(mockListings, response.getBody());
     }
     
     @Test
     void testCallRentCastViaArea_NoListingsFound() {
         // Arrange
-        AreaRequest request = new AreaRequest();
+        AreaDto request = new AreaDto();
         request.setRadius(10);
         request.setLatitude(40.7128);
         request.setLongitude(-74.0060);
-        
-        when(rentCastApiService.updateListingsTableViaArea(
-            anyInt(), anyDouble(), anyDouble()
-        )).thenThrow(new NoListingsFoundException("No listings found"));
+        when(rentCastApiService.updateListingsTableViaArea(anyInt(), anyDouble(), anyDouble())).thenThrow(new NoListingsFoundException("No listings found"));
         
         // Act
         ResponseEntity<?> response = controller.callRentCastViaArea(request);
         
+        // Assert
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    void testCallZillowViaGeoCoordinates_Success() {
+        //Arrange
+        ZillowGeoCoordinatesDto request = new ZillowGeoCoordinatesDto(12.22, 13.22);
+        when(zillowApiService.updateListingsTableViaCoordinates(anyDouble(), anyDouble())).thenReturn(mockListings);
+
+        //Act
+        ResponseEntity<?> response = controller.callZillowViaGeoCoordinates(request);
+
+        //Assert
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
+    void testCallZillowViaGeoCoordinates_FailedApiCall() {
+        //Arrange
+        ZillowGeoCoordinatesDto request = new ZillowGeoCoordinatesDto(12.22, 13.22);
+        when(zillowApiService.updateListingsTableViaCoordinates(anyDouble(), anyDouble())).thenThrow(new FailedApiCallException("API Call Failed"));
+
+        //Act
+        ResponseEntity<?> response = controller.callZillowViaGeoCoordinates(request);
+
+        //Assert
+        assertEquals(HttpStatus.SERVICE_UNAVAILABLE, response.getStatusCode());
+    }
+
+    @Test
+    void testCallAirbnbViaGeoLocation_NoListingsFound() {
+        //Arrange
+        ZillowGeoCoordinatesDto request = new ZillowGeoCoordinatesDto(12.22, 13.22);
+        when(zillowApiService.updateListingsTableViaCoordinates(anyDouble(), anyDouble())).thenThrow(new NoListingsFoundException("No listings found"));
+
+        //Act
+        ResponseEntity<?> response = controller.callZillowViaGeoCoordinates(request);
+
         // Assert
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }

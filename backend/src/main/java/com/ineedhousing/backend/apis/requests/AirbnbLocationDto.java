@@ -1,5 +1,7 @@
 package com.ineedhousing.backend.apis.requests;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CityAndStateRequest {
+public class AirbnbLocationDto {
 
     private String city;
-    private String stateAbv;
+    private LocalDate checkIn;
+    private LocalDate checkOut;
+    private Integer numOfPets;
 }

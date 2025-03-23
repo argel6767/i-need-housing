@@ -53,7 +53,7 @@ public class AirbnbApiService {
             throw new IllegalArgumentException("End date cannot be before the start date!");
         }
         Map response = restClient.get()
-        .uri(uriBuilder -> 
+        .uri(uriBuilder ->
             applyCommonQueryParams(uriBuilder.path("/search-location").queryParam("location", city), // Unique parameter
             checkIn, checkOut, numOfPets) // Shared parameters
         .build())

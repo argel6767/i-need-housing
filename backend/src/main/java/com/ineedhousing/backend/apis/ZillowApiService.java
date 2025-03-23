@@ -12,12 +12,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import com.ineedhousing.backend.apis.exceptions.FailedApiCallException;
+import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
 import com.ineedhousing.backend.geometry.GeometrySingleton;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.housing_listings.HousingListingRepository;
 
+import lombok.extern.java.Log;
+
 
 @Service
+@Log
 public class ZillowApiService {
 
     private final RestClient restClient;
@@ -51,6 +56,12 @@ public class ZillowApiService {
         .retrieve()
         .body(Map.class);
         List<HousingListing> newListings = createNewListings(response);
+        if (response == null) {
+            throw new FailedApiCallException("Api call failed to occur. Check usage rates, and make sure your latitude and longitude are valid.");
+        }
+        if (response.isEmpty()) {
+            throw new NoListingsFoundException(String.format("No listings found for coordinates (%.2f, %.2f) within radius: 5.", latitude, longitude));
+        }
         return removeDuplicateListings(newListings);
     }
 
@@ -61,7 +72,7 @@ public class ZillowApiService {
         results.forEach(result -> {
             Map<String, Object> property = (Map<String, Object>)result.get("property");
 
-            if (result.get("propertyType").equals("propertyGroup")) {
+            if (result.get("resultType").equals("propertyGroup")) {
                 List<HousingListing> units = new ArrayList<>(); //multiple listings for a single result
                 List<Map<String,Object>> unitsGroup = (ArrayList<Map<String,Object>>) property.get("unitsGroup");
 
@@ -131,9 +142,12 @@ public class ZillowApiService {
         
         //property coordinates
         Map<String, Double> coordinates = (Map<String, Double>) property.get("location");
-        Point point = factory.createPoint(
+        if (coordinates != null) {
+            Point point = factory.createPoint(
             new Coordinate(coordinates.get("longitude"), coordinates.get("latitude")));
-        newListing.setLocation(point);
+            newListing.setLocation(point);
+        }
+        newListing.setLocation(null);
 
         //address built using various fields
         Map<String, String> addressDetails = (Map<String, String>) property.get("address");
@@ -145,7 +159,7 @@ public class ZillowApiService {
         newListing.setAddress(addressBuilder.toString());
 
         //listing url built using the zpid field
-        String zillowId = (String) property.get("zpid");
+        String zillowId = String.valueOf(property.get("zpid")) ;
         StringBuilder urlBuilder = new StringBuilder();
         urlBuilder.append("https://www.zillow.com/homedetails/");
         urlBuilder.append(zillowId);

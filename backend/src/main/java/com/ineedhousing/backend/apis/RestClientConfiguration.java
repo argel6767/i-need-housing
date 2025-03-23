@@ -101,4 +101,11 @@ public class RestClientConfiguration {
         .build();
     }
 
+    @Bean(name = "Google GeoCode API")
+    RestClient googleGeoCodeRestClient() {
+        return RestClient.builder()
+        .baseUrl("https://maps.googleapis.com/maps/api/geocode/json")
+        .build();
+    }
+
 }

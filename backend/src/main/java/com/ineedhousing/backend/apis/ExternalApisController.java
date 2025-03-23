@@ -5,10 +5,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ineedhousing.backend.apis.exceptions.FailedApiCallException;
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
-import com.ineedhousing.backend.apis.requests.AirbnbGeoCoordinateRequest;
-import com.ineedhousing.backend.apis.requests.AirbnbLocationRequest;
-import com.ineedhousing.backend.apis.requests.AreaRequest;
-import com.ineedhousing.backend.apis.requests.CityAndStateRequest;
+import com.ineedhousing.backend.apis.requests.AirbnbGeoCoordinatesDto;
+import com.ineedhousing.backend.apis.requests.AirbnbLocationDto;
+import com.ineedhousing.backend.apis.requests.AreaDto;
+import com.ineedhousing.backend.apis.requests.CityAndStateDto;
+import com.ineedhousing.backend.apis.requests.ZillowGeoCoordinatesDto;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 
 import java.util.List;
@@ -28,10 +29,12 @@ public class ExternalApisController {
 
     private final AirbnbApiService airbnbApiService;
     private final RentCastAPIService rentCastAPIService;
+    private final ZillowApiService zillowApiService;
 
-    public ExternalApisController (AirbnbApiService airbnbApiService, RentCastAPIService rentCastAPIService) {
+    public ExternalApisController (AirbnbApiService airbnbApiService, RentCastAPIService rentCastAPIService, ZillowApiService zillowApiService) {
         this.airbnbApiService = airbnbApiService;
         this.rentCastAPIService = rentCastAPIService;
+        this.zillowApiService = zillowApiService;
     }
 
     /**
@@ -40,10 +43,10 @@ public class ExternalApisController {
      * @return
      */
     @PostMapping("/airbnb/location")
-    public ResponseEntity<?> callAirbnbViaLocation(@RequestBody AirbnbLocationRequest request) {
+    public ResponseEntity<?> callAirbnbViaLocation(@RequestBody AirbnbLocationDto request) {
         try {
             List<HousingListing> newListings = airbnbApiService.updateListingViaLocation(request.getCity(), request.getCheckIn(), request.getCheckOut(), request.getNumOfPets());
-            return ResponseEntity.ok(newListings);
+            return new ResponseEntity<>(newListings, HttpStatus.CREATED);
         }
         catch (FailedApiCallException fapce) {
             return new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
@@ -59,10 +62,10 @@ public class ExternalApisController {
      * @return
      */
     @PostMapping("/airbnb/geo-coords")
-    public ResponseEntity<?> callAirbnbViaGeoLocation(@RequestBody AirbnbGeoCoordinateRequest request) {
+    public ResponseEntity<?> callAirbnbViaGeoLocation(@RequestBody AirbnbGeoCoordinatesDto request) {
         try {
             List<HousingListing> newListings = airbnbApiService.updateHousingListingsViaGeoCoordinates(request.getAreaCorners().get(0), request.getAreaCorners().get(1), request.getAreaCorners().get(2), request.getAreaCorners().get(3), request.getCheckIn(), request.getCheckOut(), request.getNumOfPets());
-            return ResponseEntity.ok(newListings);
+            return new ResponseEntity<>(newListings, HttpStatus.CREATED);
         }
         catch (FailedApiCallException fapce) {
             return new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
@@ -78,10 +81,10 @@ public class ExternalApisController {
      * @return
      */
     @PostMapping("/rent-cast/location")
-    public ResponseEntity<?> callRentCastViaLocation(@RequestBody CityAndStateRequest request) {
+    public ResponseEntity<?> callRentCastViaLocation(@RequestBody CityAndStateDto request) {
         try {
-            List<HousingListing> newListing = rentCastAPIService.updateListingsTableViaLocation(request.getCity(), request.getStateAbv());
-            return ResponseEntity.ok(newListing);
+            List<HousingListing> newListings = rentCastAPIService.updateListingsTableViaLocation(request.getCity(), request.getStateAbv());
+            return new ResponseEntity<>(newListings, HttpStatus.CREATED);
         } 
         catch (FailedApiCallException fapce) {
             return new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
@@ -97,11 +100,11 @@ public class ExternalApisController {
      * @return
      */
     @PostMapping("/rent-cast/area")
-    public ResponseEntity<?> callRentCastViaArea(@RequestBody AreaRequest request) {
+    public ResponseEntity<?> callRentCastViaArea(@RequestBody AreaDto request) {
         try {
-            List<HousingListing> newListing = rentCastAPIService.updateListingsTableViaArea(request.getRadius(), request.getLatitude(), request.getLongitude());
-            return ResponseEntity.ok(newListing);
-        } 
+            List<HousingListing> newListings = rentCastAPIService.updateListingsTableViaArea(request.getRadius(), request.getLatitude(), request.getLongitude());
+            return new ResponseEntity<>(newListings, HttpStatus.CREATED);
+        }
         catch (FailedApiCallException fapce) {
             return new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -109,5 +112,18 @@ public class ExternalApisController {
             return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
         }
     }
-    
+
+    @PostMapping("/zillow/geo-coords")
+    public ResponseEntity<?> callZillowViaGeoCoordinates(@RequestBody ZillowGeoCoordinatesDto request) {
+        try {
+            List<HousingListing> newListings = zillowApiService.updateListingsTableViaCoordinates(request.getLatitude(), request.getLongitude());
+            return new ResponseEntity<>(newListings, HttpStatus.CREATED);
+        }
+        catch (FailedApiCallException fapce) {
+            return new ResponseEntity<>(fapce.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        catch (NoListingsFoundException nlfe) {
+            return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
+        }
+    }
 }
