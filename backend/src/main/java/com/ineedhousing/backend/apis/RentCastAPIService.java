@@ -124,6 +124,7 @@ public class RentCastAPIService {
                 Point point = factory.createPoint(
                 new Coordinate((Double)listing.get("longitude"), (Double)listing.get("latitude")));
                 newListing.setLocation(point);
+                //TODO ADD GOOGLE CODE API CALL HERE IN CASE OF NULL COORDS
                 newListing.setAddress((String)listing.get("formattedAddress"));
                 newListing.setPropertyType((String)listing.get("propertyType"));
                 newListing.setNumBeds((Integer)listing.get("bedrooms"));
