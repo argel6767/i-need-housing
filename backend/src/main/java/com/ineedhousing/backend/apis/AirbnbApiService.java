@@ -118,15 +118,21 @@ public class AirbnbApiService {
         List<HousingListing> newListings = new ArrayList<>();
         listings.stream().forEach(listing -> {
             HousingListing housingListing = new HousingListing();
+            //source and title
             housingListing.setSource(SOURCE);
             housingListing.setTitle((String) listing.get("name"));
+            
+            //rate
             Map<String, Object> priceInfo = (Map<String, Object>) listing.get("price");
             Integer rate = (Integer) priceInfo.get("rate");
             housingListing.setRate(rate.doubleValue());
+
+            //property coordinates
             Point point = factory.createPoint(
                 new Coordinate((Double)listing.get("lng"), (Double)listing.get("lat"))
             );
             housingListing.setLocation(point);
+
             housingListing.setAddress((String)listing.get("address"));
             housingListing.setListingUrl((String)listing.get("deeplink"));
             housingListing.setImageUrls((List<String>)listing.get("images"));
