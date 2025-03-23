@@ -21,7 +21,13 @@ public class PolygonCreator {
         GeometricShapeFactory factory = new GeometricShapeFactory();
         factory.setNumPoints(numSides);
         factory.setCentre(center.getCoordinate());
-        factory.setSize(radius*2);
+        
+        //adjusting done to the radius to be in degrees and also being accurate due to earth curvature
+        double radiusInDegrees = radius / 69.0;
+        double latitudeCorrection = Math.cos(Math.toRadians(center.getY()));
+        double adjustedRadiusInDegrees = radiusInDegrees / latitudeCorrection;
+
+        factory.setSize(adjustedRadiusInDegrees*2);
         Polygon circle = factory.createCircle();
         circle.setSRID(center.getSRID());
         return circle;
