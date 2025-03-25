@@ -42,10 +42,10 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
             sessionStorage.setItem("email", credentials.username);
             router.push(route)
         }
-        if (data === "user is not verified") {
+        else if (data === "user is not verified") {
             setIsRequestingEmail(true);
         }
-        else {
+        else if (data === "user could not be created" || data === "login failed") {
             setIsCallFailed(true);
             await sleep(1700);
             setIsCallFailed(false);
@@ -54,7 +54,6 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
 
     const handleResendHref = (e:any) => {
         e.preventDefault();
-        console.log("navigating to /sign-up/verify");
         router.push("/sign-up/verify");
     }
 

@@ -23,7 +23,7 @@ export const register = async (requestBody: AuthenticateUserDto): Promise<any> =
     }
     catch (error: any) {
         console.log(failedCallMessage(error));
-        return null;
+        return "user could not be created";
     }
 }
 
@@ -47,7 +47,7 @@ export const login = async (requestBody: AuthenticateUserDto): Promise<any> => {
         if (error.response.status === 401) {
             return "user is not verified";
         }
-        return null;
+        return "login failed";
     }
 }
 

@@ -48,7 +48,7 @@ export const VerificationCode = () => {
         setIsLoading(false);
         if (data === "User verified!") { //success
             setIsVerified(true);
-            await sleep(1500)
+            await sleep(1700)
             router.push("/");
         }
         if (data.includes("Something went wrong and the api call failed")) { //error
@@ -73,8 +73,8 @@ export const VerificationCode = () => {
     if (isVerified) {
         return (
             <section className="flex flex-col gap-2 text-center mt-3">
-                <h1 className="text-lg font-semibold">Account Verified!</h1>
-                <p>Your account has been successfully verified. You will be redirected to the login page shortly.</p>
+                <h1 className="text-lg font-semibold">You Are Pre-Registered!</h1>
+                <p>Your account has been successfully verified. You will be redirected to the landing page shortly. Welcome to INeedHousing</p>
             </section>
         )
     }
