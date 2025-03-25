@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { GlobalProvider } from "@/components/GlobalContext";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 
 const geistSans = Geist({
@@ -32,7 +33,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <GlobalProvider>
-          <Providers>{children}</Providers>
+          <Providers>
+		{children}
+		<SpeedInsights/>
+	</Providers>
         </GlobalProvider>
       </body>
     </html>
