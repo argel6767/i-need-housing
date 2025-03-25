@@ -6,14 +6,15 @@ import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserService;
 import jakarta.transaction.Transactional;
 
+
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import java.util.Set;
 /**
  * Holds business logic for Favorite Listings
  */
@@ -67,15 +68,17 @@ public class FavoriteListingService {
      * @throws UsernameNotFoundException
      * @return List<FavoriteListing>
      */
-    @Transactional
-    public List<FavoriteListing> deleteListings(String email, List<Long> ids) {
-        User user = userService.getUserByEmail(email);
-        List<FavoriteListing> currentListings = user.getFavoriteListings();
-        List<FavoriteListing> removedListings = favoriteListingRepository.findAllById(ids);
-        currentListings.removeAll(removedListings);
-        userService.saveUser(user);
-        return currentListings;
-    }
+@Transactional
+public List<FavoriteListing> deleteListings(String email, List<Long> ids) {
+    User user = userService.getUserByEmail(email);
+    List<FavoriteListing> currentListings = user.getFavoriteListings();
+   // Create a set of IDs to be removed for efficient lookup
+    Set<Long> idsToRemove = new HashSet<>(ids);
+   // Use removeIf to filter out the listings with matching IDs
+    currentListings.removeIf(listing -> idsToRemove.contains(listing.getId()));
+    userService.saveUser(user);
+    return currentListings;
+}
 
     /**
      * deletes all favorite listing of users by set a users favoriteListings

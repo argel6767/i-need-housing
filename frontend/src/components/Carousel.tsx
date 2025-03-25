@@ -36,9 +36,15 @@ interface ArrowImageCarouselProps  {
  * A carousel that renders an image at a time with arrows on both side to choose which to render
  * @param param
  */
-export const ArrowImageCarousel = ({images = ["./placeholder.jpg"]}:ArrowImageCarouselProps) => {
+export const ArrowImageCarousel = ({images = []}:ArrowImageCarouselProps) => {
 
     const numOfImages = images?.length ?? 0;
+
+    //no images so placeholder is needed
+    if (images.length == 0) {
+        images.push("./placeholder.jpg");
+    }
+
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
     const goToPrevious = () => {
@@ -78,7 +84,7 @@ export const ArrowImageCarousel = ({images = ["./placeholder.jpg"]}:ArrowImageCa
         {/* Dots Indicator */}
         <div className="flex justify-center space-x-2 py-3">
             {images.map((_, index) => (
-            <button key={index} onClick={() => setCurrentIndex(index)} className={`w-3 h-3 rounded-full ${index === currentIndex ? "bg-white" : "bg-gray-400"}`}/>
+            <button key={index} onClick={() => setCurrentIndex(index)} className={`w-3 h-3 rounded-full ${index === currentIndex ? "bg-white" : "bg-gray-400"} mt-2`}/>
         ))}
         </div>
         </>

@@ -37,9 +37,9 @@ export const getAllFavoriteListings = async (email: string): Promise<Array<Favor
  */
 export const addNewFavoriteListings = async (email: string, requestBody: favoriteListingsRequest): Promise<Array<FavoriteListing>> => {
     try {
-        const response = await apiClient.put(`${MODULE_MAPPING}/${email}`, requestBody);
+        const response = await apiClient.put(`${MODULE_MAPPING}/${email}/listings`, requestBody);
         if (response.status === 201) {
-            return response.data;    
+            return response.data;
         }
         console.log(response.data);
         return [];
@@ -56,11 +56,11 @@ export const addNewFavoriteListings = async (email: string, requestBody: favorit
  * @param requestBody 
  * @returns 
  */
-export const deleteFavoriteListings = async (email: string, requestBody: favoriteListingsRequest): Promise<Array<FavoriteListing>> => {
+export const deleteFavoriteListings = async (email: string, requestBody: any): Promise<Array<FavoriteListing>> => {
     try {
-        const response = await apiClient.post(`${MODULE_MAPPING}/${email}`, requestBody);
+        const response = await apiClient.post(`${MODULE_MAPPING}/${email}/listings`, requestBody);
         if (response.status === 200) {
-            return response.data;    
+            return response.data; 
         }
         console.log(response.data);
         return [];

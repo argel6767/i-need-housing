@@ -56,7 +56,7 @@ const Home = () => {
             </div>
             {isModalUp && ( /** This modal is rendered when a user clicks on a specific listing off the listings sidebar */
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade" onClick={() => setIsModalUp(false)}>
-                    <div className="relative p-6 rounded-xl shadow-lg flex flex-col gap-5 bg-slate-200 w-2/5 h-2/3 justify-center overflow-y-clip" onClick={(e) => e.stopPropagation()}>
+                    <div className="relative p-6 rounded-xl shadow-lg flex flex-col gap-5 bg-slate-200 w-11/12 md:w-3/4 lg:w-2/5 max-h-[100vh] justify-center overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                         <ListingModal listing={renderedListing} setIsModalUp={setIsModalUp}/>
                     </div>
                 </div>

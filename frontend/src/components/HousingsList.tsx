@@ -6,7 +6,9 @@ import { Loading } from "./Loading"
 import { useEffect, useRef, useState } from "react"
 import { useGlobalContext } from "./GlobalContext"
 import { ArrowImageCarousel } from "./Carousel"
-import { CircleX } from "lucide-react"
+import { CircleX, Star } from "lucide-react"
+import { addNewFavoriteListings, deleteAllFavorites, deleteFavoriteListings } from "@/endpoints/favorites"
+import { favoriteListingsRequest } from "@/interfaces/requests/favoriteListingsRequests"
 
 
 
@@ -14,8 +16,6 @@ interface ListingModalProps {
     listing?:HouseListing
     setIsModalUp:React.Dispatch<React.SetStateAction<boolean>>
 }
-
-
 
 //
 /**
@@ -37,11 +37,11 @@ export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
     const getOriginalListingUrl = () => {
         if (!listing?.listingUrl) {
             return (
-                "N/A"
+                <p>No Original Listing</p>
             )
         }
         return (
-            <a className="hover:underline" href={listing.listingUrl}>Here</a>
+            <a className="hover:underline" href={listing.listingUrl}>View Original Listing</a>
         );
     }
 
@@ -52,26 +52,69 @@ export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
         }
         return listing?.numBaths;
     }
-
     return (
-        <main>
-                    <span className="absolute top-0 right-0">
-                        <button onClick={(e) => {
-                            e.stopPropagation();
-                            setIsModalUp(false);}} className="btn btn-sm btn-circle btn-ghost"><CircleX className="hover:opacity-50" width={40} height={40}/></button>
-                    </span>
-                    <ArrowImageCarousel images={listing?.imageUrls}/>
-                    <h3 className="font-bold text-2xl py-1">{listing?.title}</h3>
-                    <span className="flex justify-between text-xl border-2 border-b-black pb-2"><h2>{listing?.numBeds} Bed(s) | {getNumBaths()} Bathroom(s)</h2><h2>${listing?.rate}/Month</h2></span>
-                    <article className="text-lg">
-                        <p className="py-4">{getDescription()}</p>
-                        <p>Address: {listing?.address}</p>
-                    <span className="flex justify-between"><p className="flex gap-2">Original Listing: {getOriginalListingUrl()}</p> <p>Source: {listing?.source}</p></span>
-                    </article>
-                    
-        </main>
+        <div>
+            <span className="flex justify-end gap-4 pb-2">
+                <FavoriteListing listing={listing}/> 
+                <button onClick={(e) => {e.stopPropagation(); setIsModalUp(false);}} className=""><CircleX className="hover:opacity-50" size={40}/></button>
+            </span>
+            <ArrowImageCarousel images={listing?.imageUrls}/>
+            <h3 className="font-bold text-2xl py-2">{listing?.title}</h3>
+            <span className="flex justify-between text-xl border-2 border-b-black pb-2"><h2>{listing?.numBeds} Bed(s) | {getNumBaths()} Bathroom(s)</h2><h2>${listing?.rate}/Month</h2></span>
+            <article className="text-lg">
+                <p className="py-4">{getDescription()}</p>
+                <p>Address: {listing?.address}</p>
+            <span className="flex justify-between">{getOriginalListingUrl()}<p>Source: {listing?.source}</p></span>
+            </article> 
+        </div>
     )
 }
+
+interface FavoriteListingProps {
+    listing?: HouseListing
+}
+
+const FavoriteListing = ({listing}: FavoriteListingProps) => {
+
+    const [isUserHovering, setIsUserHovering] = useState<boolean>(false);
+    const [isFavorited, setIsFavorited] = useState<boolean>(false)
+    const email = sessionStorage.getItem("email");
+
+    const favoriteListing = async () => {
+        const requestBody:favoriteListingsRequest = {listings: [listing!]};
+        const data = await addNewFavoriteListings(email!, requestBody)
+        setIsFavorited(true);
+        console.log(data);
+    }
+
+    const unFavoriteListing = async () => {
+        const requestBody = {favoriteListingIds: [listing?.id!]};
+        const data = await deleteFavoriteListings(email!, requestBody);
+        setIsFavorited(false);
+        console.log(data);
+    }
+
+    const clearFavorites = async () => {
+        const data = await deleteAllFavorites(email!);
+        console.log(data);
+    }
+
+    const props = {
+        size: 40,
+        color:'#ef4444',
+        ...((isUserHovering || isFavorited)  && { fill: '#ef4444' }),
+        onMouseEnter: () => {setIsUserHovering(true)},
+        onMouseLeave: () => {setIsUserHovering(false)},
+        onClick: () => {isFavorited ? unFavoriteListing() : favoriteListing()}
+    }
+    
+    
+    return (
+        <Star {...props} className="hover:cursor-pointer hover:scale-110 transition-transform duration-300"/> 
+    )
+
+}
+
 
 interface HousingCardProps {
     listing:HouseListing,
