@@ -1,12 +1,17 @@
 "use client"
 
 import { Footer } from "@/components/Footer";
-import { Navbar } from "@/components/Navbar";
+import { MobileNavbar, Navbar } from "@/components/Navbar";
 
 const About = () => {
     return (
-        <main className="h-screen flex flex-col justify-between">
-            <Navbar/>
+        <main className="h-screen flex flex-col justify-between gap-4">
+            <div className="block md:hidden">
+                <MobileNavbar/>
+            </div>
+            <div className="hidden md:block">
+                <Navbar/>
+            </div>
             <article id="about" className="px-4 space-y-2">
                 <h1 className="text-3xl font-semibold italic">About Us</h1>
                 <p>INeedHousing was conjured and developed by Argel Hernandez Amaya (me) as a platform to ease the difficulty of finding temp housing for students during their internships.
