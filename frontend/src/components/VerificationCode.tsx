@@ -59,7 +59,7 @@ export const VerificationCode = () => {
         if (data === "User has already been verified!") { //user already verified
             setIsVerified(true);
             await sleep(1500);
-            router.push("/sign-in");
+            router.push("/");
         }
     }
 
