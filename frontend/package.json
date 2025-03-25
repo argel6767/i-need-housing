@@ -19,7 +19,7 @@
     "embla-carousel-react": "^8.5.2",
     "frontend": "file:",
     "lucide-react": "^0.469.0",
-    "next": "15.1.2",
+    "next": "^15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^2.6.0",
