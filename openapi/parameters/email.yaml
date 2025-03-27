@@ -1,8 +1,0 @@
-parameters:
-  email:
-    name: email
-    in: path
-    required: true
-    description: The email address of the user
-    schema:
-      type: string
