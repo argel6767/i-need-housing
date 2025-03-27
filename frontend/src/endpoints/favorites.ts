@@ -14,7 +14,8 @@ const MODULE_MAPPING = "/favorites";
  * @param email 
  * @returns 
  */
-export const getAllFavoriteListings = async (email: string): Promise<Array<FavoriteListing>> => {
+export const getFavoriteListings = async (): Promise<FavoriteListing[]> => {
+    const email = sessionStorage.getItem("email");
     try {
         const response = await apiClient.get(`${MODULE_MAPPING}/${email}`)
         if (response.data === 200) {
