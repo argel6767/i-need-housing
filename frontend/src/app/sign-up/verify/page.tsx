@@ -11,10 +11,7 @@ import { VerificationCode } from "@/components/VerificationCode";
 const Verify = () => {
     return ( 
         <main className="h-screen flex flex-col items-center justify-between">
-            <div className="flex justify-center items-center pt-4 space-x-2">
-                <Image src={icon} alt="Logo" width={40} height={40}/>
-                <Link href={"/"} className="items-center text-primary text-4xl md:text-6xl font-semibold">INeedHousing</Link>
-            </div>
+                <Link href={"/"} className="flex items-center text-primary text-4xl sm:text-5xl md:text-6xl font-semibold gap-2 pt-5 cursor:pointer">INeedHousing<Image src={icon} alt="Logo" width={40} height={40}/></Link>
                 <section className="rounded-md p-2 bg-white items-center">
                     <div className="flex items-center justify-center my-3">
                     <div className="xl:mx-auto shadow-md p-4 xl:w-full xl:max-w-sm 2xl:max-w-md">

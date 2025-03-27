@@ -51,7 +51,7 @@ export const MobileNavbar = () => {
       </div>
     </div>
   <div className="navbar-center">
-    <Link data-testid="INeedHousing" href={"/"} className="btn btn-ghost text-2xl text-primary font-bold">INeedHousing<Image src={icon} alt="Icon" width={40} height={40}/></Link>
+    <Link data-testid="INeedHousing" href={"/"} className="btn btn-ghost text-3xl sm:text-4xl text-primary font-bold">INeedHousing<Image src={icon} alt="Icon" width={40} height={40}/></Link>
   </div>
   <div className="navbar-end">
   </div>
