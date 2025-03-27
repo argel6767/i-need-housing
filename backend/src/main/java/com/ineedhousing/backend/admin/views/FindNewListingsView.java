@@ -1,6 +1,6 @@
 package com.ineedhousing.backend.admin.views;
 
-import com.ineedhousing.backend.admin.components.SideNavigation;
+import com.ineedhousing.backend.admin.components.Navigation;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,11 +16,13 @@ public class FindNewListingsView extends VerticalLayout {
     public FindNewListingsView(ListingRetrievalForm listingRetrievalForm) {
         setSizeFull();
         this.listingRetrievalForm = listingRetrievalForm;
-        Div main = new Div();
+        VerticalLayout main = new VerticalLayout();
         main.add(new H1("Find New Listings"));
-        main.add(SideNavigation.getSideNav());
+        main.add(Navigation.getHorizontalNav());
         main.setSizeFull();
         main.add(listingRetrievalForm.createApiForm());
+        main.setPadding(true);
+        main.setSpacing(true);
         add(main);
     }
 
