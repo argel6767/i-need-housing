@@ -9,7 +9,7 @@ import { Loading } from "@/components/Loading";
 import { Map } from "@/components/Map";
 import { LoggedInNavBar } from "@/components/Navbar";
 import { filterListingsByPreferences } from "@/endpoints/listings";
-import { useListings, useUserPreferences } from "@/hooks/hooks";
+import { useListings, useUserPreferences, useFavoriteListings } from "@/hooks/hooks";
 import { HouseListing, UserPreference } from "@/interfaces/entities";
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
 import { useEffect, useState } from "react";
@@ -54,6 +54,7 @@ const Home = () => {
             <div className="pt-2">
                 <Filters refetch={refetch} listings={listings} setListings={setListings} />
             </div>
+            /**TODO Maybe have a setIsListingFavorited for effect */
             {isModalUp && ( /** This modal is rendered when a user clicks on a specific listing off the listings sidebar */
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade" onClick={() => setIsModalUp(false)}>
                     <div className="relative p-6 rounded-xl shadow-lg flex flex-col gap-5 bg-slate-200 w-11/12 md:w-3/4 lg:w-2/5 max-h-[100vh] justify-center overflow-y-auto" onClick={(e) => e.stopPropagation()}>
