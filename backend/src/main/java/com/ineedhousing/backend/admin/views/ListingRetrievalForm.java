@@ -24,7 +24,6 @@ import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 
 
 
-
 @Component
 public class ListingRetrievalForm {
 

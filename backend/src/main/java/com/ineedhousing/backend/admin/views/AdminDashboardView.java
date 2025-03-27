@@ -7,6 +7,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 import com.ineedhousing.backend.admin.AdminService;
+import com.ineedhousing.backend.admin.components.SideNavigation;
 import com.ineedhousing.backend.apis.AirbnbApiService;
 import com.ineedhousing.backend.apis.RentCastAPIService;
 import com.ineedhousing.backend.housing_listings.HousingListing;
@@ -34,7 +35,6 @@ import com.vaadin.flow.server.VaadinSession;
 public class AdminDashboardView extends VerticalLayout{
     
     private final AdminService adminService;
-    private GridCreator gridBuilder = new GridCreator();
     private final ListingRetrievalForm listingRetrievalForm;
 
 
@@ -44,63 +44,9 @@ public class AdminDashboardView extends VerticalLayout{
         this.listingRetrievalForm = listingRetrievalForm;
         Div main = new Div();
         main.add(new H1("Admin Dashboard"));
-        main.add(createGridHorizontalLayout());
+        main.add(SideNavigation.getSideNav());
         main.setSizeFull();
-        main.add(listingRetrievalForm.createApiForm());
         add(main);
-    }
-
-
-    private HorizontalLayout createGridHorizontalLayout() {
-        HorizontalLayout grids = new HorizontalLayout();
-        Grid<User> userList = gridBuilder.buildUserGrid(adminService.getAllUsers());
-        VerticalLayout userLayout = createGridAndLabel(userList, "Users");
-        Grid<HousingListing> housingList = gridBuilder.buildHousingGrid(adminService.getAllListings());
-        VerticalLayout housingLayout = createGridAndLabel(housingList, "Housings");
-        grids.add(List.of(userLayout, housingLayout));
-        grids.setWidth("100%");
-        grids.setHeight("45%");
-        return grids;
-    }
-
-    private VerticalLayout createGridAndLabel(Grid<?> grid, String label) {
-        VerticalLayout layout = new VerticalLayout();
-        H2 gridLabel = new H2(label);
-        layout.setWidth("50%");
-        layout.add(List.of(gridLabel, grid));
-        return layout;
-    }
-
-    private class GridCreator {
-    
-        private Grid<User> buildUserGrid(List<User> users) {
-            Grid<User> grid = new Grid<>(User.class, false);
-            grid.addColumn(User::getEmail).setHeader("Email");
-            grid.addColumn(User::getAuthorities).setHeader("Authorities");
-            grid.addColumn(User::getLastLogin).setHeader("Last Logged In");
-            grid.addColumn(User::getCreatedAt).setHeader("Created At");
-            grid.addColumn(User::getIsEnabled).setHeader("Is Verified");
-            grid.setItems(users);
-            grid.setWidth("100%");
-            return grid;
-        }
-
-        private Grid<HousingListing> buildHousingGrid(List<HousingListing> housings) {
-            Grid<HousingListing> grid = new Grid<>(HousingListing.class);
-            grid.removeColumnByKey("imageUrls");
-            grid.removeColumnByKey("coordinates");
-            grid.removeColumnByKey("location");
-            grid.removeColumnByKey("id");
-            grid.addColumn(housing -> {
-                Point location = housing.getLocation();
-                Coordinate coordinates = location.getCoordinate();
-                return String.format("{%.2f, %.2f}", coordinates.getX(), coordinates.getY());
-            }).setHeader("Coordinates");
-            grid.setItems(housings);
-            grid.setWidth("100%");
-            return grid;
-        }
-
     }
 
 }
