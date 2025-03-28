@@ -10,13 +10,15 @@ import { Map } from "@/components/Map";
 import { LoggedInNavBar } from "@/components/Navbar";
 import { filterListingsByPreferences } from "@/endpoints/listings";
 import { useListings, useUserPreferences, useFavoriteListings } from "@/hooks/hooks";
-import { HouseListing, UserPreference } from "@/interfaces/entities";
+import { FavoriteListing, HouseListing, UserPreference } from "@/interfaces/entities";
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
 import { useEffect, useState } from "react";
 
 const Home = () => {
     const [requestBody, setRequestBody] = useState<GetListingsInAreaRequest | null>(null);
     const [listings, setListings] = useState<HouseListing[]>([])
+    const [favoriteListings, setFavoritesListings] = useState<FavoriteListing[]>([])
+    const [isFavorited, setIsFavorited] = useState<boolean>(false);
     const [renderedListing, setRenderedListing] = useState<HouseListing | undefined>(undefined);
     const [isModalUp, setIsModalUp] = useState<boolean>(false);
     const {setCenterLat, setCenterLong, setUserPreferences} = useGlobalContext();
@@ -25,6 +27,7 @@ const Home = () => {
 
       const {isLoading:isGrabbing, isError:isFetchingFailed, data:preferences} = useUserPreferences();
       const {isLoading, isError, data, refetch, isFetching} = useListings(requestBody, {enabled: !!requestBody});
+      const {isLoading:isGettingFavorites, data:favorites, isError:isCallFailed} = useFavoriteListings();
 
     /** sets state of listings should it ever change via the query call */
     useEffect(() => {
@@ -37,7 +40,7 @@ const Home = () => {
             setCenterLong(coords[1]);
             setRequestBody({latitude: coords[0], longitude: coords[1], radius:preferences.maxRadius});
         }
-    }, [preferences]);
+    }, [preferences, setCenterLat, setCenterLong, setUserPreferences]); //possibly get rid of additional dependencies
     
     //setting listings once they're fetched
     useEffect(() => {
@@ -45,6 +48,12 @@ const Home = () => {
             setListings(data);
         }
     }, [data]);
+
+    useEffect(() => {
+        if(favorites) {
+            setFavoritesListings(favorites)
+        }
+    }, [favorites])
 
     return (
         <main className="flex flex-col h-screen">
@@ -54,17 +63,17 @@ const Home = () => {
             <div className="pt-2">
                 <Filters refetch={refetch} listings={listings} setListings={setListings} />
             </div>
-            /**TODO Maybe have a setIsListingFavorited for effect */
+            {/**TODO Maybe have a setIsListingFavorited for effect */}
             {isModalUp && ( /** This modal is rendered when a user clicks on a specific listing off the listings sidebar */
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade" onClick={() => setIsModalUp(false)}>
                     <div className="relative p-6 rounded-xl shadow-lg flex flex-col gap-5 bg-slate-200 w-11/12 md:w-3/4 lg:w-2/5 max-h-[100vh] justify-center overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                        <ListingModal listing={renderedListing} setIsModalUp={setIsModalUp}/>
+                        <ListingModal listing={renderedListing} setIsModalUp={setIsModalUp} isFavorited={isFavorited}/>
                     </div>
                 </div>
             )}
             <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden min-h-[45rem]">
                 <div className="relative flex-grow min-w-0"><Map listings={listings} setRenderedListing={setRenderedListing} setIsModalUp={setIsModalUp}/></div>
-                <HousingSearch city={city} listings={listings} isLoading={isLoading} isFetching={isFetching} setRenderedListing={setRenderedListing} setIsModalUp={setIsModalUp}/>
+                <HousingSearch city={city} listings={listings} isLoading={isLoading} isFetching={isFetching} isGrabbingFavorites = {isGettingFavorites} setRenderedListing={setRenderedListing} setIsModalUp={setIsModalUp} favorites={favorites!} setIsFavorited={setIsFavorited}/>
             </span>
             <div className="w-full border-t-2">
                 <Footer/>
