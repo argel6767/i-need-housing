@@ -49,3 +49,7 @@ export const GroupOfSkeletons = ({numOfSkeletons}: GroupOfSkeletonsProps) => {
         </>
     );
 }
+
+export const LoadingBars = () => {
+    return (<span className="loading loading-bars w-40"></span>)
+}

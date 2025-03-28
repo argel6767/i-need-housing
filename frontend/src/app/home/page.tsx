@@ -8,6 +8,7 @@ import { ListingModal } from "@/components/HousingsList";
 import { Loading } from "@/components/Loading";
 import { Map } from "@/components/Map";
 import { LoggedInNavBar } from "@/components/Navbar";
+import {ProtectedRoute} from "@/components/ProtectedRoute";
 import { filterListingsByPreferences } from "@/endpoints/listings";
 import { useListings, useUserPreferences } from "@/hooks/hooks";
 import { HouseListing, UserPreference } from "@/interfaces/entities";
@@ -47,7 +48,8 @@ const Home = () => {
     }, [data]);
 
     return (
-        <main className="flex flex-col h-screen">
+        <ProtectedRoute>
+            <main className="flex flex-col h-screen">
             <nav >
                 <LoggedInNavBar/>
             </nav>
@@ -68,8 +70,8 @@ const Home = () => {
             <div className="w-full border-t-2">
                 <Footer/>
             </div>
-        </main>
-        
+            </main>
+        </ProtectedRoute>
     )
 }
 

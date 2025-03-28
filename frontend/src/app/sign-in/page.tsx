@@ -6,10 +6,12 @@ import Link from "next/link";
 import Image from "next/image";
 import icon from "../../../public/file.svg"
 import { login } from "@/endpoints/auths";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 const SignIn = () => {
     return (
-        <main className="h-screen flex flex-col items-center justify-between">
+        <ProtectedRoute>
+            <main className="h-screen flex flex-col items-center justify-between">
             <div className="flex justify-center items-center pt-4 space-x-2">
                 <Image src={icon} alt="Logo" width={40} height={40}/>
                 <Link href={"/"} className="items-center text-primary text-4xl md:text-6xl font-semibold">INeedHousing</Link>
@@ -25,7 +27,8 @@ const SignIn = () => {
                 <div className="w-full border-t-2">
                     <Footer/>
                 </div>
-        </main>
+        </main> 
+        </ProtectedRoute>
     )
 }
 
