@@ -2,10 +2,12 @@ import os
 import subprocess
 from pathlib import Path
 import platform
+import time
 
 '''
 Automates the process of signing into Azure, logging into an Azure Container Registry (ACR),
 building a Docker image, and pushing it to the ACR. It uses Azure CLI and Docker commands.
+This script also turns off and back on the App Service to guarantee a fresh instance
 '''
 
 backend = Path.cwd()/"backend"
@@ -44,12 +46,27 @@ def push_image():
     print(push_image)
     print("Image pushed\n\n")
     
+def stop_start_app_service():
+    print("Stopping App Service\n\n")
+    stop = subprocess.run(["az", "webapp", "stop", "--name", "i-need-housing-backend", "--resource-group", "i-need-housing"], shell=isOSWindows)
+    print(stop)
+    print("App Service stopped\n\n")
+    
+    # Give it a moment to fully stop
+    time.sleep(60)
+    
+    print("Starting App Service\n\n")
+    start = subprocess.run(["az", "webapp", "start", "--name", "i-need-housing-backend", "--resource-group", "i-need-housing"], shell=isOSWindows)
+    print(start)
+    print("App Service started\n\n")
+    
 def main():
     load_env_file()
     sign_in_to_azure()
     sign_in_to_acr()
     build_image()
     push_image()
+    stop_start_app_service()
     
 if __name__ == "__main__":
     main()
