@@ -51,7 +51,7 @@ public class SecurityConfiguration{
                 .authorizeHttpRequests(authorize -> authorize.requestMatchers("/","/auths/**").permitAll()
                 // ✅ Allow Vaadin static files
                 .requestMatchers("/VAADIN/**", "/frontend/**").permitAll()
-                .requestMatchers("/admin/**").permitAll() //TODO CHANGE THIS BACK ONCE DONE!!!!
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
