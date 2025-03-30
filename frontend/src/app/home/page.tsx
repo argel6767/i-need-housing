@@ -28,7 +28,7 @@ const Home = () => {
       const {isLoading, isError, data, refetch, isFetching} = useListings(requestBody, {enabled: !!requestBody});
       const {isLoading:isGettingFavorites, data:favorites, isError:isCallFailed} = useFavoriteListings();
 
-    /** sets state of listings should it ever change via the query call */
+    /** sets state of user preferences should it ever change via the query call */
     useEffect(() => {
         if (preferences) {
             console.log("Preferences received:", preferences);
@@ -48,6 +48,7 @@ const Home = () => {
         }
     }, [data]);
 
+    //sets favorite listings once they fetched
     useEffect(() => {
         if(favorites) {
             setFavoriteListings(favorites)

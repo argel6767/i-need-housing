@@ -1,8 +1,6 @@
 "use client"
 
 import { HouseListing } from "@/interfaces/entities"
-import Image from "next/image"
-import { Loading } from "./Loading"
 import { useEffect, useRef, useState } from "react"
 import { useGlobalContext } from "./GlobalContext"
 import { ArrowImageCarousel } from "./Carousel"
