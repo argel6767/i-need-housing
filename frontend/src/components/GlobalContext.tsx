@@ -1,5 +1,5 @@
 'use client'
-import { User, UserPreference } from "@/interfaces/entities";
+import { FavoriteListing, User, UserPreference } from "@/interfaces/entities";
 import {createContext, useContext, useMemo, useState, ReactNode, use} from "react";
 
 interface GlobalContextType {
@@ -11,6 +11,8 @@ interface GlobalContextType {
     setUser: React.Dispatch<React.SetStateAction<User | null>>;
     userPreferences: UserPreference | null;
     setUserPreferences: React.Dispatch<React.SetStateAction<UserPreference | null>>;
+    favoriteListings: FavoriteListing[]
+    setFavoriteListings: React.Dispatch<React.SetStateAction<FavoriteListing[]>>
   }
   
   const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -30,10 +32,11 @@ export const GlobalProvider = ({children}:GlobalProviderProps) => {
     const [centerLong, setCenterLong] = useState<number>(0.0);
     const [user, setUser] = useState<User | null>(null);
     const [userPreferences, setUserPreferences] = useState<UserPreference | null>(null);
+    const [favoriteListings, setFavoriteListings] = useState<FavoriteListing[]>([]);
 
     const contextValue = useMemo(() => ({
-        centerLat, setCenterLat, centerLong, setCenterLong, user, setUser, userPreferences, setUserPreferences
-    }), [centerLat, centerLong, user, userPreferences]);
+        centerLat, setCenterLat, centerLong, setCenterLong, user, setUser, userPreferences, setUserPreferences, favoriteListings, setFavoriteListings
+    }), [centerLat, centerLong, user, userPreferences, favoriteListings]);
 
     return (
         <GlobalContext.Provider value={contextValue}>

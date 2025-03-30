@@ -28,7 +28,7 @@ const CollapseDown = ({children, label, isOpen, onToggle}: CollapseDownProps) =>
             </button>
         
             {isOpen && (
-                <div className="absolute z-10 min-w-72 w-auto bg-white border rounded-b-lg shadow-lg">
+                <div className="absolute z-40 min-w-72 w-auto bg-white border rounded-b-lg shadow-lg">
                     <div className="p-4 border-t">
                         {children}
                     </div>
