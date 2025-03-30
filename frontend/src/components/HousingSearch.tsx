@@ -12,13 +12,11 @@ import { GroupOfSkeletons, Loading, Skeleton, SkeletonText } from "./Loading";
 interface HousingSearchProps {
     city: string
     listings: HouseListing[]
-    favorites: FavoriteListing[]
     isLoading: boolean
     isFetching: boolean
     isGrabbingFavorites: boolean
     setRenderedListing: React.Dispatch<React.SetStateAction<HouseListing | undefined>>
     setIsModalUp: React.Dispatch<React.SetStateAction<boolean>>,
-    setIsFavorited: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 /**
@@ -26,17 +24,8 @@ interface HousingSearchProps {
  * @param param
  * @returns 
  */
-export const HousingSearch = ({city, listings, favorites, isLoading, isFetching, isGrabbingFavorites, setRenderedListing, setIsModalUp, setIsFavorited}:HousingSearchProps) => {
+export const HousingSearch = ({city, listings, isLoading, isFetching, isGrabbingFavorites, setRenderedListing, setIsModalUp}:HousingSearchProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(true);
-
-    const isAFavoriteListing = (listing: HouseListing):boolean => {
-        favorites.forEach((favorite) => {
-            if (favorite.housingListing.id === listing.id) {
-                return true;
-            }
-        })
-        return false;
-    }
 
     return (
         <main className="relative h-full">
@@ -70,7 +59,7 @@ export const HousingSearch = ({city, listings, favorites, isLoading, isFetching,
                             listings
                             .filter((listing) => (listing.coordinates !== null))
                             .map((listing) => (
-                                <HousingCard key={listing.id} listing={listing} setIsModalUp={setIsModalUp} setRenderedListing={setRenderedListing} isFavorited={isAFavoriteListing(listing)} setIsFavorited={setIsFavorited}/>
+                                <HousingCard key={listing.id} listing={listing} setIsModalUp={setIsModalUp} setRenderedListing={setRenderedListing}/>
                             ))}
                         </ul>
                     </nav>

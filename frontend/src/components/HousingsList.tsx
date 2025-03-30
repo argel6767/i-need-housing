@@ -15,7 +15,6 @@ import { favoriteListingsRequest } from "@/interfaces/requests/favoriteListingsR
 interface ListingModalProps {
     listing?:HouseListing
     setIsModalUp:React.Dispatch<React.SetStateAction<boolean>>
-    isFavorited:boolean
 }
 
 //
@@ -24,7 +23,18 @@ interface ListingModalProps {
  * @param param
  * @returns
  */
-export const ListingModal = ({listing, setIsModalUp, isFavorited}: ListingModalProps) => {
+export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
+
+    const [isFavorited, setIsFavorited] = useState<boolean>(false);
+    const {favoriteListings} = useGlobalContext();
+
+
+    //Checks to see if rendered listing is a favorited one
+    useEffect(() => {
+            const isCurrentlyFavorited = favoriteListings ? 
+            favoriteListings.some(fav => fav.housingListing.id === listing?.id) : false;
+            setIsFavorited(isCurrentlyFavorited);
+    }, [favoriteListings, listing])
 
     //gets description or returns default text when there is none
     const getDescription = () => {
@@ -53,10 +63,15 @@ export const ListingModal = ({listing, setIsModalUp, isFavorited}: ListingModalP
         }
         return listing?.numBaths;
     }
+
+    if (!favoriteListings) {
+        return (<div>Loading</div>)
+    }
+
     return (
         <div>
             <span className="flex justify-end gap-4 pb-2">
-                <FavoriteListing listing={listing} isFavoritedListing={isFavorited}/> 
+                <FavoriteListing listing={listing} isFavoritedListing={isFavorited} setIsFavoritedListing={setIsFavorited}/> 
                 <button onClick={(e) => {e.stopPropagation(); setIsModalUp(false);}} className=""><CircleX className="hover:opacity-50" size={40}/></button>
             </span>
             <ArrowImageCarousel images={listing?.imageUrls}/>
@@ -74,25 +89,35 @@ export const ListingModal = ({listing, setIsModalUp, isFavorited}: ListingModalP
 interface FavoriteListingProps {
     listing?: HouseListing,
     isFavoritedListing:boolean,
+    setIsFavoritedListing: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const FavoriteListing = ({listing, isFavoritedListing}: FavoriteListingProps) => {
+const FavoriteListing = ({listing, isFavoritedListing, setIsFavoritedListing}: FavoriteListingProps) => {
 
     const [isUserHovering, setIsUserHovering] = useState<boolean>(false);
-    const [isFavorited, setIsFavorited] = useState<boolean>(isFavoritedListing)
+    const {favoriteListings, setFavoriteListings} = useGlobalContext();
     const email = sessionStorage.getItem("email");
 
+
+    //adds listing to favorites
     const favoriteListing = async () => {
         const requestBody:favoriteListingsRequest = {listings: [listing!]};
         const data = await addNewFavoriteListings(email!, requestBody)
-        setIsFavorited(true);
+        setIsFavoritedListing(true);
+        setFavoriteListings(data);
         console.log(data);
     }
 
+    //removes listing in both global array and in backend
     const unFavoriteListing = async () => {
-        const requestBody = {favoriteListingIds: [listing?.id!]};
+        setFavoriteListings((prev) => {
+            return prev.filter(favorite => favorite.id !== favoriteListing?.id)
+        })
+
+        const favoriteListing = favoriteListings.find(favoriteListing => favoriteListing.housingListing.id === listing?.id);
+        const requestBody = {favoriteListingIds: [favoriteListing?.id]};
         const data = await deleteFavoriteListings(email!, requestBody);
-        setIsFavorited(false);
+        setIsFavoritedListing(false);
         console.log(data);
     }
 
@@ -100,10 +125,10 @@ const FavoriteListing = ({listing, isFavoritedListing}: FavoriteListingProps) =>
     const props = {
         size: 40,
         color:'#ef4444',
-        ...((isUserHovering || isFavorited)  && { fill: '#ef4444' }),
+        ...(( isFavoritedListing || isUserHovering)  && { fill: '#ef4444' }),
         onMouseEnter: () => {setIsUserHovering(true)},
         onMouseLeave: () => {setIsUserHovering(false)},
-        onClick: () => {isFavorited ? unFavoriteListing() : favoriteListing()}
+        onClick: () => {isFavoritedListing ? unFavoriteListing() : favoriteListing()}
     }
     
     
@@ -118,11 +143,9 @@ interface HousingCardProps {
     listing:HouseListing,
     setRenderedListing:React.Dispatch<React.SetStateAction<HouseListing | undefined>>,
     setIsModalUp:React.Dispatch<React.SetStateAction<boolean>>
-    isFavorited:boolean,
-    setIsFavorited:React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const HousingCard = ({listing, setRenderedListing, setIsModalUp, isFavorited, setIsFavorited}:HousingCardProps) => {
+export const HousingCard = ({listing, setRenderedListing, setIsModalUp}:HousingCardProps) => {
 
     const {setCenterLat, setCenterLong} = useGlobalContext();
 
@@ -140,7 +163,6 @@ export const HousingCard = ({listing, setRenderedListing, setIsModalUp, isFavori
     const handlePropertySelection = () => {
         handleCenterPositionChange();
         setRenderedListing(listing);
-        setIsFavorited(isFavorited);
         console.log(listing);
         setIsModalUp(true);
     }
@@ -153,7 +175,7 @@ export const HousingCard = ({listing, setRenderedListing, setIsModalUp, isFavori
     return (
         <main className="hover:scale-105 hover:cursor-pointer transition-transform duration-300 rounded-lg bg-slate-200" onClick={handlePropertySelection}>
             <span className=" bg-base-200 shadow-xl">
-                <Image className="aspect-[300/175] w-full h-auto object-cover" src={hasImages()? listing.imageUrls[0] : "./placeholder.jpg"} alt="Property image"/> 
+                <img className="aspect-[300/175] w-full h-auto object-cover" src={hasImages()? listing.imageUrls[0] : "./placeholder.jpg"} alt="Property image"/> 
                 <h2 className="text-lg text-center">{listing.title}</h2>
             </span>
         </main>

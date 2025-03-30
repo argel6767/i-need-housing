@@ -17,8 +17,7 @@ import { useEffect, useState } from "react";
 const Home = () => {
     const [requestBody, setRequestBody] = useState<GetListingsInAreaRequest | null>(null);
     const [listings, setListings] = useState<HouseListing[]>([])
-    const [favoriteListings, setFavoritesListings] = useState<FavoriteListing[]>([])
-    const [isFavorited, setIsFavorited] = useState<boolean>(false);
+    const {setFavoriteListings} = useGlobalContext();
     const [renderedListing, setRenderedListing] = useState<HouseListing | undefined>(undefined);
     const [isModalUp, setIsModalUp] = useState<boolean>(false);
     const {setCenterLat, setCenterLong, setUserPreferences} = useGlobalContext();
@@ -51,7 +50,8 @@ const Home = () => {
 
     useEffect(() => {
         if(favorites) {
-            setFavoritesListings(favorites)
+            setFavoriteListings(favorites)
+            console.log(`Favorites fetched from backend on page.tsx ${favorites}`);
         }
     }, [favorites])
 
@@ -67,13 +67,13 @@ const Home = () => {
             {isModalUp && ( /** This modal is rendered when a user clicks on a specific listing off the listings sidebar */
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade" onClick={() => setIsModalUp(false)}>
                     <div className="relative p-6 rounded-xl shadow-lg flex flex-col gap-5 bg-slate-200 w-11/12 md:w-3/4 lg:w-2/5 max-h-[100vh] justify-center overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                        <ListingModal listing={renderedListing} setIsModalUp={setIsModalUp} isFavorited={isFavorited}/>
+                        <ListingModal listing={renderedListing} setIsModalUp={setIsModalUp}/>
                     </div>
                 </div>
             )}
             <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden min-h-[45rem]">
                 <div className="relative flex-grow min-w-0"><Map listings={listings} setRenderedListing={setRenderedListing} setIsModalUp={setIsModalUp}/></div>
-                <HousingSearch city={city} listings={listings} isLoading={isLoading} isFetching={isFetching} isGrabbingFavorites = {isGettingFavorites} setRenderedListing={setRenderedListing} setIsModalUp={setIsModalUp} favorites={favorites!} setIsFavorited={setIsFavorited}/>
+                <HousingSearch city={city} listings={listings} isLoading={isLoading} isFetching={isFetching} isGrabbingFavorites = {isGettingFavorites} setRenderedListing={setRenderedListing} setIsModalUp={setIsModalUp}/>
             </span>
             <div className="w-full border-t-2">
                 <Footer/>

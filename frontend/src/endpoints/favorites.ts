@@ -18,7 +18,7 @@ export const getFavoriteListings = async (): Promise<FavoriteListing[]> => {
     const email = sessionStorage.getItem("email");
     try {
         const response = await apiClient.get(`${MODULE_MAPPING}/${email}`)
-        if (response.data === 200) {
+        if (response.status === 200) {
             return response.data;
         }
         console.log(response.data);
