@@ -5,12 +5,12 @@ import { Footer } from "@/components/Footer";
 import { useGlobalContext } from "@/components/GlobalContext";
 import { HousingSearch } from "@/components/HousingSearch";
 import { ListingModal } from "@/components/HousingsList";
-import { Loading } from "@/components/Loading";
+
 import { Map } from "@/components/Map";
 import { LoggedInNavBar } from "@/components/Navbar";
 import { filterListingsByPreferences } from "@/endpoints/listings";
 import { useListings, useUserPreferences, useFavoriteListings } from "@/hooks/hooks";
-import { FavoriteListing, HouseListing, UserPreference } from "@/interfaces/entities";
+import {  HouseListing } from "@/interfaces/entities";
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
 import { useEffect, useState } from "react";
 

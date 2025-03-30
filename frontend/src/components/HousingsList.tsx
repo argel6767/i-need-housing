@@ -105,12 +105,11 @@ const FavoriteListing = ({listing, isFavoritedListing, setIsFavoritedListing}: F
         const data = await addNewFavoriteListings(email!, requestBody)
         setIsFavoritedListing(true);
         setFavoriteListings(data);
-        console.log(data);
     }
 
     //removes listing in both global array and in backend
     const unFavoriteListing = async () => {
-        setFavoriteListings((prev) => {
+        setFavoriteListings((prev) => { //remove listing in global list incase backend fails
             return prev.filter(favorite => favorite.id !== favoriteListing?.id)
         })
 
@@ -118,7 +117,7 @@ const FavoriteListing = ({listing, isFavoritedListing, setIsFavoritedListing}: F
         const requestBody = {favoriteListingIds: [favoriteListing?.id]};
         const data = await deleteFavoriteListings(email!, requestBody);
         setIsFavoritedListing(false);
-        console.log(data);
+        setFavoriteListings(data);
     }
 
 
