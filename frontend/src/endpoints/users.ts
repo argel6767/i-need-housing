@@ -1,5 +1,4 @@
 import { SetUserTypeDto } from "@/interfaces/requests/userRequests";
-import axios from "axios";
 import { apiClient, failedCallMessage } from "./apiConfig";
 
 const MODULE_MAPPING = "/users"

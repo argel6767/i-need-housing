@@ -16,10 +16,12 @@ interface GlobalContextType {
     setFavoriteListings: React.Dispatch<React.SetStateAction<FavoriteListing[]>>
     newUserPreferencesDto: RawCoordinateUserPreferenceDto
     setNewUserPreferencesDto: React.Dispatch<React.SetStateAction<RawCoordinateUserPreferenceDto>>
-  }
-  
-  const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
-  
+    isIntern:boolean
+    setIsIntern: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
+
 
 interface GlobalProviderProps {
     children?:ReactNode,
@@ -37,10 +39,12 @@ export const GlobalProvider = ({children}:GlobalProviderProps) => {
     const [userPreferences, setUserPreferences] = useState<UserPreference | null>(null);
     const [favoriteListings, setFavoriteListings] = useState<FavoriteListing[]>([]);
     const [newUserPreferencesDto, setNewUserPreferencesDto] = useState<RawCoordinateUserPreferenceDto>({});
+    const [isIntern, setIsIntern] = useState<boolean>(false);
 
     const contextValue = useMemo(() => ({
-        centerLat, setCenterLat, centerLong, setCenterLong, user, setUser, userPreferences, setUserPreferences, favoriteListings, setFavoriteListings, newUserPreferencesDto, setNewUserPreferencesDto
-    }), [centerLat, centerLong, user, userPreferences, favoriteListings, newUserPreferencesDto]);
+        centerLat, setCenterLat, centerLong, setCenterLong, user, setUser, userPreferences, setUserPreferences, favoriteListings, setFavoriteListings, newUserPreferencesDto, setNewUserPreferencesDto,
+        isIntern, setIsIntern
+    }), [centerLat, centerLong, user, userPreferences, favoriteListings, newUserPreferencesDto, isIntern]);
 
     return (
         <GlobalContext.Provider value={contextValue}>
