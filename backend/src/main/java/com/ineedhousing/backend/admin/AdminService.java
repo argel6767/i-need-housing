@@ -50,7 +50,7 @@ public class AdminService {
         }
         user.setLastLogin(LocalDateTime.now());
         String token = jwtService.generateToken(user);
-        LoginResponse response = new LoginResponse(token, jwtService.getExpirationTime());
+        LoginResponse response = new LoginResponse(token, jwtService.getExpirationTime(), user);
         userRepository.save(user);
         return response;
     }

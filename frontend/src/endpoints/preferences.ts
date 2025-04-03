@@ -1,6 +1,6 @@
 import { UserPreference } from "@/interfaces/entities";
 import { apiClient, failedCallMessage } from "./apiConfig";
-import { RawCoordinateUserPreferenceRequest } from "@/interfaces/requests/userPreferencesRequests";
+import { RawCoordinateUserPreferenceDto } from "@/interfaces/requests/userPreferencesRequests";
 
 const MODULE_MAPPING = "/preferences";
 
@@ -10,11 +10,11 @@ const MODULE_MAPPING = "/preferences";
 
 /**
  * creates a new UserPreference entity
- * @param email 
- * @param requestBody 
- * @returns 
+ * @param email
+ * @param requestBody
+ * @returns
  */
-export const createUserPreferences = async (email: string, requestBody: RawCoordinateUserPreferenceRequest): Promise<any> => {
+export const createUserPreferences = async (email: string, requestBody: RawCoordinateUserPreferenceDto): Promise<any> => {
     try {
         const response = await apiClient.post(`${MODULE_MAPPING}/coordinates/${email}`, requestBody);
         if (response.status === 201) {

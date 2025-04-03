@@ -1,18 +1,21 @@
 'use client'
 import { FavoriteListing, User, UserPreference } from "@/interfaces/entities";
+import { RawCoordinateUserPreferenceDto } from "@/interfaces/requests/userPreferencesRequests";
 import {createContext, useContext, useMemo, useState, ReactNode, use} from "react";
 
 interface GlobalContextType {
-    centerLat: number;
-    setCenterLat: React.Dispatch<React.SetStateAction<number>>;
-    centerLong: number;
-    setCenterLong: React.Dispatch<React.SetStateAction<number>>;
+    centerLat: number
+    setCenterLat: React.Dispatch<React.SetStateAction<number>>
+    centerLong: number
+    setCenterLong: React.Dispatch<React.SetStateAction<number>>
     user: User | null;
-    setUser: React.Dispatch<React.SetStateAction<User | null>>;
+    setUser: React.Dispatch<React.SetStateAction<User | null>>
     userPreferences: UserPreference | null;
-    setUserPreferences: React.Dispatch<React.SetStateAction<UserPreference | null>>;
+    setUserPreferences: React.Dispatch<React.SetStateAction<UserPreference | null>>
     favoriteListings: FavoriteListing[]
     setFavoriteListings: React.Dispatch<React.SetStateAction<FavoriteListing[]>>
+    newUserPreferencesDto: RawCoordinateUserPreferenceDto
+    setNewUserPreferencesDto: React.Dispatch<React.SetStateAction<RawCoordinateUserPreferenceDto>>
   }
   
   const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -33,10 +36,11 @@ export const GlobalProvider = ({children}:GlobalProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
     const [userPreferences, setUserPreferences] = useState<UserPreference | null>(null);
     const [favoriteListings, setFavoriteListings] = useState<FavoriteListing[]>([]);
+    const [newUserPreferencesDto, setNewUserPreferencesDto] = useState<RawCoordinateUserPreferenceDto>({});
 
     const contextValue = useMemo(() => ({
-        centerLat, setCenterLat, centerLong, setCenterLong, user, setUser, userPreferences, setUserPreferences, favoriteListings, setFavoriteListings
-    }), [centerLat, centerLong, user, userPreferences, favoriteListings]);
+        centerLat, setCenterLat, centerLong, setCenterLong, user, setUser, userPreferences, setUserPreferences, favoriteListings, setFavoriteListings, newUserPreferencesDto, setNewUserPreferencesDto
+    }), [centerLat, centerLong, user, userPreferences, favoriteListings, newUserPreferencesDto]);
 
     return (
         <GlobalContext.Provider value={contextValue}>

@@ -1,4 +1,4 @@
-export interface SetUserTypeRequest {
+export interface SetUserTypeDto {
     email: string,
     userType: string
 }

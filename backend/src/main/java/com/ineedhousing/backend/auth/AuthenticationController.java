@@ -55,7 +55,7 @@ public class AuthenticationController {
         try {
             User user = authenticationService.authenticateUser(request);
             String token = jwtService.generateToken(user);
-            LoginResponse response = new LoginResponse(token, jwtService.getExpirationTime());
+            LoginResponse response = new LoginResponse(token, jwtService.getExpirationTime(), user);
             return ResponseEntity.ok(response);
         }
         catch (UsernameNotFoundException unfe) {

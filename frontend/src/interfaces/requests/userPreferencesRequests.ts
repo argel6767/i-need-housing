@@ -1,4 +1,4 @@
-export interface RawCoordinateUserPreferenceRequest {
+export interface RawCoordinateUserPreferenceDto {
     jobLocationCoordinates?: Array<number>,
     cityOfEmploymentCoordinates?: Array<number>,
     maxRadius?: number,

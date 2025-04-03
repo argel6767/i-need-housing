@@ -33,10 +33,12 @@ export const register = async (requestBody: AuthenticateUserDto): Promise<any> =
  */
 export const login = async (requestBody: AuthenticateUserDto): Promise<any> => {
     try {
-        console.log(requestBody);
         const response = await apiClient.post(MODULE_MAPPING +"/login", requestBody);
         if (response.status === 200) {
             sessionStorage.setItem("token", response.data.token);
+            if (!response.data.user.userPreferences) {
+                return "new user";
+            }
             return "logged in"; 
         }
         console.log(response.data);
