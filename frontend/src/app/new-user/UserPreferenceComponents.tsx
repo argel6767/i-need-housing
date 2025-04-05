@@ -17,7 +17,7 @@ export const BreadCrumbs = () => {
     const {isIntern} = useGlobalContext();
     
     return (
-        <div className="breadcrumbs text-xs sm:text-md md:text-lg lg:text-xl text-center flex justify-center p-6">
+        <div className="breadcrumbs text-xs sm:text-md md:text-lg lg:text-xl text-center flex justify-center">
             <ul>
                 <li>User Type</li>
                 <li>Location</li>

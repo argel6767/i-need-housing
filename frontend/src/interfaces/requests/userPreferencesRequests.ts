@@ -1,6 +1,6 @@
 export interface RawCoordinateUserPreferenceDto {
-    jobLocationCoordinates?: Array<number>,
-    cityOfEmploymentCoordinates?: Array<number>,
+    jobLocationAddress?: string,
+    cityOfEmployment?: string,
     maxRadius?: number,
     maxRent?: number,
     travelType?: number,

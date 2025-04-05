@@ -8,12 +8,11 @@ export default function RootLayout({
   return (
       <main
       >
-        <div className="motion-translate-x-in-[0%] motion-translate-y-in-[100%] motion-duration-1500">
+        <div className="motion-translate-x-in-[0%] motion-translate-y-in-[100%] motion-duration-1500 py-2">
           <Header/>
           <BreadCrumbs/>
         </div>
           {children}
-        
       </main>
   );
 }
