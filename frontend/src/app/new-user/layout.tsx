@@ -1,4 +1,4 @@
-import { BreadCrumbs, Header } from "./UserPreferenceComponents";
+import { BreadCrumbs, PreferencesHeader } from "./UserPreferenceComponents";
 
 export default function RootLayout({
   children,
@@ -9,7 +9,7 @@ export default function RootLayout({
       <main
       >
         <div className="motion-translate-x-in-[0%] motion-translate-y-in-[100%] motion-duration-1500 py-2">
-          <Header/>
+          <PreferencesHeader/>
           <BreadCrumbs/>
         </div>
           {children}
