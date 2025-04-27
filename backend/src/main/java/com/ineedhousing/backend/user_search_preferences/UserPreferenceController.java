@@ -16,6 +16,8 @@ import com.ineedhousing.backend.user_search_preferences.requests.NewFiltersDto;
 import com.ineedhousing.backend.user_search_preferences.requests.RawCoordinateUserPreferenceRequest;
 import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferenceRequest;
 
+import lombok.extern.java.Log;
+
 
 
 /**
@@ -23,6 +25,7 @@ import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferen
  */
 @RestController
 @RequestMapping("/preferences")
+@Log
 public class UserPreferenceController {
 
     private final UserPreferenceService userPreferenceService;
@@ -50,7 +53,7 @@ public class UserPreferenceController {
 
     @PostMapping("/coordinates/{email}")
     public ResponseEntity<?> createUserPreferencesWithCoordinates(@RequestBody RawCoordinateUserPreferenceRequest request, @PathVariable String email) {
-        if (request.getCityOfEmployment() == null) {
+        if (request.getCityOfEmployment() == null || request.getBathrooms() == null ||  request.getBedrooms() == null) {
             return new ResponseEntity<>("BAD REQUEST", HttpStatus.BAD_REQUEST);
         }
         try {

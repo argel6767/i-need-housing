@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
 
+import lombok.extern.java.Log;
+
 /**
  * Houses endpoints for User interactions
  */
+@Log
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -66,7 +69,8 @@ public class UserController {
      */
     @PutMapping("/type")
     public ResponseEntity<?> setUserType(@RequestBody SetUserTypeRequest request) {
-        if (request.getUserType() == null) {
+        log.info("user type: " + request.toString());
+        if (request.getUserType() == null  || request.getUserType().toString().isEmpty()) {
             return new ResponseEntity<>("BAD REQUEST", HttpStatus.BAD_REQUEST);
         }
         try {

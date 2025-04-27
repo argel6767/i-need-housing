@@ -1,9 +1,7 @@
 package com.ineedhousing.backend.user_search_preferences;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -19,10 +17,13 @@ import com.ineedhousing.backend.user_search_preferences.requests.RawCoordinateUs
 import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferenceRequest;
 import com.ineedhousing.backend.user_search_preferences.utils.UserPreferenceBuilder;
 
+import lombok.extern.java.Log;
+
 /**
  * Houses business logic for UserPreference
  */
 @Service
+@Log
 public class UserPreferenceService {
 
     private final UserPreferenceRepository userPreferenceRepository;
@@ -64,6 +65,7 @@ public class UserPreferenceService {
      * @return
      */
     public UserPreference createUserPreference(RawCoordinateUserPreferenceRequest request, String email) {
+        log.info(request.toString());
         UserPreferenceBuilder builder = new UserPreferenceBuilder();
         GeometryFactory factory = GeometrySingleton.getInstance();
         Point jobLocation = null;
