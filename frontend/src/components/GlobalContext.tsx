@@ -3,6 +3,12 @@ import { FavoriteListing, User, UserPreference } from "@/interfaces/entities";
 import { RawCoordinateUserPreferenceDto } from "@/interfaces/requests/userPreferencesRequests";
 import {createContext, useContext, useMemo, useState, ReactNode, use} from "react";
 
+// Holds both the userType and newUserPreferencesDto to be saved until the user confirms their choices
+interface NewUserObjects {
+    userType:string,
+    newUserPreferencesDto: RawCoordinateUserPreferenceDto
+}
+
 interface GlobalContextType {
     centerLat: number
     setCenterLat: React.Dispatch<React.SetStateAction<number>>
@@ -14,6 +20,8 @@ interface GlobalContextType {
     setUserPreferences: React.Dispatch<React.SetStateAction<UserPreference | null>>
     favoriteListings: FavoriteListing[]
     setFavoriteListings: React.Dispatch<React.SetStateAction<FavoriteListing[]>>
+    newUserInfo: NewUserObjects,
+    setNewUserInfo: React.Dispatch<React.SetStateAction<NewUserObjects>>
     newUserPreferencesDto: RawCoordinateUserPreferenceDto
     setNewUserPreferencesDto: React.Dispatch<React.SetStateAction<RawCoordinateUserPreferenceDto>>
     isIntern:boolean
@@ -38,12 +46,13 @@ export const GlobalProvider = ({children}:GlobalProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
     const [userPreferences, setUserPreferences] = useState<UserPreference | null>(null);
     const [favoriteListings, setFavoriteListings] = useState<FavoriteListing[]>([]);
+    const [newUserInfo, setNewUserInfo] = useState<NewUserObjects>({userType: '',  newUserPreferencesDto:{}})
     const [newUserPreferencesDto, setNewUserPreferencesDto] = useState<RawCoordinateUserPreferenceDto>({});
     const [isIntern, setIsIntern] = useState<boolean>(false);
 
     const contextValue = useMemo(() => ({
-        centerLat, setCenterLat, centerLong, setCenterLong, user, setUser, userPreferences, setUserPreferences, favoriteListings, setFavoriteListings, newUserPreferencesDto, setNewUserPreferencesDto,
-        isIntern, setIsIntern
+        centerLat, setCenterLat, centerLong, setCenterLong, user, setUser, userPreferences, setUserPreferences, favoriteListings, setFavoriteListings,
+        newUserInfo, setNewUserInfo, newUserPreferencesDto, setNewUserPreferencesDto, isIntern, setIsIntern
     }), [centerLat, centerLong, user, userPreferences, favoriteListings, newUserPreferencesDto, isIntern]);
 
     return (

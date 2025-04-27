@@ -12,7 +12,7 @@ import { useGlobalContext } from '@/components/GlobalContext';
 const UserTypeForm = () => {
     
     const router = useRouter();
-    const {setIsIntern} = useGlobalContext();
+    const {setIsIntern, setNewUserInfo} = useGlobalContext();
     const [userType, setUserType] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);
@@ -21,9 +21,14 @@ const UserTypeForm = () => {
     const handleUserType = (event: React.ChangeEvent<HTMLInputElement>) => {
         const type: string = event.target.value;
         setUserType(type);
+        setNewUserInfo(prev => ({
+          userType: type,
+          newUserPreferencesDto: {...prev.newUserPreferencesDto}
+        }))
         type === 'INTERN'? setIsIntern(true) : setIsIntern(false);
     }
 
+    /*
     const saveUserType = async (e: React.MouseEvent | React.FormEvent) => {
       e.preventDefault(); // Add this line
       setIsLoading(true);
@@ -44,8 +49,12 @@ const UserTypeForm = () => {
         router.push("/new-user/location")
       }
     }
+*/
 
-
+const saveUserType = async (e: React.MouseEvent | React.FormEvent) => {
+  e.preventDefault(); // Add this line
+  router.push('/new-user/location')
+}
 
   return (
     <form onSubmit={saveUserType} className="w-80 md:w-96 px-8 py-8 bg-slate-100 flex flex-col gap-5 rounded-lg shadow-lg motion-translate-x-in-[0%] motion-translate-y-in-[100%] motion-duration-1500">

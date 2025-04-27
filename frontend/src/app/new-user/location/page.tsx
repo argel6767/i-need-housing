@@ -12,7 +12,7 @@ const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
  * @returns 
  */
 const LocationForm = () => {
-    const {newUserPreferencesDto, setNewUserPreferencesDto} = useGlobalContext();
+    const {setNewUserPreferencesDto, setNewUserInfo} = useGlobalContext();
     const [opportunityLocation, setOpportunityLocation] = useState<string>("");
     const [employerLocation, setEmployerLocation] = useState<string | null>(null)
     const {placePredictions, getPlacePredictions, isPlacePredictionsLoading,} = usePlacesService({apiKey: KEY,}); //places out complete
@@ -20,16 +20,25 @@ const LocationForm = () => {
     //both below update fields of global user preference dto object 
     const handleEmployerLocation = (item:google.maps.places.AutocompletePrediction) => {
         setEmployerLocation(item.description);
-        setNewUserPreferencesDto((prev) => (
-        {...prev,jobLocationAddress: item.description}))
+        setNewUserInfo(prev => ({
+            userType: prev.userType,
+            newUserPreferencesDto: {
+                ...prev.newUserPreferencesDto,
+                jobLocationAddress: item.description
+            }
+        }))
     }
 
     const handleOpportunityLocation = (place:google.maps.places.PlaceResult) => {
         const city = place.formatted_address!
         setOpportunityLocation(city);
-        setNewUserPreferencesDto((prev) => (
-            {...prev, cityOfEmployment:city}
-        ));
+        setNewUserInfo(prev => ({
+            userType:prev.userType,
+            newUserPreferencesDto: {
+                ...prev.newUserPreferencesDto,
+                cityOfEmployment:city
+            }
+        }))
     }
 
     const {ref} = usePlacesWidget({apiKey:KEY, onPlaceSelected: (place) => handleOpportunityLocation(place)}) //ref for places widget
