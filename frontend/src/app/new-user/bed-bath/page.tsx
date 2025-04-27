@@ -14,7 +14,7 @@ interface InputProps {
     setNewUserInfo: React.Dispatch<React.SetStateAction<NewUserObjects>>
 }
 
-export const ValueButtons = ({initialValue, field, setNewUserInfo}: InputProps) => {
+const ValueButtons = ({initialValue, field, setNewUserInfo}: InputProps) => {
 
     const values = [0,1,2,3,4];
     const [selectedValue, setSelectedValue] = useState<number>(initialValue || 0);
