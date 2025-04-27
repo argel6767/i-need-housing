@@ -15,6 +15,7 @@ apiClient.interceptors.request.use(config => {
     return config;
     });
 
+    /*
 // interceptor to check for any 403 ie the user's token has been expired
 apiClient.interceptors.response.use(response => response, //ie leave successful call alone
     error => {
@@ -35,7 +36,7 @@ apiClient.interceptors.response.use(response => response, //ie leave successful 
         }
     }
 );
-
+*/
 
 
 export const failedCallMessage = (error: any): string => {

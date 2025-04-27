@@ -16,7 +16,7 @@ import org.mockito.MockitoAnnotations;
 import com.ineedhousing.backend.geometry.GeometrySingleton;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserService;
-import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferenceRequest;
+import com.ineedhousing.backend.user_search_preferences.requests.UserPreferenceDto;
 
 class UserPreferenceServiceTest {
 
@@ -40,7 +40,7 @@ class UserPreferenceServiceTest {
     void createUserPreferences_ShouldSaveUserPreference() {
         // Arrange
         User user = new User();
-        RawUserPreferenceRequest request = new RawUserPreferenceRequest();
+        UserPreferenceDto request = new UserPreferenceDto();
         request.setJobLocation(factory.createPoint(new Coordinate(10.0, 11.0)));
         request.setCityOfEmployment(factory.createPoint(new Coordinate(16.0, 17.0)));
         request.setMaxRadius(10);
@@ -86,7 +86,7 @@ class UserPreferenceServiceTest {
     void createUserPreferences_ShouldHandleNullJobLocationAndFallbackToCityOfEmployment() {
         // Arrange
         User user = new User();
-        RawUserPreferenceRequest request = new RawUserPreferenceRequest();
+        UserPreferenceDto request = new UserPreferenceDto();
         request.setJobLocation(null);
         request.setCityOfEmployment(factory.createPoint(new Coordinate(14.0, 100.0)));
         request.setMaxRadius(15);

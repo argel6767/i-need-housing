@@ -49,7 +49,7 @@ export const SubmitUserInfoButton = ({isLoading}:SubmitUserInfoButtonProps) => {
         // Check basic field existence (for all user types)
         const hasBasicFields =
         !!preferences.jobLocationAddress &&
-        !!preferences.cityOfEmployment &&
+        preferences.cityOfEmploymentAddress !== undefined &&
         preferences.maxRadius !== undefined &&
         preferences.maxRent !== undefined &&
         preferences.bedrooms !== undefined &&
@@ -61,8 +61,8 @@ export const SubmitUserInfoButton = ({isLoading}:SubmitUserInfoButtonProps) => {
         }
         // For interns, also check date fields and their validity
         const hasDateFields =
-        !!preferences.startDate &&
-        !!preferences.endDate;
+        preferences.startDate !== undefined &&
+        !!preferences.endDate !== undefined;
         // Only validate date range if both dates exist
         const isDateRangeValid = hasDateFields ? 
         new Date(preferences.startDate!) < new Date(preferences.endDate!) : false;
@@ -70,7 +70,7 @@ export const SubmitUserInfoButton = ({isLoading}:SubmitUserInfoButtonProps) => {
     }
 
     return (
-        <button  type="submit" className="btn btn-outline hover:bg-slate-200 hover:text-black flex items-center">
+        <button type="submit" className="btn btn-outline hover:bg-slate-200 hover:text-black flex items-center">
         Confirm<Loader size={22} className={`ml-2 animate-pulse ${isLoading ? "" : "hidden"}`}/></button>
     )
 }

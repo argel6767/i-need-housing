@@ -25,13 +25,14 @@ const DatePicker = ({field}:InputProps ) => {
                 ...prev.newUserPreferencesDto,
                 [field]:date}
         }))
+        console.log(date);
     };
 
     const props = {
         type: "date",
         value:date,
         onChange: handleDateChange,
-        ...(field === 'endDate' && {min: newUserInfo.newUserPreferencesDto.endDate} )
+        ...(field === 'endDate' && {min: newUserInfo.newUserPreferencesDto.startDate} )
     }
 
     return (

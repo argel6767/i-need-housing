@@ -1,6 +1,6 @@
 export interface RawUserPreferenceDto {
     jobLocationAddress?: string,
-    cityOfEmployment?: string,
+    cityOfEmploymentAddress?: string,
     maxRadius?: number,
     maxRent?: number,
     travelType?: number,

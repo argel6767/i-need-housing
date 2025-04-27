@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { GlobalProvider } from "@/components/GlobalContext";
+import { GoogleMapsProvider } from "@/components/GoogleMapContext";
 
 
 const geistSans = Geist({
@@ -31,9 +32,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <GlobalProvider>
-          <Providers>{children}</Providers>
-        </GlobalProvider>
+        <GoogleMapsProvider>
+          <GlobalProvider>
+            <Providers>{children}</Providers>
+          </GlobalProvider>
+        </GoogleMapsProvider>
       </body>
     </html>
   );

@@ -1,5 +1,7 @@
 package com.ineedhousing.backend.user_search_preferences;
 
+import java.io.InvalidObjectException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,10 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ineedhousing.backend.apis.exceptions.FailedApiCallException;
+import com.ineedhousing.backend.geometry.exceptions.ErroredGeoCodeAPICallException;
 import com.ineedhousing.backend.user_search_preferences.exceptions.UserPreferenceNotFound;
 import com.ineedhousing.backend.user_search_preferences.requests.NewFiltersDto;
 import com.ineedhousing.backend.user_search_preferences.requests.RawCoordinateUserPreferenceRequest;
-import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferenceRequest;
+import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferencesDto;
+import com.ineedhousing.backend.user_search_preferences.requests.UserPreferenceDto;
 
 import lombok.extern.java.Log;
 
@@ -41,13 +46,19 @@ public class UserPreferenceController {
      * @return
      */
     @PostMapping("/{email}")
-    public ResponseEntity<?> createUserPreferences(@RequestBody RawUserPreferenceRequest request, @PathVariable String email) {
+    public ResponseEntity<?> createUserPreferences(@RequestBody UserPreferenceDto request, @PathVariable String email) {
         try {
             UserPreference userPreference = userPreferenceService.createUserPreferences(request, email);
             return new ResponseEntity<>(userPreference,  HttpStatus.CREATED);
         }
         catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        catch (FailedApiCallException face) {
+            return new ResponseEntity<>(face.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        catch (ErroredGeoCodeAPICallException egcae) {
+            return new ResponseEntity<>(egcae.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
@@ -62,7 +73,31 @@ public class UserPreferenceController {
         } catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
         }
+        catch (FailedApiCallException face) {
+            return new ResponseEntity<>(face.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        catch (ErroredGeoCodeAPICallException egcae) {
+            return new ResponseEntity<>(egcae.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
 }
+
+@PostMapping("/addresses/{email}")
+    public ResponseEntity<?> createUserPreferenceWithAddresses(@RequestBody RawUserPreferencesDto request, @PathVariable String email) {
+        log.info("Beginning creation with request" + request.toString());
+        try {
+            UserPreference userPreference = userPreferenceService.createUserPreference(request, email);
+            return new ResponseEntity<>(userPreference, HttpStatus.CREATED);
+        }
+        catch (InvalidObjectException ioe) {
+            return new ResponseEntity<>(ioe.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (FailedApiCallException face) {
+            return new ResponseEntity<>(face.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        catch (ErroredGeoCodeAPICallException egcae) {
+            return new ResponseEntity<>(egcae.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
 
     /**
      * update UserPreference

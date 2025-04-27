@@ -17,7 +17,9 @@ const MODULE_MAPPING = "/preferences";
  */
 export const createUserPreferences = async (email: string, requestBody: RawUserPreferenceDto): Promise<any> => {
     try {
-        const response = await apiClient.post(`${MODULE_MAPPING}/coordinates/${email}`, requestBody);
+        console.log(requestBody)
+        requestBody.isFurnished=false;
+        const response = await apiClient.post(`${MODULE_MAPPING}/addresses/${email}`, requestBody);
         if (response.status === 201) {
             return response.data;
         }
@@ -25,6 +27,7 @@ export const createUserPreferences = async (email: string, requestBody: RawUserP
         return null;
     }
     catch(error: any) {
+        console.log(error.body)
         console.log(failedCallMessage(error));
         if (error.status === 400) {
             return 'One or more preferences were not correctly filled, make sure to fill all before submitting'

@@ -1,6 +1,6 @@
 package com.ineedhousing.backend.user_search_preferences;
 
-import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferenceRequest;
+import com.ineedhousing.backend.user_search_preferences.requests.UserPreferenceDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,7 +27,7 @@ class UserPreferenceControllerTest {
 
     @Test
     void createUserPreferences_Success() {
-        RawUserPreferenceRequest request = new RawUserPreferenceRequest();
+        UserPreferenceDto request = new UserPreferenceDto();
         String email = "test@example.com";
         UserPreference mockPreference = new UserPreference();
 
@@ -41,7 +41,7 @@ class UserPreferenceControllerTest {
 
     @Test
     void createUserPreferences_UserNotFound() {
-        RawUserPreferenceRequest request = new RawUserPreferenceRequest();
+        UserPreferenceDto request = new UserPreferenceDto();
         String email = "nonexistent@example.com";
 
         when(userPreferenceService.createUserPreferences(request, email)).thenThrow(new UsernameNotFoundException("User not found"));

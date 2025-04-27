@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RawUserPreferenceRequest {
+public class UserPreferenceDto {
 
     private Point jobLocation;
     private Point cityOfEmployment;
