@@ -1,10 +1,17 @@
 package com.ineedhousing.backend.user;
 
-import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
 
 /**
  * Houses endpoints for User interactions
@@ -59,6 +66,9 @@ public class UserController {
      */
     @PutMapping("/type")
     public ResponseEntity<?> setUserType(@RequestBody SetUserTypeRequest request) {
+        if (request.getUserType() == null) {
+            return new ResponseEntity<>("BAD REQUEST", HttpStatus.BAD_REQUEST);
+        }
         try {
             User user = userService.setUserType(request);
             return ResponseEntity.ok(user);

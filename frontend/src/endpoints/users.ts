@@ -15,6 +15,6 @@ export const updateUserType = async (requestBody: SetUserTypeDto) => {
     }
     catch (error) {
         console.log(failedCallMessage(error));
-        return null;
+        return "call failed!";
     }
 }

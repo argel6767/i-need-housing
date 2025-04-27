@@ -1,4 +1,4 @@
-export interface RawCoordinateUserPreferenceDto {
+export interface RawUserPreferenceDto {
     jobLocationAddress?: string,
     cityOfEmployment?: string,
     maxRadius?: number,
@@ -7,6 +7,6 @@ export interface RawCoordinateUserPreferenceDto {
     bedrooms?: number,
     bathrooms?: number,
     isFurnished?: boolean,
-    startDate?: Date,
-    endDate?: Date
+    startDate?: string,
+    endDate?: string
 }

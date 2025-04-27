@@ -1,10 +1,12 @@
 package com.ineedhousing.backend.user;
 
-import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
+
+import jakarta.transaction.Transactional;
 
 /**
  * Handles business logic of Users

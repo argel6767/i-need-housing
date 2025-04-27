@@ -1,12 +1,12 @@
 'use client'
 import { FavoriteListing, User, UserPreference } from "@/interfaces/entities";
-import { RawCoordinateUserPreferenceDto } from "@/interfaces/requests/userPreferencesRequests";
+import { RawUserPreferenceDto } from "@/interfaces/requests/userPreferencesRequests";
 import {createContext, useContext, useMemo, useState, ReactNode, use} from "react";
 
 // Holds both the userType and newUserPreferencesDto to be saved until the user confirms their choices
 export interface NewUserObjects {
     userType:string,
-    newUserPreferencesDto: RawCoordinateUserPreferenceDto
+    newUserPreferencesDto: RawUserPreferenceDto
 }
 
 interface GlobalContextType {

@@ -31,7 +31,6 @@ const Home = () => {
     /** sets state of user preferences should it ever change via the query call */
     useEffect(() => {
         if (preferences) {
-            console.log("Preferences received:", preferences);
             setUserPreferences(preferences);
             setCity(preferences.cityOfEmployment);
             const coords = preferences.cityOfEmploymentCoords;
@@ -52,7 +51,6 @@ const Home = () => {
     useEffect(() => {
         if(favorites) {
             setFavoriteListings(favorites)
-            console.log(`Favorites fetched from backend on page.tsx ${favorites}`);
         }
     }, [favorites])
 

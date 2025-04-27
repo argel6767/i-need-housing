@@ -1,5 +1,13 @@
 package com.ineedhousing.backend.user_search_preferences;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -7,15 +15,6 @@ import com.ineedhousing.backend.user_search_preferences.exceptions.UserPreferenc
 import com.ineedhousing.backend.user_search_preferences.requests.NewFiltersDto;
 import com.ineedhousing.backend.user_search_preferences.requests.RawCoordinateUserPreferenceRequest;
 import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferenceRequest;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
 
 
 
@@ -51,6 +50,9 @@ public class UserPreferenceController {
 
     @PostMapping("/coordinates/{email}")
     public ResponseEntity<?> createUserPreferencesWithCoordinates(@RequestBody RawCoordinateUserPreferenceRequest request, @PathVariable String email) {
+        if (request.getCityOfEmployment() == null) {
+            return new ResponseEntity<>("BAD REQUEST", HttpStatus.BAD_REQUEST);
+        }
         try {
             UserPreference userPreference = userPreferenceService.createUserPreference(request, email);
             return new ResponseEntity<>(userPreference,  HttpStatus.CREATED);

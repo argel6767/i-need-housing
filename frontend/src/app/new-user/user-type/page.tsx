@@ -12,11 +12,8 @@ import { PageTurner } from '../PageTurner';
 
 const UserTypeForm = () => {
     
-    const router = useRouter();
     const {setIsIntern, setNewUserInfo, newUserInfo} = useGlobalContext();
     const [userType, setUserType] = useState<string>("");
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [isError, setIsError] = useState<boolean>(false);
 
 
     const handleUserType = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,30 +25,6 @@ const UserTypeForm = () => {
         }))
         type === 'INTERN'? setIsIntern(true) : setIsIntern(false);
     }
-
-    /*
-    const saveUserType = async (e: React.MouseEvent | React.FormEvent) => {
-      e.preventDefault(); // Add this line
-      setIsLoading(true);
-      const email = sessionStorage.getItem('email')!;
-      const requestBody: SetUserTypeDto = {
-        email: email,
-        userType: userType
-      }
-      const data = await updateUserType(requestBody);
-      if (!data) {
-        setIsLoading(false);
-        setIsError(true)
-        await sleep(1500);
-        setIsError(false);
-      }
-      else {
-        setIsLoading(false);
-        router.push("/new-user/location")
-      }
-    }
-*/
-
 
   return (
     <form className="w-80 md:w-96 px-8 py-8 bg-slate-100 flex flex-col gap-5 rounded-lg shadow-lg motion-translate-x-in-[0%] motion-translate-y-in-[100%] motion-duration-1500">
@@ -66,7 +39,6 @@ const UserTypeForm = () => {
         <input onChange={handleUserType} type="radio" name="status" value={"NEW_GRAD"} checked={userType === 'NEW_GRAD' || newUserInfo.userType === 'NEW_GRAD'} className="w-4 h-4 absolute right-5 transition-all duration-300"  />
         <span className="absolute right-5 w-4 h-4 rounded-lg border-2 transition-all duration-300" />
       </label>
-      <label className={`text-red-500 font-bold ${isError? "":"hidden"}`}>Something went wrong! Try again.</label>
       <nav className='flex justify-end mt-auto pt-4'>
         <PageTurner href='/new-user/location' direction='right'/>
       </nav>
