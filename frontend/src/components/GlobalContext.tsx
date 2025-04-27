@@ -4,7 +4,7 @@ import { RawCoordinateUserPreferenceDto } from "@/interfaces/requests/userPrefer
 import {createContext, useContext, useMemo, useState, ReactNode, use} from "react";
 
 // Holds both the userType and newUserPreferencesDto to be saved until the user confirms their choices
-interface NewUserObjects {
+export interface NewUserObjects {
     userType:string,
     newUserPreferencesDto: RawCoordinateUserPreferenceDto
 }
@@ -22,8 +22,6 @@ interface GlobalContextType {
     setFavoriteListings: React.Dispatch<React.SetStateAction<FavoriteListing[]>>
     newUserInfo: NewUserObjects,
     setNewUserInfo: React.Dispatch<React.SetStateAction<NewUserObjects>>
-    newUserPreferencesDto: RawCoordinateUserPreferenceDto
-    setNewUserPreferencesDto: React.Dispatch<React.SetStateAction<RawCoordinateUserPreferenceDto>>
     isIntern:boolean
     setIsIntern: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -38,7 +36,7 @@ interface GlobalProviderProps {
 /**
  * Houses global state variables
  * @param param
- * @returns 
+ * @returns
  */
 export const GlobalProvider = ({children}:GlobalProviderProps) => {
     const [centerLat, setCenterLat] = useState<number>(0.0);
@@ -47,13 +45,12 @@ export const GlobalProvider = ({children}:GlobalProviderProps) => {
     const [userPreferences, setUserPreferences] = useState<UserPreference | null>(null);
     const [favoriteListings, setFavoriteListings] = useState<FavoriteListing[]>([]);
     const [newUserInfo, setNewUserInfo] = useState<NewUserObjects>({userType: '',  newUserPreferencesDto:{}})
-    const [newUserPreferencesDto, setNewUserPreferencesDto] = useState<RawCoordinateUserPreferenceDto>({});
     const [isIntern, setIsIntern] = useState<boolean>(false);
 
     const contextValue = useMemo(() => ({
         centerLat, setCenterLat, centerLong, setCenterLong, user, setUser, userPreferences, setUserPreferences, favoriteListings, setFavoriteListings,
-        newUserInfo, setNewUserInfo, newUserPreferencesDto, setNewUserPreferencesDto, isIntern, setIsIntern
-    }), [centerLat, centerLong, user, userPreferences, favoriteListings, newUserPreferencesDto, isIntern]);
+        newUserInfo, setNewUserInfo, isIntern, setIsIntern
+    }), [centerLat, centerLong, user, userPreferences, favoriteListings, newUserInfo, isIntern]);
 
     return (
         <GlobalContext.Provider value={contextValue}>

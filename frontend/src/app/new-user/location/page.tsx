@@ -12,7 +12,7 @@ const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
  * @returns 
  */
 const LocationForm = () => {
-    const {setNewUserPreferencesDto, setNewUserInfo} = useGlobalContext();
+    const {setNewUserInfo} = useGlobalContext();
     const [opportunityLocation, setOpportunityLocation] = useState<string>("");
     const [employerLocation, setEmployerLocation] = useState<string | null>(null)
     const {placePredictions, getPlacePredictions, isPlacePredictionsLoading,} = usePlacesService({apiKey: KEY,}); //places out complete
@@ -61,8 +61,9 @@ const LocationForm = () => {
                     </span>
                 </span>
             </article>
-            <nav className="flex justify-end mt-auto pt-4">
-                <PageTurner href="/new-user/rent" direction="right"></PageTurner>
+            <nav className="flex justify-between mt-auto pt-4">
+                <PageTurner href="/new-user/user-type/" direction="left"/>
+                <PageTurner href="/new-user/max/" direction="right"></PageTurner>
             </nav>
             </div>
         </main>
