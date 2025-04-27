@@ -64,6 +64,7 @@ public class UserPreferenceService {
      * @param request
      * @return
      */
+    //TODO change coordinates to strings/ make a different method for string locations and then use google service to get coord info
     public UserPreference createUserPreference(RawCoordinateUserPreferenceRequest request, String email) {
         log.info(request.toString());
         UserPreferenceBuilder builder = new UserPreferenceBuilder();
