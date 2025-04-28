@@ -49,6 +49,7 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
             setIsCallFailed(true);
             await sleep(1700);
             setIsCallFailed(false);
+            setIsLoading(false);
         }
     }
 
