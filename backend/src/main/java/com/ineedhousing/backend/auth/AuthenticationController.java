@@ -10,6 +10,10 @@ import com.ineedhousing.backend.email.EmailVerificationException;
 import com.ineedhousing.backend.email.InvalidEmailException;
 import com.ineedhousing.backend.jwt.JwtService;
 import com.ineedhousing.backend.user.User;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -51,24 +55,22 @@ public class AuthenticationController {
      * login user endpoint
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticateUserDto request) {
+    public ResponseEntity<?> login(@RequestBody AuthenticateUserDto request, HttpServletResponse response) {
         try {
             User user = authenticationService.authenticateUser(request);
             String token = jwtService.generateToken(user);
-            LoginResponse response = new LoginResponse(token, jwtService.getExpirationTime(), user);
-            return ResponseEntity.ok(response);
-        }
-        catch (UsernameNotFoundException unfe) {
+            String cookieHeader = jwtService.generateCookie(token);
+            response.setHeader("Set-Cookie", cookieHeader);
+            // Return user info without token in body
+            return ResponseEntity.ok(user);
+        } catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
-        }
-        catch (EmailVerificationException eve) {
+        } catch (EmailVerificationException eve) {
             return new ResponseEntity<>(eve.getMessage(), HttpStatus.UNAUTHORIZED);
-        }
-        catch (InvalidEmailException ive) {
+        } catch (InvalidEmailException ive) {
             return new ResponseEntity<>(ive.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
     /**
      * verify user endpoint via the code they input
      */
@@ -87,6 +89,23 @@ public class AuthenticationController {
         catch (RuntimeException re) {
             return ResponseEntity.badRequest().body(re.getMessage());
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        // Create empty cookie with immediate expiration to clear it
+        Cookie jwtCookie = new Cookie("jwt", "");
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(true);
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(0); // Expire immediately
+        
+        // Set cookie header with SameSite
+        String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Strict", 
+            jwtCookie.getName(), jwtCookie.getValue(), jwtCookie.getMaxAge(), jwtCookie.getPath());
+        response.setHeader("Set-Cookie", cookieHeader);
+        
+        return ResponseEntity.ok("Logged out successfully");
     }
 
     /**

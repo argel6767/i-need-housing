@@ -1,20 +1,21 @@
 package com.ineedhousing.backend.jwt;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
-import io.jsonwebtoken.Claims;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 
 
 @Service
@@ -25,6 +26,9 @@ public class JwtService {
 
     @Value("${security.jwt.expiration-time}")
     private Long expirationTime;
+
+    @Value("${is.secure.cookie}")
+    private boolean isSecureCookie;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -70,6 +74,22 @@ public class JwtService {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    /**
+     * Generates cookie header using the generated jwt token
+     * @param token
+     * @return
+     */
+    public String generateCookie(String token) {
+        Cookie jwtCookie = new Cookie("jwt", token);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(isSecureCookie); // For HTTPS, will be false during DEV, true during PROD
+        jwtCookie.setPath("/"); // Global path
+        jwtCookie.setMaxAge((int) (getExpirationTime() / 1000)); // Convert from ms to seconds
+        String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Strict",
+            jwtCookie.getName(), jwtCookie.getValue(), jwtCookie.getMaxAge(), jwtCookie.getPath());
+        return cookieHeader;
     }
 
     /*

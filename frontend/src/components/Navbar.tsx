@@ -3,6 +3,10 @@ import Image from "next/image"
 import icon from "../../public/file.svg"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { logout } from "@/endpoints/auths"
+import { useState } from "react"
+import { sleep } from "@/app/utils/utils"
+import { Loader } from "lucide-react"
 
 export const Navbar = () => {
     return (
@@ -25,10 +29,21 @@ export const Navbar = () => {
 }
 
 export const LoggedInNavBar = () => {
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter();
-  const logoutUser = () => {
-    sessionStorage.clear();
-    router.push("/");
+  const logoutUser = async () => {
+    setIsLoading(true);
+    const response = await logout();
+    console.log("response: " + response);
+    if (response === "Logged out successfully") {
+      router.push("/");
+    }
+    else {
+      setIsError(true);
+      await sleep(1700);
+      setIsError(false);
+    }
   }
 
   return (
@@ -51,7 +66,8 @@ export const LoggedInNavBar = () => {
         <li>
         </li>
         <li><Link href={"/settings"}>Settings</Link></li>
-        <li><a onClick={logoutUser}>Logout</a></li>
+        <li><a onClick={logoutUser}>Logout <Loader size={22} className={`ml-2 animate-pulse ${isLoading ? "" : "hidden"}`}/></a></li>
+        {isError && <li className="text-red-500">Could not log out user! Try again</li>}
       </ul>
     </div>
   </div>
