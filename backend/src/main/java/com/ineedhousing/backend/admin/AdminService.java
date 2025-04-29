@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +22,7 @@ import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserRepository;
 
 @Service
+@Lazy
 public class AdminService {
 
     private final UserRepository userRepository;

@@ -14,6 +14,7 @@ import com.ineedhousing.backend.housing_listings.HousingListing;
 
 import java.util.List;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 @RestController
 @RequestMapping("/gather-housings")
+@Lazy
 public class ExternalApisController {
 
     private final AirbnbApiService airbnbApiService;

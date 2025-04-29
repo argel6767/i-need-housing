@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -15,6 +16,7 @@ import lombok.extern.java.Log;
 
 @Log
 @Service
+@Lazy
 public class GoogleGeoCodeApiService {
     
     private final RestClient restClient;

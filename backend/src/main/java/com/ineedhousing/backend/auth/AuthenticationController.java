@@ -14,6 +14,8 @@ import com.ineedhousing.backend.user.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -92,18 +94,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
-        // Create empty cookie with immediate expiration to clear it
-        Cookie jwtCookie = new Cookie("jwt", "");
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true);
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(0); // Expire immediately
-        
+    public ResponseEntity<?> logout(HttpServletResponse response) {   
         // Set cookie header with SameSite
-        String cookieHeader = jwtService.generateCookie("", Optional.of(0));
+        String cookieHeader = jwtService.generateCookie("", Optional.of(0L));
         response.setHeader("Set-Cookie", cookieHeader);
-        
         return ResponseEntity.ok("Logged out successfully");
     }
 

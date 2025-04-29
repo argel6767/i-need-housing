@@ -82,7 +82,6 @@ public class AuthenticationService {
      * authenticates user, usually when they are logging in
      * will throw an exception if the email is not tied to any user or the email has not been verified
      */
-    @Cacheable(value = "authenticationCache", key = "#username", unless = "#result == null")
     public User authenticateUser(AuthenticateUserDto request) {
         if (!isValidEmail(request.getUsername())) {
             throw new InvalidEmailException(request.getUsername() + " is an invalid email");

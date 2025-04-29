@@ -1,5 +1,7 @@
 package com.ineedhousing.backend.admin.views;
 
+import org.springframework.context.annotation.Lazy;
+
 import com.ineedhousing.backend.admin.AdminService;
 import com.ineedhousing.backend.admin.components.GridCreator;
 import com.ineedhousing.backend.admin.components.Navigation;
@@ -10,6 +12,7 @@ import com.vaadin.flow.router.Route;
 
 @Route("/admin/users")
 @PageTitle("Current Users")
+@Lazy
 public class UsersView extends VerticalLayout{
 
     private final AdminService adminService;

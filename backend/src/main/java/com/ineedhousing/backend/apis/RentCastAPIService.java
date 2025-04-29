@@ -31,6 +31,7 @@ import lombok.extern.java.Log;
      */
 @Log
 @Service
+@Lazy
 public class RentCastAPIService {
     private final RestClient restClient;
     private final HousingListingRepository housingListingRepository;

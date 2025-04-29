@@ -1,5 +1,7 @@
 package com.ineedhousing.backend.admin.views;
 
+import org.springframework.context.annotation.Lazy;
+
 import com.ineedhousing.backend.admin.components.Navigation;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -9,6 +11,7 @@ import com.vaadin.flow.router.Route;
 
 @Route("/admin/find-listings")
 @PageTitle("Find New Listings")
+@Lazy
 public class FindNewListingsView extends VerticalLayout {
 
     private final ListingRetrievalForm listingRetrievalForm;

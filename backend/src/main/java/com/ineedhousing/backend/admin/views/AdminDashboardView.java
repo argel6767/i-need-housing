@@ -1,6 +1,8 @@
 package com.ineedhousing.backend.admin.views;
 
                 
+import org.springframework.context.annotation.Lazy;
+
 import com.ineedhousing.backend.admin.AdminService;
 import com.ineedhousing.backend.admin.components.Navigation;
 import com.vaadin.flow.component.html.Div;
@@ -15,6 +17,7 @@ import com.vaadin.flow.router.Route;
 
 @Route("/admin")
 @PageTitle("Admin Dashboard")
+@Lazy
 public class AdminDashboardView extends VerticalLayout{
     
     private final AdminService adminService;
