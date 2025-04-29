@@ -48,7 +48,7 @@ public class HousingListingService {
         Polygon area = PolygonCreator.createCircle(center, radius, 32);
         List<HousingListing> listings = housingListingRepository.getAllListingsInsideArea(area);
         if (listings.isEmpty()) {
-            throw new NoListingFoundException(String.format("No listings found in the given radius of %d from point {%.2f, %.2f}", radius, latitude, longitude)) ;
+            throw new NoListingsFoundException(String.format("No listings found in the given radius of %d from point {%.2f, %.2f}", radius, latitude, longitude)) ;
         }
         listings = listings.stream().sorted((listingOne, listingTwo) -> {
             double distanceOne = center.distance(listingOne.getLocation());
