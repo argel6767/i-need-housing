@@ -59,7 +59,7 @@ public class AuthenticationController {
         try {
             User user = authenticationService.authenticateUser(request);
             String token = jwtService.generateToken(user);
-            String cookieHeader = jwtService.generateCookie(token);
+            String cookieHeader = jwtService.generateCookie(token, Optional.empty());
             response.setHeader("Set-Cookie", cookieHeader);
             // Return user info without token in body
             return ResponseEntity.ok(user);
@@ -101,8 +101,7 @@ public class AuthenticationController {
         jwtCookie.setMaxAge(0); // Expire immediately
         
         // Set cookie header with SameSite
-        String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Strict", 
-            jwtCookie.getName(), jwtCookie.getValue(), jwtCookie.getMaxAge(), jwtCookie.getPath());
+        String cookieHeader = jwtService.generateCookie("", Optional.of(0));
         response.setHeader("Set-Cookie", cookieHeader);
         
         return ResponseEntity.ok("Logged out successfully");

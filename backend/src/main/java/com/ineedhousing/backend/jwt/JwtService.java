@@ -4,6 +4,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -81,12 +82,13 @@ public class JwtService {
      * @param token
      * @return
      */
-    public String generateCookie(String token) {
+    public String generateCookie(String token, Optional<Long> expirationTime) {
+        long expiration = expirationTime.orElse(getExpirationTime());
         Cookie jwtCookie = new Cookie("jwt", token);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setSecure(isSecureCookie); // For HTTPS, will be false during DEV, true during PROD
         jwtCookie.setPath("/"); // Global path
-        jwtCookie.setMaxAge((int) (getExpirationTime() / 1000)); // Convert from ms to seconds
+        jwtCookie.setMaxAge((int) (expiration/ 1000)); // Convert from ms to seconds
         String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Strict",
             jwtCookie.getName(), jwtCookie.getValue(), jwtCookie.getMaxAge(), jwtCookie.getPath());
         return cookieHeader;

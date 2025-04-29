@@ -4,11 +4,13 @@ import com.ineedhousing.backend.favorite_listings.exceptions.FavoriteListingNotF
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
+
 
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -28,12 +30,16 @@ public class FavoriteListingService {
         this.userService = userService;
     }
 
+
+
     /**
      * gets all Users favorite listing via their email
      * @param email
      * @throws org.springframework.security.core.userdetails.UsernameNotFoundException
      * @return List<FavoriteListing>
      */
+    @Cacheable("favorites")
+    @Transactional(readOnly = true)
     public List<FavoriteListing> getAllUserFavoriteListings(String email) {
         User user = userService.getUserByEmail(email);
         return user.getFavoriteListings();

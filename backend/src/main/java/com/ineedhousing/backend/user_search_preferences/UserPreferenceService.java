@@ -20,6 +20,8 @@ import com.ineedhousing.backend.user_search_preferences.requests.RawCoordinateUs
 import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferencesDto;
 import com.ineedhousing.backend.user_search_preferences.requests.UserPreferenceDto;
 import com.ineedhousing.backend.user_search_preferences.utils.UserPreferenceBuilder;
+import org.springframework.cache.annotation.Cacheable;
+
 
 import lombok.extern.java.Log;
 
@@ -155,6 +157,7 @@ public class UserPreferenceService {
      * @param email
      * @return
      */
+    @Cacheable("preferences")
     public UserPreference getUserPreferences(String email) {
         User user = userService.getUserByEmail(email);
         return user.getUserPreferences();
