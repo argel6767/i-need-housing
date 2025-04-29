@@ -1,26 +1,20 @@
 import os
 import subprocess
+import time
 from pathlib import Path
 import platform
-import time
 
-'''
-Automates the process of signing into Azure, logging into an Azure Container Registry (ACR),
-building a Docker image, and pushing it to the ACR. It uses Azure CLI and Docker commands.
-This script also turns off and back on the App Service to guarantee a fresh instance
-'''
-
+# Your existing setup code
 backend = Path.cwd()/"backend"
 isOSWindows = platform.system() == "Windows"
-tag = f"v{int(time.time())}"  # e.g., v1713514892
-image_name = f"ineedhousing.azurecr.io/images/backend:{tag}"
 
-def load_env_file(): ## azure account details
+def load_env_file():
+    # Your existing env loading code
     file_path = Path.cwd()/"azure.env"
     
     with open(file_path) as f:
         for line in f:
-            if line.startswith("#") or not line.strip(): ##comments and empty lines
+            if line.startswith("#") or not line.strip():
                 continue
             key,_,value = line.strip().partition("=")
             os.environ[key] = value
@@ -36,64 +30,63 @@ def sign_in_to_acr():
     acr_login = subprocess.run(["az", "acr", "login", "--name", "ineedhousing"])
     print(acr_login)
 
-def build_image():
-    print("Building Image\n\n")
+def build_and_push_with_unique_tag():
+    # Generate a unique timestamp tag
+    tag = str(int(time.time()))
+    image_name = f"ineedhousing.azurecr.io/images/backend:v{tag}"
+    
+    print(f"Building Image with tag: {tag}\n\n")
     build_image = subprocess.run(["docker", "build", "-t", image_name, "."], cwd=str(backend), shell=isOSWindows)
     print(build_image)
     print("Image built\n\n")
     
-def push_image():
-    print("Pushing backend image to Azure Registry\n\n")
-    push_image = subprocess.run(["docker", "push", image_name], cwd=backend, shell=isOSWindows)
+    print(f"Pushing image {image_name} to Azure Registry\n\n")
+    push_image = subprocess.run(["docker", "push", image_name], shell=isOSWindows)
     print(push_image)
     print("Image pushed\n\n")
+    
+    return image_name
 
-def update_container_settings():
+def update_app_service(image_name):
     print("Updating App Service container settings\n\n")
     update = subprocess.run([
         "az", "webapp", "config", "container", "set",
         "--name", "i-need-housing-backend",
         "--resource-group", "INeedHousing",
-        "--docker-custom-image-name", "ineedhousing.azurecr.io/images/backend:latest",
-        "--docker-registry-server-url", "https://ineedhousing.azurecr.io"
+        "--container-image-name", image_name,
+        "--container-registry-url", "https://ineedhousing.azurecr.io"
     ], shell=isOSWindows)
     print(update)
     print("Container settings updated\n\n")
     
-def stop_start_app_service():
-    print("Stopping App Service\n\n")
-    stop = subprocess.run(["az", "webapp", "stop", "--name", "i-need-housing-backend", "--resource-group", "i-need-housing"], shell=isOSWindows)
-    print(stop)
-    print("App Service stopped\n\n")
-    
-    # Give it a moment to fully stop
-    time.sleep(60)
-    
-    print("Starting App Service\n\n")
-    start = subprocess.run(["az", "webapp", "start", "--name", "i-need-housing-backend", "--resource-group", "i-need-housing"], shell=isOSWindows)
-    print(start)
-    print("App Service started\n\n")
-    
-def stop_start_app_service():
-    print("Stopping App Service\n\n")
-    stop = subprocess.run(["az", "webapp", "stop", "--name", "i-need-housing-backend", "--resource-group", "i-need-housing"], shell=isOSWindows)
-    print(stop)
-    print("App Service stopped\n\n")
-    
-    # Give it a moment to fully stop
-    time.sleep(60)
-    
-    print("Starting App Service\n\n")
-    start = subprocess.run(["az", "webapp", "start", "--name", "i-need-housing-backend", "--resource-group", "i-need-housing"], shell=isOSWindows)
-    print(start)
-    print("App Service started\n\n")
-    
+    # Increase the startup timeout
+    print("Configuring longer startup timeout\n\n")
+    config = subprocess.run([
+        "az", "webapp", "config", "set",
+        "--name", "i-need-housing-backend",
+        "--resource-group", "INeedHousing",
+        "--generic-configurations", '{"startupTimeLimit": 300}'
+    ], shell=isOSWindows)
+    print(config)
+    print("Startup timeout configured\n\n")
+
+def restart_app_service():
+    print("Restarting App Service\n\n")
+    restart = subprocess.run([
+        "az", "webapp", "restart",
+        "--name", "i-need-housing-backend",
+        "--resource-group", "INeedHousing"
+    ], shell=isOSWindows)
+    print(restart)
+    print("App Service restarted\n\n")
+
 def main():
     load_env_file()
     sign_in_to_azure()
     sign_in_to_acr()
-    build_image()
-    push_image()
+    image_name = build_and_push_with_unique_tag()
+    update_app_service(image_name)
+    restart_app_service()
     
 if __name__ == "__main__":
     main()
