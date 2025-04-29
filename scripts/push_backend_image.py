@@ -12,6 +12,8 @@ This script also turns off and back on the App Service to guarantee a fresh inst
 
 backend = Path.cwd()/"backend"
 isOSWindows = platform.system() == "Windows"
+tag = f"v{int(time.time())}"  # e.g., v1713514892
+image_name = f"ineedhousing.azurecr.io/images/backend:{tag}"
 
 def load_env_file(): ## azure account details
     file_path = Path.cwd()/"azure.env"
@@ -36,15 +38,41 @@ def sign_in_to_acr():
 
 def build_image():
     print("Building Image\n\n")
-    build_image = subprocess.run(["docker", "build", "-t", "ineedhousing.azurecr.io/images/backend:latest", "."], cwd=str(backend), shell=isOSWindows)
+    build_image = subprocess.run(["docker", "build", "-t", image_name, "."], cwd=str(backend), shell=isOSWindows)
     print(build_image)
     print("Image built\n\n")
     
 def push_image():
     print("Pushing backend image to Azure Registry\n\n")
-    push_image = subprocess.run(["docker", "push", "ineedhousing.azurecr.io/images/backend"], cwd=backend, shell=isOSWindows)
+    push_image = subprocess.run(["docker", "push", image_name], cwd=backend, shell=isOSWindows)
     print(push_image)
     print("Image pushed\n\n")
+
+def update_container_settings():
+    print("Updating App Service container settings\n\n")
+    update = subprocess.run([
+        "az", "webapp", "config", "container", "set",
+        "--name", "i-need-housing-backend",
+        "--resource-group", "INeedHousing",
+        "--docker-custom-image-name", "ineedhousing.azurecr.io/images/backend:latest",
+        "--docker-registry-server-url", "https://ineedhousing.azurecr.io"
+    ], shell=isOSWindows)
+    print(update)
+    print("Container settings updated\n\n")
+    
+def stop_start_app_service():
+    print("Stopping App Service\n\n")
+    stop = subprocess.run(["az", "webapp", "stop", "--name", "i-need-housing-backend", "--resource-group", "i-need-housing"], shell=isOSWindows)
+    print(stop)
+    print("App Service stopped\n\n")
+    
+    # Give it a moment to fully stop
+    time.sleep(60)
+    
+    print("Starting App Service\n\n")
+    start = subprocess.run(["az", "webapp", "start", "--name", "i-need-housing-backend", "--resource-group", "i-need-housing"], shell=isOSWindows)
+    print(start)
+    print("App Service started\n\n")
     
 def stop_start_app_service():
     print("Stopping App Service\n\n")
@@ -66,7 +94,6 @@ def main():
     sign_in_to_acr()
     build_image()
     push_image()
-    stop_start_app_service()
     
 if __name__ == "__main__":
     main()
