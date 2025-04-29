@@ -4,6 +4,8 @@ import time
 from pathlib import Path
 import platform
 
+from build_backend_image import build_image
+
 # Your existing setup code
 backend = Path.cwd()/"backend"
 isOSWindows = platform.system() == "Windows"
@@ -31,14 +33,7 @@ def sign_in_to_acr():
     print(acr_login)
 
 def build_and_push_with_unique_tag():
-    # Generate a unique timestamp tag
-    tag = str(int(time.time()))
-    image_name = f"ineedhousing.azurecr.io/images/backend:v{tag}"
-    
-    print(f"Building Image with tag: {tag}\n\n")
-    build_image = subprocess.run(["docker", "build", "-t", image_name, "."], cwd=str(backend), shell=isOSWindows)
-    print(build_image)
-    print("Image built\n\n")
+    image_name = build_image()
     
     print(f"Pushing image {image_name} to Azure Registry\n\n")
     push_image = subprocess.run(["docker", "push", image_name], shell=isOSWindows)

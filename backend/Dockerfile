@@ -1,30 +1,37 @@
-# Use a base image with Java 21 and Node.js pre-installed
+# Build stage
 FROM eclipse-temurin:21-jdk-jammy as builder
 
-# Install Node.js, NPM, and Maven
-RUN apt-get update && apt-get install -y curl maven
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt-get install -y nodejs
+# Install Node.js and npm in a single RUN command
+RUN apt-get update && apt-get install -y curl maven \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy the project files
+# Copy pom.xml separately to leverage Docker cache
+COPY pom.xml .
+# Download dependencies
+RUN mvn dependency:go-offline
+
+# Copy the rest of the application
 COPY . .
 
-# Build the application (including Vaadin frontend)
+# Build the application
 RUN mvn clean package -Pproduction -DskipTests
 
-# Use a smaller runtime image with Java 21
+# Final stage - use JRE instead of JDK
 FROM eclipse-temurin:21-jre-jammy
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy the built application from the builder stage
+# Copy the built application
 COPY --from=builder /app/target/*.jar app.jar
 
-# Expose the port your app runs on
+# Expose port
 EXPOSE 8080
 
 # Run the application
