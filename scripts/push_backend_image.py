@@ -4,7 +4,7 @@ import time
 from pathlib import Path
 import platform
 
-from build_backend_image import build_image
+from build_backend_image import build_image, check_if_docker_is_running
 
 # Your existing setup code
 backend = Path.cwd()/"backend"
@@ -60,7 +60,7 @@ def update_app_service(image_name):
         "az", "webapp", "config", "set",
         "--name", "i-need-housing-backend",
         "--resource-group", "INeedHousing",
-        "--generic-configurations", '{"startupTimeLimit": 300}'
+        "--generic-configurations", '{"startupTimeLimit": 400}'
     ], shell=isOSWindows)
     print(config)
     print("Startup timeout configured\n\n")
@@ -76,6 +76,7 @@ def restart_app_service():
     print("App Service restarted\n\n")
 
 def main():
+    check_if_docker_is_running()
     load_env_file()
     sign_in_to_azure()
     sign_in_to_acr()
