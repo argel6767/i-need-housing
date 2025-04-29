@@ -42,7 +42,7 @@ public class FavoriteListingService {
     @Transactional(readOnly = true)
     public List<FavoriteListing> getAllUserFavoriteListings(String email) {
         User user = userService.getUserByEmail(email);
-        return user.getFavoriteListings();
+        return new ArrayList<>(user.getFavoriteListings());
     }
 
     /**
