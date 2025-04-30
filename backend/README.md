@@ -1,0 +1,186 @@
+# INeedHousing Backend
+
+A robust Spring Boot backend application for a housing listing platform, providing comprehensive features for property management, user authentication, and search functionality.
+
+## 🚀 Features
+
+### Core Features
+- **User Management**
+  - User registration and authentication
+  - Role-based access control (Admin and User roles)
+  - User profile management
+  - User search preferences
+
+### Housing Listings
+- Property listing management
+- Advanced search capabilities
+- Favorite listings functionality
+- Geographic search using spatial data
+
+### Security
+- JWT-based authentication
+- Spring Security integration
+- Role-based authorization
+- Secure password handling
+
+### Additional Features
+- Email service integration
+- Rate limiting with Bucket4j
+- Caching implementation
+- Admin dashboard functionality
+
+## 🛠️ Technical Stack
+
+- **Framework**: Spring Boot 3.4.4
+- **Language**: Java 21
+- **Database**: PostgreSQL with Hibernate Spatial
+- **Security**: Spring Security + JWT
+- **UI Framework**: Vaadin 24.6.2
+- **Build Tool**: Maven
+- **Containerization**: Docker
+
+## 📦 Dependencies
+
+Key dependencies include:
+- Spring Boot Starters (Web, Data JPA, Security, Mail, Cache)
+- Hibernate Spatial for geographic queries
+- JWT for authentication
+- Bucket4j for rate limiting
+- Vaadin for UI components
+- Lombok for reducing boilerplate code
+
+## 🏗️ Project Structure
+
+```
+src/main/java/com/ineedhousing/backend/
+├── admin/           # Admin-specific functionality
+├── apis/            # API endpoints and controllers
+├── auth/            # Authentication and authorization
+├── configs/         # Configuration classes
+├── email/           # Email service implementation
+├── exception/       # Custom exception handling
+├── favorite_listings/ # Favorite listings functionality
+├── geometry/        # Geographic data handling
+├── housing_listings/ # Property listing management
+├── jwt/            # JWT token handling
+├── user/           # User management
+└── user_search_preferences/ # User search preferences
+```
+
+## 🔧 Configuration
+
+The application uses environment variables for configuration. Key configuration files:
+- `dev.env`: Development environment configuration
+- `prod.env`: Production environment configuration
+- `application.properties`: Core application settings
+
+## 🐳 Docker Support
+
+The application includes:
+- `Dockerfile` for containerization
+- `compose.yaml` for Docker Compose setup
+- `.dockerignore` for optimized builds
+
+## 🚀 Getting Started
+
+1. **Prerequisites**
+   - Java 21
+   - Maven
+   - PostgreSQL
+   - Docker (optional)
+
+2. **Setup**
+
+   ```bash
+   # Clone the repository
+   git clone [repository-url]
+   
+   # Navigate to backend directory
+   cd backend
+   
+   # Build the application
+   mvn clean install
+   
+   # Run the application
+   mvn spring-boot:run
+   ```
+
+3. **Docker Deployment**
+
+   ```bash
+   # Build the Docker image
+   docker build -t ineedhousing-backend .
+   
+   # Run with Docker Compose
+   docker-compose up
+   ```
+
+## 🔒 Security
+
+The application implements:
+
+- JWT-based authentication
+- Role-based access control
+- Secure password storage
+- Rate limiting for API endpoints
+
+## 📝 API Documentation
+
+The application provides the following REST API endpoints:
+
+### Authentication (`/auths`)
+- `POST /register` - User registration
+- `POST /login` - User login
+- `POST /verify` - Email verification
+- `POST /logout` - User logout
+- `POST /resend` - Resend verification email
+- `PUT /password` - Update password
+- `POST /forgot/{email}` - Password reset request
+- `PUT /reset` - Reset password
+
+### Users (`/users`)
+- `GET /{email}` - Get user details
+- `PUT /{email}` - Update user information
+- `PUT /type` - Update user type
+- `DELETE /{email}` - Delete user
+
+### Housing Listings (`/listings`)
+- `GET /area` - Get listings in area
+- `GET /{id}` - Get specific listing
+- `DELETE /{id}` - Delete listing
+- `POST /filter/exact` - Exact search filter
+- `POST /filter/non-strict` - Non-strict search filter
+- `POST /filter/specific` - Specific search filter
+- `POST /preferences/multi` - Multi-preference search
+
+### User Preferences (`/preferences`)
+- `POST /{email}` - Create preferences
+- `POST /coordinates/{email}` - Set coordinates
+- `POST /addresses/{email}` - Set addresses
+- `PUT /{email}` - Update preferences
+- `PUT /` - Bulk update preferences
+- `GET /{email}` - Get user preferences
+
+### Favorite Listings (`/favorites`)
+- `GET /{email}` - Get user favorites
+- `PUT /{email}/listings` - Update favorite listings
+- `POST /{email}/listings` - Add to favorites
+- `DELETE /{email}` - Remove from favorites
+
+## 🧪 Testing
+
+The project includes:
+- Unit tests
+- Integration tests
+
+## 📄 License
+
+This project is licensed under the terms specified in the project's license file.
+
+## 👥 Authors
+
+- Argel Hernandez Amaya
+
+## 📞 Support
+
+For support, please contact the project maintainers or open an issue in the repository. 

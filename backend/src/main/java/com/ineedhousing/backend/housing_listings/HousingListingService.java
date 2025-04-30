@@ -35,20 +35,31 @@ public class HousingListingService {
 
     /**
      * Finds all listings in a circle with given radius, and sorts them closest to center
+     * where radius is in miles
+     * latitude and longitude must reside in the continental US
      * @param longitude
      * @param latitude
      * @param radius
      * @return
      */
     @Cacheable("listings")
-
     public List<HousingListing> getListingsInArea(double latitude, double longitude, int radius) {
+        if (radius <= 0 || radius > 30) {
+            throw new IllegalArgumentException("radius must be between 1 and 30!");
+        }
+        if (latitude < 24.00 || latitude > 49) {
+            throw new IllegalArgumentException("latitude value must be in the US!");
+        }
+        if (longitude < -125.00 || longitude > -67.00) {
+            throw new IllegalArgumentException("longitude value must be in the US!");
+        }
+
         GeometryFactory factory = GeometrySingleton.getInstance();
         Point center = factory.createPoint(new Coordinate(longitude, latitude)); //Point objects have longitude first
         Polygon area = PolygonCreator.createCircle(center, radius, 32);
         List<HousingListing> listings = housingListingRepository.getAllListingsInsideArea(area);
         if (listings.isEmpty()) {
-            throw new NoListingsFoundException(String.format("No listings found in the given radius of %d from point {%.2f, %.2f}", radius, latitude, longitude)) ;
+            return listings; //no need to do sorting logic
         }
         listings = listings.stream().sorted((listingOne, listingTwo) -> {
             double distanceOne = center.distance(listingOne.getLocation());
