@@ -2,6 +2,7 @@ package com.ineedhousing.backend.favorite_listings;
 
 import com.ineedhousing.backend.favorite_listings.requests.AddFavoriteListingsRequest;
 import com.ineedhousing.backend.favorite_listings.requests.DeleteFavoriteListingsRequest;
+import com.ineedhousing.backend.jwt.JwtUtils;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +29,10 @@ public class FavoriteListingController {
      * @param email
      * @return ResponseEntity
      */
-    @GetMapping("/{email}")
-    public ResponseEntity<?> getAllUserFavoriteListings(@PathVariable String email) {
+    @GetMapping("/me")
+    public ResponseEntity<?> getAllUserFavoriteListings() {
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             List<FavoriteListing> favoriteListings = favoriteListingService.getAllUserFavoriteListings(email);
             return ResponseEntity.ok(favoriteListings);
         }
@@ -45,9 +47,10 @@ public class FavoriteListingController {
      * @param request
      * @return ResponseEntity
      */
-    @PutMapping("/{email}/listings")
-    public ResponseEntity<?> addNewFavoriteListings(@PathVariable String email, @RequestBody AddFavoriteListingsRequest request) {
+    @PutMapping("/listings")
+    public ResponseEntity<?> addNewFavoriteListings(@RequestBody AddFavoriteListingsRequest request) {
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             List<FavoriteListing> favoriteListings = favoriteListingService.addFavoriteListings(email, request.getListings());
             return new ResponseEntity<>(favoriteListings, HttpStatus.CREATED);
         }
@@ -63,9 +66,10 @@ public class FavoriteListingController {
      * @throws UsernameNotFoundException
      * @return ResponseEntity
      */
-    @PostMapping("/{email}/listings")
-    public ResponseEntity<?> deleteFavoriteListings(@PathVariable String email, @RequestBody DeleteFavoriteListingsRequest request) {
+    @PostMapping("/listings")
+    public ResponseEntity<?> deleteFavoriteListings(@RequestBody DeleteFavoriteListingsRequest request) {
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             List<FavoriteListing> updatedListings = favoriteListingService.deleteListings(email, request.getFavoriteListingIds());
             return ResponseEntity.ok(updatedListings);
         }
@@ -80,9 +84,10 @@ public class FavoriteListingController {
      * @throws UsernameNotFoundException
      * @return ResponseEntity
      */
-    @DeleteMapping("/{email}")
-    public ResponseEntity<?> deleteAllUserFavoriteListings(@PathVariable String email) {
+    @DeleteMapping("/")
+    public ResponseEntity<?> deleteAllUserFavoriteListings() {
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             String response = favoriteListingService.deleteAllUserFavoriteListings(email);
             return ResponseEntity.ok(response);
         }

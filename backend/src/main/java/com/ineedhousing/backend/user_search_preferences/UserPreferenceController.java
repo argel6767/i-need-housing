@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ineedhousing.backend.apis.exceptions.FailedApiCallException;
 import com.ineedhousing.backend.geometry.exceptions.ErroredGeoCodeAPICallException;
+import com.ineedhousing.backend.jwt.JwtUtils;
 import com.ineedhousing.backend.user_search_preferences.exceptions.UserPreferenceNotFound;
 import com.ineedhousing.backend.user_search_preferences.requests.NewFiltersDto;
 import com.ineedhousing.backend.user_search_preferences.requests.RawCoordinateUserPreferenceRequest;
@@ -42,12 +43,12 @@ public class UserPreferenceController {
     /**
      * create new UserPreference
      * @param request
-     * @param email
      * @return
      */
-    @PostMapping("/{email}")
-    public ResponseEntity<?> createUserPreferences(@RequestBody UserPreferenceDto request, @PathVariable String email) {
+    @PostMapping("/")
+    public ResponseEntity<?> createUserPreferences(@RequestBody UserPreferenceDto request) {
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             UserPreference userPreference = userPreferenceService.createUserPreferences(request, email);
             return new ResponseEntity<>(userPreference,  HttpStatus.CREATED);
         }
@@ -62,12 +63,13 @@ public class UserPreferenceController {
         }
     }
 
-    @PostMapping("/coordinates/{email}")
-    public ResponseEntity<?> createUserPreferencesWithCoordinates(@RequestBody RawCoordinateUserPreferenceRequest request, @PathVariable String email) {
+    @PostMapping("/coordinates")
+    public ResponseEntity<?> createUserPreferencesWithCoordinates(@RequestBody RawCoordinateUserPreferenceRequest request) {
         if (request.getCityOfEmployment() == null || request.getBathrooms() == null ||  request.getBedrooms() == null) {
             return new ResponseEntity<>("BAD REQUEST", HttpStatus.BAD_REQUEST);
         }
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             UserPreference userPreference = userPreferenceService.createUserPreference(request, email);
             return new ResponseEntity<>(userPreference,  HttpStatus.CREATED);
         } catch (UsernameNotFoundException unfe) {
@@ -81,10 +83,11 @@ public class UserPreferenceController {
         }
 }
 
-@PostMapping("/addresses/{email}")
-    public ResponseEntity<?> createUserPreferenceWithAddresses(@RequestBody RawUserPreferencesDto request, @PathVariable String email) {
+@PostMapping("/addresses")
+    public ResponseEntity<?> createUserPreferenceWithAddresses(@RequestBody RawUserPreferencesDto request) {
         log.info("Beginning creation with request" + request.toString());
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             UserPreference userPreference = userPreferenceService.createUserPreference(request, email);
             return new ResponseEntity<>(userPreference, HttpStatus.CREATED);
         }
@@ -102,12 +105,12 @@ public class UserPreferenceController {
     /**
      * update UserPreference
      * @param userPreference
-     * @param email
      * @return
      */
-    @PutMapping("/{email}")
-    public ResponseEntity<?> updateUserPreferences(@RequestBody UserPreference userPreference, @PathVariable String email) {
+    @PutMapping("/")
+    public ResponseEntity<?> updateUserPreferences(@RequestBody UserPreference userPreference) {
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             UserPreference updatedPreferences = userPreferenceService.updateUserPreferences(userPreference, email);
             return ResponseEntity.ok(updatedPreferences);
         }
@@ -118,7 +121,6 @@ public class UserPreferenceController {
 
     /**
      * update UserPreference with filters
-     * @param email
      * @return
      */
     @PutMapping("/")
@@ -134,12 +136,12 @@ public class UserPreferenceController {
     
     /**
      * get UserPreference
-     * @param email
      * @return
      */
-    @GetMapping("/{email}")
-    public ResponseEntity<?> getPreferences(@PathVariable String email) {
+    @GetMapping("/")
+    public ResponseEntity<?> getPreferences() {
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             UserPreference userPreference = userPreferenceService.getUserPreferences(email);
             return ResponseEntity.ok(userPreference);
         }

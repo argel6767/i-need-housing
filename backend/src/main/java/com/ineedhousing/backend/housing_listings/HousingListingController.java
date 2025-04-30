@@ -11,6 +11,8 @@ import com.ineedhousing.backend.housing_listings.requests.GetListingsByPreferenc
 import com.ineedhousing.backend.housing_listings.requests.GetListingsBySpecificPreferenceRequest;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsInAreaRequest;
 import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
+import com.ineedhousing.backend.jwt.JwtUtils;
+
 
 import lombok.extern.java.Log;
 
@@ -83,6 +85,11 @@ public class HousingListingController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteListing(@PathVariable Long id) {
+        if (!JwtUtils.isUserAdmin()) {
+            Map<String, String> response = new HashMap<>();
+            response.put("error", "user is not an admin, cannot delete listing");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
         try {
             String message = housingListingService.deleteListing(id);
             return new ResponseEntity<>(message, HttpStatus.NO_CONTENT);

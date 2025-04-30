@@ -14,4 +14,10 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
     }
-} 
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleIllegalStateException(IllegalStateException ise) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ise.getMessage());
+    }
+
+}

@@ -5,20 +5,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ineedhousing.backend.jwt.JwtUtils;
 import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
 
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Houses endpoints for User interactions
  */
-@Log
+@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -30,35 +30,41 @@ public class UserController {
     }
 
     /**
-     * getUser via their email
-     * @param email
+     * Get the current authenticated user
      * @return ResponseEntity
      */
-    @GetMapping("/{email}")
-    public ResponseEntity<?> getUser(@PathVariable String email) {
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser() {
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             User user = userService.getUserByEmail(email);
             return ResponseEntity.ok(user);
         }
         catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
         }
+        catch (IllegalStateException ise) {
+            return new ResponseEntity<>(ise.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
     }
 
     /**
-     * Updates User with whatever new values given
+     * Updates the current authenticated user with new values
      * @param user
-     * @param email
-     * @return USer
+     * @return User
      */
-    @PutMapping("/{email}")
-    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable String email) {
+    @PutMapping("/me")
+    public ResponseEntity<?> updateCurrentUser(@RequestBody User user) {
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             User updatedUser = userService.updateUser(user, email);
             return ResponseEntity.ok(updatedUser);
         }
         catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        catch (IllegalStateException ise) {
+            return new ResponseEntity<>(ise.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -70,7 +76,7 @@ public class UserController {
     @PutMapping("/type")
     public ResponseEntity<?> setUserType(@RequestBody SetUserTypeRequest request) {
         log.info("user type: " + request.toString());
-        if (request.getUserType() == null  || request.getUserType().toString().isEmpty()) {
+        if (request.getUserType() == null || request.getUserType().toString().isEmpty()) {
             return new ResponseEntity<>("BAD REQUEST", HttpStatus.BAD_REQUEST);
         }
         try {
@@ -83,19 +89,21 @@ public class UserController {
     }
 
     /**
-     * deletes User
-     * @param email
+     * deletes the current authenticated user
      * @return ResponseEntity
      */
-    @DeleteMapping("/{email}")
-    public ResponseEntity<?> deleteUser(@PathVariable String email) {
+    @DeleteMapping("/me")
+    public ResponseEntity<?> deleteCurrentUser() {
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             String response = userService.deleteUser(email);
             return ResponseEntity.ok(response);
         }
         catch(UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
         }
+        catch (IllegalStateException ise) {
+            return new ResponseEntity<>(ise.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
     }
-
 }
