@@ -45,7 +45,7 @@ public class UserPreferenceController {
      * @param request
      * @return
      */
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<?> createUserPreferences(@RequestBody UserPreferenceDto request) {
         try {
             String email = JwtUtils.getCurrentUserEmail();
@@ -55,11 +55,8 @@ public class UserPreferenceController {
         catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
         }
-        catch (FailedApiCallException face) {
-            return new ResponseEntity<>(face.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
-        }
-        catch (ErroredGeoCodeAPICallException egcae) {
-            return new ResponseEntity<>(egcae.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+        catch (FailedApiCallException | ErroredGeoCodeAPICallException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
@@ -107,7 +104,7 @@ public class UserPreferenceController {
      * @param userPreference
      * @return
      */
-    @PutMapping("/")
+    @PutMapping()
     public ResponseEntity<?> updateUserPreferences(@RequestBody UserPreference userPreference) {
         try {
             String email = JwtUtils.getCurrentUserEmail();
@@ -123,7 +120,7 @@ public class UserPreferenceController {
      * update UserPreference with filters
      * @return
      */
-    @PutMapping("/")
+    @PutMapping("/filters")
     public ResponseEntity<?> updateUserPreferences(@RequestBody NewFiltersDto request) {
         try {
             UserPreference updatedPreferences = userPreferenceService.updateUserPreferences(request);
@@ -138,7 +135,7 @@ public class UserPreferenceController {
      * get UserPreference
      * @return
      */
-    @GetMapping("/")
+    @GetMapping("/me")
     public ResponseEntity<?> getPreferences() {
         try {
             String email = JwtUtils.getCurrentUserEmail();

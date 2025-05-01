@@ -80,7 +80,8 @@ public class UserController {
             return new ResponseEntity<>("BAD REQUEST", HttpStatus.BAD_REQUEST);
         }
         try {
-            User user = userService.setUserType(request);
+            String email = JwtUtils.getCurrentUserEmail();
+            User user = userService.setUserType(request, email);
             return ResponseEntity.ok(user);
         }
         catch (UsernameNotFoundException unfe) {

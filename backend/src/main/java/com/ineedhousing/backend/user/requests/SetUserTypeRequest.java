@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SetUserTypeRequest {
-    private String email;
     private UserType userType;
 }

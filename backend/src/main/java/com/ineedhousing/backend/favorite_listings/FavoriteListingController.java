@@ -47,7 +47,7 @@ public class FavoriteListingController {
      * @param request
      * @return ResponseEntity
      */
-    @PutMapping("/listings")
+    @PostMapping("/listings")
     public ResponseEntity<?> addNewFavoriteListings(@RequestBody AddFavoriteListingsRequest request) {
         try {
             String email = JwtUtils.getCurrentUserEmail();
@@ -66,7 +66,7 @@ public class FavoriteListingController {
      * @throws UsernameNotFoundException
      * @return ResponseEntity
      */
-    @PostMapping("/listings")
+    @DeleteMapping("/listings")
     public ResponseEntity<?> deleteFavoriteListings(@RequestBody DeleteFavoriteListingsRequest request) {
         try {
             String email = JwtUtils.getCurrentUserEmail();
@@ -84,7 +84,7 @@ public class FavoriteListingController {
      * @throws UsernameNotFoundException
      * @return ResponseEntity
      */
-    @DeleteMapping("/")
+    @DeleteMapping()
     public ResponseEntity<?> deleteAllUserFavoriteListings() {
         try {
             String email = JwtUtils.getCurrentUserEmail();

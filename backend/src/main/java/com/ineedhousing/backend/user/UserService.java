@@ -68,8 +68,8 @@ public class UserService {
      * @return User
      */
     @Transactional
-    public User setUserType(SetUserTypeRequest request) {
-        User user = getUserByEmail(request.getEmail());
+    public User setUserType(SetUserTypeRequest request, String email) {
+        User user = getUserByEmail(email);
         user.setUserType(request.getUserType());
         return userRepository.save(user);
     }
