@@ -5,6 +5,7 @@ A robust Spring Boot backend application for a housing listing platform, providi
 ## 🚀 Features
 
 ### Core Features
+
 - **User Management**
   - User registration and authentication
   - Role-based access control (Admin and User roles)
@@ -12,18 +13,21 @@ A robust Spring Boot backend application for a housing listing platform, providi
   - User search preferences
 
 ### Housing Listings
+
 - Property listing management
 - Advanced search capabilities
 - Favorite listings functionality
 - Geographic search using spatial data
 
 ### Security
+
 - JWT-based authentication
 - Spring Security integration
 - Role-based authorization
 - Secure password handling
 
 ### Additional Features
+
 - Email service integration
 - Rate limiting with Bucket4j
 - Caching implementation
@@ -42,6 +46,7 @@ A robust Spring Boot backend application for a housing listing platform, providi
 ## 📦 Dependencies
 
 Key dependencies include:
+
 - Spring Boot Starters (Web, Data JPA, Security, Mail, Cache)
 - Hibernate Spatial for geographic queries
 - JWT for authentication
@@ -51,7 +56,7 @@ Key dependencies include:
 
 ## 🏗️ Project Structure
 
-```
+```txt
 src/main/java/com/ineedhousing/backend/
 ├── admin/           # Admin-specific functionality
 ├── apis/            # API endpoints and controllers
@@ -70,6 +75,7 @@ src/main/java/com/ineedhousing/backend/
 ## 🔧 Configuration
 
 The application uses environment variables for configuration. Key configuration files:
+
 - `dev.env`: Development environment configuration
 - `prod.env`: Production environment configuration
 - `application.properties`: Core application settings
@@ -77,6 +83,7 @@ The application uses environment variables for configuration. Key configuration 
 ## 🐳 Docker Support
 
 The application includes:
+
 - `Dockerfile` for containerization
 - `compose.yaml` for Docker Compose setup
 - `.dockerignore` for optimized builds
@@ -129,6 +136,7 @@ The application implements:
 The application provides the following REST API endpoints:
 
 ### Authentication (`/auths`)
+
 - `POST /register` - User registration
 - `POST /login` - User login
 - `POST /verify` - Email verification
@@ -139,12 +147,14 @@ The application provides the following REST API endpoints:
 - `PUT /reset` - Reset password
 
 ### Users (`/users`)
-- `GET /{email}` - Get user details
-- `PUT /{email}` - Update user information
+
+- `GET /me` - Get user details
+- `PUT /me` - Update user information
 - `PUT /type` - Update user type
-- `DELETE /{email}` - Delete user
+- `DELETE /me` - Delete user
 
 ### Housing Listings (`/listings`)
+
 - `GET /area` - Get listings in area
 - `GET /{id}` - Get specific listing
 - `DELETE /{id}` - Delete listing
@@ -154,22 +164,25 @@ The application provides the following REST API endpoints:
 - `POST /preferences/multi` - Multi-preference search
 
 ### User Preferences (`/preferences`)
-- `POST /{email}` - Create preferences
-- `POST /coordinates/{email}` - Set coordinates
-- `POST /addresses/{email}` - Set addresses
-- `PUT /{email}` - Update preferences
+
+- `POST /` - Create preferences
+- `POST /coordinates` - Set coordinates
+- `POST /addresses` - Set addresses
+- `PUT /filters` - Update preferences
 - `PUT /` - Bulk update preferences
-- `GET /{email}` - Get user preferences
+- `GET /me` - Get user preferences
 
 ### Favorite Listings (`/favorites`)
-- `GET /{email}` - Get user favorites
-- `PUT /{email}/listings` - Update favorite listings
-- `POST /{email}/listings` - Add to favorites
-- `DELETE /{email}` - Remove from favorites
+
+- `GET /me` - Get user favorites
+- `PUT /listings` - Update favorite listings
+- `POST /listings` - Add to favorites
+- `DELETE /` - Remove from favorites
 
 ## 🧪 Testing
 
 The project includes:
+
 - Unit tests
 - Integration tests
 
@@ -183,4 +196,4 @@ This project is licensed under the terms specified in the project's license file
 
 ## 📞 Support
 
-For support, please contact the project maintainers or open an issue in the repository. 
+For support, please contact the project maintainers or open an issue in the repository.

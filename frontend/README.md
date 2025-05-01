@@ -5,18 +5,21 @@ A modern, responsive web application built with Next.js and React, providing a s
 ## 🚀 Features
 
 ### User Authentication
+
 - User registration and login
 - Email verification system
 - Password reset functionality
 - Session management
 
 ### Housing Search
+
 - Advanced search filters
 - Geographic search with Google Maps integration
 - Multi-preference search capabilities
 - Interactive housing listings display
 
 ### User Experience
+
 - Responsive design
 - Interactive maps
 - Image carousels for property photos
@@ -24,6 +27,7 @@ A modern, responsive web application built with Next.js and React, providing a s
 - Form validation and error messages
 
 ### User Management
+
 - User profile management
 - Search preferences configuration
 - Favorite listings management
@@ -164,4 +168,4 @@ Required environment variables:
 
 ## 📞 Support
 
-For support, please contact the project maintainers or open an issue in the repository. 
+For support, please contact the project maintainers or open an issue in the repository.
