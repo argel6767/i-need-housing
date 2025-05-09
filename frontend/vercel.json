@@ -2,7 +2,7 @@
   "rewrites" : [
     {
       "source": "/api/:path*",
-      "destination": "https://i-need-housing-backend-h2c9h7e3b6c2cdg6.canadacentral-01.azurewebsites.net/"
+      "destination": "https://i-need-housing-backend-h2c9h7e3b6c2cdg6.canadacentral-01.azurewebsites.net/:path*"
     }
   ]
 }
