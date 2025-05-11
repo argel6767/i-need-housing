@@ -33,7 +33,7 @@ class UserPreferenceControllerTest {
 
         when(userPreferenceService.createUserPreferences(request, email)).thenReturn(mockPreference);
 
-        ResponseEntity<?> response = userPreferenceController.createUserPreferences(request, email);
+        ResponseEntity<?> response = userPreferenceController.createUserPreferences(request);
 
         assertEquals(ResponseEntity.ok(mockPreference), response);
         verify(userPreferenceService, times(1)).createUserPreferences(request, email);
@@ -46,7 +46,7 @@ class UserPreferenceControllerTest {
 
         when(userPreferenceService.createUserPreferences(request, email)).thenThrow(new UsernameNotFoundException("User not found"));
 
-        ResponseEntity<?> response = userPreferenceController.createUserPreferences(request, email);
+        ResponseEntity<?> response = userPreferenceController.createUserPreferences(request);
 
         assertEquals(404, response.getStatusCode().value());
         assertEquals("User not found", response.getBody());
@@ -61,7 +61,7 @@ class UserPreferenceControllerTest {
 
         when(userPreferenceService.updateUserPreferences(userPreference, email)).thenReturn(updatedPreference);
 
-        ResponseEntity<?> response = userPreferenceController.updateUserPreferences(userPreference, email);
+        ResponseEntity<?> response = userPreferenceController.updateUserPreferences(userPreference);
 
         assertEquals(ResponseEntity.ok(updatedPreference), response);
         verify(userPreferenceService, times(1)).updateUserPreferences(userPreference, email);
@@ -74,7 +74,7 @@ class UserPreferenceControllerTest {
 
         when(userPreferenceService.updateUserPreferences(userPreference, email)).thenThrow(new UsernameNotFoundException("User not found"));
 
-        ResponseEntity<?> response = userPreferenceController.updateUserPreferences(userPreference, email);
+        ResponseEntity<?> response = userPreferenceController.updateUserPreferences(userPreference);
 
         assertEquals(404, response.getStatusCode().value());
         assertEquals("User not found", response.getBody());
@@ -88,7 +88,7 @@ class UserPreferenceControllerTest {
 
         when(userPreferenceService.getUserPreferences(email)).thenReturn(mockPreference);
 
-        ResponseEntity<?> response = userPreferenceController.getPreferences(email);
+        ResponseEntity<?> response = userPreferenceController.getPreferences();
 
         assertEquals(ResponseEntity.ok(mockPreference), response);
         verify(userPreferenceService, times(1)).getUserPreferences(email);
@@ -100,7 +100,7 @@ class UserPreferenceControllerTest {
 
         when(userPreferenceService.getUserPreferences(email)).thenThrow(new UsernameNotFoundException("User not found"));
 
-        ResponseEntity<?> response = userPreferenceController.getPreferences(email);
+        ResponseEntity<?> response = userPreferenceController.getPreferences();
 
         assertEquals(404, response.getStatusCode().value());
         assertEquals("User not found", response.getBody());

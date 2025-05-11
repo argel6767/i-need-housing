@@ -91,10 +91,9 @@ public class UserControllerTest {
     @WithMockUser
     void setUserType_ShouldReturnUpdatedUser() throws Exception {
         SetUserTypeRequest request = new SetUserTypeRequest();
-        request.setEmail(testEmail);
         request.setUserType(UserType.INTERN);
 
-        when(userService.setUserType(request)).thenReturn(testUser);
+        when(userService.setUserType(request, testEmail)).thenReturn(testUser);
 
         mockMvc.perform(put("/users/type")
                .contentType(MediaType.APPLICATION_JSON)
@@ -106,10 +105,9 @@ public class UserControllerTest {
     @WithMockUser
     void setUserType_WhenUserNotFound_ShouldReturnNotFound() throws Exception {
         SetUserTypeRequest request = new SetUserTypeRequest();
-        request.setEmail(testEmail);
         request.setUserType(UserType.INTERN);
 
-        when(userService.setUserType(request))
+        when(userService.setUserType(request, testEmail))
             .thenThrow(new UsernameNotFoundException("User not found"));
 
         mockMvc.perform(put("/users/type")

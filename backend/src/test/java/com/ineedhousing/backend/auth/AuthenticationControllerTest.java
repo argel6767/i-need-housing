@@ -222,7 +222,7 @@ class AuthenticationControllerTest {
         when(authenticationService.resetPassword(request)).thenReturn(user);
 
         //Act
-        ResponseEntity<User> response = (ResponseEntity<User>) authenticationController.resetPassword(request);
+        ResponseEntity<User> response = (ResponseEntity<User>) authenticationController.resetPasswordForgottenPassword(request);
 
         //Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -239,7 +239,7 @@ class AuthenticationControllerTest {
         when(authenticationService.resetPassword(request)).thenThrow(new ExpiredVerificationCodeException("Verification code expired, request another one"));
 
         //Act
-        ResponseEntity<String> response = (ResponseEntity<String>) authenticationController.resetPassword(request);
+        ResponseEntity<String> response = (ResponseEntity<String>) authenticationController.resetPasswordForgottenPassword(request);
 
         //Assert
         assertEquals(HttpStatus.GONE, response.getStatusCode());
@@ -256,7 +256,7 @@ class AuthenticationControllerTest {
         when(authenticationService.resetPassword(request)).thenThrow(new AuthenticationException("Invalid verification code"));
 
         //Act
-        ResponseEntity<String> response = (ResponseEntity<String>) authenticationController.resetPassword(request);
+        ResponseEntity<String> response = (ResponseEntity<String>) authenticationController.resetPasswordForgottenPassword(request);
 
         //Assert
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());

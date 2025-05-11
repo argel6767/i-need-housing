@@ -49,7 +49,7 @@ class FavoriteListingControllerTest {
         when(favoriteListingService.getAllUserFavoriteListings(email)).thenReturn(Collections.singletonList(testFavoriteListing));
 
         // Act
-        ResponseEntity<?> response = favoriteListingController.getAllUserFavoriteListings(email);
+        ResponseEntity<?> response = favoriteListingController.getAllUserFavoriteListings();
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -66,7 +66,7 @@ class FavoriteListingControllerTest {
         when(favoriteListingService.getAllUserFavoriteListings(email)).thenThrow(new UsernameNotFoundException("User not found"));
 
         // Act
-        ResponseEntity<?> response = favoriteListingController.getAllUserFavoriteListings(email);
+        ResponseEntity<?> response = favoriteListingController.getAllUserFavoriteListings();
 
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -81,7 +81,7 @@ class FavoriteListingControllerTest {
         when(favoriteListingService.addFavoriteListings(email, addRequest.getListings())).thenReturn(Collections.singletonList(testFavoriteListing));
 
         // Act
-        ResponseEntity<?> response = favoriteListingController.addNewFavoriteListings(email, addRequest);
+        ResponseEntity<?> response = favoriteListingController.addNewFavoriteListings( addRequest);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -98,7 +98,7 @@ class FavoriteListingControllerTest {
         when(favoriteListingService.addFavoriteListings(email, addRequest.getListings())).thenThrow(new UsernameNotFoundException("User not found"));
 
         // Act
-        ResponseEntity<?> response = favoriteListingController.addNewFavoriteListings(email, addRequest);
+        ResponseEntity<?> response = favoriteListingController.addNewFavoriteListings( addRequest);
 
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -113,7 +113,7 @@ class FavoriteListingControllerTest {
         when(favoriteListingService.deleteListings(email, deleteRequest.getFavoriteListingIds())).thenReturn(Collections.emptyList());
 
         // Act
-        ResponseEntity<?> response = favoriteListingController.deleteFavoriteListings(email, deleteRequest);
+        ResponseEntity<?> response = favoriteListingController.deleteFavoriteListings( deleteRequest);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -130,7 +130,7 @@ class FavoriteListingControllerTest {
         when(favoriteListingService.deleteListings(email, deleteRequest.getFavoriteListingIds())).thenThrow(new UsernameNotFoundException("User not found"));
 
         // Act
-        ResponseEntity<?> response = favoriteListingController.deleteFavoriteListings(email, deleteRequest);
+        ResponseEntity<?> response = favoriteListingController.deleteFavoriteListings( deleteRequest);
 
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -145,7 +145,7 @@ class FavoriteListingControllerTest {
         when(favoriteListingService.deleteAllUserFavoriteListings(email)).thenReturn("List successfully deleted!");
 
         // Act
-        ResponseEntity<?> response = favoriteListingController.deleteAllUserFavoriteListings(email);
+        ResponseEntity<?> response = favoriteListingController.deleteAllUserFavoriteListings();
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -160,7 +160,7 @@ class FavoriteListingControllerTest {
         when(favoriteListingService.deleteAllUserFavoriteListings(email)).thenThrow(new UsernameNotFoundException("User not found"));
 
         // Act
-        ResponseEntity<?> response = favoriteListingController.deleteAllUserFavoriteListings(email);
+        ResponseEntity<?> response = favoriteListingController.deleteAllUserFavoriteListings();
 
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
