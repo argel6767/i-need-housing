@@ -56,7 +56,7 @@ class FavoriteListingServiceTest {
         when(userService.getUserByEmail(email)).thenReturn(testUser);
 
         // Act
-        List<FavoriteListing> favoriteListings = favoriteListingService.getAllUserFavoriteListings(email);
+        List<FavoriteListing> favoriteListings = favoriteListingService.getAllUserFavoriteListings(1L);
 
         // Assert
         assertNotNull(favoriteListings);
@@ -72,7 +72,7 @@ class FavoriteListingServiceTest {
         when(userService.getUserByEmail(email)).thenThrow(new UsernameNotFoundException("User not found"));
 
         // Act & Assert
-        assertThrows(UsernameNotFoundException.class, () -> favoriteListingService.getAllUserFavoriteListings(email));
+        assertThrows(UsernameNotFoundException.class, () -> favoriteListingService.getAllUserFavoriteListings(1L));
         verify(userService, times(1)).getUserByEmail(email);
     }
 

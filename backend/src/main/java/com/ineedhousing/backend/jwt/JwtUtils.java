@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.jwt;
 
+import com.ineedhousing.backend.user.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,26 @@ public class JwtUtils {
         }
         
         return principal.toString();
+    }
+
+    /**
+     * Gets the Id of the currently authenticated user
+     * by casting the UserDetails object to User entity class
+     * @return long
+     */
+    public static Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("No authenticated user found");
+        }
+
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails userDetails) {
+            User user = (User) userDetails;
+            return user.getId();
+        }
+
+        return -1L;
     }
 
     /**

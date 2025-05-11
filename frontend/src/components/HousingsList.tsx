@@ -94,13 +94,12 @@ const FavoriteListing = ({listing, isFavoritedListing, setIsFavoritedListing}: F
 
     const [isUserHovering, setIsUserHovering] = useState<boolean>(false);
     const {favoriteListings, setFavoriteListings} = useGlobalContext();
-    const email = sessionStorage.getItem("email");
 
 
     //adds listing to favorites
     const favoriteListing = async () => {
         const requestBody:favoriteListingsRequest = {listings: [listing!]};
-        const data = await addNewFavoriteListings(email!, requestBody)
+        const data = await addNewFavoriteListings(requestBody)
         setIsFavoritedListing(true);
         setFavoriteListings(data);
     }
@@ -113,7 +112,8 @@ const FavoriteListing = ({listing, isFavoritedListing, setIsFavoritedListing}: F
 
         const favoriteListing = favoriteListings.find(favoriteListing => favoriteListing.housingListing.id === listing?.id);
         const requestBody = {favoriteListingIds: [favoriteListing?.id]};
-        const data = await deleteFavoriteListings(email!, requestBody);
+        console.log(requestBody);
+        const data = await deleteFavoriteListings(requestBody);
         setIsFavoritedListing(false);
         setFavoriteListings(data);
     }

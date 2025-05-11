@@ -15,9 +15,8 @@ const MODULE_MAPPING = "/favorites";
  * @returns 
  */
 export const getFavoriteListings = async (): Promise<FavoriteListing[]> => {
-    const email = sessionStorage.getItem("email");
     try {
-        const response = await apiClient.get(`${MODULE_MAPPING}/${email}`)
+        const response = await apiClient.get(`${MODULE_MAPPING}/me`)
         if (response.status === 200) {
             return response.data;
         }
@@ -36,9 +35,10 @@ export const getFavoriteListings = async (): Promise<FavoriteListing[]> => {
  * @param requestBody 
  * @returns 
  */
-export const addNewFavoriteListings = async (email: string, requestBody: favoriteListingsRequest): Promise<Array<FavoriteListing>> => {
+export const addNewFavoriteListings = async ( requestBody: favoriteListingsRequest): Promise<Array<FavoriteListing>> => {
     try {
-        const response = await apiClient.put(`${MODULE_MAPPING}/${email}/listings`, requestBody);
+        const response = await apiClient.post(`${MODULE_MAPPING}/listings`, requestBody);
+        console.log(response.data);
         if (response.status === 201) {
             return response.data;
         }
@@ -57,9 +57,9 @@ export const addNewFavoriteListings = async (email: string, requestBody: favorit
  * @param requestBody 
  * @returns 
  */
-export const deleteFavoriteListings = async (email: string, requestBody: any): Promise<Array<FavoriteListing>> => {
+export const deleteFavoriteListings = async ( requestBody: any): Promise<Array<FavoriteListing>> => {
     try {
-        const response = await apiClient.post(`${MODULE_MAPPING}/${email}/listings`, requestBody);
+        const response = await apiClient.post(`${MODULE_MAPPING}/listings`, requestBody);
         if (response.status === 200) {
             return response.data; 
         }
@@ -74,12 +74,11 @@ export const deleteFavoriteListings = async (email: string, requestBody: any): P
 
 /**
  * deletes favorites
- * @param email 
- * @returns 
+ * @returns
  */
-export const deleteAllFavorites = async (email: string): Promise<string> => {
+export const deleteAllFavorites = async (): Promise<string> => {
     try {
-        const response = await apiClient.delete(`${MODULE_MAPPING}/${email}`)
+        const response = await apiClient.delete(`${MODULE_MAPPING}/`)
         if (response.status === 200) {
             return response.data;  
         }

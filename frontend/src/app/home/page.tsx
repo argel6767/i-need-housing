@@ -52,7 +52,7 @@ const Home = () => {
         if(favorites) {
             setFavoriteListings(favorites)
         }
-    }, [favorites])
+    }, [favorites, setFavoriteListings])
 
     return (
         <main className="flex flex-col h-screen">

@@ -1,7 +1,7 @@
 import { UserPreference } from "@/interfaces/entities";
 import { apiClient, failedCallMessage } from "./apiConfig";
 import { RawUserPreferenceDto } from "@/interfaces/requests/userPreferencesRequests";
-import { AxiosError } from "axios";
+
 
 const MODULE_MAPPING = "/preferences";
 
@@ -15,11 +15,11 @@ const MODULE_MAPPING = "/preferences";
  * @param requestBody
  * @returns
  */
-export const createUserPreferences = async (email: string, requestBody: RawUserPreferenceDto): Promise<any> => {
+export const createUserPreferences = async ( requestBody: RawUserPreferenceDto): Promise<any> => {
     try {
         console.log(requestBody)
         requestBody.isFurnished=false;
-        const response = await apiClient.post(`${MODULE_MAPPING}/addresses/${email}`, requestBody);
+        const response = await apiClient.post(`${MODULE_MAPPING}/addresses/}`, requestBody);
         if (response.status === 201) {
             return response.data;
         }
@@ -42,9 +42,9 @@ export const createUserPreferences = async (email: string, requestBody: RawUserP
  * @param requestBody
  * @returns
  */
-export const updateUserPreferences = async (email: string, requestBody: UserPreference): Promise<any> => {
+export const updateUserPreferences = async (requestBody: UserPreference): Promise<any> => {
     try {
-        const response = await apiClient.put(`${MODULE_MAPPING}/${email}`, requestBody);
+        const response = await apiClient.put(`${MODULE_MAPPING}/}`, requestBody);
         if (response.status === 200) {
             return response.data
         }
@@ -59,7 +59,7 @@ export const updateUserPreferences = async (email: string, requestBody: UserPref
 
 export const updateUserPreferencesViaFilters = async (requestBody: UserPreference): Promise<UserPreference> => {
     try {
-        const response = await apiClient.put(`${MODULE_MAPPING}/`, requestBody);
+        const response = await apiClient.put(`${MODULE_MAPPING}/filters`, requestBody);
         return response.data;
     }
     catch (error) {
@@ -74,9 +74,8 @@ export const updateUserPreferencesViaFilters = async (requestBody: UserPreferenc
  * @returns 
  */
 export const getUserPreferences = async () => {
-    const email = sessionStorage.getItem("email");
     try {
-        const response = await apiClient.get(`${MODULE_MAPPING}/${email}`);
+        const response = await apiClient.get(`${MODULE_MAPPING}/me`);
         if (response.status === 200) {
             return response.data;
         }

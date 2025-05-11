@@ -4,8 +4,7 @@ export const apiClient = axios.create({
     baseURL: process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL,
     // Add this line to ensure cookies are sent with cross-origin requests
     withCredentials: true
-});
-
+});/*
 // Update your response interceptor for handling authentication errors
 apiClient.interceptors.response.use(
     response => response,
@@ -15,7 +14,7 @@ apiClient.interceptors.response.use(
             console.log("Authentication error, redirecting to login page");
             if (typeof window !== 'undefined') {
                 // No need to remove token from sessionStorage
-                window.location.href = '/'; // landing page
+                window.location.href = '/sign-in'; // sign in page
             }
         }
         
@@ -30,7 +29,7 @@ apiClient.interceptors.response.use(
         return Promise.reject(error); // Make sure to return the error for further handling
     }
 );
-
+*/
 export const failedCallMessage = (error: any): string => {
     return `Something went wrong and the api call failed: ${error}`
 };

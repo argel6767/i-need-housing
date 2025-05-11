@@ -46,7 +46,7 @@ class FavoriteListingControllerTest {
     void getAllUserFavoriteListings_whenUserExists_returnsListings() {
         // Arrange
         String email = "test@example.com";
-        when(favoriteListingService.getAllUserFavoriteListings(email)).thenReturn(Collections.singletonList(testFavoriteListing));
+        when(favoriteListingService.getAllUserFavoriteListings(1L)).thenReturn(Collections.singletonList(testFavoriteListing));
 
         // Act
         ResponseEntity<?> response = favoriteListingController.getAllUserFavoriteListings();
@@ -56,14 +56,14 @@ class FavoriteListingControllerTest {
         assertNotNull(response.getBody());
         List<FavoriteListing> listings = (List<FavoriteListing>) response.getBody();
         assertEquals(1, listings.size());
-        verify(favoriteListingService, times(1)).getAllUserFavoriteListings(email);
+        verify(favoriteListingService, times(1)).getAllUserFavoriteListings(1L);
     }
 
     @Test
     void getAllUserFavoriteListings_whenUserDoesNotExist_returnsNotFound() {
         // Arrange
         String email = "nonexistent@example.com";
-        when(favoriteListingService.getAllUserFavoriteListings(email)).thenThrow(new UsernameNotFoundException("User not found"));
+        when(favoriteListingService.getAllUserFavoriteListings(1L)).thenThrow(new UsernameNotFoundException("User not found"));
 
         // Act
         ResponseEntity<?> response = favoriteListingController.getAllUserFavoriteListings();
@@ -71,7 +71,7 @@ class FavoriteListingControllerTest {
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("User not found", response.getBody());
-        verify(favoriteListingService, times(1)).getAllUserFavoriteListings(email);
+        verify(favoriteListingService, times(1)).getAllUserFavoriteListings(1L);
     }
 
     @Test

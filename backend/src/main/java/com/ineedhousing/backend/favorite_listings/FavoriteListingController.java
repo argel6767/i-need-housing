@@ -26,14 +26,13 @@ public class FavoriteListingController {
 
     /**
      * returns a user's favorite listings
-     * @param email
      * @return ResponseEntity
      */
     @GetMapping("/me")
     public ResponseEntity<?> getAllUserFavoriteListings() {
         try {
-            String email = JwtUtils.getCurrentUserEmail();
-            List<FavoriteListing> favoriteListings = favoriteListingService.getAllUserFavoriteListings(email);
+            Long id = JwtUtils.getCurrentUserId();
+            List<FavoriteListing> favoriteListings = favoriteListingService.getAllUserFavoriteListings(id);
             return ResponseEntity.ok(favoriteListings);
         }
         catch (UsernameNotFoundException unfe) {
@@ -43,7 +42,6 @@ public class FavoriteListingController {
 
     /**
      * add new Listings to User list
-     * @param email
      * @param request
      * @return ResponseEntity
      */
@@ -61,7 +59,6 @@ public class FavoriteListingController {
 
     /**
      * deletes listing in request from User list
-     * @param email
      * @param request
      * @throws UsernameNotFoundException
      * @return ResponseEntity
@@ -79,8 +76,7 @@ public class FavoriteListingController {
     }
 
     /**
-     * 
-     * @param email
+     * deletes all favorite listings at once
      * @throws UsernameNotFoundException
      * @return ResponseEntity
      */
