@@ -59,6 +59,7 @@ export const updateUserPreferences = async (requestBody: UserPreference): Promis
 
 export const updateUserPreferencesViaFilters = async (requestBody: UserPreference): Promise<UserPreference> => {
     try {
+        console.log(requestBody)
         const response = await apiClient.put(`${MODULE_MAPPING}/filters`, requestBody);
         return response.data;
     }

@@ -69,6 +69,7 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
     useEffect(() => {
         if (isInitialized && updatedPreferences) {
             const hasChanged = JSON.stringify(updatedPreferences) !== JSON.stringify(userPreferences);
+            console.log(updatedPreferences)
             setIsFiltersChanged(hasChanged);
         }
     }, [updatedPreferences, isInitialized, userPreferences]);

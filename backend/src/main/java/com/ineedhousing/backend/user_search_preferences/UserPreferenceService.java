@@ -167,7 +167,16 @@ public class UserPreferenceService {
         User user = userService.getUserByEmail(email);
         UserPreference userPreferences = user.getUserPreferences();
         log.info("fetching preferences: ");
+        return getFormattedUserPreferenceDto(userPreferences);
+    }
 
+    /**
+     * Formats the UserPreference entity in table into usable dto
+     * by converting the Point objects to coordinates and Polygon object to coordinates
+     * @param userPreferences
+     * @return dto
+     */
+    private FormattedUserPreferenceDto getFormattedUserPreferenceDto(UserPreference userPreferences) {
         double[] jobLocationCoords = null;
         if (userPreferences.getJobLocation() != null) {
             Point jobLocation = userPreferences.getJobLocation();
@@ -182,10 +191,9 @@ public class UserPreferenceService {
         for (Coordinate coord : desiredAreaPolygon.getCoordinates()) {
             desiredArea.add(Map.of("lat", coord.y, "lng", coord.x)); //Latitude is Y, Longitude is X
         }
-       FormattedUserPreferenceDto dto = new FormattedUserPreferenceDto(userPreferences.getId(), jobLocationCoords, cityOfEmploymentCoords, userPreferences.getCityOfEmployment(),
-               desiredArea, userPreferences.getMaxRadius(), userPreferences.getMinNumberOfBedrooms(), userPreferences.getMinNumberOfBathrooms(),
-               userPreferences.getInternshipStart(), userPreferences.getInternshipEnd(), userPreferences.getUpdatedAt());
-
+        FormattedUserPreferenceDto dto = new FormattedUserPreferenceDto(userPreferences.getId(), jobLocationCoords, cityOfEmploymentCoords, userPreferences.getCityOfEmployment(),
+                desiredArea, userPreferences.getMaxRadius(), userPreferences.getMaxRent() , userPreferences.getMinNumberOfBedrooms(), userPreferences.getMinNumberOfBathrooms(),
+                userPreferences.getInternshipStart(), userPreferences.getInternshipEnd(), userPreferences.getUpdatedAt());
         return dto;
     }
 
@@ -211,7 +219,7 @@ public class UserPreferenceService {
      * @param newPreferences
      * @return
      */
-    public UserPreference updateUserPreferences(NewFiltersDto newPreferences) {
+    public FormattedUserPreferenceDto updateUserPreferences(NewFiltersDto newPreferences) {
         UserPreference preferences = userPreferenceRepository.findById(newPreferences.getId())
         .orElseThrow( () -> new UserPreferenceNotFound("UserPreference with Id: "  + newPreferences.getId() + " does not exist."));
 
@@ -225,7 +233,8 @@ public class UserPreferenceService {
         preferences.setMinNumberOfBedrooms(newPreferences.getMinNumberOfBedrooms());
         preferences.setMinNumberOfBathrooms(newPreferences.getMinNumberOfBathrooms().doubleValue());
         preferences.setUpdatedAt(LocalDateTime.now());
-        return userPreferenceRepository.save(preferences);
+        userPreferenceRepository.save(preferences);
+        return getFormattedUserPreferenceDto(preferences);
     }
 
 }

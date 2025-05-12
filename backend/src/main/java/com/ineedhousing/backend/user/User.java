@@ -63,6 +63,8 @@ public class User implements UserDetails {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "preference_id", referencedColumnName = "id")
+    @JsonIgnore
+    @ToString.Exclude
     private UserPreference userPreferences;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -48,7 +48,7 @@ export const register = async (requestBody: AuthenticateUserDto): Promise<any> =
 export const login = async (requestBody: AuthenticateUserDto): Promise<any> => {
     try {
         const response = await apiClient.post(MODULE_MAPPING +"/login", requestBody);
-        if (!response.data.userPreferences) {
+        if (!response.data.userType) { //first time users won't have a type yet
             return "new user";
         }
         return "logged in"; 

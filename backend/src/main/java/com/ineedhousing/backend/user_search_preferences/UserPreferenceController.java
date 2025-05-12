@@ -124,7 +124,7 @@ public class UserPreferenceController {
     @PutMapping("/filters")
     public ResponseEntity<?> updateUserPreferences(@RequestBody NewFiltersDto request) {
         try {
-            UserPreference updatedPreferences = userPreferenceService.updateUserPreferences(request);
+            FormattedUserPreferenceDto updatedPreferences = userPreferenceService.updateUserPreferences(request);
             return ResponseEntity.ok(updatedPreferences);
         }
         catch (UserPreferenceNotFound unfe) {

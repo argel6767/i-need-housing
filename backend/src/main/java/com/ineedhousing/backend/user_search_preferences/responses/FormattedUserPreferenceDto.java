@@ -18,10 +18,11 @@ public class FormattedUserPreferenceDto {
 
     private Long id;
     private double[] jobLocation;
-    private double[] cityOfEmploymentCoordinates;
+    private double[] cityOfEmploymentCoords;
     private String cityOfEmployment;
     private List<Map<String, Double>> desiredArea;
     private int maxRadius;
+    private double maxRent;
     private int minNumberOfBedrooms;
     private double minNumberOfBathrooms;
     private LocalDate internshipStart;
