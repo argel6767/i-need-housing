@@ -76,9 +76,7 @@ export const SubmitUserInfoButton = ({isLoading}:SubmitUserInfoButtonProps) => {
 }
 
 export const submitUserInfo = async(userInfo: NewUserObjects) => {
-    const email = sessionStorage.getItem('email')!;
     const requestBody: SetUserTypeDto = {
-        email: email,
         userType: userInfo.userType
     }
     const requests =  [updateUserType(requestBody),  createUserPreferences(userInfo.newUserPreferencesDto)]

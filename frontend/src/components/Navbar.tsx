@@ -54,10 +54,10 @@ export const LoggedInNavBar = () => {
   <div className="flex-none gap-2">
     <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar mr-3">
-        <div className="w-10 rounded-full">
+        <div className="w-12 rounded-full shadow-2xl">
           <img
             alt="Tailwind CSS Navbar component"
-            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+            src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" />
         </div>
       </div>
       <ul

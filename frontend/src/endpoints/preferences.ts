@@ -19,7 +19,7 @@ export const createUserPreferences = async ( requestBody: RawUserPreferenceDto):
     try {
         console.log(requestBody)
         requestBody.isFurnished=false;
-        const response = await apiClient.post(`${MODULE_MAPPING}/addresses/}`, requestBody);
+        const response = await apiClient.post(`${MODULE_MAPPING}/addresses`, requestBody);
         if (response.status === 201) {
             return response.data;
         }
@@ -77,6 +77,7 @@ export const getUserPreferences = async () => {
     try {
         const response = await apiClient.get(`${MODULE_MAPPING}/me`);
         if (response.status === 200) {
+            console.log(response.data);
             return response.data;
         }
         console.log(response.data);
