@@ -111,9 +111,9 @@ const FavoriteListing = ({listing, isFavoritedListing, setIsFavoritedListing}: F
         })
 
         const favoriteListing = favoriteListings.find(favoriteListing => favoriteListing.housingListing.id === listing?.id);
-        const requestBody = {favoriteListingIds: [favoriteListing?.id]};
-        console.log(requestBody);
-        const data = await deleteFavoriteListings(requestBody);
+        const favoriteListingId = favoriteListing?.id;
+        const data = await deleteFavoriteListings(favoriteListingId!);
+        console.log("data: " + data)
         setIsFavoritedListing(false);
         setFavoriteListings(data);
     }

@@ -4,6 +4,7 @@ package com.ineedhousing.backend.favorite_listings;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserService;
+import lombok.extern.java.Log;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -14,11 +15,14 @@ import org.springframework.cache.annotation.Cacheable;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Holds business logic for Favorite Listings
  */
+@Log
 @Service
 public class FavoriteListingService {
     private final FavoriteListingRepository favoriteListingRepository;
@@ -28,8 +32,6 @@ public class FavoriteListingService {
         this.favoriteListingRepository = favoriteListingRepository;
         this.userService = userService;
     }
-
-
 
     /**
      * gets all Users favorite listing via their email
@@ -52,7 +54,7 @@ public class FavoriteListingService {
     @Transactional
     public List<FavoriteListing> addFavoriteListings(String email, List<HousingListing> housingListings) {
         User user = userService.getUserByEmail(email);
-        List<FavoriteListing> newFavoriteListings = new ArrayList<>();
+        Set<FavoriteListing> newFavoriteListings = new HashSet<>();
         housingListings.forEach(housingListing -> {
             FavoriteListing favoriteListing = new FavoriteListing(user, housingListing);
             newFavoriteListings.add(favoriteListing);
@@ -63,18 +65,20 @@ public class FavoriteListingService {
     }
 
     /**
-     * deletes any number of favorite listings from the entire List
-     * This can be used for up to the entire list
-     * @param email
-     * @param ids
+     * deletes  favorite listing from the user's favorite
+     * @param userId
+     * @param favoriteId
      * @throws UsernameNotFoundException
      * @return List<FavoriteListing>
      */
-@Transactional
-public List<FavoriteListing> deleteListings(String email, List<Long> ids) {
-    favoriteListingRepository.deleteByUserEmailAndIdIn(email, ids);
-    return favoriteListingRepository.findAllByUserEmail(email); //updated list
-}
+    @Transactional
+    public List<FavoriteListing> deleteListing(Long userId, Long favoriteId) {
+        log.info("Deleting listing with user id: " + userId + " and favorite id: " + favoriteId);
+        favoriteListingRepository.deleteByUserIdAndFavoriteId(userId, favoriteId);
+        List<FavoriteListing> favoriteListings = favoriteListingRepository.findAllByUserId(userId);
+        log.info("Updated favoritesListings: " + favoriteListings);
+        return favoriteListings; //updated list
+    }
 
     /**
      * deletes all favorite listing of users by email

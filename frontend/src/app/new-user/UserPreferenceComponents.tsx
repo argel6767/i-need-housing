@@ -81,7 +81,7 @@ export const submitUserInfo = async(userInfo: NewUserObjects) => {
         email: email,
         userType: userInfo.userType
     }
-    const requests =  [updateUserType(requestBody), createUserPreferences(email, userInfo.newUserPreferencesDto)]
+    const requests =  [updateUserType(requestBody),  createUserPreferences(userInfo.newUserPreferencesDto)]
 
     const [userTypeResponse, newUserPreferenceResponse] = await Promise.all(requests);
 

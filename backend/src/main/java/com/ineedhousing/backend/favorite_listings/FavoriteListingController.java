@@ -1,9 +1,9 @@
 package com.ineedhousing.backend.favorite_listings;
 
 import com.ineedhousing.backend.favorite_listings.requests.AddFavoriteListingsRequest;
-import com.ineedhousing.backend.favorite_listings.requests.DeleteFavoriteListingsRequest;
 import com.ineedhousing.backend.jwt.JwtUtils;
 
+import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Houses endpoints for Favorite Listings
  */
+@Log
 @RestController
 @RequestMapping("/favorites")
 public class FavoriteListingController {
@@ -32,6 +33,9 @@ public class FavoriteListingController {
     public ResponseEntity<?> getAllUserFavoriteListings() {
         try {
             Long id = JwtUtils.getCurrentUserId();
+            if (id.equals(-1L)) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             List<FavoriteListing> favoriteListings = favoriteListingService.getAllUserFavoriteListings(id);
             return ResponseEntity.ok(favoriteListings);
         }
@@ -59,16 +63,17 @@ public class FavoriteListingController {
 
     /**
      * deletes listing in request from User list
-     * @param request
+     * @param id
      * @throws UsernameNotFoundException
      * @return ResponseEntity
      */
-    @DeleteMapping("/listings")
-    public ResponseEntity<?> deleteFavoriteListings(@RequestBody DeleteFavoriteListingsRequest request) {
+    @DeleteMapping("/listings/{id}")
+    public ResponseEntity<?> deleteFavoriteListing(@PathVariable Long id) {
         try {
-            String email = JwtUtils.getCurrentUserEmail();
-            List<FavoriteListing> updatedListings = favoriteListingService.deleteListings(email, request.getFavoriteListingIds());
-            return ResponseEntity.ok(updatedListings);
+            Long userId = JwtUtils.getCurrentUserId();
+            List<FavoriteListing> updatedListings = favoriteListingService.deleteListing(userId, id);
+            log.info("sending back:" + updatedListings);
+            return new ResponseEntity<>(updatedListings, HttpStatus.OK);
         }
         catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);

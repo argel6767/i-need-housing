@@ -1,7 +1,6 @@
 package com.ineedhousing.backend.favorite_listings;
 
 import com.ineedhousing.backend.favorite_listings.requests.AddFavoriteListingsRequest;
-import com.ineedhousing.backend.favorite_listings.requests.DeleteFavoriteListingsRequest;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +28,7 @@ class FavoriteListingControllerTest {
 
     private FavoriteListing testFavoriteListing;
     private AddFavoriteListingsRequest addRequest;
-    private DeleteFavoriteListingsRequest deleteRequest;
+
 
     @BeforeEach
     void setUp() {
@@ -39,7 +38,6 @@ class FavoriteListingControllerTest {
         testFavoriteListing.setId(1L);
 
         addRequest = new AddFavoriteListingsRequest(Collections.singletonList(new HousingListing()));
-        deleteRequest = new DeleteFavoriteListingsRequest(Collections.singletonList(1L));
     }
 
     @Test
@@ -110,32 +108,32 @@ class FavoriteListingControllerTest {
     void deleteFavoriteListings_whenUserExists_deletesListings() {
         // Arrange
         String email = "test@example.com";
-        when(favoriteListingService.deleteListings(email, deleteRequest.getFavoriteListingIds())).thenReturn(Collections.emptyList());
+        when(favoriteListingService.deleteListing(2L, 1L)).thenReturn(Collections.emptyList());
 
         // Act
-        ResponseEntity<?> response = favoriteListingController.deleteFavoriteListings( deleteRequest);
+        ResponseEntity<?> response = favoriteListingController.deleteFavoriteListing( 1L);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         List<FavoriteListing> updatedListings = (List<FavoriteListing>) response.getBody();
         assertTrue(updatedListings.isEmpty());
-        verify(favoriteListingService, times(1)).deleteListings(email, deleteRequest.getFavoriteListingIds());
+        verify(favoriteListingService, times(1)).deleteListing(2L, 1L);
     }
 
     @Test
     void deleteFavoriteListings_whenUserDoesNotExist_returnsNotFound() {
         // Arrange
         String email = "nonexistent@example.com";
-        when(favoriteListingService.deleteListings(email, deleteRequest.getFavoriteListingIds())).thenThrow(new UsernameNotFoundException("User not found"));
+        when(favoriteListingService.deleteListing(2L, 1L)).thenThrow(new UsernameNotFoundException("User not found"));
 
         // Act
-        ResponseEntity<?> response = favoriteListingController.deleteFavoriteListings( deleteRequest);
+        ResponseEntity<?> response = favoriteListingController.deleteFavoriteListing( 1L);
 
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("User not found", response.getBody());
-        verify(favoriteListingService, times(1)).deleteListings(email, deleteRequest.getFavoriteListingIds());
+        verify(favoriteListingService, times(1)).deleteListing(2L, 1L);
     }
 
     @Test

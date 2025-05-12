@@ -23,13 +23,14 @@ public interface FavoriteListingRepository extends JpaRepository<FavoriteListing
 
     /**
      * Delete favorite listings by user email and listing IDs
-     * @param email the user's email
-     * @param ids the IDs of favorite listings to delete
+     * ensures an authenicated user can only delete their own
+     * @param userId the user's id
+     * @param favoriteId the IDs of favorite listings to delete
      */
     @Modifying
     @Transactional
-    @Query("DELETE FROM FavoriteListing fl WHERE fl.user.email = :email AND fl.id IN :ids")
-    void deleteByUserEmailAndIdIn(@Param("email") String email, @Param("ids") List<Long> ids);
+    @Query("DELETE FROM FavoriteListing fl WHERE fl.user.id = :userId AND fl.id = :favoriteId")
+    void deleteByUserIdAndFavoriteId(@Param("userId") Long userId, @Param("favoriteId") Long favoriteId);
 
     /**
      * Delete all favorite listings by user email
