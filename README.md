@@ -22,12 +22,13 @@ INeedHousing.com is a web application designed to help incoming interns and new-
 
 ## Project Status
 
-The project is currently in active development with:
+The project has successfully reached its MVP milestone:
 
-- Backend MVP deployed on Azure App Service
-- Frontend pre-registration available on Vercel
-- Core features implemented and functional
-- Continuous development and improvements ongoing
+- Complete MVP web application now available and fully functional
+- Frontend deployed and accessible on Vercel
+- Backend services running on Azure App Service
+- Core features implemented and tested
+- Ongoing enhancements and refinements continue as we expand beyond the MVP
 
 ## Project Structure
 

@@ -34,3 +34,7 @@ export const useFavoriteListings = () => {
         }
     })
 }
+
+export const useCheckCookie = async () => {
+
+}

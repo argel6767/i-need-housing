@@ -1,5 +1,5 @@
 // app/(protected)/layout.tsx
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { ProtectedRoute } from '@/app/(protected)/ProtectedRoute';
 export default function ProtectedLayout({children,}: {
     children: React.ReactNode;
 }) {

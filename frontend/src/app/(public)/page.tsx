@@ -17,7 +17,7 @@ export default function Home() {
       <h2 className="text-xl md:text-3xl text-center py-3 font-semibold px-2">Comprehensive property data from multiple trusted sources, available for most major cities — conveniently in one place.</h2>
       <Carousel/>
       <div className="flex justify-center py-6">
-        <Link className="btn w-42 text-base md:btn-lg bg-primary text-white hover:bg-[#457F9F]" href="/sign-up">Pre-Register Now!</Link>
+        <Link className="btn w-42 text-base md:btn-lg bg-primary text-white hover:bg-[#457F9F]" href="/home">View Listings</Link>
       </div>
       <footer className="flex justify-center text-center border-t-2">
         <Footer/>

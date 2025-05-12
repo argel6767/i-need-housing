@@ -2,7 +2,7 @@
 
 import { useEffect, useState, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { LoadingBars } from './Loading';
+import { LoadingBars } from '@/components/Loading';
 import {checkCookie} from "@/endpoints/auths";
 
 interface ProtectedRouteProps {
@@ -29,13 +29,11 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     checkCookieStatus()
   }, [router]);
 
-  // Show nothing during authentication check
+  // display this when checking user's authentication status
   if (!isAuthorized) {
     return (
-        <main className='flex-col justify-center items-center space-y-4 pt-20 px-3'>
-            <h1 className='text-4xl md:text-5xl lg:text-6xl flex-1 text-center animate-pulse'>Slow Down There!</h1>
-            <h2 className='text-3xl md:text-4xl lg:text-5xl text-center animate-pulse'>We're not quite ready to show you this. Thank you for you patience! 😁</h2>
-            <h2 className='text-3xl md:text-4xl lg:text-5xl text-center animate-pulse'>Redirecting you back to our landing page.</h2>
+        <main className='flex flex-col justify-center items-center h-screen'>
+            <h1 className='text-4xl text-center animate-pulse'>Checking authentication status. Thank you for you patience! 😁</h1>
             <div className='flex justify-center'>
                 <LoadingBars/>
             </div>

@@ -59,22 +59,25 @@ A modern, responsive web application built with Next.js and React, providing a s
 
 ```txt
 src/
-├── app/              # Next.js app router pages
-│   ├── about/        # About page
-│   ├── home/         # Home page
-│   ├── new-user/     # New user setup
-│   ├── sign-in/      # Sign in page
-│   ├── sign-up/      # Sign up page
-│   └── utils/        # Utility functions
-├── components/       # Reusable components
-│   ├── Carousel.tsx  # Image carousel
-│   ├── Form.tsx      # Form components
-│   ├── Map.tsx       # Google Maps integration
-│   ├── Navbar.tsx    # Navigation bar
-│   └── ...          # Other components
-├── endpoints/        # API endpoint configurations
-├── hooks/           # Custom React hooks
-└── interfaces/      # TypeScript interfaces
+├── app/                   # Next.js app router pages
+│   ├── (public)/          # Public accessible routes
+│   │   ├── about/         # About page
+│   │   ├── sign-in/       # Sign in page
+│   │   └── sign-up/       # Sign up page
+│   ├── (protected)/       # Authentication-protected routes
+│   │   ├── home/          # Home page (requires auth)
+│   │   └── new-user/      # New user setup (requires auth)
+│   └── utils/             # Utility functions
+├── components/            # Reusable components
+│   ├── Carousel.tsx       # Image carousel
+│   ├── Form.tsx           # Form components
+│   ├── Map.tsx            # Google Maps integration
+│   ├── Navbar.tsx         # Navigation bar
+│   ├── ProtectedRoute.tsx # Authentication protection wrapper
+│   └── ...                # Other components
+├── endpoints/             # API endpoint configurations
+├── hooks/                 # Custom React hooks
+└── interfaces/            # TypeScript interfaces
 ```
 
 ## 🎨 UI Components
