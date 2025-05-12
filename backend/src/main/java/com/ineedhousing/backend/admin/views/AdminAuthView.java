@@ -2,6 +2,8 @@ package com.ineedhousing.backend.admin.views;
 
 import java.util.List;
 
+import org.springframework.context.annotation.Lazy;
+
 import com.ineedhousing.backend.admin.AdminService;
 import com.ineedhousing.backend.auth.requests.AuthenticateUserDto;
 import com.ineedhousing.backend.auth.responses.LoginResponse;
@@ -28,6 +30,7 @@ import com.vaadin.flow.server.VaadinSession;
 
 @Route("")
 @PageTitle("Admin Sign In")
+@Lazy
 public class AdminAuthView extends VerticalLayout{
 
     private final AdminService adminService;

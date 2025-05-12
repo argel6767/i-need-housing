@@ -1,9 +1,8 @@
 package com.ineedhousing.backend.user_search_preferences;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.io.InvalidObjectException;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -11,26 +10,36 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 
 import com.ineedhousing.backend.geometry.GeometrySingleton;
+import com.ineedhousing.backend.geometry.GoogleGeoCodeApiService;
+import com.ineedhousing.backend.geometry.dto.LocationAndCoordinatesDto;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserService;
 import com.ineedhousing.backend.user_search_preferences.exceptions.UserPreferenceNotFound;
 import com.ineedhousing.backend.user_search_preferences.requests.NewFiltersDto;
 import com.ineedhousing.backend.user_search_preferences.requests.RawCoordinateUserPreferenceRequest;
-import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferenceRequest;
+import com.ineedhousing.backend.user_search_preferences.requests.RawUserPreferencesDto;
+import com.ineedhousing.backend.user_search_preferences.requests.UserPreferenceDto;
 import com.ineedhousing.backend.user_search_preferences.utils.UserPreferenceBuilder;
+import org.springframework.cache.annotation.Cacheable;
+
+
+import lombok.extern.java.Log;
 
 /**
  * Houses business logic for UserPreference
  */
 @Service
+@Log
 public class UserPreferenceService {
 
     private final UserPreferenceRepository userPreferenceRepository;
     private final UserService userService;
+    private final GoogleGeoCodeApiService geoService;
 
-    public UserPreferenceService(UserPreferenceRepository userPreferenceRepository, UserService userService) {
+    public UserPreferenceService(UserPreferenceRepository userPreferenceRepository, UserService userService, GoogleGeoCodeApiService geoService) {
         this.userPreferenceRepository = userPreferenceRepository;
         this.userService = userService;
+        this.geoService = geoService;
     }
 
     /**
@@ -38,7 +47,7 @@ public class UserPreferenceService {
      * @param request
      * @return
      */
-    public UserPreference createUserPreferences(RawUserPreferenceRequest request, String email) {
+    public UserPreference createUserPreferences(UserPreferenceDto request, String email) {
         UserPreferenceBuilder builder = new UserPreferenceBuilder();
         UserPreference userPreferences = builder.addJobLocation(request.getJobLocation())
         .addCityOfEmploymentCoordinates(request.getCityOfEmployment())
@@ -63,13 +72,15 @@ public class UserPreferenceService {
      * @param request
      * @return
      */
+    
     public UserPreference createUserPreference(RawCoordinateUserPreferenceRequest request, String email) {
+        log.info(request.toString());
         UserPreferenceBuilder builder = new UserPreferenceBuilder();
         GeometryFactory factory = GeometrySingleton.getInstance();
         Point jobLocation = null;
         if (request.getJobLocationCoordinates() != null) {
             Double[] coordinates = request.getJobLocationCoordinates();
-             jobLocation = factory.createPoint(new Coordinate(coordinates[1], coordinates[0]));
+            jobLocation = factory.createPoint(new Coordinate(coordinates[1], coordinates[0]));
         }
         Double[] coordinates = request.getCityOfEmploymentCoordinates();
         Point cityOfEmployment = factory.createPoint(new Coordinate(coordinates[1], coordinates[0]));
@@ -93,10 +104,60 @@ public class UserPreferenceService {
     }
 
     /**
+     * Creates a new UserPreference entry for User, is called when the dto contains addresses and not direct coordinates
+     * google geo code is used to find the coordinates
+     * @param request
+     * @param email
+     * @return
+     * @throws InvalidObjectException
+     */
+    public UserPreference createUserPreference(RawUserPreferencesDto request, String email) throws InvalidObjectException {
+        log.info("Handling following request:\n" + request.toString());
+        if (areAnyRequiredFieldsNull(request)) {
+            throw new InvalidObjectException("One or more required fields are null");
+        }
+        GeometryFactory factory = GeometrySingleton.getInstance();
+        Point jobLocation = null;
+        Point cityOfEmploymentLocation = null;
+        if (request.getJobLocationAddress() != null) {
+            double[] jobLocationCoordinates = geoService.getCoordinates(request.getJobLocationAddress());
+            jobLocation = factory.createPoint(new Coordinate(jobLocationCoordinates[0], jobLocationCoordinates[1]));
+        }
+        LocationAndCoordinatesDto dto = geoService.getNameAndCoordinates(request.getCityOfEmploymentAddress());
+        String cityOfEmploymentName = dto.cityName();
+        double[] cityOfEmploymentCoordinates = dto.coordinates();
+        cityOfEmploymentLocation = factory.createPoint(new Coordinate(cityOfEmploymentCoordinates[0], cityOfEmploymentCoordinates[1]));
+        UserPreferenceBuilder builder = new UserPreferenceBuilder();
+        UserPreference userPreferences = builder.addJobLocation(jobLocation)
+            .addCityOfEmploymentCoordinates(cityOfEmploymentLocation)
+            .addCityOfEmployment(cityOfEmploymentName)
+            .addDesiredArea(Optional.ofNullable(jobLocation)
+            .orElse(cityOfEmploymentLocation), request.getMaxRadius(), 32)
+            .addMaxRadius(request.getMaxRadius())
+            .addMaxRent(request.getMaxRent())
+            .addMinNumberOfBedrooms(request.getBedrooms())
+            .addMinNumberOfBathrooms(request.getBathrooms())
+            .addIsFurnished(request.getIsFurnished())
+            .addInternshipStart(request.getStartDate())
+            .addInternshipEnd(request.getEndDate())
+            .build();
+        User user = userService.getUserByEmail(email);
+        user.setUserPreferences(userPreferences);
+        userService.saveUser(user);
+        return userPreferences;
+    }
+
+    private boolean areAnyRequiredFieldsNull(RawUserPreferencesDto request) {
+        return request.getCityOfEmploymentAddress() == null || request.getMaxRadius() == null || request.getMaxRadius() == null ||
+        request.getBedrooms() == null || request.getBathrooms() == null;
+    }
+
+    /**
      * get a User's UserPreference object
      * @param email
      * @return
      */
+    @Cacheable("preferences")
     public UserPreference getUserPreferences(String email) {
         User user = userService.getUserByEmail(email);
         return user.getUserPreferences();

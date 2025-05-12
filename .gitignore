@@ -7,3 +7,8 @@
 
 ### generated vaadin files ###
 backend/src/main/frontend/generated/**
+
+#cache files
+__pycache__/
+*.py[cod]
+*$py.class

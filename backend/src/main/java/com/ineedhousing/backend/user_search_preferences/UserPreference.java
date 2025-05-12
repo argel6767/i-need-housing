@@ -1,8 +1,10 @@
 package com.ineedhousing.backend.user_search_preferences;
 
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
@@ -11,11 +13,13 @@ import org.locationtech.jts.geom.Polygon;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 //TODO add isPetFriendly field
 @Data
@@ -85,10 +89,10 @@ public class UserPreference {
     @Column(nullable = false)
     private Boolean isFurnished = false;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate internshipStart;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate internshipEnd;
 
     private LocalDateTime updatedAt;

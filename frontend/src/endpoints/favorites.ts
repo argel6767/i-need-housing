@@ -14,10 +14,10 @@ const MODULE_MAPPING = "/favorites";
  * @param email 
  * @returns 
  */
-export const getAllFavoriteListings = async (email: string): Promise<Array<FavoriteListing>> => {
+export const getFavoriteListings = async (): Promise<FavoriteListing[]> => {
     try {
-        const response = await apiClient.get(`${MODULE_MAPPING}/${email}`)
-        if (response.data === 200) {
+        const response = await apiClient.get(`${MODULE_MAPPING}/me`)
+        if (response.status === 200) {
             return response.data;
         }
         console.log(response.data);
@@ -35,11 +35,11 @@ export const getAllFavoriteListings = async (email: string): Promise<Array<Favor
  * @param requestBody 
  * @returns 
  */
-export const addNewFavoriteListings = async (email: string, requestBody: favoriteListingsRequest): Promise<Array<FavoriteListing>> => {
+export const addNewFavoriteListings = async ( requestBody: favoriteListingsRequest): Promise<Array<FavoriteListing>> => {
     try {
-        const response = await apiClient.put(`${MODULE_MAPPING}/${email}`, requestBody);
+        const response = await apiClient.post(`${MODULE_MAPPING}/listings`, requestBody);
         if (response.status === 201) {
-            return response.data;    
+            return response.data;
         }
         console.log(response.data);
         return [];
@@ -52,15 +52,16 @@ export const addNewFavoriteListings = async (email: string, requestBody: favorit
 
 /**
  * deletes the listings given 
- * @param email 
+ * @param id
  * @param requestBody 
  * @returns 
  */
-export const deleteFavoriteListings = async (email: string, requestBody: favoriteListingsRequest): Promise<Array<FavoriteListing>> => {
+export const deleteFavoriteListings = async ( id: number): Promise<Array<FavoriteListing>> => {
     try {
-        const response = await apiClient.post(`${MODULE_MAPPING}/${email}`, requestBody);
+        const response = await apiClient.delete(`${MODULE_MAPPING}/listings/${id}`);
         if (response.status === 200) {
-            return response.data;    
+            console.log(response);
+            return response.data; 
         }
         console.log(response.data);
         return [];
@@ -73,12 +74,11 @@ export const deleteFavoriteListings = async (email: string, requestBody: favorit
 
 /**
  * deletes favorites
- * @param email 
- * @returns 
+ * @returns
  */
-export const deleteAllFavorites = async (email: string): Promise<string> => {
+export const deleteAllFavorites = async (): Promise<string> => {
     try {
-        const response = await apiClient.delete(`${MODULE_MAPPING}/${email}`)
+        const response = await apiClient.delete(`${MODULE_MAPPING}/`)
         if (response.status === 200) {
             return response.data;  
         }

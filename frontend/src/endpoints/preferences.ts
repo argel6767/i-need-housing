@@ -1,6 +1,7 @@
 import { UserPreference } from "@/interfaces/entities";
 import { apiClient, failedCallMessage } from "./apiConfig";
-import { RawCoordinateUserPreferenceRequest } from "@/interfaces/requests/userPreferencesRequests";
+import { RawUserPreferenceDto } from "@/interfaces/requests/userPreferencesRequests";
+
 
 const MODULE_MAPPING = "/preferences";
 
@@ -10,34 +11,40 @@ const MODULE_MAPPING = "/preferences";
 
 /**
  * creates a new UserPreference entity
- * @param email 
- * @param requestBody 
- * @returns 
+ * @param email
+ * @param requestBody
+ * @returns
  */
-export const createUserPreferences = async (email: string, requestBody: RawCoordinateUserPreferenceRequest): Promise<any> => {
+export const createUserPreferences = async ( requestBody: RawUserPreferenceDto): Promise<any> => {
     try {
-        const response = await apiClient.post(`${MODULE_MAPPING}/coordinates/${email}`, requestBody);
+        console.log(requestBody)
+        requestBody.isFurnished=false;
+        const response = await apiClient.post(`${MODULE_MAPPING}/addresses`, requestBody);
         if (response.status === 201) {
             return response.data;
         }
         console.log(response.data);
         return null;
     }
-    catch(error) {
+    catch(error: any) {
+        console.log(error.body)
         console.log(failedCallMessage(error));
-        return null;
+        if (error.status === 400) {
+            return 'One or more preferences were not correctly filled, make sure to fill all before submitting'
+        }
+        return "Something went wrong! Try again.";
     }
 }
 
 /**
  * updates a user's preferences
  * @param email
- * @param requestBody 
- * @returns 
+ * @param requestBody
+ * @returns
  */
-export const updateUserPreferences = async (email: string, requestBody: UserPreference): Promise<any> => {
+export const updateUserPreferences = async (requestBody: UserPreference): Promise<any> => {
     try {
-        const response = await apiClient.put(`${MODULE_MAPPING}/${email}`, requestBody);
+        const response = await apiClient.put(`${MODULE_MAPPING}/}`, requestBody);
         if (response.status === 200) {
             return response.data
         }
@@ -52,7 +59,7 @@ export const updateUserPreferences = async (email: string, requestBody: UserPref
 
 export const updateUserPreferencesViaFilters = async (requestBody: UserPreference): Promise<UserPreference> => {
     try {
-        const response = await apiClient.put(`${MODULE_MAPPING}/`, requestBody);
+        const response = await apiClient.put(`${MODULE_MAPPING}/filters`, requestBody);
         return response.data;
     }
     catch (error) {
@@ -67,10 +74,10 @@ export const updateUserPreferencesViaFilters = async (requestBody: UserPreferenc
  * @returns 
  */
 export const getUserPreferences = async () => {
-    const email = sessionStorage.getItem("email");
     try {
-        const response = await apiClient.get(`${MODULE_MAPPING}/${email}`);
+        const response = await apiClient.get(`${MODULE_MAPPING}/me`);
         if (response.status === 200) {
+            console.log(response.data);
             return response.data;
         }
         console.log(response.data);

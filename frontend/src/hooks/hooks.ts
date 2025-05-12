@@ -1,6 +1,7 @@
+import { getFavoriteListings } from "@/endpoints/favorites"
 import { getListingsInArea } from "@/endpoints/listings"
 import { getUserPreferences } from "@/endpoints/preferences"
-import { HouseListing, UserPreference } from "@/interfaces/entities"
+import { FavoriteListing, HouseListing, UserPreference } from "@/interfaces/entities"
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests"
 import { useQuery } from "@tanstack/react-query"
 
@@ -21,6 +22,15 @@ export const useUserPreferences = () => {
         queryKey: ['userPreferences'],
         queryFn: async ():Promise<UserPreference> => {
             return await getUserPreferences();
+        }
+    })
+}
+
+export const useFavoriteListings = () => {
+    return useQuery({
+        queryKey: ['favoriteListings'],
+        queryFn: async ():Promise<FavoriteListing[]> => {
+            return await getFavoriteListings();
         }
     })
 }

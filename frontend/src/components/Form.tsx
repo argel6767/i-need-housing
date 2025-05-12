@@ -38,7 +38,10 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
         credentials.password = formData.get("password") as string;
         sessionStorage.setItem("email", credentials.username);
         const data = await request(credentials);
-        if(data === "logged in" || data === "user created") { //successful
+        if (data === "new user") {
+            router.push("/new-user/user-type");
+        }
+        else if(data === "logged in" || data === "user created") { //successful
             sessionStorage.setItem("email", credentials.username);
             router.push(route)
         }

@@ -1,6 +1,7 @@
 package com.ineedhousing.backend.user.requests;
 
 import com.ineedhousing.backend.user.UserType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SetUserTypeRequest {
-    private String email;
     private UserType userType;
 }

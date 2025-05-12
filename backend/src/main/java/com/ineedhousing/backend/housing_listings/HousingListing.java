@@ -3,6 +3,9 @@ package com.ineedhousing.backend.housing_listings;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -42,6 +45,14 @@ public class HousingListing {
          }
          return null;
      }
+     @JsonProperty("coordinates")
+    public void setCoordinates(double[] coordinates) {
+    if (coordinates != null && coordinates.length == 2) {
+        // Create a Point using the GeometryFactory
+        GeometryFactory geometryFactory = new GeometryFactory();
+        this.location = geometryFactory.createPoint(new Coordinate(coordinates[1], coordinates[0]));
+    }
+    }
 
     @Column(nullable = false)
     private String address;

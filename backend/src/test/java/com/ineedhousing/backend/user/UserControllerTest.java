@@ -1,156 +1,138 @@
 package com.ineedhousing.backend.user;
 
-import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ineedhousing.backend.jwt.JwtUtils;
+import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
 
-class UserControllerTest {
+@WebMvcTest(UserController.class)
+public class UserControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private UserService userService;
 
-    @InjectMocks
-    private UserController userController;
+    @MockBean
+    private JwtUtils jwtUtils;
 
+    private ObjectMapper objectMapper;
     private User testUser;
+    private String testEmail;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        testUser = new User("test@example.com", "hashedPassword");
-        testUser.setId(1L);
-        testUser.setUserType(UserType.INTERN);
+        objectMapper = new ObjectMapper();
+        testEmail = "test@example.com";
+        testUser = new User(testEmail, "hashedPassword");
+        
+        when(jwtUtils.getCurrentUserEmail()).thenReturn(testEmail);
     }
 
     @Test
-    void getUser_whenUserExists_returnsUser() {
-        // Arrange
-        String email = "test@example.com";
-        when(userService.getUserByEmail(email)).thenReturn(testUser);
+    @WithMockUser
+    void getCurrentUser_ShouldReturnUser() throws Exception {
+        when(userService.getUserByEmail(testEmail)).thenReturn(testUser);
 
-        // Act
-        ResponseEntity<?> response = userController.getUser(email);
-
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(testUser, response.getBody());
-        verify(userService, times(1)).getUserByEmail(email);
+        mockMvc.perform(get("/users/me"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.email").value(testEmail));
     }
 
     @Test
-    void getUser_whenUserDoesNotExist_returnsNotFound() {
-        // Arrange
-        String email = "test@example.com";
-        when(userService.getUserByEmail(email)).thenThrow(new UsernameNotFoundException("User not found"));
+    @WithMockUser
+    void getCurrentUser_WhenUserNotFound_ShouldReturnNotFound() throws Exception {
+        when(userService.getUserByEmail(testEmail))
+            .thenThrow(new UsernameNotFoundException("User not found"));
 
-        // Act
-        ResponseEntity<?> response = userController.getUser(email);
-
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("User not found", response.getBody());
-        verify(userService, times(1)).getUserByEmail(email);
+        mockMvc.perform(get("/users/me"))
+               .andExpect(status().isNotFound());
     }
 
     @Test
-    void updateUser_whenUserExists_updatesAndReturnsUser() {
-        // Arrange
-        String email = "test@example.com";
-        User updatedUser = new User("test@example.com", "newHashedPassword");
-        when(userService.updateUser(testUser, email)).thenReturn(updatedUser);
+    @WithMockUser
+    void updateCurrentUser_ShouldReturnUpdatedUser() throws Exception {
+        when(userService.updateUser(testUser, testEmail)).thenReturn(testUser);
 
-        // Act
-        ResponseEntity<?> response = userController.updateUser(testUser, email);
-
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(updatedUser, response.getBody());
-        verify(userService, times(1)).updateUser(testUser, email);
+        mockMvc.perform(put("/users/me")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(objectMapper.writeValueAsString(testUser)))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.email").value(testEmail));
     }
 
     @Test
-    void updateUser_whenUserDoesNotExist_returnsNotFound() {
-        // Arrange
-        String email = "test@example.com";
-        when(userService.updateUser(testUser, email)).thenThrow(new UsernameNotFoundException("User not found"));
+    @WithMockUser
+    void updateCurrentUser_WhenUserNotFound_ShouldReturnNotFound() throws Exception {
+        when(userService.updateUser(testUser, testEmail))
+            .thenThrow(new UsernameNotFoundException("User not found"));
 
-        // Act
-        ResponseEntity<?> response = userController.updateUser(testUser, email);
-
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("User not found", response.getBody());
-        verify(userService, times(1)).updateUser(testUser, email);
+        mockMvc.perform(put("/users/me")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(objectMapper.writeValueAsString(testUser)))
+               .andExpect(status().isNotFound());
     }
 
     @Test
-    void setUserType_whenUserExists_updatesAndReturnsUser() {
-        // Arrange
-        SetUserTypeRequest request = new SetUserTypeRequest("test@example.com", UserType.NEW_GRAD);
-        when(userService.setUserType(request)).thenReturn(testUser);
+    @WithMockUser
+    void setUserType_ShouldReturnUpdatedUser() throws Exception {
+        SetUserTypeRequest request = new SetUserTypeRequest();
+        request.setUserType(UserType.INTERN);
 
-        // Act
-        ResponseEntity<?> response = userController.setUserType(request);
+        when(userService.setUserType(request, testEmail)).thenReturn(testUser);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(testUser, response.getBody());
-        verify(userService, times(1)).setUserType(request);
+        mockMvc.perform(put("/users/type")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(objectMapper.writeValueAsString(request)))
+               .andExpect(status().isOk());
     }
 
     @Test
-    void setUserType_whenUserDoesNotExist_returnsNotFound() {
-        // Arrange
-        SetUserTypeRequest request = new SetUserTypeRequest("test@example.com", UserType.NEW_GRAD);
-        when(userService.setUserType(request)).thenThrow(new UsernameNotFoundException("User not found"));
+    @WithMockUser
+    void setUserType_WhenUserNotFound_ShouldReturnNotFound() throws Exception {
+        SetUserTypeRequest request = new SetUserTypeRequest();
+        request.setUserType(UserType.INTERN);
 
-        // Act
-        ResponseEntity<?> response = userController.setUserType(request);
+        when(userService.setUserType(request, testEmail))
+            .thenThrow(new UsernameNotFoundException("User not found"));
 
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("User not found", response.getBody());
-        verify(userService, times(1)).setUserType(request);
+        mockMvc.perform(put("/users/type")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(objectMapper.writeValueAsString(request)))
+               .andExpect(status().isNotFound());
     }
 
     @Test
-    void deleteUser_whenUserExists_returnsOKResponse() {
-        // Arrange
-        String success = String.format("User with email: %s, has been successfully deleted.", testUser.getEmail());
-        when(userService.deleteUser(testUser.getEmail())).thenReturn(success);
+    @WithMockUser
+    void deleteCurrentUser_ShouldReturnSuccessMessage() throws Exception {
+        when(userService.deleteUser(testEmail)).thenReturn("User deleted successfully");
 
-        // Act
-        ResponseEntity<?> response = userController.deleteUser(testUser.getEmail());
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(success, response.getBody());
-        verify(userService, times(1)).deleteUser(testUser.getEmail());
+        mockMvc.perform(delete("/users/me"))
+               .andExpect(status().isOk())
+               .andExpect(content().string("User deleted successfully"));
     }
 
     @Test
-    void deleteUser_whenUserDoesNotExist_returnsNotFound() {
-        // Arrange
-        when(userService.deleteUser(testUser.getEmail())).thenThrow(new UsernameNotFoundException("User not found"));
+    @WithMockUser
+    void deleteCurrentUser_WhenUserNotFound_ShouldReturnNotFound() throws Exception {
+        when(userService.deleteUser(testEmail))
+            .thenThrow(new UsernameNotFoundException("User not found"));
 
-        // Act
-        ResponseEntity<?> response = userController.deleteUser(testUser.getEmail());
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("User not found", response.getBody());
-
+        mockMvc.perform(delete("/users/me"))
+               .andExpect(status().isNotFound());
     }
-
 }

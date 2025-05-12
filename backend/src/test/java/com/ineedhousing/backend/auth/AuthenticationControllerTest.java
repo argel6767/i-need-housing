@@ -61,7 +61,7 @@ class AuthenticationControllerTest {
         when(jwtService.generateToken(user)).thenReturn(token);
         when(jwtService.getExpirationTime()).thenReturn(expirationTime);
         // Act
-        ResponseEntity<LoginResponse> response = (ResponseEntity<LoginResponse>)authenticationController.login(request);
+        ResponseEntity<LoginResponse> response = (ResponseEntity<LoginResponse>)authenticationController.login(request, null);
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -135,7 +135,7 @@ class AuthenticationControllerTest {
                 .thenThrow(new RuntimeException("Invalid credentials"));
         // Act & Assert
         assertThrows(RuntimeException.class, () ->
-                authenticationController.login(request)
+                authenticationController.login(request, null)
         );
         verify(authenticationService).authenticateUser(request);
         verify(jwtService, never()).generateToken(any());
@@ -222,7 +222,7 @@ class AuthenticationControllerTest {
         when(authenticationService.resetPassword(request)).thenReturn(user);
 
         //Act
-        ResponseEntity<User> response = (ResponseEntity<User>) authenticationController.resetPassword(request);
+        ResponseEntity<User> response = (ResponseEntity<User>) authenticationController.resetPasswordForgottenPassword(request);
 
         //Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -239,7 +239,7 @@ class AuthenticationControllerTest {
         when(authenticationService.resetPassword(request)).thenThrow(new ExpiredVerificationCodeException("Verification code expired, request another one"));
 
         //Act
-        ResponseEntity<String> response = (ResponseEntity<String>) authenticationController.resetPassword(request);
+        ResponseEntity<String> response = (ResponseEntity<String>) authenticationController.resetPasswordForgottenPassword(request);
 
         //Assert
         assertEquals(HttpStatus.GONE, response.getStatusCode());
@@ -256,7 +256,7 @@ class AuthenticationControllerTest {
         when(authenticationService.resetPassword(request)).thenThrow(new AuthenticationException("Invalid verification code"));
 
         //Act
-        ResponseEntity<String> response = (ResponseEntity<String>) authenticationController.resetPassword(request);
+        ResponseEntity<String> response = (ResponseEntity<String>) authenticationController.resetPasswordForgottenPassword(request);
 
         //Assert
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());

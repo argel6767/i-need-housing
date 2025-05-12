@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 export const apiClient = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL
+    baseURL: process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL,
+    // Add this line to ensure cookies are sent with cross-origin requests
+    withCredentials: true
 });
 
 // interceptor to dynamically add the token to every request
@@ -22,7 +24,6 @@ apiClient.interceptors.response.use(response => response, //ie leave successful 
          if (error?.response?.status === 403) {
             console.log("Token expired redirecting back landing page");
             if (typeof window !== 'undefined') {
-                sessionStorage.removeItem('token');
                 window.location.href = '/'; // landing page
             }
         }
@@ -33,6 +34,7 @@ apiClient.interceptors.response.use(response => response, //ie leave successful 
                 window.location.href = '/';
             }
         }
+        return Promise.reject(error); // Make sure to return the error for further handling
     }
 );
 

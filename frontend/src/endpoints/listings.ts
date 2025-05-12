@@ -59,27 +59,6 @@ export const getListingInfo = async(id: number): Promise<any> => {
 }
 
 /**
- * deletes listing
- * @param id 
- * @returns 
- */
-export const deleteListing = async(id: number): Promise<any> => {
-    try {
-        const response = await apiClient.delete(`${MODULE_MAPPING}/${id}`);
-        if (response.status === 204) {
-            return response.data;
-        }
-        console.log(response.data);
-        return response.data;
-    }
-    catch(error) {
-        const errorMessage = failedCallMessage(error);
-        console.log(errorMessage);
-        return errorMessage;
-    }
-}
-
-/**
  * filters listings by their preferences
  * @param request 
  * @returns 

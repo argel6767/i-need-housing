@@ -78,12 +78,12 @@ class UserServiceTest {
     @Test
     void setUserType_updatesAndReturnsUpdatedUser() {
         // Arrange
-        SetUserTypeRequest request = new SetUserTypeRequest(testUser.getEmail(), UserType.NEW_GRAD);
+        SetUserTypeRequest request = new SetUserTypeRequest(UserType.NEW_GRAD);
         when(userRepository.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         when(userRepository.save(testUser)).thenReturn(testUser);
 
         // Act
-        User result = userService.setUserType(request);
+        User result = userService.setUserType(request, testUser.getEmail());
 
         // Assert
         assertEquals(UserType.NEW_GRAD, result.getUserType());

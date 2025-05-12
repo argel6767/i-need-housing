@@ -6,6 +6,7 @@ import Providers from "./providers";
 import { GlobalProvider } from "@/components/GlobalContext";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import { GoogleMapsProvider } from "@/components/GoogleMapContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,13 +33,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <GlobalProvider>
-          <Providers>
-		{children}
-		<SpeedInsights/>
-		<Analytics />
-	</Providers>
-        </GlobalProvider>
+        <GoogleMapsProvider>
+          <GlobalProvider>
+            <Providers>
+                {children}
+            </Providers>
+              <SpeedInsights/>
+              <Analytics />
+          </GlobalProvider>
+        </GoogleMapsProvider>
       </body>
     </html>
   );

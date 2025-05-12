@@ -3,12 +3,14 @@ package com.ineedhousing.backend.apis;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.client.RestClient;
 
 /**
  * Houses the multiple RestClient beans for each external API
  */
-@Configuration
+@Lazy
+@Configuration("housingGatheringRestClientConfiguration")
 public class RestClientConfiguration {
 
     @Value("${rent.cast.base.url}")
@@ -101,11 +103,5 @@ public class RestClientConfiguration {
         .build();
     }
 
-    @Bean(name = "Google GeoCode API")
-    RestClient googleGeoCodeRestClient() {
-        return RestClient.builder()
-        .baseUrl("https://maps.googleapis.com/maps/api/geocode/json")
-        .build();
-    }
 
 }

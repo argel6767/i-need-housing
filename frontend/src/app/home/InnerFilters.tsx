@@ -3,8 +3,8 @@ import { UserPreference } from "@/interfaces/entities";
 import { useState } from "react";
 
 interface RangeBarProps {
-    initialRange: number
-    setUpdatedPreferences: any
+    initialRange?: number
+    setUpdatedPreferences?: any
 }
 
 /**
@@ -12,6 +12,31 @@ interface RangeBarProps {
  * @param param
  * @returns
  */
+
+export const RadiusBar = () => {
+    return <div className="flex w-full justify-between text-xs text-primary px-1 ">
+        <div className="flex flex-col items-center">
+            <span>|</span>
+            <span>05</span>
+        </div>
+        <div className="flex flex-col items-center">
+            <span>|</span>
+            <span>10</span>
+        </div>
+        <div className="flex flex-col items-center">
+            <span>|</span>
+            <span>15</span>
+        </div>
+        <div className="flex flex-col items-center">
+            <span>|</span>
+            <span>20</span>
+        </div>
+        <div className="flex flex-col items-center">
+            <span>|</span>
+            <span>25</span>
+        </div>
+    </div>;
+}
 export const RangeBar = ({initialRange, setUpdatedPreferences}:RangeBarProps) => {
     const [range, setRange] = useState<number>(initialRange || 5);
 
@@ -27,35 +52,14 @@ export const RangeBar = ({initialRange, setUpdatedPreferences}:RangeBarProps) =>
                 <span className="text-sm font-medium w-16 text-right">{range} mi</span>
             </div>
             <input type="range" min={5} max={25} value={range} className="range bg-slate-400 w-full" step="5" onChange={handleRange}/>
-            <div className="flex w-full justify-between text-xs text-primary px-1 ">
-                <div className="flex flex-col items-center">
-                    <span>|</span>
-                    <span>05</span>
-                </div>
-                <div className="flex flex-col items-center">
-                    <span>|</span>
-                    <span>10</span>
-                </div>
-                <div className="flex flex-col items-center">
-                    <span>|</span>
-                    <span>15</span>
-                </div>
-                <div className="flex flex-col items-center">
-                    <span>|</span>
-                    <span>20</span>
-                </div>
-                <div className="flex flex-col items-center">
-                    <span>|</span>
-                    <span>25</span>
-                </div>
-            </div>
+            <RadiusBar/>
         </div>
     )
 }
 
 interface MaxPriceProps {
-    maxPrice: number,
-    setUpdatedPreferences: any
+    maxPrice?: number,
+    setUpdatedPreferences?: any
 }
 
 /**
@@ -64,7 +68,7 @@ interface MaxPriceProps {
  * @returns 
  */
 export const MaxPrice = ({maxPrice, setUpdatedPreferences}: MaxPriceProps) => {
-    const [price, setPrice] = useState<number>(maxPrice)
+    const [price, setPrice] = useState<number>(maxPrice || 0)
 
     const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPrice(Number(event.target.value.replace(/\D/g, "").slice(0,6)));
@@ -87,11 +91,10 @@ interface ButtonGroupButtonProps {
     number:number
     label:string
     setValue: any
-    field: keyof UserPreference
     isSelected: boolean
 }
 
- const ButtonGroupButton = ({number, setValue, field, label, isSelected}: ButtonGroupButtonProps) => {
+ export const ButtonGroupButton = ({number, setValue, label, isSelected}: ButtonGroupButtonProps) => {
 
     return (
         <button onClick={() => {setValue(number)}}
@@ -120,7 +123,7 @@ export const ValueButtons = ({setUpdatedPreferences, field, initialValue}: Value
     return (
         <span className="row flex">
         {values.map((val, index) => (
-            <ButtonGroupButton number={val} key={index} setValue={handleSetValue} field={field} label={val.toString() + "+"} isSelected={selectedValue === val}/>
+            <ButtonGroupButton number={val} key={index} setValue={handleSetValue}  label={val.toString() + "+"} isSelected={selectedValue === val}/>
         ))}
         </span>
     )

@@ -33,14 +33,11 @@ export const register = async (requestBody: AuthenticateUserDto): Promise<any> =
  */
 export const login = async (requestBody: AuthenticateUserDto): Promise<any> => {
     try {
-        console.log(requestBody);
         const response = await apiClient.post(MODULE_MAPPING +"/login", requestBody);
-        if (response.status === 200) {
-            sessionStorage.setItem("token", response.data.token);
-            return "logged in"; 
+        if (!response.data.userPreferences) {
+            return "new user";
         }
-        console.log(response.data);
-        return null;
+        return "logged in"; 
     }
     catch(error: any) {
         console.log(failedCallMessage(error));
@@ -48,6 +45,17 @@ export const login = async (requestBody: AuthenticateUserDto): Promise<any> => {
             return "user is not verified";
         }
         return "login failed";
+    }
+}
+
+export const logout = async() => {
+    try {
+        const response = await apiClient.post('/auths/logout');
+        return response.data;
+    }
+    catch(error) {
+        console.log(failedCallMessage(error))
+        return "user could not be logged out."
     }
 }
 

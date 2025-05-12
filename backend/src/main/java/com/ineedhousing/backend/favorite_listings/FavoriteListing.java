@@ -24,11 +24,13 @@ public class FavoriteListing {
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
+    @ToString.Exclude
     private User user;
 
     @NonNull
     @OneToOne
     @JoinColumn(name = "listing_id", referencedColumnName = "id")
+    @ToString.Exclude
     private HousingListing housingListing;
 
     @Timestamp

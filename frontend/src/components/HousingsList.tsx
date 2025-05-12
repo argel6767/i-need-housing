@@ -1,12 +1,12 @@
 "use client"
 
 import { HouseListing } from "@/interfaces/entities"
-import Image from "next/image"
-import { Loading } from "./Loading"
 import { useEffect, useRef, useState } from "react"
 import { useGlobalContext } from "./GlobalContext"
 import { ArrowImageCarousel } from "./Carousel"
-import { CircleX } from "lucide-react"
+import { CircleX, Star } from "lucide-react"
+import { addNewFavoriteListings, deleteAllFavorites, deleteFavoriteListings } from "@/endpoints/favorites"
+import { favoriteListingsRequest } from "@/interfaces/requests/favoriteListingsRequests"
 
 
 
@@ -15,8 +15,6 @@ interface ListingModalProps {
     setIsModalUp:React.Dispatch<React.SetStateAction<boolean>>
 }
 
-
-
 //
 /**
  * the modal that will render when a listing card is pressed, showing more info about the listing
@@ -24,6 +22,17 @@ interface ListingModalProps {
  * @returns
  */
 export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
+
+    const [isFavorited, setIsFavorited] = useState<boolean>(false);
+    const {favoriteListings} = useGlobalContext();
+
+
+    //Checks to see if rendered listing is a favorited one
+    useEffect(() => {
+            const isCurrentlyFavorited = favoriteListings ? 
+            favoriteListings.some(fav => fav.housingListing.id === listing?.id) : false;
+            setIsFavorited(isCurrentlyFavorited);
+    }, [favoriteListings, listing])
 
     //gets description or returns default text when there is none
     const getDescription = () => {
@@ -37,11 +46,11 @@ export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
     const getOriginalListingUrl = () => {
         if (!listing?.listingUrl) {
             return (
-                "N/A"
+                <p>No Original Listing</p>
             )
         }
         return (
-            <a className="hover:underline" href={listing.listingUrl}>Here</a>
+            <a className="hover:underline" href={listing.listingUrl}>View Original Listing</a>
         );
     }
 
@@ -53,25 +62,79 @@ export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
         return listing?.numBaths;
     }
 
+    if (!favoriteListings) {
+        return (<div>Loading</div>)
+    }
+
     return (
-        <main>
-                    <span className="absolute top-0 right-0">
-                        <button onClick={(e) => {
-                            e.stopPropagation();
-                            setIsModalUp(false);}} className="btn btn-sm btn-circle btn-ghost"><CircleX className="hover:opacity-50" width={40} height={40}/></button>
-                    </span>
-                    <ArrowImageCarousel images={listing?.imageUrls}/>
-                    <h3 className="font-bold text-2xl py-1">{listing?.title}</h3>
-                    <span className="flex justify-between text-xl border-2 border-b-black pb-2"><h2>{listing?.numBeds} Bed(s) | {getNumBaths()} Bathroom(s)</h2><h2>${listing?.rate}/Month</h2></span>
-                    <article className="text-lg">
-                        <p className="py-4">{getDescription()}</p>
-                        <p>Address: {listing?.address}</p>
-                    <span className="flex justify-between"><p className="flex gap-2">Original Listing: {getOriginalListingUrl()}</p> <p>Source: {listing?.source}</p></span>
-                    </article>
-                    
-        </main>
+        <div>
+            <span className="flex justify-end gap-4 pb-2">
+                <FavoriteListing listing={listing} isFavoritedListing={isFavorited} setIsFavoritedListing={setIsFavorited}/> 
+                <button onClick={(e) => {e.stopPropagation(); setIsModalUp(false);}} className=""><CircleX className="hover:opacity-50" size={40}/></button>
+            </span>
+            <ArrowImageCarousel images={listing?.imageUrls}/>
+            <h3 className="font-bold text-2xl py-2">{listing?.title}</h3>
+            <span className="flex justify-between text-xl border-2 border-b-black pb-2"><h2>{listing?.numBeds} Bed(s) | {getNumBaths()} Bathroom(s)</h2><h2>${listing?.rate}/Month</h2></span>
+            <article className="text-lg">
+                <p className="py-4">{getDescription()}</p>
+                <p>Address: {listing?.address}</p>
+            <span className="flex justify-between">{getOriginalListingUrl()}<p>Source: {listing?.source}</p></span>
+            </article> 
+        </div>
     )
 }
+
+interface FavoriteListingProps {
+    listing?: HouseListing,
+    isFavoritedListing:boolean,
+    setIsFavoritedListing: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const FavoriteListing = ({listing, isFavoritedListing, setIsFavoritedListing}: FavoriteListingProps) => {
+
+    const [isUserHovering, setIsUserHovering] = useState<boolean>(false);
+    const {favoriteListings, setFavoriteListings} = useGlobalContext();
+
+
+    //adds listing to favorites
+    const favoriteListing = async () => {
+        const requestBody:favoriteListingsRequest = {listings: [listing!]};
+        const data = await addNewFavoriteListings(requestBody)
+        setIsFavoritedListing(true);
+        setFavoriteListings(data);
+    }
+
+    //removes listing in both global array and in backend
+    const unFavoriteListing = async () => {
+        setFavoriteListings((prev) => { //remove listing in global list incase backend fails
+            return prev.filter(favorite => favorite.id !== favoriteListing?.id)
+        })
+
+        const favoriteListing = favoriteListings.find(favoriteListing => favoriteListing.housingListing.id === listing?.id);
+        const favoriteListingId = favoriteListing?.id;
+        const data = await deleteFavoriteListings(favoriteListingId!);
+        console.log("data: " + data)
+        setIsFavoritedListing(false);
+        setFavoriteListings(data);
+    }
+
+
+    const props = {
+        size: 40,
+        color:'#ef4444',
+        ...(( isFavoritedListing || isUserHovering)  && { fill: '#ef4444' }),
+        onMouseEnter: () => {setIsUserHovering(true)},
+        onMouseLeave: () => {setIsUserHovering(false)},
+        onClick: () => {isFavoritedListing ? unFavoriteListing() : favoriteListing()}
+    }
+    
+    
+    return (
+        <Star {...props} className="hover:cursor-pointer hover:scale-110 transition-transform duration-300"/> 
+    )
+
+}
+
 
 interface HousingCardProps {
     listing:HouseListing,

@@ -8,6 +8,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
@@ -34,18 +35,31 @@ public class HousingListingService {
 
     /**
      * Finds all listings in a circle with given radius, and sorts them closest to center
+     * where radius is in miles
+     * latitude and longitude must reside in the continental US
      * @param longitude
      * @param latitude
      * @param radius
      * @return
      */
+    @Cacheable("listings")
     public List<HousingListing> getListingsInArea(double latitude, double longitude, int radius) {
+        if (radius <= 0 || radius > 30) {
+            throw new IllegalArgumentException("radius must be between 1 and 30!");
+        }
+        if (latitude < 24.00 || latitude > 49) {
+            throw new IllegalArgumentException("latitude value must be in the US!");
+        }
+        if (longitude < -125.00 || longitude > -67.00) {
+            throw new IllegalArgumentException("longitude value must be in the US!");
+        }
+
         GeometryFactory factory = GeometrySingleton.getInstance();
         Point center = factory.createPoint(new Coordinate(longitude, latitude)); //Point objects have longitude first
         Polygon area = PolygonCreator.createCircle(center, radius, 32);
         List<HousingListing> listings = housingListingRepository.getAllListingsInsideArea(area);
         if (listings.isEmpty()) {
-            throw new NoListingFoundException(String.format("No listings found in the given radius of %d from point {%.2f, %.2f}", radius, latitude, longitude)) ;
+            return listings; //no need to do sorting logic
         }
         listings = listings.stream().sorted((listingOne, listingTwo) -> {
             double distanceOne = center.distance(listingOne.getLocation());
@@ -88,6 +102,7 @@ public class HousingListingService {
      * @param filterMethod
      * @return
      */
+    @Cacheable("listings_by_preference")
     public List<HousingListing> getListingsByPreferences(double latitude, double longitude, int radius, UserPreference userPreference, BiFunction<UserPreference, List<HousingListing>, List<HousingListing>> filterMethod) {
         List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
         List<HousingListing> filteredListings = filterMethod.apply(userPreference, listings);
@@ -97,6 +112,7 @@ public class HousingListingService {
         return filteredListings;
     }
 
+    @Cacheable("listings_by_preference")
     public List<HousingListing> getListingsByPreferences(Long preferenceId, List<HousingListing> listings, BiFunction<UserPreference, List<HousingListing>, List<HousingListing>> filterMethod) {
         UserPreference userPreference = userPreferenceService.getUserPreferences(preferenceId);
         List<HousingListing> filteredListings = filterMethod.apply(userPreference, listings);
@@ -109,6 +125,8 @@ public class HousingListingService {
     /**
      * returns listings filtered by given preference only
      */
+    @Cacheable("listings_by_preference")
+
     public List<HousingListing> getListingsBySpecificPreference(double latitude, double longitude, int radius, Map<String, Object> preference) {
         List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
         List<HousingListing> filteredListings = UserPreferencesFilterer.findBySpecificPreference(preference, listings);
@@ -126,6 +144,9 @@ public class HousingListingService {
      * @param preferences
      * @return
      */
+
+    @Cacheable("listings_by_preference")
+
     public List<HousingListing> getListingsByMultiplePreferences(double latitude, double longitude, int radius, Map<String, Object> preferences) {
         List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
         List<HousingListing> filteredListings = UserPreferencesFilterer.findByMultiplePreferences(preferences, listings);

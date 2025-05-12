@@ -4,7 +4,7 @@ import { useState } from "react";
 import extend from "../../public/sidebar/sidebar-extend.svg"
 import collapse from "../../public/sidebar/sidebar-collapse.svg"
 import Image from "next/image";
-import { HouseListing } from "@/interfaces/entities";
+import { FavoriteListing, HouseListing } from "@/interfaces/entities";
 import { HousingCard} from "./HousingsList";
 import { GroupOfSkeletons, Loading, Skeleton, SkeletonText } from "./Loading";
 
@@ -14,8 +14,9 @@ interface HousingSearchProps {
     listings: HouseListing[]
     isLoading: boolean
     isFetching: boolean
+    isGrabbingFavorites: boolean
     setRenderedListing: React.Dispatch<React.SetStateAction<HouseListing | undefined>>
-    setIsModalUp: React.Dispatch<React.SetStateAction<boolean>>
+    setIsModalUp: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 /**
@@ -23,7 +24,7 @@ interface HousingSearchProps {
  * @param param
  * @returns 
  */
-export const HousingSearch = ({city, listings, isLoading, isFetching, setRenderedListing, setIsModalUp}:HousingSearchProps) => {
+export const HousingSearch = ({city, listings, isLoading, isFetching, isGrabbingFavorites, setRenderedListing, setIsModalUp}:HousingSearchProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
     return (
@@ -50,11 +51,11 @@ export const HousingSearch = ({city, listings, isLoading, isFetching, setRendere
             >   
                 <div className="p-4">
                     <h2 className="text-3xl font-bold text-center p-4 flex justify-center items-center">
-                    {isFetching || isLoading? <SkeletonText /> :  "View Listings Around " + city}
+                    {isFetching || isLoading || isGrabbingFavorites? <SkeletonText /> :  "View Listings Around " + city}
                     </h2>
                     <nav className="flex justify-center w-full">
                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4">
-                            {isFetching || isLoading?  <GroupOfSkeletons numOfSkeletons={8}/> :
+                            {isFetching || isLoading || isGrabbingFavorites?  <GroupOfSkeletons numOfSkeletons={8}/> :
                             listings
                             .filter((listing) => (listing.coordinates !== null))
                             .map((listing) => (

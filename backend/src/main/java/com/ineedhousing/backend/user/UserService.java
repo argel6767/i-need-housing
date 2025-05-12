@@ -1,10 +1,14 @@
 package com.ineedhousing.backend.user;
 
-import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
+
+import jakarta.transaction.Transactional;
 
 /**
  * Handles business logic of Users
@@ -34,6 +38,7 @@ public class UserService {
      * @throws UsernameNotFoundException
      * @return User
      */
+    @Cacheable("users")
     public User getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -47,6 +52,7 @@ public class UserService {
      * @throws UsernameNotFoundException
      * @return User
      */
+    @Cacheable(value="users", key="$user.id")
     @Transactional
     public User updateUser(User newUserDetails, String email) {
         User user = getUserByEmail(email);
@@ -62,8 +68,8 @@ public class UserService {
      * @return User
      */
     @Transactional
-    public User setUserType(SetUserTypeRequest request) {
-        User user = getUserByEmail(request.getEmail());
+    public User setUserType(SetUserTypeRequest request, String email) {
+        User user = getUserByEmail(email);
         user.setUserType(request.getUserType());
         return userRepository.save(user);
     }
@@ -74,6 +80,7 @@ public class UserService {
      * @throws UsernameNotFoundException
      * @return String
      */
+    @CacheEvict(value="users", key="#email")
     public String deleteUser(String email) {
         User user = getUserByEmail(email);
         userRepository.delete(user);

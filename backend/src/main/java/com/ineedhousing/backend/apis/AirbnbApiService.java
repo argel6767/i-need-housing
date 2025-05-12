@@ -10,6 +10,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriBuilder;
@@ -24,6 +25,7 @@ import com.ineedhousing.backend.housing_listings.HousingListingRepository;
  * Houses business logic for Airbnb calls
  */
 @Service
+@Lazy
 public class AirbnbApiService {
 
     private final RestClient restClient;

@@ -11,11 +11,15 @@ import com.ineedhousing.backend.housing_listings.requests.GetListingsByPreferenc
 import com.ineedhousing.backend.housing_listings.requests.GetListingsBySpecificPreferenceRequest;
 import com.ineedhousing.backend.housing_listings.requests.GetListingsInAreaRequest;
 import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
+import com.ineedhousing.backend.jwt.JwtUtils;
+
 
 import lombok.extern.java.Log;
-import lombok.extern.log4j.Log4j;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +55,10 @@ public class HousingListingController {
             List<HousingListing> listings = housingListingService.getListingsInArea(latitude, longitude, radius);
             return ResponseEntity.ok(listings);
         }
-        catch (NoListingsFoundException nlfe) {
-            return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
+        catch (IllegalArgumentException iae) {
+            Map<String, String> response = new HashMap<>();
+            response.put("error", iae.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -79,6 +85,11 @@ public class HousingListingController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteListing(@PathVariable Long id) {
+        if (!JwtUtils.isUserAdmin()) {
+            Map<String, String> response = new HashMap<>();
+            response.put("error", "user is not an admin, cannot delete listing");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
         try {
             String message = housingListingService.deleteListing(id);
             return new ResponseEntity<>(message, HttpStatus.NO_CONTENT);
