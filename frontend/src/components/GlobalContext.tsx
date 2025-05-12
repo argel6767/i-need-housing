@@ -24,6 +24,8 @@ interface GlobalContextType {
     setNewUserInfo: React.Dispatch<React.SetStateAction<NewUserObjects>>
     isIntern:boolean
     setIsIntern: React.Dispatch<React.SetStateAction<boolean>>
+    isFirstTimeUser: boolean,
+    setIsFirstTimeUser: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -46,11 +48,12 @@ export const GlobalProvider = ({children}:GlobalProviderProps) => {
     const [favoriteListings, setFavoriteListings] = useState<FavoriteListing[]>([]);
     const [newUserInfo, setNewUserInfo] = useState<NewUserObjects>({userType: '',  newUserPreferencesDto:{}})
     const [isIntern, setIsIntern] = useState<boolean>(false);
+    const [isFirstTimeUser, setIsFirstTimeUser] = useState<boolean>(false);
 
     const contextValue = useMemo(() => ({
         centerLat, setCenterLat, centerLong, setCenterLong, user, setUser, userPreferences, setUserPreferences, favoriteListings, setFavoriteListings,
-        newUserInfo, setNewUserInfo, isIntern, setIsIntern
-    }), [centerLat, centerLong, user, userPreferences, favoriteListings, newUserInfo, isIntern]);
+        newUserInfo, setNewUserInfo, isIntern, setIsIntern, isFirstTimeUser, setIsFirstTimeUser
+    }), [centerLat, centerLong, user, userPreferences, favoriteListings, newUserInfo, isIntern, isFirstTimeUser]);
 
     return (
         <GlobalContext.Provider value={contextValue}>

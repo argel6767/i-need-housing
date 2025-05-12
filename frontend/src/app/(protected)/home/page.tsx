@@ -1,6 +1,6 @@
 "use client"
 
-import { Filters } from "@/app/home/Filters";
+import { Filters } from "@/app/(protected)/home/Filters";
 import { Footer } from "@/components/Footer";
 import { useGlobalContext } from "@/components/GlobalContext";
 import { HousingSearch } from "@/components/HousingSearch";
@@ -8,8 +8,6 @@ import { ListingModal } from "@/components/HousingsList";
 
 import { Map } from "@/components/Map";
 import { LoggedInNavBar } from "@/components/Navbar";
-import {ProtectedRoute} from "@/components/ProtectedRoute";
-import { filterListingsByPreferences } from "@/endpoints/listings";
 import { useListings, useUserPreferences, useFavoriteListings } from "@/hooks/hooks";
 import {  HouseListing } from "@/interfaces/entities";
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
@@ -56,7 +54,6 @@ const Home = () => {
     }, [favorites, setFavoriteListings])
 
     return (
-        <ProtectedRoute>
             <main className="flex flex-col h-screen">
             <nav >
                 <LoggedInNavBar/>
@@ -80,7 +77,6 @@ const Home = () => {
                 <Footer/>
             </div>
             </main>
-        </ProtectedRoute>
     )
 }
 

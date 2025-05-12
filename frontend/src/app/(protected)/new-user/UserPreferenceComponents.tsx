@@ -6,8 +6,9 @@ import { updateUserType } from "@/endpoints/users"
 import { SetUserTypeDto } from "@/interfaces/requests/userRequests"
 import { Loader } from "lucide-react"
 import { ReactNode, useState } from "react"
-import { sleep } from "../utils/utils"
+
 import { useRouter } from 'next/navigation';
+import {sleep} from "@/app/utils/utils";
 
 export const PreferencesHeader = () => {
 

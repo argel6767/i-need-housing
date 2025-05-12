@@ -1,13 +1,27 @@
-import { AxiosError } from "axios";
+
 import { apiClient, failedCallMessage } from "./apiConfig";
 import { AuthenticateUserDto, ChangePasswordDto, ForgotPasswordDto, ResendEmailDto, VerifyUserDto } from "@/interfaces/requests/authsRequests";
 
 
 const MODULE_MAPPING = "/auths"
-
 /**
  *  Holds auths api calls
  */
+
+/**
+ * checks status of cookie, valid or expired
+ */
+export const checkCookie = async () => {
+    try {
+        const response = await apiClient.post(MODULE_MAPPING+"/cookie-status");
+        return await response.data;
+    }
+    catch (error: any) {
+        console.log(failedCallMessage(error));
+        return "Cookie expired!"
+    }
+}
+
 /**
  * register user
  * @param requestBody 

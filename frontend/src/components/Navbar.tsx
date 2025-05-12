@@ -27,7 +27,7 @@ export const Navbar = () => {
     </ul>
   </div>
   <div className="navbar-end">
-    <Link className="btn btn-primary hover:bg-[#457F9F] hidden" href="/sign-up">Register</Link>
+    <Link className="btn btn-primary hover:bg-[#457F9F]" href="/sign-in">Sign In</Link>
   </div>
 </div> 
     )

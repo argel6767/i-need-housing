@@ -2,11 +2,6 @@
 
 
 import React, { useState } from 'react';
-import { SetUserTypeDto } from "@/interfaces/requests/userRequests";
-import { updateUserType } from "@/endpoints/users";
-import { Loader } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { sleep } from '@/app/utils/utils';
 import { useGlobalContext } from '@/components/GlobalContext';
 import { PageTurner } from '../PageTurner';
 

@@ -3,7 +3,7 @@
 import { PageTurner } from "../PageTurner"
 import { useState } from "react"
 import { NewUserObjects, useGlobalContext } from "@/components/GlobalContext"
-import { ButtonGroupButton } from "@/app/home/InnerFilters"
+import { ButtonGroupButton } from "@/app/(protected)/home/InnerFilters"
 import { RawUserPreferenceDto } from "@/interfaces/requests/userPreferencesRequests"
 import { SubmitUserInfoButton, UserInfoSubmissionForm } from "../UserPreferenceComponents"
 

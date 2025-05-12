@@ -2,9 +2,9 @@
 import { ReactNode, useEffect, useState } from "react"
 import { ChevronDown, Loader } from 'lucide-react';
 import { UserPreference } from "@/interfaces/entities";
-import { useGlobalContext } from "../../components/GlobalContext";
+import { useGlobalContext } from "../../../components/GlobalContext";
 import { updateUserPreferencesViaFilters } from "@/endpoints/preferences";
-import { RangeBar, MaxPrice, OtherFilters } from "@/app/home/InnerFilters";
+import { RangeBar, MaxPrice, OtherFilters } from "@/app/(protected)/home/InnerFilters";
 import { filterListingsByPreferences } from "@/endpoints/listings";
 
 interface CollapseDownProps {

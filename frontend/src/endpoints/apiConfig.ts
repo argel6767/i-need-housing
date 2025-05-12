@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {logout} from "@/endpoints/auths";
 
 export const apiClient = axios.create({
     baseURL: process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL,
@@ -6,25 +7,15 @@ export const apiClient = axios.create({
     withCredentials: true
 });
 
-// interceptor to dynamically add the token to every request
-apiClient.interceptors.request.use(config => {
-    if (typeof window !== "undefined") {
-        const token = sessionStorage.getItem("token");
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    }
-    return config;
-    });
-
 // interceptor to check for any 403 ie the user's token has been expired
 apiClient.interceptors.response.use(response => response, //ie leave successful call alone
-    error => {
-         // Handle 403 Forbidden (token expired)
-         if (error?.response?.status === 403) {
+    async error => {
+        // Handle 403 Forbidden (token expired)
+        if (error?.response?.status === 403) {
             console.log("Token expired redirecting back landing page");
             if (typeof window !== 'undefined') {
-                window.location.href = '/'; // landing page
+                window.location.href = '/sign-in'; // landing page
+                await logout();
             }
         }
         //CORS error

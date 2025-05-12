@@ -1,6 +1,6 @@
 'use client'
 
-import { RadiusBar } from "@/app/home/InnerFilters";
+import { RadiusBar } from "@/app/(protected)/home/InnerFilters";
 import { NewUserObjects, useGlobalContext } from "@/components/GlobalContext";
 import { useState } from "react";
 import { PageTurner } from "../PageTurner";

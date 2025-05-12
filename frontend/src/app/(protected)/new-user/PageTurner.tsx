@@ -2,7 +2,7 @@
 
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react"
 import Link from "next/link"
-import { ReactNode, useState } from "react"
+import { useState } from "react"
 
 interface PageTurnerProps {
     href:string

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useRef, useState } from "react";
 import { Loading } from "./Loading";
 import { ResendVerificationEmail } from "./ResendEmailVerification";
+import {useGlobalContext} from "@/components/GlobalContext";
 
 interface FormProps {
     buttonLabel:string
@@ -24,6 +25,7 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
     const [isCallFailed, setIsCallFailed] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isRequestingEmail, setIsRequestingEmail] = useState<boolean>(false);
+    const {setIsFirstTimeUser} = useGlobalContext();
     const credentials: AuthenticateUserDto = {
         username:"",
         password:""
@@ -39,9 +41,11 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
         sessionStorage.setItem("email", credentials.username);
         const data = await request(credentials);
         if (data === "new user") {
+            setIsFirstTimeUser(true);
             router.push("/new-user/user-type");
         }
         else if(data === "logged in" || data === "user created") { //successful
+            setIsFirstTimeUser(false);
             sessionStorage.setItem("email", credentials.username);
             router.push(route)
         }

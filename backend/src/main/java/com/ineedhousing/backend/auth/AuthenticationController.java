@@ -20,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 
 /**
  * holds auth endpoints that can be accessed without a JWT token
@@ -34,6 +36,16 @@ public class AuthenticationController {
     public AuthenticationController(AuthenticationService authenticationService, JwtService jwtService) {
         this.authenticationService = authenticationService;
         this.jwtService = jwtService;
+    }
+
+    /**
+     * used to check if cookie is still valid, will return 200 if is
+     * it wont even be run if it is not due the security chain and return a 403
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/cookie-status")
+    public ResponseEntity<String> checkCookie() {
+        return new ResponseEntity<>("Token still valid", HttpStatus.OK);
     }
 
     /**

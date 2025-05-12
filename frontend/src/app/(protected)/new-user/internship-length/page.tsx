@@ -1,6 +1,6 @@
 'use client'
 
-import { NewUserObjects, useGlobalContext } from "@/components/GlobalContext";
+import { useGlobalContext } from "@/components/GlobalContext";
 import { RawUserPreferenceDto } from "@/interfaces/requests/userPreferencesRequests";
 import { useState } from "react";
 import { PageTurner } from "../PageTurner";
