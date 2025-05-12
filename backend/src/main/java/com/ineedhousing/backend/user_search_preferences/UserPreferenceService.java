@@ -2,11 +2,16 @@ package com.ineedhousing.backend.user_search_preferences;
 
 import java.io.InvalidObjectException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import com.ineedhousing.backend.user_search_preferences.responses.FormattedUserPreferenceDto;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.springframework.stereotype.Service;
 
 import com.ineedhousing.backend.geometry.GeometrySingleton;
@@ -158,9 +163,30 @@ public class UserPreferenceService {
      * @return
      */
     @Cacheable("preferences")
-    public UserPreference getUserPreferences(String email) {
+    public FormattedUserPreferenceDto getUserPreferences(String email) {
         User user = userService.getUserByEmail(email);
-        return user.getUserPreferences();
+        UserPreference userPreferences = user.getUserPreferences();
+        log.info("fetching preferences: ");
+
+        double[] jobLocationCoords = null;
+        if (userPreferences.getJobLocation() != null) {
+            Point jobLocation = userPreferences.getJobLocation();
+            jobLocationCoords = new double[]{jobLocation.getY(), jobLocation.getX()}; //returns as lat, long, the preferred way
+        }
+
+        Point cityOfEmployment = userPreferences.getCityOfEmploymentCoordinates();
+        double[] cityOfEmploymentCoords = new double[]{cityOfEmployment.getY(), cityOfEmployment.getX()};
+
+        Polygon desiredAreaPolygon = userPreferences.getDesiredArea();
+        List<Map<String, Double>> desiredArea = new ArrayList<>();
+        for (Coordinate coord : desiredAreaPolygon.getCoordinates()) {
+            desiredArea.add(Map.of("lat", coord.y, "lng", coord.x)); //Latitude is Y, Longitude is X
+        }
+       FormattedUserPreferenceDto dto = new FormattedUserPreferenceDto(userPreferences.getId(), jobLocationCoords, cityOfEmploymentCoords, userPreferences.getCityOfEmployment(),
+               desiredArea, userPreferences.getMaxRadius(), userPreferences.getMinNumberOfBedrooms(), userPreferences.getMinNumberOfBathrooms(),
+               userPreferences.getInternshipStart(), userPreferences.getInternshipEnd(), userPreferences.getUpdatedAt());
+
+        return dto;
     }
 
     public UserPreference getUserPreferences(Long id) {

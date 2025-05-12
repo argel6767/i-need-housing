@@ -2,6 +2,7 @@ package com.ineedhousing.backend.user_search_preferences;
 
 import java.io.InvalidObjectException;
 
+import com.ineedhousing.backend.user_search_preferences.responses.FormattedUserPreferenceDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -139,7 +140,7 @@ public class UserPreferenceController {
     public ResponseEntity<?> getPreferences() {
         try {
             String email = JwtUtils.getCurrentUserEmail();
-            UserPreference userPreference = userPreferenceService.getUserPreferences(email);
+            FormattedUserPreferenceDto userPreference = userPreferenceService.getUserPreferences(email);
             return ResponseEntity.ok(userPreference);
         }
         catch (UsernameNotFoundException unfe) {

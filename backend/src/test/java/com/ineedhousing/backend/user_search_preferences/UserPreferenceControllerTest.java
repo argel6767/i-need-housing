@@ -86,7 +86,7 @@ class UserPreferenceControllerTest {
         String email = "test@example.com";
         UserPreference mockPreference = new UserPreference();
 
-        when(userPreferenceService.getUserPreferences(email)).thenReturn(mockPreference);
+        when(userPreferenceService.getUserPreferences(email)).thenReturn(null);
 
         ResponseEntity<?> response = userPreferenceController.getPreferences();
 
