@@ -4,6 +4,8 @@ import { getUserPreferences } from "@/endpoints/preferences"
 import { FavoriteListing, HouseListing, UserPreference } from "@/interfaces/entities"
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests"
 import { useQuery } from "@tanstack/react-query"
+import { useEffect} from "react";
+import {checkCookie} from "@/endpoints/auths";
 
 // fetches listings
 export const useListings = (requestBody: GetListingsInAreaRequest | null, options?: { enabled?: boolean }) => {
@@ -36,5 +38,6 @@ export const useFavoriteListings = () => {
 }
 
 export const useCheckCookie = async () => {
-
+    const cookieStatus = await checkCookie();
+    return cookieStatus === "Token is still valid"; //TODO Finish this!!!
 }
