@@ -91,8 +91,8 @@ export const LoggedInNavBar = () => {
     <Link href={"/home"} className="btn btn-ghost text-3xl sm:text-5xl text-primary font-bold">INeedHousing<Image src={"./file.svg"} width={50} height={50} alt="Logo"/></Link>
   </div>
   <div className="flex-none gap-2">
-    <div className="dropdown dropdown-end">
-      <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar mr-3">
+    <div className="dropdown dropdown-end ">
+      <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar mr-3 bg-primary shadow">
         <div className="w-12 rounded-full shadow-2xl">
           <img
             alt="Tailwind CSS Navbar component"

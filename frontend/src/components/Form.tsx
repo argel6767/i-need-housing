@@ -31,7 +31,7 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
         password:""
     }   
     
-
+   //TODO Possibly replace this with a function prop that a parent component can to eliminate all the if statements
     const handleRegistration = async(e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true)

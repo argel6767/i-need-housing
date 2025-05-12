@@ -1,6 +1,7 @@
 "use client"
 import { UserPreference } from "@/interfaces/entities";
 import { useState } from "react";
+import {useGlobalContext} from "@/components/GlobalContext";
 
 interface RangeBarProps {
     initialRange?: number
@@ -142,7 +143,7 @@ interface DatePickerProps {
  */
 const DatePicker = ({ setUpdatedPreferences, initialValue, field }: DatePickerProps) => {
     // Initialize state with the initial value
-    const [date, setDate] = useState<string>(initialValue);
+    const [date, setDate] = useState<string>(initialValue || '2025-06-01');
 
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDate(event.target.value);
@@ -165,6 +166,7 @@ interface OtherFiltersProps {
  * @returns 
  */
 export const OtherFilters = ({setUpdatedPreferences, updatedPreferences}: OtherFiltersProps) => {
+    const {isIntern} = useGlobalContext();
     return (
         <main>
             <span className="flex flex-col gap-6">
@@ -176,14 +178,16 @@ export const OtherFilters = ({setUpdatedPreferences, updatedPreferences}: OtherF
                     <label>Bathrooms</label>
                     <ValueButtons setUpdatedPreferences={setUpdatedPreferences} field="minNumberOfBathrooms" initialValue={updatedPreferences.minNumberOfBathrooms}/>
                 </div>
-                <div className="flex justify-between items-center">
+                {isIntern && (<><div className="flex justify-between items-center">
                     <label>Internship Start Date</label>
-                    <DatePicker setUpdatedPreferences={setUpdatedPreferences} initialValue={updatedPreferences.internshipStart} field="internshipStart"/>
+                    <DatePicker setUpdatedPreferences={setUpdatedPreferences}
+                                initialValue={updatedPreferences.internshipStart} field="internshipStart"/>
                 </div>
-                <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center">
                     <label>Internship End Date</label>
-                    <DatePicker setUpdatedPreferences={setUpdatedPreferences} initialValue={updatedPreferences.internshipEnd} field="internshipEnd"/>
-                </div>
+                    <DatePicker setUpdatedPreferences={setUpdatedPreferences}
+                initialValue={updatedPreferences.internshipEnd} field="internshipEnd"/>
+                </div></>)}
             </span>
         </main>
     )
