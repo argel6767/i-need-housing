@@ -6,7 +6,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 import com.ineedhousing.backend.housing_listings.HousingListing;
-import com.ineedhousing.backend.housing_listings.requests.HouseListing;
 import com.ineedhousing.backend.user.User;
 import com.vaadin.flow.component.grid.Grid;
 
@@ -30,6 +29,8 @@ public class GridCreator {
             grid.removeColumnByKey("coordinates");
             grid.removeColumnByKey("location");
             grid.removeColumnByKey("id");
+            grid.removeColumnByKey("isFurnished");
+            grid.removeColumnByKey("isPetFriendly");
             grid.addColumn(housing -> {
                 Point location = housing.getLocation();
                 Coordinate coordinates = location.getCoordinate();

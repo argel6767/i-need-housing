@@ -6,16 +6,15 @@ import com.ineedhousing.backend.admin.views.FindNewListingsView;
 import com.ineedhousing.backend.admin.views.ListingsView;
 import com.ineedhousing.backend.admin.views.SettingsView;
 import com.ineedhousing.backend.admin.views.UsersView;
-import com.vaadin.flow.component.contextmenu.MenuItem;
+
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.menubar.MenuBar;
-import com.vaadin.flow.component.menubar.MenuBarVariant;
+
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.theme.lumo.LumoUtility.Margin.Minus.Horizontal;
+
 
 //Builds Side Navigation Component
 public class Navigation {

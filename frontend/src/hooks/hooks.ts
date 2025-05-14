@@ -6,6 +6,7 @@ import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRe
 import { useQuery } from "@tanstack/react-query"
 import { useEffect} from "react";
 import {checkCookie} from "@/endpoints/auths";
+import {useGlobalContext} from "@/components/GlobalContext";
 
 // fetches listings
 export const useListings = (requestBody: GetListingsInAreaRequest | null, options?: { enabled?: boolean }) => {
@@ -28,6 +29,7 @@ export const useUserPreferences = () => {
     })
 }
 
+//fetches favorite listings
 export const useFavoriteListings = () => {
     return useQuery({
         queryKey: ['favoriteListings'],
@@ -40,4 +42,19 @@ export const useFavoriteListings = () => {
 export const useCheckCookie = async () => {
     const cookieStatus = await checkCookie();
     return cookieStatus === "Token is still valid"; //TODO Finish this!!!
+}
+
+//sets all global state values to their default values
+export const useClearState = () => {
+    const {setCenterLat, setCenterLong, setUser, setUserPreferences, setFavoriteListings, setNewUserInfo, setIsIntern, setIsFirstTimeUser} = useGlobalContext();
+    return () => {
+        setCenterLat(0.0);
+        setCenterLong(0.0);
+        setUser(null);
+        setUserPreferences(null);
+        setFavoriteListings([]);
+        setNewUserInfo({userType: '', newUserPreferencesDto: {}})
+        setIsIntern(false);
+        setIsFirstTimeUser(false)
+    }
 }

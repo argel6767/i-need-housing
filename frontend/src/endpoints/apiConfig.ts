@@ -1,5 +1,4 @@
 import axios from 'axios';
-import {logout} from "@/endpoints/auths";
 
 export const apiClient = axios.create({
     baseURL: process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL,
@@ -14,8 +13,7 @@ apiClient.interceptors.response.use(response => response, //ie leave successful 
         if (error?.response?.status === 403) {
             console.log("Token expired redirecting back landing page");
             if (typeof window !== 'undefined') {
-                window.location.href = '/sign-in'; // landing page
-                await logout();
+                window.location.href = '/'; // landing page
             }
         }
         //CORS error

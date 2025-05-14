@@ -2,6 +2,8 @@ package com.ineedhousing.backend.admin;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.context.annotation.Lazy;
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.ineedhousing.backend.admin.exceptions.UnauthorizedAccessException;
 import com.ineedhousing.backend.auth.requests.AuthenticateUserDto;
-import com.ineedhousing.backend.auth.responses.LoginResponse;
 import com.ineedhousing.backend.email.EmailVerificationException;
 import com.ineedhousing.backend.email.InvalidEmailException;
 import com.ineedhousing.backend.housing_listings.HousingListing;
@@ -37,7 +38,7 @@ public class AdminService {
         this.authenticationManager = authenticationManager;
     }
 
-    public LoginResponse authenticateAdmin(AuthenticateUserDto request)  {
+    public String authenticateAdmin(AuthenticateUserDto request)  {
         if (!isValidEmail(request.getUsername())) {
             throw new InvalidEmailException(request.getUsername() + " is an invalid email");
         }
@@ -52,9 +53,9 @@ public class AdminService {
         }
         user.setLastLogin(LocalDateTime.now());
         String token = jwtService.generateToken(user);
-        LoginResponse response = new LoginResponse(token, jwtService.getExpirationTime(), user);
+        String cookie = jwtService.generateCookie(token, Optional.empty());
         userRepository.save(user);
-        return response;
+        return cookie;
     }
 
     private boolean isValidEmail(String email) {

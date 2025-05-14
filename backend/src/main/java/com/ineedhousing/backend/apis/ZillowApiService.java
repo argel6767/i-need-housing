@@ -1,9 +1,6 @@
 package com.ineedhousing.backend.apis;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -56,7 +53,7 @@ public class ZillowApiService {
         .path("/search/bycoordinates")
         .queryParam("latitude", latitude.toString())
         .queryParam("longitude", longitude.toString())
-        .queryParam("radius", "5")
+        .queryParam("radius", "10")
         .queryParam("page", "1")
         .queryParam("listingStatus", "For_Rent")
         .queryParam("homeType", "Houses, Townhomes, Multi-family, Condos/Co-ops, Lots-Land, Apartments, Manufactured")
@@ -64,13 +61,16 @@ public class ZillowApiService {
         .build())
         .retrieve()
         .body(Map.class);
-        List<HousingListing> newListings = createNewListings(response);
         if (response == null) {
+            log.warning("Couldn't get response. Api call failed to occur. Check usage rates, and make sure your latitude and longitude are valid.");
             throw new FailedApiCallException("Api call failed to occur. Check usage rates, and make sure your latitude and longitude are valid.");
         }
         if (response.isEmpty()) {
+            log.warning(String.format("No listings found for coordinates (%.2f, %.2f) within radius: 5.", latitude, longitude));
             throw new NoListingsFoundException(String.format("No listings found for coordinates (%.2f, %.2f) within radius: 5.", latitude, longitude));
         }
+        log.info("API Call successful. Listings found: " + response.size());
+        List<HousingListing> newListings = createNewListings(response);
         List<HousingListing> nonDuplicateListings = removeDuplicateListings(newListings);
         return housingListingRepository.saveAll(nonDuplicateListings);
     }
@@ -176,7 +176,9 @@ public class ZillowApiService {
             newListing.setLocation(point);
         }
         else {
+            log.info("No coordinates found in property, utilizing Google API");
             double[] coords = googleGeoCodeApiService.getCoordinates(address);
+            log.info("Coordinates found in Google API: " + Arrays.toString(coords));
             Point point = factory.createPoint(
                 new Coordinate(coords[0], coords[1]));
                 newListing.setLocation(point);
@@ -192,8 +194,11 @@ public class ZillowApiService {
 
         //imageUrls
         Map<String, Object> media = (Map<String,Object>) property.get("media");
+
         Map<String, List<String>> allPropertyPhotos = (Map<String, List<String>>) media.get("allPropertyPhotos");
-        newListing.setImageUrls(allPropertyPhotos.get("highResolution"));
+        if (allPropertyPhotos != null) {
+            newListing.setImageUrls(allPropertyPhotos.get("highResolution"));
+        }
 
         newListing.setIsFurnished(false);
         return newListing;

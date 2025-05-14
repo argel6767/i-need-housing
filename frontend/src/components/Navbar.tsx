@@ -5,8 +5,9 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { logout } from "@/endpoints/auths"
 import { useState } from "react"
-import { sleep } from "@/app/utils/utils"
+import {queryClient, sleep} from "@/app/utils/utils"
 import { Loader } from "lucide-react"
+import {useClearState} from "@/hooks/hooks";
 
 
 /**
@@ -71,12 +72,16 @@ export const LoggedInNavBar = () => {
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter();
+  const clearState = useClearState();
+
   const logoutUser = async () => {
     setIsLoading(true);
     const response = await logout();
     setIsLoading(false);
     if (response === "Logged out successfully") {
       router.push("/");
+      queryClient.clear();
+      clearState();
     }
     else {
       setIsError(true);

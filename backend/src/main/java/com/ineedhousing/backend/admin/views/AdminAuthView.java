@@ -2,6 +2,7 @@ package com.ineedhousing.backend.admin.views;
 
 import java.util.List;
 
+import com.vaadin.flow.server.VaadinService;
 import org.springframework.context.annotation.Lazy;
 
 import com.ineedhousing.backend.admin.AdminService;
@@ -78,8 +79,8 @@ public class AdminAuthView extends VerticalLayout{
 
     private void loginAdmin(AuthenticateUserDto request, FormLayout form) {
         try {
-            LoginResponse response = adminService.authenticateAdmin(request);
-            VaadinSession.getCurrent().setAttribute("jwt", response.getToken());
+            String response = adminService.authenticateAdmin(request);
+            VaadinService.getCurrentResponse().setHeader("Set-Cookie", response); //sets http-only cookie
             UI.getCurrent().navigate(AdminDashboardView.class);
         }
         catch (Exception e) {

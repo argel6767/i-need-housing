@@ -1,3 +1,4 @@
+import {QueryClient} from "@tanstack/react-query";
 
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -9,3 +10,12 @@ export const isValidEmail = (email: string): boolean => {
 }
 
 export const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+export const queryClient = new QueryClient({
+    defaultOptions: {
+        queries : {
+            refetchOnWindowFocus: false,
+            staleTime: 10 * 60 * 1000, //10 minutes
+        }
+    }
+})

@@ -4,6 +4,7 @@ package com.ineedhousing.backend.admin.views;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.ineedhousing.backend.apis.ZillowApiService;
 import org.springframework.stereotype.Component;
 
 import com.ineedhousing.backend.apis.AirbnbApiService;
@@ -29,10 +30,12 @@ public class ListingRetrievalForm {
 
     private final RentCastAPIService rentCastAPIService;
     private final AirbnbApiService airbnbApiService;
+    private final ZillowApiService zillowApiService;
 
-    public ListingRetrievalForm(RentCastAPIService rentCastAPIService, AirbnbApiService airbnbApiService) {
+    public ListingRetrievalForm(RentCastAPIService rentCastAPIService, AirbnbApiService airbnbApiService, ZillowApiService zillowApiService) {
         this.rentCastAPIService = rentCastAPIService;
         this.airbnbApiService = airbnbApiService;
+        this.zillowApiService = zillowApiService;
     }
 
     /**
@@ -41,7 +44,7 @@ public class ListingRetrievalForm {
      */
     public HorizontalLayout createApiForm() {
         HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.add(List.of(createRentCastLayout(), createAirbnbLayout()));
+        horizontalLayout.add(List.of(createRentCastLayout(), createAirbnbLayout(), createZillowViaGeoCoordinates()));
         horizontalLayout.setPadding(true);
         horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         horizontalLayout.setSpacing(false);
@@ -153,6 +156,20 @@ public class ListingRetrievalForm {
             airbnbApiService.updateHousingListingsViaGeoCoordinates(neLatField.getValue(), neLongField.getValue(), swLatField.getValue(), swLongField.getValue(), startDate.getValue(), endDate.getValue(), numOfPets.getValue().intValue());
         });
         formLayout.add(List.of(label, neLatField, neLongField, swLatField, swLongField, startDate, endDate, numOfPets, button));
+        formLayout.setResponsiveSteps(new ResponsiveStep("0", 1));
+        return formLayout;
+    }
+
+    private FormLayout createZillowViaGeoCoordinates() {
+        FormLayout formLayout = new FormLayout();
+        H3 label = new H3("Zillow Geo-Coordinates Request");
+        NumberField latField = new NumberField("Latitude");
+        NumberField longField = new NumberField("Longitude");
+        Button button = new Button("Retrieve Listing Data");
+        button.addClickListener(event -> {
+            zillowApiService.updateListingsTableViaCoordinates(latField.getValue(), longField.getValue());
+        });
+        formLayout.add(List.of(label, latField, longField, button));
         formLayout.setResponsiveSteps(new ResponsiveStep("0", 1));
         return formLayout;
     }
