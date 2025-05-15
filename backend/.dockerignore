@@ -69,5 +69,5 @@ docs/
 
 # Your specified exclusions
 *.env
-/src/test/java/com/ineedhousing/backend/**
+/src/test/**
 compose.yaml
