@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.ineedhousing.backend.geometry.GoogleGeoCodeApiService;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -27,21 +28,23 @@ import com.ineedhousing.backend.housing_listings.HousingListingRepository;
 import lombok.extern.java.Log;
 
 
-    /**
-     * Houses business logic for RentCast api calls
-     */
+/**
+* Houses business logic for RentCast api calls
+*/
 @Log
 @Service
 @Lazy
 public class RentCastAPIService {
     private final RestClient restClient;
     private final HousingListingRepository housingListingRepository;
+    private final GoogleGeoCodeApiService googleGeoCodeApiService;
     private final String SOURCE = "RentCast";
     private final int LIMIT = 100;
 
-    public RentCastAPIService (@Qualifier("RentCast API") RestClient restClient, HousingListingRepository housingListingRepository) {
+    public RentCastAPIService (@Qualifier("RentCast API") RestClient restClient, HousingListingRepository housingListingRepository, GoogleGeoCodeApiService googleGeoCodeApiService) {
         this.restClient = restClient;
         this.housingListingRepository = housingListingRepository;
+        this.googleGeoCodeApiService = googleGeoCodeApiService;
     }
 
     /**
@@ -70,8 +73,10 @@ public class RentCastAPIService {
         if (response.isEmpty()) {
             throw new NoListingsFoundException(String.format("No listings found for %s, %s.", city, state));
         }
+        log.info("Response successfully received, parsing data.");
         List<HousingListing> newListings = createNewListings(response);
         List<HousingListing> nonDuplicateListings = removeDuplicateListings(newListings);
+        log.info(nonDuplicateListings.size() + " new listings added.");
         return housingListingRepository.saveAll(nonDuplicateListings);
     }
 
@@ -103,8 +108,10 @@ public class RentCastAPIService {
         if (response.isEmpty()) {
             throw new NoListingsFoundException(String.format("No listings found for coordinates (%.2f, %.2f) within radius: %d.", latitude, longitude, radius));
         }
+        log.info("Response successfully received, parsing data.");
         List<HousingListing> newListings = createNewListings(response);
         List<HousingListing> nonDuplicateListings = removeDuplicateListings(newListings);
+        log.info(nonDuplicateListings.size() + " new listings added.");
         return housingListingRepository.saveAll(nonDuplicateListings);
     }
 
@@ -116,17 +123,26 @@ public class RentCastAPIService {
     private List<HousingListing> createNewListings(List<Map<String, Object>> response) {
         List<HousingListing> newListings = new ArrayList<>();
         GeometryFactory factory = GeometrySingleton.getInstance();
-        response.stream()
+        response
         .forEach(listing -> {
             try {
                 HousingListing newListing = new HousingListing();
                 newListing.setSource(SOURCE);
                 newListing.setTitle((String)listing.get("id"));
                 newListing.setRate(((Number) listing.get("price")).doubleValue());
-                Point point = factory.createPoint(
-                new Coordinate((Double)listing.get("longitude"), (Double)listing.get("latitude")));
-                newListing.setLocation(point);
-                //TODO ADD GOOGLE CODE API CALL HERE IN CASE OF NULL COORDS
+                if (listing.get("longitude") == null || listing.get("latitude") == null) {
+                    Point point = factory.createPoint(
+                            new Coordinate((Double)listing.get("longitude"), (Double)listing.get("latitude")));
+                    newListing.setLocation(point);
+                }
+                else {
+                    log.info("No coordinates given for current listing, using Google GeoCode API");
+                    double[] coords = googleGeoCodeApiService.getCoordinates((String)listing.get("formattedAddress"));
+                    Point point = factory.createPoint(
+                            new Coordinate(coords[1], coords[0]));
+                    newListing.setLocation(point);
+                }
+
                 newListing.setAddress((String)listing.get("formattedAddress"));
                 newListing.setPropertyType((String)listing.get("propertyType"));
                 newListing.setNumBeds((Integer)listing.get("bedrooms"));
@@ -134,7 +150,7 @@ public class RentCastAPIService {
                 newListings.add(newListing); 
             }
             catch (NullPointerException npe) {
-                log.info(String.format("Failed to create Listing: %s.\n%n", listing, npe.getMessage()));
+                log.warning(String.format("Failed to create Listing: %s.\n%n", listing, npe.getMessage()));
             }
         });
         return newListings;

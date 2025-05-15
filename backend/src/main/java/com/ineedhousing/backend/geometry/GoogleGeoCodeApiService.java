@@ -14,6 +14,10 @@ import com.ineedhousing.backend.geometry.exceptions.ErroredGeoCodeAPICallExcepti
 
 import lombok.extern.java.Log;
 
+/**
+ * Houses business logic for various location values that can found utilizing the Google Geo Code API
+ * Such as location name and coordinates
+ */
 @Log
 @Service
 @Lazy

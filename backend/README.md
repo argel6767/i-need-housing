@@ -59,7 +59,7 @@ Key dependencies include:
 ```txt
 src/main/java/com/ineedhousing/backend/
 ├── admin/           # Admin-specific functionality
-├── apis/            # API endpoints and controllers
+├── apis/            # External API calls for listing gathering
 ├── auth/            # Authentication and authorization
 ├── configs/         # Configuration classes
 ├── email/           # Email service implementation
