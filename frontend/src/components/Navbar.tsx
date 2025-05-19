@@ -69,6 +69,12 @@ interface MobileListItemsProps {
     isModalUp?: boolean;
 }
 
+/**
+ * List of items in nav pop down for mobile
+ * @param children
+ * @param isModalUp
+ * @constructor
+ */
 const MobileListItems = ({ children, isModalUp=false}: MobileListItemsProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -143,7 +149,7 @@ export const MobileNavbar = () => {
   return (
     <main className="navbar bg-base-100">
       <MobileListItems>
-        <Link href="/sign-in">Sign In</Link>
+        <Link href="/home">View Listings</Link>
         <Link href={"/about"}>About</Link>
         <Link href={"https://github.com/argel6767/i-need-housing"}>Source Code</Link>
       </MobileListItems>
@@ -179,6 +185,7 @@ interface LoggedInMobileNavbarProps {
 
 /**
  * When user is on a phone and logged in
+ * handles the home menu navigation as well
  * @returns
  */
 export const LoggedInMobileNavbar = ({setIsModalUp, refetch}:LoggedInMobileNavbarProps) => {
