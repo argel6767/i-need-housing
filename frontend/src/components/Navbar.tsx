@@ -65,28 +65,48 @@ const User = () => {
 
 
 interface MobileListItemsProps {
-  children: React.ReactNode;
+    children: React.ReactNode;
+    isModalUp?: boolean;
 }
 
-const MobileListItems = ({ children }: MobileListItemsProps) => {
-  return (
-      <nav className="navbar-start">
-        <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
-            <svg
-                xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7"/>
-            </svg>
-          </div>
-          <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-            {React.Children.map(children, (child, i) => (
-                <li className={"hover:underline underline-offset-4 hover:scale-105 transition-transform duration-300  hover:bg-gray-100 rounded-2xl"} key={i}>{child}</li>
-            ))}
-          </ul>
-        </div>
-      </nav>
-  );
+const MobileListItems = ({ children, isModalUp=false}: MobileListItemsProps) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    // Toggle dropdown manually
+    const toggleDropdown = () => setIsOpen(!isOpen);
+
+    return (
+        <nav className="navbar-start">
+            {/* Add a custom class to keep the dropdown open */}
+            <div className={`dropdown ${isOpen ? 'dropdown-open' : ''} ${isModalUp ? 'dropdown-modal-open' : ''}`}>
+                <div
+                    role="button"
+                    className="btn btn-ghost btn-circle"
+                    onClick={toggleDropdown}
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7"/>
+                    </svg>
+                </div>
+                <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                    {React.Children.map(children, (child, i) => (
+                        <li
+                            className="hover:underline underline-offset-4 hover:scale-105 transition-transform duration-300 hover:bg-gray-100 rounded-2xl"
+                            key={i}
+                        >
+                            {child}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </nav>
+    );
 };
 
 /**
@@ -164,7 +184,7 @@ interface LoggedInMobileNavbarProps {
 export const LoggedInMobileNavbar = ({setIsModalUp, refetch}:LoggedInMobileNavbarProps) => {
 
     const {userPreferences, setUserPreferences} = useGlobalContext();
-    const {setFilterRendered, isListingsFiltered, setIsListingsFiltered, isFiltersChanged, setIsFiltersChanged, listings, setListings, setInitialPreferences} = useHomeContext();
+    const {setFilterRendered, isListingsFiltered, setIsListingsFiltered, isFiltersChanged, setIsFiltersChanged, listings, setListings, setInitialPreferences, isFilterModalUp} = useHomeContext();
     const [isSaving, setIsSaving] = useState(false);
     const [isFiltering, setIsFiltering] = useState(false);
     const [isResetting, setIsResetting] = useState(false);
@@ -211,16 +231,28 @@ export const LoggedInMobileNavbar = ({setIsModalUp, refetch}:LoggedInMobileNavba
 
   return (
       <main className="navbar bg-base-100">
-        <MobileListItems> {/*Each button determines what filter will be rendered when clicked*/}
-          <button onClick={() => handleFilterRendered(<RangeBar initialRange={userPreferences?.maxRadius} setUpdatedPreferences={setUserPreferences}/>)}>Change Distance</button>
-          <button onClick={() => handleFilterRendered(<MaxPrice maxPrice={userPreferences?.maxRent} setUpdatedPreferences={setUserPreferences}/>)}>Price</button>
-          <button onClick={() => handleFilterRendered(<OtherFilters setUpdatedPreferences={setUserPreferences} updatedPreferences={userPreferences!}/>)}>Other</button>
-          <button className={`${!isFiltersChanged && "hidden"}`} onClick={saveUserPreferences}>Save <Loader size={22} className={`animate-pulse ${isSaving ? "" : "hidden"}`}/></button>
-          <button onClick={handleFiltering}>Filter Results <Loader size={22} className={`animate-pulse ${isFiltering ? "" : "hidden"}`}/></button>
-          <button className={`${!isListingsFiltered && "hidden"}`} onClick={handleRefetch}>Reset Listings <Loader size={22} className={`animate-pulse ${isResetting ? "" : "hidden"}`}/></button>
-        </MobileListItems>
-        <div className="navbar-center">
-          <Link data-testid="INeedHousing" href={"/"} className="hover:scale-110 transition-transform duration-300"><Image src={icon} alt="Icon" width={40} height={40}/></Link>
+          <MobileListItems isModalUp={isFilterModalUp}> {/*Each button determines what filter will be rendered when clicked*/}
+              <button onClick={() => handleFilterRendered(<RangeBar initialRange={userPreferences?.maxRadius}
+                                                                    setUpdatedPreferences={setUserPreferences}/>)}>Change
+                  Distance
+              </button>
+              <button onClick={() => handleFilterRendered(<MaxPrice maxPrice={userPreferences?.maxRent}
+                                                                    setUpdatedPreferences={setUserPreferences}/>)}>Price
+              </button>
+              <button onClick={() => handleFilterRendered(<OtherFilters setUpdatedPreferences={setUserPreferences}
+                                                                        updatedPreferences={userPreferences!}/>)}>Other
+              </button>
+              <button onClick={handleFiltering}>Filter Results <Loader size={22}
+                                                                       className={`animate-pulse ${isFiltering ? "" : "hidden"}`}/>
+              </button>
+              <button className={`${!isFiltersChanged && "hidden"}`} onClick={saveUserPreferences}>Save <Loader
+                  size={22} className={`animate-pulse ${isSaving ? "" : "hidden"}`}/></button>
+              <button className={`${!isListingsFiltered && "hidden"}`} onClick={handleRefetch}>Reset Listings <Loader
+                  size={22} className={`animate-pulse ${isResetting ? "" : "hidden"}`}/></button>
+          </MobileListItems>
+          <div className="navbar-center">
+              <Link data-testid="INeedHousing" href={"/"} className="hover:scale-110 transition-transform duration-300"><Image
+                  src={icon} alt="Icon" width={40} height={40}/></Link>
         </div>
         <div className="navbar-end">
           <User/>

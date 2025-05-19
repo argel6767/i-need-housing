@@ -1,6 +1,6 @@
 'use client'
 
-import {createContext, useContext, useState, useMemo, ReactNode} from "react";
+import React, {createContext, useContext, useState, useMemo, ReactNode} from "react";
 import {Loading} from "@/components/Loading";
 import {HouseListing, UserPreference} from "@/interfaces/entities";
 
@@ -14,7 +14,11 @@ interface HomeContextType {
     listings: HouseListing[],
     setListings: React.Dispatch<React.SetStateAction<HouseListing[]>>,
     initialPreferences: UserPreference | undefined,
-    setInitialPreferences: React.Dispatch<React.SetStateAction<UserPreference| undefined>>,
+    setInitialPreferences: React.Dispatch<React.SetStateAction<UserPreference| undefined>>
+    isListingModalUp: boolean,
+    setIsListingModalUp: React.Dispatch<React.SetStateAction<boolean>>,
+    isFilterModalUp: boolean,
+    setIsFilterModalUp: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 const HomeContext = createContext<HomeContextType | undefined>(undefined)
@@ -33,10 +37,13 @@ export const HomeProvider = ({ children }: HomeProviderProps) => {
     const [isListingsFiltered, setIsListingsFiltered] = useState<boolean>(false);
     const [listings, setListings] = useState<HouseListing[]>([]);
     const [initialPreferences, setInitialPreferences] = useState<UserPreference>();
+    const [isListingModalUp, setIsListingModalUp] = useState(false);
+    const [isFilterModalUp, setIsFilterModalUp] = useState(false);
 
     const contextValues = useMemo(() => ({
-        filterRendered, setFilterRendered, isFiltersChanged, setIsFiltersChanged, isListingsFiltered, setIsListingsFiltered, listings, setListings, initialPreferences, setInitialPreferences
-    }), [filterRendered, setFilterRendered, isFiltersChanged, listings, isListingsFiltered, initialPreferences]);
+        filterRendered, setFilterRendered, isFiltersChanged, setIsFiltersChanged, isListingsFiltered, setIsListingsFiltered, listings, setListings, initialPreferences, setInitialPreferences,
+        isListingModalUp, setIsListingModalUp, isFilterModalUp, setIsFilterModalUp
+    }), [filterRendered, isFiltersChanged, isListingsFiltered, listings, initialPreferences, isListingModalUp, isFilterModalUp]);
 
     return (
         <HomeContext.Provider value={contextValues}>

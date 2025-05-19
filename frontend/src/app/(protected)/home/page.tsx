@@ -17,11 +17,9 @@ import {useHomeContext} from "@/app/(protected)/home/HomeContext";
 
 const Home = () => {
     const [requestBody, setRequestBody] = useState<GetListingsInAreaRequest | null>(null);
-    const {listings, setListings} = useHomeContext();
+    const {listings, setListings, isListingModalUp, setIsListingModalUp, isFilterModalUp, setIsFilterModalUp} = useHomeContext();
     const {setFavoriteListings} = useGlobalContext();
     const [renderedListing, setRenderedListing] = useState<HouseListing | undefined>(undefined);
-    const [isListingModalUp, setIsListingModalUp] = useState<boolean>(false);
-    const [isFilterModalUp, setIsFilterModalUp] = useState<boolean>(false);
     const {setCenterLat, setCenterLong, setUserPreferences} = useGlobalContext();
     const [city, setCity] = useState<string>(""); 
 
