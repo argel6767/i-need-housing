@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { LoadScript } from '@react-google-maps/api';
 import { GOOGLE_API_KEY } from "@/utils/utils";
+import {Loading} from "@/components/Loading";
 
 // Define the libraries type
 type Libraries = Array<"places" | "geometry" | "drawing">;
@@ -34,12 +35,18 @@ export const GoogleMapsProvider = ({ children }: GoogleMapsProviderProps) => {
     console.log("Google Maps API loaded successfully with all libraries");
   };
 
+
   return (
     <GoogleMapsContext.Provider value={{ isLoaded }}>
       <LoadScript
         googleMapsApiKey={GOOGLE_API_KEY ?? ""}
         libraries={libraries}
         onLoad={handleLoad}
+        loadingElement={
+        <div className={"flex justify-center items-center h-screen"}>
+          <Loading loadingMessage={"Spinning up..."}/>
+        </div>
+        }
       >
         {children}
       </LoadScript>

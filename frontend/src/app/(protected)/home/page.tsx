@@ -31,7 +31,6 @@ const Home = () => {
     useEffect(() => {
         if (preferences) {
             setUserPreferences(preferences);
-            console.log(preferences.desiredArea)
             const coords = preferences.cityOfEmploymentCoords;
             setCenterLat(coords[0]);
             setCenterLong(coords[1]);

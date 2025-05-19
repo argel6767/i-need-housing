@@ -17,7 +17,6 @@ const MODULE_MAPPING = "/preferences";
  */
 export const createUserPreferences = async ( requestBody: RawUserPreferenceDto): Promise<any> => {
     try {
-        console.log(requestBody)
         requestBody.isFurnished=false;
         const response = await apiClient.post(`${MODULE_MAPPING}/addresses`, requestBody);
         if (response.status === 201) {
@@ -48,7 +47,6 @@ export const updateUserPreferences = async (requestBody: UserPreference): Promis
         if (response.status === 200) {
             return response.data
         }
-        console.log(response.data);
         return null;
     }
     catch(error) {
@@ -59,7 +57,6 @@ export const updateUserPreferences = async (requestBody: UserPreference): Promis
 
 export const updateUserPreferencesViaFilters = async (requestBody: UserPreference): Promise<UserPreference> => {
     try {
-        console.log(requestBody)
         const response = await apiClient.put(`${MODULE_MAPPING}/filters`, requestBody);
         return response.data;
     }
