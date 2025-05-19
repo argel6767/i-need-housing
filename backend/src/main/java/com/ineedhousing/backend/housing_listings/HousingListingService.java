@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import lombok.extern.java.Log;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -23,6 +24,7 @@ import com.ineedhousing.backend.user_search_preferences.UserPreferenceService;
 /**
  * Houses HouseListing business logic
  */
+@Log
 @Service
 public class HousingListingService {
     private final HousingListingRepository housingListingRepository;
@@ -102,7 +104,7 @@ public class HousingListingService {
      * @param filterMethod
      * @return
      */
-    @Cacheable("listings_by_preference")
+
     public List<HousingListing> getListingsByPreferences(double latitude, double longitude, int radius, UserPreference userPreference, BiFunction<UserPreference, List<HousingListing>, List<HousingListing>> filterMethod) {
         List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
         List<HousingListing> filteredListings = filterMethod.apply(userPreference, listings);
@@ -112,20 +114,22 @@ public class HousingListingService {
         return filteredListings;
     }
 
-    @Cacheable("listings_by_preference")
+
     public List<HousingListing> getListingsByPreferences(Long preferenceId, List<HousingListing> listings, BiFunction<UserPreference, List<HousingListing>, List<HousingListing>> filterMethod) {
+        log.info("Filtering listings by preference: " + preferenceId);
         UserPreference userPreference = userPreferenceService.findUserPreferencesId(preferenceId);
         List<HousingListing> filteredListings = filterMethod.apply(userPreference, listings);
         if (filteredListings.isEmpty()) {
+            log.info("No matching listings found for given preferences");
             throw new NoListingsFoundException("No Listings found for given preference: " + preferenceId);
         }
+        log.info(filteredListings.size() + " matching listings found");
         return filteredListings;
     }
 
     /**
      * returns listings filtered by given preference only
      */
-    @Cacheable("listings_by_preference")
 
     public List<HousingListing> getListingsBySpecificPreference(double latitude, double longitude, int radius, Map<String, Object> preference) {
         List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
@@ -145,7 +149,7 @@ public class HousingListingService {
      * @return
      */
 
-    @Cacheable("listings_by_preference")
+
 
     public List<HousingListing> getListingsByMultiplePreferences(double latitude, double longitude, int radius, Map<String, Object> preferences) {
         List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);

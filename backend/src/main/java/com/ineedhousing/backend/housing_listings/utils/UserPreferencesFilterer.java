@@ -3,10 +3,7 @@ package com.ineedhousing.backend.housing_listings.utils;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -19,12 +16,11 @@ public class UserPreferencesFilterer {
      * @param listingsInArea
      * @return
      */
-    public static List<HousingListing> findByExactPreferences(UserPreference preferences, List<HousingListing> listingsInArea) { //TODO handle null values!!!
+    public static List<HousingListing> findByExactPreferences(UserPreference preferences, List<HousingListing> listingsInArea) {
         List<HousingListing> finalListings = listingsInArea.stream().filter(listing -> listing.getRate() <= preferences.getMaxRent())
-                .filter(listing -> listing.getNumBeds() != null && listing.getNumBeds() >= preferences.getMinNumberOfBedrooms())
-                .filter(listing -> listing.getNumBaths() != null && listing.getNumBaths() >= preferences.getMinNumberOfBathrooms())
-                .filter(listing -> listing.getIsFurnished() != null && listing.getIsFurnished().equals(preferences.getIsFurnished()))
-                .toList(); //TODO ADD listing date for HousingListing to allow for filtering
+                .filter(listing -> Objects.requireNonNullElse(listing.getNumBeds(), 0) >= preferences.getMinNumberOfBedrooms())
+                .filter(listing -> Objects.requireNonNullElse(listing.getNumBaths(), 0.0) >= preferences.getMinNumberOfBathrooms())
+                .toList();
         return finalListings;
     }
 
@@ -36,8 +32,9 @@ public class UserPreferencesFilterer {
      */
     public static List<HousingListing> findByNonStrictPreferences(UserPreference preferences, List<HousingListing> listingsInArea) {
         Set<HousingListing> filteredByRate = listingsInArea.stream().filter(listing -> listing.getRate() <= preferences.getMaxRent()).collect(Collectors.toSet());
-        Set<HousingListing> filteredByNumBeds = listingsInArea.stream().filter(listing -> listing.getNumBeds() >= preferences.getMinNumberOfBedrooms()).collect(Collectors.toSet());
-        Set<HousingListing> filteredByNumBaths = listingsInArea.stream().filter(listing -> listing.getNumBaths() >= preferences.getMinNumberOfBathrooms()).collect(Collectors.toSet());Set<HousingListing> filteredByIsFurnished = listingsInArea.stream().filter(listing -> listing.getIsFurnished().equals(preferences.getIsFurnished())).collect(Collectors.toSet());
+        Set<HousingListing> filteredByNumBeds = listingsInArea.stream().filter(listing -> Objects.requireNonNullElse(listing.getNumBeds(), 0) >= preferences.getMinNumberOfBedrooms()).collect(Collectors.toSet());
+        Set<HousingListing> filteredByNumBaths = listingsInArea.stream().filter(listing -> Objects.requireNonNullElse(listing.getNumBaths(), 0.0) >= preferences.getMinNumberOfBathrooms()).collect(Collectors.toSet());
+        Set<HousingListing> filteredByIsFurnished = listingsInArea.stream().filter(listing -> listing.getIsFurnished().equals(preferences.getIsFurnished())).collect(Collectors.toSet());
         HashSet<HousingListing> combinedListings = new HashSet<>();
         combinedListings.addAll(filteredByRate);
         combinedListings.addAll(filteredByNumBeds);

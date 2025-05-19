@@ -46,8 +46,10 @@ public class HousingListingController {
 
     /**
      * get listings in area
-     * @param request
-     * @return
+     * @param latitude
+     * @param longitude
+     * @param radius
+     * @return listings
      */
     @GetMapping("/area")
     public ResponseEntity<?> getListingsInArea(@RequestParam double latitude, @RequestParam double longitude, @RequestParam int radius ) {
