@@ -29,7 +29,7 @@ const User = () => {
     const response = await logout();
     setIsLoading(false);
     if (response === "Logged out successfully") {
-      router.push("/");
+      router.push("/sign-in");
       queryClient.clear();
       clearState();
     }
