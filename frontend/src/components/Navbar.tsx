@@ -52,9 +52,9 @@ const User = () => {
           </div>
           <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-slate-100 rounded-box z-[99] mt-3 w-52 p-2 shadow ">
+              className="menu menu-sm dropdown-content  rounded-box z-[99] mt-3 w-52 p-2 shadow bg-base-100">
             {/*<li><Link href={"/settings"}>Settings</Link></li> TODO Uncomment this once settings page is made*/}
-            <li className={"hover:bg-slate-200 rounded-2xl"}><a onClick={logoutUser}>Logout <Loader size={22} className={`ml-2 animate-pulse ${isLoading ? "" : "hidden"}`}/></a>
+            <li className={"hover:bg-gray-100 rounded-2xl"}><a onClick={logoutUser}>Logout <Loader size={22} className={`ml-2 animate-pulse ${isLoading ? "" : "hidden"}`}/></a>
             </li>
             {isError && <li className="text-red-500">Could not log out user! Try again</li>}
           </ul>
