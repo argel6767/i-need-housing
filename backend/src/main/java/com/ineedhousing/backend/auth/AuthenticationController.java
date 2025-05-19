@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Optional;
 
+import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +27,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 /**
  * holds auth endpoints that can be accessed without a JWT token
  */
+@Log
 @RequestMapping("/auths")
 @RestController
 public class AuthenticationController {
@@ -45,6 +47,7 @@ public class AuthenticationController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/cookie-status")
     public ResponseEntity<String> checkCookie() {
+        log.info("Cookie is still valid");
         return new ResponseEntity<>("Token still valid", HttpStatus.OK);
     }
 

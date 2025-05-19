@@ -124,7 +124,7 @@ export const Navbar = () => {
       <main className="navbar bg-background border-b-2 border-gray-200 shadow-md" data-testid="navbar">
         <div className="navbar-start">
           <Link data-testid="INeedHousing" href={"/"}
-                className="btn btn-ghost text-4xl text-primary ">INeedHousing<Image src={"./file.svg"} width={50}
+                className="btn btn-ghost text-4xl lg:text-5xl text-primary hover:scale-110 transition-transform duration-300">INeedHousing<Image src={"./file.svg"} width={50}
                                                                                     height={50} alt="Logo"/></Link>
         </div>
         <div className="navbar-center  lg:flex">
@@ -135,7 +135,7 @@ export const Navbar = () => {
           </ul>
         </div>
         <div className="navbar-end">
-          <Link className="btn btn-primary hover:bg-[#457F9F]" href="/sign-in">Sign In</Link>
+          <Link className="btn btn-primary hover:bg-[#457F9F] w-32" href="/sign-in">Sign In</Link>
         </div>
       </main>
   )
@@ -154,7 +154,7 @@ export const MobileNavbar = () => {
         <Link href={"https://github.com/argel6767/i-need-housing"}>Source Code</Link>
       </MobileListItems>
       <div className="navbar-center">
-        <Link data-testid="INeedHousing" href={"/"} className="btn btn-ghost text-3xl sm:text-4xl text-primary font-bold">INeedHousing<Image src={icon} alt="Icon" width={40} height={40}/></Link>
+        <Link data-testid="INeedHousing" href={"/"} className="btn btn-ghost text-3xl sm:text-4xl md:text-5xl text-primary font-bold">INeedHousing<Image src={icon} alt="Icon" width={40} height={40}/></Link>
       </div>
       <div className="navbar-end">
       </div>
@@ -171,7 +171,7 @@ export const LoggedInNavBar = () => {
   return (
       <div className="navbar bg-base-100 py-4">
       <div className="flex-1">
-        <Link href={"/home"} className="btn btn-ghost text-3xl sm:text-5xl text-primary font-bold">INeedHousing<Image src={"./file.svg"} width={50} height={50} alt="Logo"/></Link>
+        <Link href={"/"} className="btn btn-ghost text-3xl sm:text-5xl text-primary font-bold">INeedHousing<Image src={"./file.svg"} width={50} height={50} alt="Logo"/></Link>
       </div>
         <User/>
       </div>
@@ -191,10 +191,8 @@ interface LoggedInMobileNavbarProps {
 export const LoggedInMobileNavbar = ({setIsModalUp, refetch}:LoggedInMobileNavbarProps) => {
 
     const {userPreferences, setUserPreferences} = useGlobalContext();
-    const {setFilterRendered, isListingsFiltered, setIsListingsFiltered, isFiltersChanged, setIsFiltersChanged, listings, setListings, setInitialPreferences, isFilterModalUp} = useHomeContext();
-    const [isSaving, setIsSaving] = useState(false);
-    const [isFiltering, setIsFiltering] = useState(false);
-    const [isResetting, setIsResetting] = useState(false);
+    const {setFilterRendered, isListingsFiltered, setIsListingsFiltered, isFiltersChanged, setIsFiltersChanged, listings, setListings, setInitialPreferences,
+        isFilterModalUp, isFiltering, setIsFiltering, isSaving, setIsSaving, isResetting, setIsResetting} = useHomeContext();
 
     const handleFilterRendered = (filter: ReactNode) => {
         setFilterRendered(filter);

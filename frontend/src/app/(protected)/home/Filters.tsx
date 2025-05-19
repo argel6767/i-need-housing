@@ -56,8 +56,8 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
     const [isListingsFiltered, setIsListingsFiltered] = useState<boolean>(false);
     const {userPreferences, setUserPreferences} = useGlobalContext();
+    const {isFiltering, setIsFiltering, isSaving, setIsSaving, isResetting, setIsResetting} = useHomeContext();
     const [initialPreferences, setInitialPreferences] = useState<UserPreference>();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     //create a deep copy for an initial userPreference for any changes
     useEffect(() => {
@@ -82,11 +82,11 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
 
     //saves the updated preferences for user for later use
     const saveUserPreferences = async () => {
-        setIsLoading(true);
+        setIsSaving(true);
         const response = await updateUserPreferencesViaFilters(userPreferences!);
         setUserPreferences(response);
         setInitialPreferences(response);
-        setIsLoading(false);
+        setIsSaving(false);
     }
 
     //calls the filtering endpoint  using the id of the user's preferences and listings
@@ -97,21 +97,25 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
             return; // Early return if no preferences
         }
         
-        setIsLoading(true);
+        setIsFiltering(true);
         const data = await filterListingsByPreferences({listings: listings, id: userPreferences.id});
         console.log(data);
         setListings(data);
-        setIsLoading(false);
+        setIsFiltering(false);
         setIsListingsFiltered(true);
     }
 
     //refetches the listings to reset from filtered state
     const handleRefetch = async () => {
-        setIsLoading(true);
+        setIsResetting(true);
         const response = await refetch();
         setListings(response.data);
         setIsListingsFiltered(false);
-        setIsLoading(false);
+        setIsResetting(false);
+    }
+
+    const isAnyStateLoading = () => {
+        return isResetting || isFiltering || isSaving
     }
 
     //skeleton until updatedPreferences is set
@@ -151,14 +155,12 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
                 <CollapseDown label="Filter" isOpen={openFilter === 'filter'} onToggle={() => handleToggle('filter')}>hello</CollapseDown>
             </div>
              */}
-            <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-24 border animate-fade flex items-center justify-center gap-2 shadow-lg ${!isInitialized && `hidden`}`} onClick={handleFiltering}>Filter
-                <Loader size={22} className={`animate-pulse ${isLoading ? "" : "hidden"}`}/></button>
-            <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-32 border animate-fade ${!isFiltersChanged && "hidden"} flex items-center justify-center gap-2 shadow-lg`} onClick={saveUserPreferences}>Save Changes
-            <Loader size={22} className={`animate-pulse ${isLoading ? "" : "hidden"}`}/>
-            </button>
-            <button className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-36 border animate-fade ${!isListingsFiltered && "hidden"} flex items-center justify-center gap-2 shadow-lg`} onClick={handleRefetch}>Reset Listings
-            <Loader size={22} className={`animate-pulse ${isLoading ? "" : "hidden"}`}/>
-            </button>
+            <button disabled={isAnyStateLoading()} className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-32 border animate-fade ${!isFiltersChanged && "hidden"} flex items-center justify-center gap-2 shadow-lg`} onClick={saveUserPreferences}>Save Changes
+                <Loader size={22} className={`animate-pulse ${isSaving ? "" : "hidden"}`}/></button>
+            <button disabled={isAnyStateLoading()} className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-24 border animate-fade flex items-center justify-center gap-2 shadow-lg ${!isInitialized && `hidden`}`} onClick={handleFiltering}>Filter
+                <Loader size={22} className={`animate-pulse ${isFiltering ? "" : "hidden"}`}/></button>
+            <button disabled={isAnyStateLoading()} className={`bg-slate-100 hover:bg-gray-50 rounded-lg w-36 border animate-fade ${!isListingsFiltered && "hidden"} flex items-center justify-center gap-2 shadow-lg`} onClick={handleRefetch}>Reset Listings
+            <Loader size={22} className={`animate-pulse ${isResetting ? "" : "hidden"}`}/></button>
         </main>
     )
 }

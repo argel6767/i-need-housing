@@ -7,6 +7,7 @@ import Image from "next/image";
 import { FavoriteListing, HouseListing } from "@/interfaces/entities";
 import { HousingCard} from "./HousingsList";
 import { GroupOfSkeletons, Loading, Skeleton, SkeletonText } from "./Loading";
+import {useHomeContext} from "@/app/(protected)/home/HomeContext";
 
 
 interface HousingSearchProps {
@@ -26,6 +27,11 @@ interface HousingSearchProps {
  */
 export const HousingSearch = ({city, listings, isLoading, isFetching, isGrabbingFavorites, setRenderedListing, setIsModalUp}:HousingSearchProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(true);
+    const {isResetting, isFiltering} = useHomeContext();
+
+    const isListingsChanging = () => {
+        return isFetching || isLoading || isGrabbingFavorites || isResetting || isFiltering
+    }
 
     return (
         <main className="relative h-full">
@@ -51,11 +57,11 @@ export const HousingSearch = ({city, listings, isLoading, isFetching, isGrabbing
             >   
                 <div className="p-4">
                     <h2 className="text-3xl font-bold text-center p-4 flex justify-center items-center">
-                    {isFetching || isLoading || isGrabbingFavorites? <SkeletonText /> :  "View Listings Around " + city}
+                    {isListingsChanging()? <SkeletonText /> :  "View Listings Around " + city}
                     </h2>
                     <nav className="flex justify-center w-full">
                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4">
-                            {isFetching || isLoading || isGrabbingFavorites?  <GroupOfSkeletons numOfSkeletons={8}/> :
+                            {isListingsChanging() || isLoading || isGrabbingFavorites?  <GroupOfSkeletons numOfSkeletons={8}/> :
                             listings
                             .filter((listing) => (listing.coordinates !== null))
                             .map((listing) => (

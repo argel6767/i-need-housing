@@ -7,10 +7,10 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className="h-screen">
-      <nav className="block md:hidden">
+      <nav className="block lg:hidden">
         <MobileNavbar/>
       </nav>
-      <nav className="hidden md:block">
+      <nav className="hidden lg:block">
         <Navbar/>
       </nav>
       <Hero/>
