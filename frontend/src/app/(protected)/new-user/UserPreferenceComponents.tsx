@@ -8,7 +8,7 @@ import { Loader } from "lucide-react"
 import { ReactNode, useState } from "react"
 
 import { useRouter } from 'next/navigation';
-import {sleep} from "@/app/utils/utils";
+import {sleep} from "@/utils/utils";
 
 export const PreferencesHeader = () => {
 

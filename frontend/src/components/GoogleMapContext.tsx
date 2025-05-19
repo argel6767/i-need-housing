@@ -1,7 +1,7 @@
 'use client'
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { LoadScript } from '@react-google-maps/api';
-import { GOOGLE_API_KEY } from "@/app/utils/utils";
+import { GOOGLE_API_KEY } from "@/utils/utils";
 
 // Define the libraries type
 type Libraries = Array<"places" | "geometry" | "drawing">;

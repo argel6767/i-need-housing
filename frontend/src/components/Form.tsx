@@ -1,5 +1,5 @@
 "use client"
-import { isValidEmail, sleep } from "@/app/utils/utils";
+import { isValidEmail, sleep } from "@/utils/utils";
 import { AuthenticateUserDto } from "@/interfaces/requests/authsRequests";
 import { useRouter } from "next/navigation";
 import { FormEvent, useRef, useState } from "react";

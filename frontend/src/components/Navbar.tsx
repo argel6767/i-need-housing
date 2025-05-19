@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { logout } from "@/endpoints/auths"
 import React, {ReactNode, useState} from "react"
-import {queryClient, sleep} from "@/app/utils/utils"
+import {queryClient, sleep} from "@/utils/utils"
 import { Loader } from "lucide-react"
 import {useClearState} from "@/hooks/hooks";
 import {MaxPrice, OtherFilters, RangeBar} from "@/app/(protected)/home/InnerFilters";

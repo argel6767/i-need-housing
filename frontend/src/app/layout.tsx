@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "INeedHousing.com",
+  title: "INeedHousing",
   description: "Find housing with INeedHousing",
 };
 

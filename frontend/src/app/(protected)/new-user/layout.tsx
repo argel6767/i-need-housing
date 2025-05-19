@@ -2,6 +2,13 @@ import { BreadCrumbs, PreferencesHeader } from "./UserPreferenceComponents";
 import {NewUserRoute} from "@/app/(protected)/new-user/NewUserRoute";
 import React from "react";
 
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: 'INeedHousing | New User',
+    description: "INeedHousing New User Onboarding"
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

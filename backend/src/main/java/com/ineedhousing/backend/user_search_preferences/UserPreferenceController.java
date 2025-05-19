@@ -124,7 +124,6 @@ public class UserPreferenceController {
     @PutMapping("/filters")
     public ResponseEntity<?> updateUserPreferences(@RequestBody NewFiltersDto request) {
         try {
-            String email = JwtUtils.getCurrentUserEmail();
             FormattedUserPreferenceDto updatedPreferences = userPreferenceService.updateUserPreferences(request);
             return ResponseEntity.ok(updatedPreferences);
         }

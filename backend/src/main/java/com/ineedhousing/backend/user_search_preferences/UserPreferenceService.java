@@ -244,8 +244,9 @@ public class UserPreferenceService {
         return getFormattedUserPreferenceDto(preferences);
     }
 
+    //TODO FIGURE OUT WHY CACHING IS NOT RESETTING
     @CacheEvict(value = "preferences", key = "#id")
-    public void evictUserPreferencesCache(Long idl) {
+    public void evictUserPreferencesCache(Long id) {
         // This method just evicts the cache and doesn't need to do anything else
     }
 

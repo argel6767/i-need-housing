@@ -21,18 +21,17 @@ const Home = () => {
     const {setFavoriteListings} = useGlobalContext();
     const [renderedListing, setRenderedListing] = useState<HouseListing | undefined>(undefined);
     const {setCenterLat, setCenterLong, setUserPreferences} = useGlobalContext();
-    const [city, setCity] = useState<string>(""); 
 
-
-      const {isLoading:isGrabbing, isError:isFetchingFailed, data:preferences} = useUserPreferences();
-      const {isLoading, isError, data, refetch, isFetching} = useListings(requestBody, {enabled: !!requestBody});
-      const {isLoading:isGettingFavorites, data:favorites, isError:isCallFailed} = useFavoriteListings();
+    //fetch calls
+    const {isLoading:isGrabbing, isError:isFetchingFailed, data:preferences} = useUserPreferences();
+    const {isLoading, isError, data, refetch, isFetching} = useListings(requestBody, {enabled: !!requestBody});
+    const {isLoading:isGettingFavorites, data:favorites, isError:isCallFailed} = useFavoriteListings();
 
     /** sets state of user preferences should it ever change via the query call */
     useEffect(() => {
         if (preferences) {
             setUserPreferences(preferences);
-            setCity(preferences.cityOfEmployment);
+            console.log(preferences.desiredArea)
             const coords = preferences.cityOfEmploymentCoords;
             setCenterLat(coords[0]);
             setCenterLong(coords[1]);
@@ -77,7 +76,7 @@ const Home = () => {
                 )}
                 <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden min-h-[45rem]">
                     <div className="relative flex-grow min-w-0"><Map listings={listings} setRenderedListing={setRenderedListing} setIsModalUp={setIsListingModalUp}/></div>
-                    <HousingSearch city={city} listings={listings} isLoading={isLoading} isFetching={isFetching} isGrabbingFavorites = {isGettingFavorites} setRenderedListing={setRenderedListing} setIsModalUp={setIsListingModalUp}/>
+                    <HousingSearch  listings={listings} isLoading={isLoading} isFetching={isFetching} isGrabbingFavorites = {isGettingFavorites} setRenderedListing={setRenderedListing} setIsModalUp={setIsListingModalUp}/>
                 </span>
                 <footer className="w-full border-t-2">
                     <Footer/>

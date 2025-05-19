@@ -58,3 +58,13 @@ export const useClearState = () => {
         setIsFirstTimeUser(false)
     }
 }
+
+export const useFindRadiusInMeters = () => {
+    const METERS_IN_A_MILE = 1609.344
+    const {userPreferences} = useGlobalContext();
+    let totalMeters;
+    if (userPreferences) {
+        totalMeters = userPreferences?.maxRadius * METERS_IN_A_MILE;
+    }
+    return Math.floor(totalMeters!);
+}

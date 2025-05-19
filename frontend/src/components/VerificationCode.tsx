@@ -1,5 +1,5 @@
 "use client"
-import { isValidEmail, sleep } from "@/app/utils/utils";
+import { isValidEmail, sleep } from "@/utils/utils";
 import {verifyUser } from "@/endpoints/auths";
 import { VerifyUserDto } from "@/interfaces/requests/authsRequests";
 import { useRouter } from "next/navigation";
