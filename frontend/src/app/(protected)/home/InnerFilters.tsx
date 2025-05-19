@@ -50,7 +50,7 @@ export const RangeBar = ({initialRange, setUpdatedPreferences}:RangeBarProps) =>
         <div className="space-y-2">
             <div className="flex justify-between items-center">
                 <label className="text-sm font-medium">Search Radius</label>
-                <span className="text-sm font-medium w-16 text-right">{range} mi</span>
+                <span className="text-sm font-medium w-52 text-right">{range} mi</span>
             </div>
             <input type="range" min={5} max={25} value={range} className="range bg-slate-400 w-full" step="5" onChange={handleRange}/>
             <RadiusBar/>

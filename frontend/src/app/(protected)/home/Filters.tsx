@@ -1,11 +1,12 @@
 "use client"
 import { ReactNode, useEffect, useState } from "react"
-import { ChevronDown, Loader } from 'lucide-react';
-import { UserPreference } from "@/interfaces/entities";
+import {ChevronDown, CircleX, Loader} from 'lucide-react';
+import {HouseListing, UserPreference} from "@/interfaces/entities";
 import { useGlobalContext } from "../../../components/GlobalContext";
 import { updateUserPreferencesViaFilters } from "@/endpoints/preferences";
 import { RangeBar, MaxPrice, OtherFilters } from "@/app/(protected)/home/InnerFilters";
 import { filterListingsByPreferences } from "@/endpoints/listings";
+import {useHomeContext} from "@/app/(protected)/home/HomeContext";
 
 interface CollapseDownProps {
     children: ReactNode;
@@ -40,8 +41,9 @@ const CollapseDown = ({children, label, isOpen, onToggle}: CollapseDownProps) =>
 
 interface FiltersProps {
     refetch: any
-    listings: any
-    setListings: any
+    listings: HouseListing[]
+    setListings: React.Dispatch<React.SetStateAction<HouseListing[]>>
+
 }
 
 /**
@@ -54,25 +56,24 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
     const [isListingsFiltered, setIsListingsFiltered] = useState<boolean>(false);
     const {userPreferences, setUserPreferences} = useGlobalContext();
-    const [updatedPreferences, setUpdatedPreferences] = useState<UserPreference>();
+    const [initialPreferences, setInitialPreferences] = useState<UserPreference>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    //create a deep copy for an updated userPreference for any changes
+    //create a deep copy for an initial userPreference for any changes
     useEffect(() => {
         if (userPreferences && !isInitialized) {
-            setUpdatedPreferences(JSON.parse(JSON.stringify(userPreferences)));
+            setInitialPreferences(JSON.parse(JSON.stringify(userPreferences)));
             setIsInitialized(true);
         }
-    }, [userPreferences]);
+    }, [userPreferences, isInitialized]);
 
     //waits for any potential changes in preferences to prompt user to save
     useEffect(() => {
-        if (isInitialized && updatedPreferences) {
-            const hasChanged = JSON.stringify(updatedPreferences) !== JSON.stringify(userPreferences);
-            console.log(updatedPreferences)
+        if (isInitialized && initialPreferences) {
+            const hasChanged = JSON.stringify(initialPreferences) !== JSON.stringify(userPreferences);
             setIsFiltersChanged(hasChanged);
         }
-    }, [updatedPreferences, isInitialized, userPreferences]);
+    }, [initialPreferences, isInitialized, userPreferences]);
 
     //checks if the CollapseDown component selected is the one currently open, if not closes the currently opened first
     const handleToggle = (filter: string) => {
@@ -82,9 +83,9 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
     //saves the updated preferences for user for later use
     const saveUserPreferences = async () => {
         setIsLoading(true);
-        const response = await updateUserPreferencesViaFilters(updatedPreferences!);
+        const response = await updateUserPreferencesViaFilters(userPreferences!);
         setUserPreferences(response);
-        setUpdatedPreferences(response);
+        setInitialPreferences(response);
         setIsLoading(false);
     }
 
@@ -114,7 +115,7 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
     }
 
     //skeleton until updatedPreferences is set
-    if (!updatedPreferences) {
+    if (!initialPreferences || !userPreferences) {
         return (
             <main className="flex space-x-5 px-2 relative">
             <div className="relative animate-pulse bg-slate-100">
@@ -131,18 +132,18 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
     return (
         <main className="flex space-x-5 px-2 relative animate-fade">
             <div className="relative">
-                <CollapseDown label="Change Distance" isOpen={openFilter === 'distance'}onToggle={() => handleToggle('distance')}>
-                    <RangeBar initialRange={updatedPreferences.maxRadius} setUpdatedPreferences={setUpdatedPreferences}/>
+                <CollapseDown label="Change Distance" isOpen={openFilter === 'distance'} onToggle={() => handleToggle('distance')}>
+                    <RangeBar initialRange={userPreferences!.maxRadius} setUpdatedPreferences={setUserPreferences}/>
                 </CollapseDown>
             </div>
             <div className="relative">
-                <CollapseDown label="Price"isOpen={openFilter === 'price'}onToggle={() => handleToggle('price')}>
-                    <MaxPrice maxPrice={updatedPreferences.maxRent} setUpdatedPreferences={setUpdatedPreferences}/>
+                <CollapseDown label="Price"isOpen={openFilter === 'price'} onToggle={() => handleToggle('price')}>
+                    <MaxPrice maxPrice={userPreferences!.maxRent} setUpdatedPreferences={setUserPreferences}/>
                 </CollapseDown>
             </div>
             <div className="relative">
                 <CollapseDown label="Other" isOpen={openFilter === 'other'} onToggle={() => handleToggle('other')}>
-                    <OtherFilters setUpdatedPreferences={setUpdatedPreferences} updatedPreferences={updatedPreferences}/>
+                    <OtherFilters setUpdatedPreferences={setUserPreferences} updatedPreferences={userPreferences!}/>
                 </CollapseDown>
             </div>
             {/** //TODO Add more filtering options later
@@ -159,5 +160,30 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
             <Loader size={22} className={`animate-pulse ${isLoading ? "" : "hidden"}`}/>
             </button>
         </main>
+    )
+}
+
+interface FilterModalProps {
+    setIsModalUp: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const FilterModal = ({setIsModalUp}: FilterModalProps) => {
+
+    const {filterRendered} = useHomeContext();
+
+    return (
+        <>
+            <nav className={"flex justify-end"}>
+                <button onClick={(e) => {
+                    e.stopPropagation();
+                    setIsModalUp(false);
+                }} className=""><CircleX className="hover:opacity-50" size={35}/></button>
+            </nav>
+            <main>
+               <span className="flex justify-center gap-4">
+                    {filterRendered}
+                </span>
+            </main>
+        </>
     )
 }

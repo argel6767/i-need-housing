@@ -1,7 +1,7 @@
 "use client"
 
 import { HouseListing } from "@/interfaces/entities"
-import { useEffect, useRef, useState } from "react"
+import { useEffect,  useState } from "react"
 import { useGlobalContext } from "./GlobalContext"
 import { ArrowImageCarousel } from "./Carousel"
 import { CircleX, Star } from "lucide-react"
@@ -62,13 +62,9 @@ export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
         return listing?.numBaths;
     }
 
-    if (!favoriteListings) {
-        return (<div>Loading</div>)
-    }
-
     return (
-        <div>
-            <span className="flex justify-end gap-4 pb-2">
+        <main>
+            <span className="flex justify-end gap-4 py-2 pt-4">
                 <FavoriteListing listing={listing} isFavoritedListing={isFavorited} setIsFavoritedListing={setIsFavorited}/> 
                 <button onClick={(e) => {e.stopPropagation(); setIsModalUp(false);}} className=""><CircleX className="hover:opacity-50" size={40}/></button>
             </span>
@@ -80,7 +76,7 @@ export const ListingModal = ({listing, setIsModalUp}: ListingModalProps) => {
                 <p>Address: {listing?.address}</p>
             <span className="flex justify-between">{getOriginalListingUrl()}<p>Source: {listing?.source}</p></span>
             </article> 
-        </div>
+        </main>
     )
 }
 

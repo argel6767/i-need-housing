@@ -7,12 +7,12 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className="h-screen">
-      <div className="block md:hidden">
+      <nav className="block md:hidden">
         <MobileNavbar/>
-      </div>
-      <div className="hidden md:block">
+      </nav>
+      <nav className="hidden md:block">
         <Navbar/>
-      </div>
+      </nav>
       <Hero/>
       <h2 className="text-xl md:text-3xl text-center py-3 font-semibold px-2">Comprehensive property data from multiple trusted sources, available for most major cities — conveniently in one place.</h2>
       <Carousel/>

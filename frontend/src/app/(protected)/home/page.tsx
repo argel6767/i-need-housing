@@ -1,24 +1,27 @@
 "use client"
 
-import { Filters } from "@/app/(protected)/home/Filters";
+import {FilterModal, Filters} from "@/app/(protected)/home/Filters";
 import { Footer } from "@/components/Footer";
 import { useGlobalContext } from "@/components/GlobalContext";
 import { HousingSearch } from "@/components/HousingSearch";
 import { ListingModal } from "@/components/HousingsList";
 
 import { Map } from "@/components/Map";
-import { LoggedInNavBar } from "@/components/Navbar";
+import {LoggedInMobileNavbar, LoggedInNavBar} from "@/components/Navbar";
 import { useListings, useUserPreferences, useFavoriteListings } from "@/hooks/hooks";
 import {  HouseListing } from "@/interfaces/entities";
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
 import { useEffect, useState } from "react";
+import {Modal} from "@/components/Modal";
+import {HomeProvider} from "@/app/(protected)/home/HomeContext";
 
 const Home = () => {
     const [requestBody, setRequestBody] = useState<GetListingsInAreaRequest | null>(null);
     const [listings, setListings] = useState<HouseListing[]>([])
     const {setFavoriteListings} = useGlobalContext();
     const [renderedListing, setRenderedListing] = useState<HouseListing | undefined>(undefined);
-    const [isModalUp, setIsModalUp] = useState<boolean>(false);
+    const [isListingModalUp, setIsListingModalUp] = useState<boolean>(false);
+    const [isFilterModalUp, setIsFilterModalUp] = useState<boolean>(false);
     const {setCenterLat, setCenterLong, setUserPreferences} = useGlobalContext();
     const [city, setCity] = useState<string>(""); 
 
@@ -54,29 +57,36 @@ const Home = () => {
     }, [favorites, setFavoriteListings])
 
     return (
+        <HomeProvider>
             <main className="flex flex-col h-screen">
-            <nav >
-                <LoggedInNavBar/>
-            </nav>
-            <div className="pt-2">
-                <Filters refetch={refetch} listings={listings} setListings={setListings} />
-            </div>
-            {/**TODO Maybe have a setIsListingFavorited for effect */}
-            {isModalUp && ( /** This modal is rendered when a user clicks on a specific listing off the listings sidebar */
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade" onClick={() => setIsModalUp(false)}>
-                    <div className="relative p-6 rounded-xl shadow-lg flex flex-col gap-5 bg-slate-200 w-11/12 md:w-3/4 lg:w-2/5 max-h-[100vh] justify-center overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                        <ListingModal listing={renderedListing} setIsModalUp={setIsModalUp}/>
-                    </div>
-                </div>
-            )}
-            <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden min-h-[45rem]">
-                <div className="relative flex-grow min-w-0"><Map listings={listings} setRenderedListing={setRenderedListing} setIsModalUp={setIsModalUp}/></div>
-                <HousingSearch city={city} listings={listings} isLoading={isLoading} isFetching={isFetching} isGrabbingFavorites = {isGettingFavorites} setRenderedListing={setRenderedListing} setIsModalUp={setIsModalUp}/>
-            </span>
-            <div className="w-full border-t-2">
-                <Footer/>
-            </div>
+                <nav className={"block md:hidden"}>
+                    <LoggedInMobileNavbar setIsModalUp={setIsFilterModalUp}/>
+                </nav>
+                <nav className={"hidden md:block"}>
+                    <LoggedInNavBar/>
+                </nav>
+                <span className="pt-2 hidden md:block">
+                    <Filters refetch={refetch} listings={listings} setListings={setListings} />
+                </span>
+                {isListingModalUp && ( /** This modal is rendered when a user clicks on a specific listing off the listings sidebar */
+                    <Modal onClick={() => setIsListingModalUp(true)}>
+                    <ListingModal listing={renderedListing} setIsModalUp={setIsListingModalUp}/>
+                    </Modal>
+                )}
+                {isFilterModalUp && (
+                    <Modal onClick={() => setIsFilterModalUp(true)}>
+                        <FilterModal setIsModalUp={setIsFilterModalUp}/>
+                    </Modal>
+                )}
+                <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden min-h-[45rem]">
+                    <div className="relative flex-grow min-w-0"><Map listings={listings} setRenderedListing={setRenderedListing} setIsModalUp={setIsListingModalUp}/></div>
+                    <HousingSearch city={city} listings={listings} isLoading={isLoading} isFetching={isFetching} isGrabbingFavorites = {isGettingFavorites} setRenderedListing={setRenderedListing} setIsModalUp={setIsListingModalUp}/>
+                </span>
+                <footer className="w-full border-t-2">
+                    <Footer/>
+                </footer>
             </main>
+        </HomeProvider>
     )
 }
 

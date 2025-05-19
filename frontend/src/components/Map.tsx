@@ -1,9 +1,10 @@
 'use client'
-import { HouseListing } from "@/interfaces/entities";
-import { GoogleMap, Marker } from "@react-google-maps/api";
-import { useGlobalContext } from "./GlobalContext";
-import { useEffect, useRef } from "react";
-import { useGoogleMaps } from "./GoogleMapContext";
+import {HouseListing} from "@/interfaces/entities";
+import { GoogleMap, Marker} from "@react-google-maps/api";
+import {useGlobalContext} from "./GlobalContext";
+import {useEffect, useRef} from "react";
+import {useGoogleMaps} from "./GoogleMapContext";
+import {Loading} from "@/components/Loading";
 
 interface MapProps {
     listings: Array<HouseListing>
@@ -30,7 +31,7 @@ export const Map = ({listings, setRenderedListing, setIsModalUp}: MapProps) => {
     }, [centerLat, centerLong]);
 
     if (!isLoaded) {
-        return <div className="h-full flex items-center justify-center">Loading Maps...</div>;
+        return <div className="h-full flex items-center justify-center"><Loading/></div>;
     }
 
     return (
@@ -58,7 +59,7 @@ export const Map = ({listings, setRenderedListing, setIsModalUp}: MapProps) => {
                         }
 
                         return (
-                            <div className="hover:cursor-pointer" key={listing.id}>
+                            <div className="hover:cursor-pointer motion-preset-fade" key={listing.id}>
                                 <Marker 
                                     onClick={handleListingClicked}
                                     position={markerPosition}

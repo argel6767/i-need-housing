@@ -1,7 +1,7 @@
 'use client'
 import { FavoriteListing, User, UserPreference } from "@/interfaces/entities";
 import { RawUserPreferenceDto } from "@/interfaces/requests/userPreferencesRequests";
-import {createContext, useContext, useMemo, useState, ReactNode, use} from "react";
+import {createContext, useContext, useMemo, useState, ReactNode} from "react";
 
 // Holds both the userType and newUserPreferencesDto to be saved until the user confirms their choices
 export interface NewUserObjects {
@@ -21,11 +21,12 @@ interface GlobalContextType {
     favoriteListings: FavoriteListing[]
     setFavoriteListings: React.Dispatch<React.SetStateAction<FavoriteListing[]>>
     newUserInfo: NewUserObjects,
-    setNewUserInfo: React.Dispatch<React.SetStateAction<NewUserObjects>>
+    setNewUserInfo: React.Dispatch<React.SetStateAction<NewUserObjects>> //TODO move this to a NewUserContext component
     isIntern:boolean
     setIsIntern: React.Dispatch<React.SetStateAction<boolean>>
     isFirstTimeUser: boolean,
     setIsFirstTimeUser: React.Dispatch<React.SetStateAction<boolean>>,
+
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -52,7 +53,7 @@ export const GlobalProvider = ({children}:GlobalProviderProps) => {
 
     const contextValue = useMemo(() => ({
         centerLat, setCenterLat, centerLong, setCenterLong, user, setUser, userPreferences, setUserPreferences, favoriteListings, setFavoriteListings,
-        newUserInfo, setNewUserInfo, isIntern, setIsIntern, isFirstTimeUser, setIsFirstTimeUser
+        newUserInfo, setNewUserInfo, isIntern, setIsIntern, isFirstTimeUser, setIsFirstTimeUser,
     }), [centerLat, centerLong, user, userPreferences, favoriteListings, newUserInfo, isIntern, isFirstTimeUser]);
 
     return (
