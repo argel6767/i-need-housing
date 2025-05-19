@@ -130,7 +130,8 @@ public class ListingRetrievalForm {
         button.addClickListener(event -> {
             airbnbApiService.updateListingViaLocation(cityField.getValue(), startDate.getValue(), endDate.getValue(), numOfPets.getValue().intValue());
         });
-        formLayout.add(List.of(label, cityField, startDate, endDate, numOfPets, button));        return formLayout;
+        formLayout.add(List.of(label, cityField, startDate, endDate, numOfPets, button));
+        return formLayout;
     }
 
     /**

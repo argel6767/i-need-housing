@@ -23,7 +23,9 @@ import com.ineedhousing.backend.housing_listings.HousingListingRepository;
 
 import lombok.extern.java.Log;
 
-
+/**
+ * Houses business for external Zillow API Calls
+ */
 @Service
 @Log
 @Lazy
@@ -72,6 +74,7 @@ public class ZillowApiService {
         log.info("API Call successful. Listings found: " + response.size());
         List<HousingListing> newListings = createNewListings(response);
         List<HousingListing> nonDuplicateListings = removeDuplicateListings(newListings);
+        log.info(nonDuplicateListings.size() + " new listings added.");
         return housingListingRepository.saveAll(nonDuplicateListings);
     }
 

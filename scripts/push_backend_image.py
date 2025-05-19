@@ -60,7 +60,7 @@ def update_app_service(image_name):
         "az", "webapp", "config", "set",
         "--name", "i-need-housing-backend",
         "--resource-group", "INeedHousing",
-        "--generic-configurations", '{"startupTimeLimit": 400}'
+        "--generic-configurations", '{"startupTimeLimit": 500}'
     ], shell=isOSWindows)
     print(config)
     print("Startup timeout configured\n\n")

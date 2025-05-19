@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.extern.java.Log;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -26,6 +27,7 @@ import com.ineedhousing.backend.housing_listings.HousingListingRepository;
  */
 @Service
 @Lazy
+@Log
 public class AirbnbApiService {
 
     private final RestClient restClient;
@@ -67,8 +69,10 @@ public class AirbnbApiService {
         if (response.isEmpty()) {
             throw new NoListingsFoundException(String.format("No listings found within %s, between %s - %s", city, checkIn, checkOut));
         }
+        log.info("Response successfully received, parsing data.");
         List<HousingListing> newListings = createNewListings(numOfPets, response);
         List<HousingListing> nonDuplicateListings = removeDuplicateListings(newListings);
+        log.info(nonDuplicateListings.size() + " new listings added.");
         return housingListingRepository.saveAll(nonDuplicateListings);
     }
 
@@ -103,8 +107,10 @@ public class AirbnbApiService {
         if (response.isEmpty()) {
             throw new NoListingsFoundException(String.format("No listings found within coordinates given, between %s - %s", checkIn, checkOut));
         }
+        log.info("Response successfully received, parsing data.");
         List<HousingListing> newListings = createNewListings(numOfPets, response);
         List<HousingListing> nonDuplicateListings = removeDuplicateListings(newListings);
+        log.info(nonDuplicateListings.size() + " new listings added.");
         return housingListingRepository.saveAll(nonDuplicateListings);
     }
 
