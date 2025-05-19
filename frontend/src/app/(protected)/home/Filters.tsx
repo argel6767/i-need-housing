@@ -2,7 +2,7 @@
 import { ReactNode, useEffect, useState } from "react"
 import {ChevronDown, CircleX, Loader} from 'lucide-react';
 import {HouseListing, UserPreference} from "@/interfaces/entities";
-import { useGlobalContext } from "../../../components/GlobalContext";
+import { useGlobalContext } from "@/components/GlobalContext";
 import { updateUserPreferencesViaFilters } from "@/endpoints/preferences";
 import { RangeBar, MaxPrice, OtherFilters } from "@/app/(protected)/home/InnerFilters";
 import { filterListingsByPreferences } from "@/endpoints/listings";
@@ -164,12 +164,32 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
 }
 
 interface FilterModalProps {
-    setIsModalUp: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsModalUp: React.Dispatch<React.SetStateAction<boolean>>,
 }
+
 
 export const FilterModal = ({setIsModalUp}: FilterModalProps) => {
 
-    const {filterRendered} = useHomeContext();
+    const {filterRendered, setIsFiltersChanged} = useHomeContext();
+    const {userPreferences} = useGlobalContext();
+    const [initialPreferences, setInitialPreferences] = useState<UserPreference>();
+    const [isInitialized, setIsInitialized] = useState<boolean>(false);
+
+    //create a deep copy for an initial userPreference for any changes
+    useEffect(() => {
+        if (userPreferences && !isInitialized) {
+            setInitialPreferences(JSON.parse(JSON.stringify(userPreferences)));
+            setIsInitialized(true);
+        }
+    }, [userPreferences, isInitialized]);
+
+    //waits for any potential changes in preferences to prompt user to save
+    useEffect(() => {
+        if (isInitialized && initialPreferences) {
+            const hasChanged = JSON.stringify(initialPreferences) !== JSON.stringify(userPreferences);
+            setIsFiltersChanged(hasChanged);
+        }
+    }, [initialPreferences, isInitialized, userPreferences, setIsFiltersChanged]);
 
     return (
         <>

@@ -13,11 +13,11 @@ import {  HouseListing } from "@/interfaces/entities";
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
 import { useEffect, useState } from "react";
 import {Modal} from "@/components/Modal";
-import {HomeProvider} from "@/app/(protected)/home/HomeContext";
+import {useHomeContext} from "@/app/(protected)/home/HomeContext";
 
 const Home = () => {
     const [requestBody, setRequestBody] = useState<GetListingsInAreaRequest | null>(null);
-    const [listings, setListings] = useState<HouseListing[]>([])
+    const {listings, setListings} = useHomeContext();
     const {setFavoriteListings} = useGlobalContext();
     const [renderedListing, setRenderedListing] = useState<HouseListing | undefined>(undefined);
     const [isListingModalUp, setIsListingModalUp] = useState<boolean>(false);
@@ -57,10 +57,9 @@ const Home = () => {
     }, [favorites, setFavoriteListings])
 
     return (
-        <HomeProvider>
             <main className="flex flex-col h-screen">
                 <nav className={"block md:hidden"}>
-                    <LoggedInMobileNavbar setIsModalUp={setIsFilterModalUp}/>
+                    <LoggedInMobileNavbar setIsModalUp={setIsFilterModalUp} refetch={refetch}/>
                 </nav>
                 <nav className={"hidden md:block"}>
                     <LoggedInNavBar/>
@@ -86,7 +85,6 @@ const Home = () => {
                     <Footer/>
                 </footer>
             </main>
-        </HomeProvider>
     )
 }
 

@@ -2,6 +2,7 @@
 
 import {createContext, useContext, useState, useMemo, ReactNode} from "react";
 import {Loading} from "@/components/Loading";
+import {HouseListing, UserPreference} from "@/interfaces/entities";
 
 interface HomeContextType {
     filterRendered: ReactNode,
@@ -10,6 +11,10 @@ interface HomeContextType {
     setIsFiltersChanged: React.Dispatch<React.SetStateAction<boolean>>,
     isListingsFiltered: boolean,
     setIsListingsFiltered: React.Dispatch<React.SetStateAction<boolean>>,
+    listings: HouseListing[],
+    setListings: React.Dispatch<React.SetStateAction<HouseListing[]>>,
+    initialPreferences: UserPreference | undefined,
+    setInitialPreferences: React.Dispatch<React.SetStateAction<UserPreference| undefined>>,
 }
 
 const HomeContext = createContext<HomeContextType | undefined>(undefined)
@@ -26,10 +31,12 @@ export const HomeProvider = ({ children }: HomeProviderProps) => {
     const [filterRendered, setFilterRendered] = useState<ReactNode>(<div><Loading loadingMessage={"Rendering Filter..."}/></div>);
     const [isFiltersChanged, setIsFiltersChanged] = useState<boolean>(false);
     const [isListingsFiltered, setIsListingsFiltered] = useState<boolean>(false);
+    const [listings, setListings] = useState<HouseListing[]>([]);
+    const [initialPreferences, setInitialPreferences] = useState<UserPreference>();
 
     const contextValues = useMemo(() => ({
-        filterRendered, setFilterRendered, isFiltersChanged, setIsFiltersChanged, isListingsFiltered, setIsListingsFiltered,
-    }), [filterRendered, setFilterRendered, isFiltersChanged]);
+        filterRendered, setFilterRendered, isFiltersChanged, setIsFiltersChanged, isListingsFiltered, setIsListingsFiltered, listings, setListings, initialPreferences, setInitialPreferences
+    }), [filterRendered, setFilterRendered, isFiltersChanged, listings, isListingsFiltered, initialPreferences]);
 
     return (
         <HomeContext.Provider value={contextValues}>

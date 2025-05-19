@@ -11,6 +11,8 @@ import {useClearState} from "@/hooks/hooks";
 import {MaxPrice, OtherFilters, RangeBar} from "@/app/(protected)/home/InnerFilters";
 import {useGlobalContext} from "@/components/GlobalContext";
 import {useHomeContext} from "@/app/(protected)/home/HomeContext";
+import {updateUserPreferencesViaFilters} from "@/endpoints/preferences";
+import {filterListingsByPreferences} from "@/endpoints/listings";
 
 /**
  * Holds the User's profile picture, settings, logout logic
@@ -152,20 +154,59 @@ export const LoggedInNavBar = () => {
 
 interface LoggedInMobileNavbarProps {
     setIsModalUp: React.Dispatch<React.SetStateAction<boolean>>;
+    refetch: any,
 }
 
 /**
  * When user is on a phone and logged in
  * @returns
  */
-export const LoggedInMobileNavbar = ({setIsModalUp}:LoggedInMobileNavbarProps) => {
+export const LoggedInMobileNavbar = ({setIsModalUp, refetch}:LoggedInMobileNavbarProps) => {
 
     const {userPreferences, setUserPreferences} = useGlobalContext();
-    const {setFilterRendered} = useHomeContext();
+    const {setFilterRendered, isListingsFiltered, setIsListingsFiltered, isFiltersChanged, setIsFiltersChanged, listings, setListings, setInitialPreferences} = useHomeContext();
+    const [isSaving, setIsSaving] = useState(false);
+    const [isFiltering, setIsFiltering] = useState(false);
+    const [isResetting, setIsResetting] = useState(false);
 
     const handleFilterRendered = (filter: ReactNode) => {
         setFilterRendered(filter);
         setIsModalUp(true);
+    }
+
+    //saves the updated preferences for user for later use
+    const saveUserPreferences = async () => {
+        setIsSaving(true);
+        const response = await updateUserPreferencesViaFilters(userPreferences!);
+        setUserPreferences(response);
+        setInitialPreferences(response);
+        setIsFiltersChanged(false);
+        setIsSaving(false);
+    }
+
+    //calls the filtering endpoint  using the id of the user's preferences and listings
+
+    const handleFiltering = async () => {
+        if (!userPreferences) {
+            console.warn("No user preferences available");
+            return; // Early return if no preferences
+        }
+
+        setIsFiltering(true);
+        const data = await filterListingsByPreferences({listings: listings, id: userPreferences.id});
+        console.log(data);
+        setListings(data);
+        setIsFiltering(false);
+        setIsListingsFiltered(true);
+    }
+
+    //refetches the listings to reset from filtered state
+    const handleRefetch = async () => {
+        setIsResetting(true);
+        const response = await refetch();
+        setListings(response.data);
+        setIsListingsFiltered(false);
+        setIsResetting(false);
     }
 
   return (
@@ -174,9 +215,9 @@ export const LoggedInMobileNavbar = ({setIsModalUp}:LoggedInMobileNavbarProps) =
           <button onClick={() => handleFilterRendered(<RangeBar initialRange={userPreferences?.maxRadius} setUpdatedPreferences={setUserPreferences}/>)}>Change Distance</button>
           <button onClick={() => handleFilterRendered(<MaxPrice maxPrice={userPreferences?.maxRent} setUpdatedPreferences={setUserPreferences}/>)}>Price</button>
           <button onClick={() => handleFilterRendered(<OtherFilters setUpdatedPreferences={setUserPreferences} updatedPreferences={userPreferences!}/>)}>Other</button>
-          <button>Filter Results</button>
-          <button>Save</button>
-          <button>Reset Listings</button>
+          <button className={`${!isFiltersChanged && "hidden"}`} onClick={saveUserPreferences}>Save <Loader size={22} className={`animate-pulse ${isSaving ? "" : "hidden"}`}/></button>
+          <button onClick={handleFiltering}>Filter Results <Loader size={22} className={`animate-pulse ${isFiltering ? "" : "hidden"}`}/></button>
+          <button className={`${!isListingsFiltered && "hidden"}`} onClick={handleRefetch}>Reset Listings <Loader size={22} className={`animate-pulse ${isResetting ? "" : "hidden"}`}/></button>
         </MobileListItems>
         <div className="navbar-center">
           <Link data-testid="INeedHousing" href={"/"} className="hover:scale-110 transition-transform duration-300"><Image src={icon} alt="Icon" width={40} height={40}/></Link>
