@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.ineedhousing.backend.jwt.JwtUtils;
 import com.ineedhousing.backend.user_search_preferences.responses.FormattedUserPreferenceDto;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import com.ineedhousing.backend.geometry.GeometrySingleton;
@@ -159,16 +161,18 @@ public class UserPreferenceService {
 
     /**
      * get a User's UserPreference object
-     * @param email
+     * @param id
      * @return
      */
-    @Cacheable("preferences")
-    public FormattedUserPreferenceDto getUserPreferences(String email) {
-        User user = userService.getUserByEmail(email);
+    @Cacheable(value = "preferences", key = "#id")
+    public FormattedUserPreferenceDto getUserPreferences(Long id) {
+        log.info("Fetching user preferences for " + id);
+        User user = userService.getUserById(id);
         UserPreference userPreferences = user.getUserPreferences();
-        log.info("fetching preferences: ");
+        log.info("fetching preferences: " + userPreferences);
         return getFormattedUserPreferenceDto(userPreferences);
     }
+
 
     /**
      * Formats the UserPreference entity in table into usable dto
@@ -197,7 +201,7 @@ public class UserPreferenceService {
         return dto;
     }
 
-    public UserPreference getUserPreferences(Long id) {
+    public UserPreference findUserPreferencesId(Long id) {
         return userPreferenceRepository.findById(id).orElseThrow( () -> new UserPreferenceNotFound("UserPreference with Id: "  + id + " does not exist."));
     }
 
@@ -223,7 +227,7 @@ public class UserPreferenceService {
         UserPreference preferences = userPreferenceRepository.findById(newPreferences.getId())
         .orElseThrow( () -> new UserPreferenceNotFound("UserPreference with Id: "  + newPreferences.getId() + " does not exist."));
 
-        System.out.println(newPreferences);
+        log.info("updating user preferences with new values: "  + newPreferences + " for " + preferences.getId());
 
         //map the new preferences from filters in frontend
         preferences.setInternshipStart(newPreferences.getInternshipStart());
@@ -233,8 +237,16 @@ public class UserPreferenceService {
         preferences.setMinNumberOfBedrooms(newPreferences.getMinNumberOfBedrooms());
         preferences.setMinNumberOfBathrooms(newPreferences.getMinNumberOfBathrooms().doubleValue());
         preferences.setUpdatedAt(LocalDateTime.now());
+        Long id = JwtUtils.getCurrentUserId();
+        log.info("Invalidating cache for user: " + id);
+        evictUserPreferencesCache(id);
         userPreferenceRepository.save(preferences);
         return getFormattedUserPreferenceDto(preferences);
+    }
+
+    @CacheEvict(value = "preferences", key = "#id")
+    public void evictUserPreferencesCache(Long idl) {
+        // This method just evicts the cache and doesn't need to do anything else
     }
 
 }

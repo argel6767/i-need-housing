@@ -114,7 +114,7 @@ public class HousingListingService {
 
     @Cacheable("listings_by_preference")
     public List<HousingListing> getListingsByPreferences(Long preferenceId, List<HousingListing> listings, BiFunction<UserPreference, List<HousingListing>, List<HousingListing>> filterMethod) {
-        UserPreference userPreference = userPreferenceService.getUserPreferences(preferenceId);
+        UserPreference userPreference = userPreferenceService.findUserPreferencesId(preferenceId);
         List<HousingListing> filteredListings = filterMethod.apply(userPreference, listings);
         if (filteredListings.isEmpty()) {
             throw new NoListingsFoundException("No Listings found for given preference: " + preferenceId);

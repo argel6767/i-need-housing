@@ -124,6 +124,7 @@ public class UserPreferenceController {
     @PutMapping("/filters")
     public ResponseEntity<?> updateUserPreferences(@RequestBody NewFiltersDto request) {
         try {
+            String email = JwtUtils.getCurrentUserEmail();
             FormattedUserPreferenceDto updatedPreferences = userPreferenceService.updateUserPreferences(request);
             return ResponseEntity.ok(updatedPreferences);
         }
@@ -139,8 +140,8 @@ public class UserPreferenceController {
     @GetMapping("/me")
     public ResponseEntity<?> getPreferences() {
         try {
-            String email = JwtUtils.getCurrentUserEmail();
-            FormattedUserPreferenceDto userPreference = userPreferenceService.getUserPreferences(email);
+            Long id = JwtUtils.getCurrentUserId();
+            FormattedUserPreferenceDto userPreference = userPreferenceService.getUserPreferences(id);
             return ResponseEntity.ok(userPreference);
         }
         catch (UsernameNotFoundException unfe) {

@@ -10,6 +10,8 @@ import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
 
 import jakarta.transaction.Transactional;
 
+import java.util.ArrayList;
+
 /**
  * Handles business logic of Users
  */
@@ -40,9 +42,14 @@ public class UserService {
      */
     @Cacheable("users")
     public User getUserByEmail(String email) {
-        User user = userRepository.findByEmail(email)
+        return  userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return user;
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        );
     }
 
     /**

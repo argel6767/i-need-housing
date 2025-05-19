@@ -9,5 +9,4 @@ import java.util.Optional;
 @Repository
 public interface UserPreferenceRepository extends JpaRepository<UserPreference, Long> {
 
-
 }

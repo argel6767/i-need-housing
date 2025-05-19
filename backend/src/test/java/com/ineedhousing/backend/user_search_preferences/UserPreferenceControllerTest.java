@@ -86,24 +86,24 @@ class UserPreferenceControllerTest {
         String email = "test@example.com";
         UserPreference mockPreference = new UserPreference();
 
-        when(userPreferenceService.getUserPreferences(email)).thenReturn(null);
+        when(userPreferenceService.getUserPreferences(1L)).thenReturn(null);
 
         ResponseEntity<?> response = userPreferenceController.getPreferences();
 
         assertEquals(ResponseEntity.ok(mockPreference), response);
-        verify(userPreferenceService, times(1)).getUserPreferences(email);
+        verify(userPreferenceService, times(1)).getUserPreferences(1L);
     }
 
     @Test
     void getPreferences_UserNotFound() {
         String email = "nonexistent@example.com";
 
-        when(userPreferenceService.getUserPreferences(email)).thenThrow(new UsernameNotFoundException("User not found"));
+        when(userPreferenceService.getUserPreferences(1L)).thenThrow(new UsernameNotFoundException("User not found"));
 
         ResponseEntity<?> response = userPreferenceController.getPreferences();
 
         assertEquals(404, response.getStatusCode().value());
         assertEquals("User not found", response.getBody());
-        verify(userPreferenceService, times(1)).getUserPreferences(email);
+        verify(userPreferenceService, times(1)).getUserPreferences(1L);
     }
 }
