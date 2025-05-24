@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ineedhousing.backend.azure.blob.profile_picture.UserProfilePicture;
+import jakarta.persistence.*;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,17 +19,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ineedhousing.backend.favorite_listings.FavoriteListing;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
