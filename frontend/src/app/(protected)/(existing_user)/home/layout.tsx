@@ -1,4 +1,4 @@
-import {HomeProvider} from "@/app/(protected)/home/HomeContext";
+import {HomeProvider} from "@/app/(protected)/(existing_user)/home/HomeContext";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {

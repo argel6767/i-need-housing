@@ -3,13 +3,13 @@ import { getListingsInArea } from "@/endpoints/listings"
 import { getUserPreferences } from "@/endpoints/preferences"
 import { FavoriteListing, HouseListing, UserPreference } from "@/interfaces/entities"
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests"
-import { useQuery } from "@tanstack/react-query"
-import { useEffect} from "react";
-import {checkCookie} from "@/endpoints/auths";
+import {useMutation, useQuery} from "@tanstack/react-query"
 import {useGlobalContext} from "@/components/GlobalContext";
+import {getProfilePicture, getProfilePictureURL, updateProfilePictureURL} from "@/endpoints/profilePictures";
+import {useEffect} from "react";
 
 // fetches listings
-export const useListings = (requestBody: GetListingsInAreaRequest | null, options?: { enabled?: boolean }) => {
+export const useGetListings = (requestBody: GetListingsInAreaRequest | null, options?: { enabled?: boolean }) => {
     return useQuery({
         queryKey: ['listings', requestBody],
         queryFn: async ():Promise<Array<HouseListing>> => {
@@ -20,7 +20,7 @@ export const useListings = (requestBody: GetListingsInAreaRequest | null, option
 }
 
 //fetches user's preferences
-export const useUserPreferences = () => {
+export const useGetUserPreferences = () => {
     return useQuery({
         queryKey: ['userPreferences'],
         queryFn: async ():Promise<UserPreference> => {
@@ -30,7 +30,7 @@ export const useUserPreferences = () => {
 }
 
 //fetches favorite listings
-export const useFavoriteListings = () => {
+export const useGetFavoriteListings = () => {
     return useQuery({
         queryKey: ['favoriteListings'],
         queryFn: async ():Promise<FavoriteListing[]> => {
@@ -39,10 +39,6 @@ export const useFavoriteListings = () => {
     })
 }
 
-export const useCheckCookie = async () => {
-    const cookieStatus = await checkCookie();
-    return cookieStatus === "Token is still valid"; //TODO Finish this!!!
-}
 
 //sets all global state values to their default values
 export const useClearState = () => {
@@ -59,6 +55,7 @@ export const useClearState = () => {
     }
 }
 
+//calculates radius in meters TODO this will be used for polygon drawing, should it be implemented
 export const useFindRadiusInMeters = () => {
     const METERS_IN_A_MILE = 1609.344
     const {userPreferences} = useGlobalContext();
@@ -68,3 +65,74 @@ export const useFindRadiusInMeters = () => {
     }
     return Math.floor(totalMeters!);
 }
+
+/**
+ * fetch url
+ */
+export const useGetProfilePictureURL = () => {
+    return useQuery({
+        queryKey: ['profilePictureURL'],
+        queryFn: async ():Promise<string> => {
+            return await getProfilePictureURL();
+        }
+    })
+}
+
+
+/**
+ * fetch actual picture
+ * @param url
+ * @param options - React Query options like enabled, retry, etc.
+ */
+export const useGetProfilePicture = (url: string, options = {}) => {
+    return useQuery({
+        queryKey: ['profilePicture', url],
+        queryFn: async (): Promise<string> => {
+            return await getProfilePicture(url);
+        },
+        ...options // Spread the options to allow enabled, retry, etc.
+    })
+}
+
+/**
+ * does the entire step by step flow of grabbing a users profile picture
+ */
+export const useProfilePictureWithURL = () => {
+    const { data: url, isSuccess, isError, isLoading: urlLoading, refetch: refetchUrl } = useGetProfilePictureURL();
+
+    const shouldFetchPicture = isSuccess && url && url !== "user does not have profile picture";
+
+
+    // First attempt to get picture
+    const pictureQuery = useGetProfilePicture(url || '', {
+        enabled: shouldFetchPicture
+    });
+
+    // Check if we need to refresh URL
+    const needsUrlRefresh = pictureQuery.isSuccess &&
+        pictureQuery.data === "expired url";
+
+    // Mutation to update URL when expired
+    const updateUrlMutation = useMutation({
+        mutationFn: updateProfilePictureURL,
+        onSuccess: () => {
+            // Refetch the URL after updating
+            refetchUrl();
+        }
+    });
+
+    // Auto-trigger URL refresh when expired
+    useEffect(() => {
+        if (needsUrlRefresh && !updateUrlMutation.isPending) {
+            updateUrlMutation.mutate();
+        }
+    }, [needsUrlRefresh, updateUrlMutation]);
+
+    return {
+        ...pictureQuery,
+        hasProfilePicture: shouldFetchPicture,
+        isLoading: urlLoading || (shouldFetchPicture && pictureQuery.isLoading) || updateUrlMutation.isPending,
+        urlError: isError,
+        isRefreshingUrl: updateUrlMutation.isPending
+    };
+};

@@ -1,0 +1,111 @@
+import {apiClient} from "@/endpoints/apiConfig";
+import axios from "axios";
+
+const MODULE_MAPPING = "/profile-pictures";
+
+/**
+ * gets profile picture url from UserProfilePicture Entity
+ */
+export const getProfilePictureURL = async (): Promise<string> => {
+    try {
+        const response = await apiClient.get(MODULE_MAPPING+"/url");
+        return response.data;
+    }
+    catch (error:any) {
+        if (error.status === 404) {
+            return "user does not have profile picture";
+        }
+    }
+    return "Called failed!"
+}
+
+/**
+ * Updates the UserProfilePicture due to its expiration
+ */
+export const updateProfilePictureURL = async (): Promise<string> => {
+    try {
+        const response = await apiClient.put(MODULE_MAPPING+"/url");
+        return response.data;
+    }
+    catch (error:any) {
+        if (error.status === 404) {
+            return "user does not have profile picture";
+        }
+    }
+    return "Called failed!"
+}
+
+/**
+ * uploads the users profile picture
+ * @param profilePicture
+ */
+export const uploadPicture = async (profilePicture: Blob): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", profilePicture);
+    try {
+        const response = await apiClient.post(MODULE_MAPPING+"/upload", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        });
+        return response.data;
+    }
+    catch (error:any) {
+        if (error.status === 404) {
+            return "user does not have profile picture";
+        }
+        else if (error.status === 500) {
+            return "server error";
+        }
+        else if (error.status === 400) {
+            return error.message;
+        }
+    }
+    return "Called failed!";
+}
+
+/**
+ * creates a brand new entry in UserProfilePicture table
+ * @param profilePicture
+ */
+export const createUserProfilePicture = async (profilePicture: Blob): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", profilePicture);
+    try {
+        const response = await apiClient.post(MODULE_MAPPING, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        });
+        return response.data;
+    }
+    catch (error:any) {
+        if (error.status === 404) {
+            return "user does not have profile picture";
+        }
+        else if (error.status === 500) {
+            return "server error";
+        }
+        else if (error.status === 400) {
+            return error.message;
+        }
+    }
+    return "Called failed!";
+}
+
+export const getProfilePicture = async (profilePictureURL: string): Promise<string> => {
+    try {
+        const response = await axios.get(profilePictureURL, {
+            responseType: 'blob'
+        })
+        const imageURL = URL.createObjectURL(response.data);
+        return imageURL;
+    }
+    catch (error:any) {
+        if (error.status === 403) {
+            console.error("Unable to get profile picture, URL expired");
+            return "expired url";
+        }
+        return Promise.reject(error.message);
+    }
+}

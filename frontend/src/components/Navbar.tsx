@@ -1,67 +1,15 @@
 "use client"
 import Image from "next/image"
 import icon from "../../public/file.svg"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { logout } from "@/endpoints/auths"
 import React, {ReactNode, useState} from "react"
-import {queryClient, sleep} from "@/utils/utils"
 import { Loader } from "lucide-react"
-import {useClearState} from "@/hooks/hooks";
-import {MaxPrice, OtherFilters, RangeBar} from "@/app/(protected)/home/InnerFilters";
+import {MaxPrice, OtherFilters, RangeBar} from "@/app/(protected)/(existing_user)/home/InnerFilters";
 import {useGlobalContext} from "@/components/GlobalContext";
-import {useHomeContext} from "@/app/(protected)/home/HomeContext";
+import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
 import {updateUserPreferencesViaFilters} from "@/endpoints/preferences";
 import {filterListingsByPreferences} from "@/endpoints/listings";
-
-/**
- * Holds the User's profile picture, settings, logout logic
- *
- */
-const User = () => {
-  const [isError, setIsError] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const router = useRouter();
-  const clearState = useClearState();
-
-  const logoutUser = async () => {
-    setIsLoading(true);
-    const response = await logout();
-    setIsLoading(false);
-    if (response === "Logged out successfully") {
-      router.push("/sign-in");
-      queryClient.clear();
-      clearState();
-    }
-    else {
-      setIsError(true);
-      await sleep(1700);
-      setIsError(false);
-    }
-  }
-
-  return (
-      <div className="flex-none gap-2">
-        <div className="dropdown dropdown-end ">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar mr-3 bg-primary shadow">
-            <div className="w-12 rounded-full shadow-2xl">
-              <img
-                  alt="Tailwind CSS Navbar component"
-                  src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"/>
-            </div>
-          </div>
-          <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content  rounded-box z-[99] mt-3 w-52 p-2 shadow bg-base-100">
-            {/*<li><Link href={"/settings"}>Settings</Link></li> TODO Uncomment this once settings page is made*/}
-            <li className={"hover:bg-gray-100 rounded-2xl"}><a onClick={logoutUser}>Logout <Loader size={22} className={`ml-2 animate-pulse ${isLoading ? "" : "hidden"}`}/></a>
-            </li>
-            {isError && <li className="text-red-500">Could not log out user! Try again</li>}
-          </ul>
-        </div>
-      </div>
-  )
-}
+import {User} from "@/components/User";
+import Link from "next/link";
 
 
 interface MobileListItemsProps {

@@ -61,7 +61,7 @@ public class ProfilePictureController {
      * @param file
      * @return
      */
-    @PostMapping("/file")
+    @PostMapping("/upload")
     public ResponseEntity<String> uploadPicture(@RequestParam("file") MultipartFile file) {
         try {
             Long id = JwtUtils.getCurrentUserId();

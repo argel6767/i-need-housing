@@ -7,7 +7,7 @@ import Image from "next/image";
 import {  HouseListing } from "@/interfaces/entities";
 import { HousingCard } from "./HousingsList";
 import { GroupOfSkeletons, SkeletonText } from "./Loading";
-import {useHomeContext} from "@/app/(protected)/home/HomeContext";
+import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
 import {useGlobalContext} from "@/components/GlobalContext";
 
 

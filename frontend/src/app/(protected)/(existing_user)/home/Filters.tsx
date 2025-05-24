@@ -4,9 +4,9 @@ import {ChevronDown, CircleX, Loader} from 'lucide-react';
 import {HouseListing, UserPreference} from "@/interfaces/entities";
 import { useGlobalContext } from "@/components/GlobalContext";
 import { updateUserPreferencesViaFilters } from "@/endpoints/preferences";
-import { RangeBar, MaxPrice, OtherFilters } from "@/app/(protected)/home/InnerFilters";
+import { RangeBar, MaxPrice, OtherFilters } from "@/app/(protected)/(existing_user)/home/InnerFilters";
 import { filterListingsByPreferences } from "@/endpoints/listings";
-import {useHomeContext} from "@/app/(protected)/home/HomeContext";
+import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
 
 interface CollapseDownProps {
     children: ReactNode;

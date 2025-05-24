@@ -1,6 +1,6 @@
 "use client"
 
-import {FilterModal, Filters} from "@/app/(protected)/home/Filters";
+import {FilterModal, Filters} from "@/app/(protected)/(existing_user)/home/Filters";
 import { Footer } from "@/components/Footer";
 import { useGlobalContext } from "@/components/GlobalContext";
 import { HousingSearch } from "@/components/HousingSearch";
@@ -8,12 +8,12 @@ import { ListingModal } from "@/components/HousingsList";
 
 import { Map } from "@/components/Map";
 import {LoggedInMobileNavbar, LoggedInNavBar} from "@/components/Navbar";
-import { useListings, useUserPreferences, useFavoriteListings } from "@/hooks/hooks";
+import { useGetListings, useGetUserPreferences, useGetFavoriteListings } from "@/hooks/hooks";
 import {  HouseListing } from "@/interfaces/entities";
 import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
 import { useEffect, useState } from "react";
 import {Modal} from "@/components/Modal";
-import {useHomeContext} from "@/app/(protected)/home/HomeContext";
+import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
 
 const Home = () => {
     const [requestBody, setRequestBody] = useState<GetListingsInAreaRequest | null>(null);
@@ -23,9 +23,9 @@ const Home = () => {
     const {setCenterLat, setCenterLong, setUserPreferences} = useGlobalContext();
 
     //fetch calls
-    const {isLoading:isGrabbing, isError:isFetchingFailed, data:preferences} = useUserPreferences();
-    const {isLoading, isError, data, refetch, isFetching} = useListings(requestBody, {enabled: !!requestBody});
-    const {isLoading:isGettingFavorites, data:favorites, isError:isCallFailed} = useFavoriteListings();
+    const {isLoading:isGrabbing, isError:isFetchingFailed, data:preferences} = useGetUserPreferences();
+    const {isLoading, isError, data, refetch, isFetching} = useGetListings(requestBody, {enabled: !!requestBody});
+    const {isLoading:isGettingFavorites, data:favorites, isError:isCallFailed} = useGetFavoriteListings();
 
     /** sets state of user preferences should it ever change via the query call */
     useEffect(() => {
