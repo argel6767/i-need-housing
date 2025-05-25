@@ -12,7 +12,7 @@ export const getProfilePictureURL = async (): Promise<string> => {
         return response.data;
     }
     catch (error:any) {
-        if (error.status === 404) {
+        if (error.response.status === 404) {
             return "user does not have profile picture";
         }
     }
@@ -28,7 +28,7 @@ export const updateProfilePictureURL = async (): Promise<string> => {
         return response.data;
     }
     catch (error:any) {
-        if (error.status === 404) {
+        if (error.response.status === 404) {
             return "user does not have profile picture";
         }
     }
@@ -39,11 +39,11 @@ export const updateProfilePictureURL = async (): Promise<string> => {
  * uploads the users profile picture
  * @param profilePicture
  */
-export const uploadPicture = async (profilePicture: Blob): Promise<string> => {
+export const updatePicture = async (profilePicture: Blob): Promise<string> => {
     const formData = new FormData();
     formData.append("file", profilePicture);
     try {
-        const response = await apiClient.post(MODULE_MAPPING+"/upload", formData, {
+        const response = await apiClient.put(MODULE_MAPPING+"/upload", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             }
@@ -51,14 +51,17 @@ export const uploadPicture = async (profilePicture: Blob): Promise<string> => {
         return response.data;
     }
     catch (error:any) {
-        if (error.status === 404) {
-            return "user does not have profile picture";
+        if (error.response.status === 404) {
+            return "user does not have profile picture, create an initial profile picture";
         }
-        else if (error.status === 500) {
-            return "server error";
+        else if (error.response.status === 500) {
+            return "server error, try again later";
         }
-        else if (error.status === 400) {
+        else if (error.response.status === 400) {
             return error.message;
+        }
+        else if (error.response.status === 413) {
+            return "file is too large!"
         }
     }
     return "Called failed!";
@@ -80,14 +83,17 @@ export const createUserProfilePicture = async (profilePicture: Blob): Promise<st
         return response.data;
     }
     catch (error:any) {
-        if (error.status === 404) {
+        if (error.response.status === 404) {
             return "user does not have profile picture";
         }
-        else if (error.status === 500) {
+        else if (error.response.status === 500) {
             return "server error";
         }
-        else if (error.status === 400) {
+        else if (error.response.status === 400) {
             return error.message;
+        }
+        else if (error.response.status === 413) {
+            return "file is too large!"
         }
     }
     return "Called failed!";
@@ -102,10 +108,21 @@ export const getProfilePicture = async (profilePictureURL: string): Promise<stri
         return imageURL;
     }
     catch (error:any) {
-        if (error.status === 403) {
+        if (error.response.status === 403) {
             console.error("Unable to get profile picture, URL expired");
             return "expired url";
         }
         return Promise.reject(error.message);
+    }
+}
+
+export const deleteProfilePicture = async () => {
+    try {
+        await apiClient.delete(MODULE_MAPPING);
+        return "profile picture deleted!";
+    }
+    catch (error: any) {
+        console.error(error.response)
+        return "profile picture failed to delete"
     }
 }

@@ -75,7 +75,7 @@ export const Navbar = () => {
                 className="btn btn-ghost text-4xl lg:text-5xl text-primary hover:scale-110 transition-transform duration-300">INeedHousing<Image src={"./file.svg"} width={50}
                                                                                     height={50} alt="Logo"/></Link>
         </div>
-        <div className="navbar-center  lg:flex">
+        <div className="navbar-center lg:flex">
           <ul className="menu menu-horizontal px-1 items-center text-lg ">
             <li className="hover:underline underline-offset-4"><Link href={"/about"}>About</Link></li>
             <li><Image src={icon} alt="Icon" width={90} height={75}/></li>
@@ -119,9 +119,9 @@ export const LoggedInNavBar = () => {
   return (
       <div className="navbar bg-base-100 py-4">
       <div className="flex-1">
-        <Link href={"/"} className="btn btn-ghost text-3xl sm:text-5xl text-primary font-bold">INeedHousing<Image src={"./file.svg"} width={50} height={50} alt="Logo"/></Link>
+        <Link href={"/"} className="btn btn-ghost text-3xl sm:text-5xl text-primary font-bold  hover:scale-110 transition-transform duration-300">INeedHousing<Image src={"./file.svg"} width={50} height={50} alt="Logo"/></Link>
       </div>
-        <User/>
+          <User/>
       </div>
   )
 }

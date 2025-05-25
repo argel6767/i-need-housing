@@ -5,7 +5,7 @@ import React from "react";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'INeedHousing | New User',
+    title: 'New User | INeedHousing',
     description: "INeedHousing New User Onboarding"
 };
 

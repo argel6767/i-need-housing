@@ -9,6 +9,8 @@ export const isValidEmail = (email: string): boolean => {
     return EMAIL_REGEX.test(email);
 }
 
+export const DEFAULT_PROFILE_PICTURE_URL = "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg";
+
 export const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 export const queryClient = new QueryClient({

@@ -100,12 +100,11 @@ export const useGetProfilePicture = (url: string, options = {}) => {
 export const useProfilePictureWithURL = () => {
     const { data: url, isSuccess, isError, isLoading: urlLoading, refetch: refetchUrl } = useGetProfilePictureURL();
 
-    const shouldFetchPicture = isSuccess && url && url !== "user does not have profile picture";
-
+    const shouldFetchPicture = (isSuccess && url && (url !== "user does not have profile picture") && url !== "Called failed!");
 
     // First attempt to get picture
     const pictureQuery = useGetProfilePicture(url || '', {
-        enabled: shouldFetchPicture
+        enabled: shouldFetchPicture && url.startsWith('http') // Extra safety check
     });
 
     // Check if we need to refresh URL
@@ -128,10 +127,27 @@ export const useProfilePictureWithURL = () => {
         }
     }, [needsUrlRefresh, updateUrlMutation]);
 
+    // Return appropriate data based on whether user has profile picture
+    if (!shouldFetchPicture) {
+        return {
+            data: null,
+            isSuccess: true,
+            isError: false,
+            isLoading: urlLoading,
+            isFetched: true,
+            isFetching: false,
+            isRefetching: false,
+            isPending: false,
+            hasProfilePicture: false,
+            urlError: isError,
+            isRefreshingUrl: false
+        };
+    }
+
     return {
         ...pictureQuery,
-        hasProfilePicture: shouldFetchPicture,
-        isLoading: urlLoading || (shouldFetchPicture && pictureQuery.isLoading) || updateUrlMutation.isPending,
+        hasProfilePicture: true,
+        isLoading: urlLoading || pictureQuery.isLoading || updateUrlMutation.isPending,
         urlError: isError,
         isRefreshingUrl: updateUrlMutation.isPending
     };

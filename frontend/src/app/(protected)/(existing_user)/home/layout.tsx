@@ -2,7 +2,7 @@ import {HomeProvider} from "@/app/(protected)/(existing_user)/home/HomeContext";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'INeedHousing | Home',
+    title: 'Home | INeedHousing',
     description: "INeedHousing Listings Dashboard"
 };
 

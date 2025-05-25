@@ -1,7 +1,12 @@
-"use client"
 
 import { Footer } from "@/components/Footer";
 import { MobileNavbar, Navbar } from "@/components/Navbar";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "About | INeedHousing",
+    description: "INeedHousing About Section",
+}
 
 const About = () => {
     return (

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.io.IOException;
 
@@ -61,13 +62,13 @@ public class ProfilePictureController {
      * @param file
      * @return
      */
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadPicture(@RequestParam("file") MultipartFile file) {
+    @PutMapping("/upload")
+    public ResponseEntity<String> updatePicture(@RequestParam("file") MultipartFile file) {
         try {
             Long id = JwtUtils.getCurrentUserId();
             log.info("Uploading file " + file.getOriginalFilename());
             log.info("for user: "+ id);
-            String url = profilePictureService.uploadProfilePicture(file, id);
+            String url = profilePictureService.updateProfilePicture(file, id);
             return new ResponseEntity<>(url, HttpStatus.CREATED);
         }
         catch (IOException ioe) {
@@ -81,6 +82,10 @@ public class ProfilePictureController {
         catch (IllegalArgumentException | IllegalStateException e) {
             log.severe(e.toString());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (MaxUploadSizeExceededException musee) {
+            log.severe(musee.toString());
+            return new ResponseEntity<>(musee.getMessage(), HttpStatus.PAYLOAD_TOO_LARGE);
         }
     }
 
@@ -127,7 +132,28 @@ public class ProfilePictureController {
             log.severe(e.toString());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+        catch (MaxUploadSizeExceededException musee) {
+            log.severe(musee.toString());
+            return new ResponseEntity<>(musee.getMessage(), HttpStatus.PAYLOAD_TOO_LARGE);
+        }
     }
 
+    /**
+     * deletes user's Profile Picture
+     * @return
+     */
+    @DeleteMapping()
+    public ResponseEntity<String> deleteUserProfilePicture() {
+        try {
+            Long id = JwtUtils.getCurrentUserId();
+            log.info("Deleting user profile picture for id " + id);
+            profilePictureService.deleteUserProfilePicture(id);
+            return new ResponseEntity<>("profile picture deleted!",HttpStatus.NO_CONTENT);
+        }
+        catch (UserProfilePictureNotFoundException uppnfe) {
+            log.severe(uppnfe.toString());
+            return new ResponseEntity<>(uppnfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 
 }

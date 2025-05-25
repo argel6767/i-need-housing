@@ -1,6 +1,7 @@
 'use client'
 
 import React, {createContext, useContext, useState, useMemo} from "react";
+import {DEFAULT_PROFILE_PICTURE_URL} from "@/utils/utils";
 
 interface ExistingUserContextType {
     profilePictureUrl: string;
@@ -18,7 +19,7 @@ interface ExistingProviderProps {
  */
 
 export const ExistingUserProvider = ({ children }: ExistingProviderProps) => {
-    const [profilePictureUrl, setProfilePictureUrl] = useState<string>("https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg");
+    const [profilePictureUrl, setProfilePictureUrl] = useState<string>(DEFAULT_PROFILE_PICTURE_URL);
 
     const contextValues = useMemo(() => ({
         profilePictureUrl, setProfilePictureUrl

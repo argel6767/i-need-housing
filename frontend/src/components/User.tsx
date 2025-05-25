@@ -18,13 +18,13 @@ export const ProfilePicture = () => {
     const profilePictureFetch = useProfilePictureWithURL();
 
     useEffect(() => {
-        if (profilePictureFetch.isFetched && profilePictureFetch.data) {
+        if (profilePictureFetch.isFetched && profilePictureFetch.hasProfilePicture && profilePictureFetch.data) {
             setProfilePictureUrl(profilePictureFetch.data);
         }
-    }, [profilePictureFetch.isFetched, profilePictureFetch.data, setProfilePictureUrl]);
+    }, [profilePictureFetch.isFetched, profilePictureFetch.data, setProfilePictureUrl, profilePictureFetch.hasProfilePicture]);
 
     const isFetching = () => {
-        return profilePictureFetch.isFetching || profilePictureFetch.isRefetching || profilePictureFetch.isPending;
+        return profilePictureFetch.isLoading || profilePictureFetch.isFetching || profilePictureFetch.isRefetching || profilePictureFetch.isPending;
     }
 
     if (isFetching()) {
@@ -66,15 +66,15 @@ export const User = () => {
         <div className="flex-none gap-2">
             <div className="dropdown dropdown-end ">
                 <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar mr-3 bg-primary shadow">
-                    <div className="w-12 rounded-full shadow-2xl">
+                    <div className="w-full rounded-full shadow-2xl">
                         <ProfilePicture />
                     </div>
                 </div>
                 <ul
                     tabIndex={0}
                     className="menu menu-sm dropdown-content  rounded-box z-[99] mt-3 w-52 p-2 shadow bg-base-100">
-                    <li><Link href={"/settings"}>Settings</Link></li>
-                    <li className={"hover:bg-gray-100 rounded-2xl"}><a onClick={logoutUser}>Logout <Loader size={22} className={`ml-2 animate-pulse ${isLoading ? "" : "hidden"}`}/></a>
+                    <li className={"hover:bg-gray-100 rounded-2xl"}><Link href={"/settings"}>Settings</Link></li>
+                    <li className={"hover:bg-gray-100 rounded-2xl"}><button onClick={logoutUser}>Logout <Loader size={22} className={`ml-2 animate-pulse ${isLoading ? "" : "hidden"}`}/></button>
                     </li>
                     {isError && <li className="text-red-500">Could not log out user! Try again</li>}
                 </ul>

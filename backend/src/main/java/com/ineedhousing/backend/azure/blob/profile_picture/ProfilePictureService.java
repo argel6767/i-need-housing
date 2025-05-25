@@ -110,7 +110,7 @@ public class ProfilePictureService {
      * @return
      * @throws IOException
      */
-    public String uploadProfilePicture(MultipartFile multipartFile, Long id) throws IOException {
+    public String[] uploadProfilePicture(MultipartFile multipartFile, Long id) throws IOException {
         String blobName = generateBlobName(id, multipartFile.getContentType());
         File file = FileConverter.convertMultipartFileToFile(multipartFile);
         BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
@@ -144,13 +144,27 @@ public class ProfilePictureService {
         //generate a SAS URL for new uploaded blob
         log.info("Profile picture uploaded");
         String sasUrl = generateReadSASURL(blobName);
-        return sasUrl;
+        log.info("Saving new url to User's Profile Picture");
+        return new String[] { sasUrl, blobName };
+    }
+
+    @Transactional
+    @CacheEvict(key = "#id", value = "url")
+    public String updateProfilePicture(MultipartFile multipartFile, Long id) throws IOException {
+        log.info("Updating profile picture");
+        String[] storageValues = uploadProfilePicture(multipartFile, id);
+        UserProfilePicture profilePicture = getUserProfilePicture(id);
+        profilePicture.setProfilePictureUrl(storageValues[0]);
+        profilePicture.setBlobName(storageValues[1]);
+        log.info("Saving new url to User's Profile Picture");
+        profilePictureRepository.save(profilePicture);
+        return storageValues[0];
     }
 
     //creates the blob name depending on the users file type
     private String generateBlobName(Long id, String contentType) {
         String fileType = switch (contentType) {
-            case null -> throw new IllegalStateException("File cannot be null!"); //null check
+            case null -> throw new IllegalArgumentException("File cannot be null!"); //null check
             case "image/jpeg" -> "jpeg";
             case "image/jpg" -> "jpg";
             case "image/png" -> "png";
@@ -167,21 +181,20 @@ public class ProfilePictureService {
      */
     @Transactional
     public String createUserProfilePictureEntity(MultipartFile multipartFile, Long id) throws IOException {
-        String sasUrl = uploadProfilePicture(multipartFile, id);
+        String[] storageValues = uploadProfilePicture(multipartFile, id);
 
         log.info("Profile picture entity made");
         UserProfilePicture userProfilePicture = new UserProfilePicture();
-        String blobName = generateBlobName(id, multipartFile.getContentType());
         log.info("fetching user entity in DB");
         User user = userService.getUserById(id);
 
         //map values
         log.info("mapping fields");
-        userProfilePicture.setBlobName(blobName);
-        userProfilePicture.setProfilePictureUrl(sasUrl);
+        userProfilePicture.setBlobName(storageValues[1]);
+        userProfilePicture.setProfilePictureUrl(storageValues[0]);
         userProfilePicture.setUser(user);
         profilePictureRepository.save(userProfilePicture);
-        return sasUrl;
+        return storageValues[0];
     }
 
     /**
@@ -208,6 +221,18 @@ public class ProfilePictureService {
                 .orElseThrow(() -> new UserProfilePictureNotFoundException("Profile Picture not found with id: " + id));
     }
 
+    /**
+     * Deletes UserProfilePicture entry while also making sure to delete the user's actual profile picture uploaded to the blob container
+     * @param id
+     */
+    @CacheEvict(key = "#id", value = "url")
+    public void deleteUserProfilePicture(Long id) {
+        log.info("Deleting user's profile picture in container blob");
+        UserProfilePicture userProfilePicture = getUserProfilePicture(id);
+        blobContainerClient.getBlobClient(userProfilePicture.getBlobName()).delete();
+        log.info("Deleting user profile picture");
+        profilePictureRepository.delete(userProfilePicture);
+    }
 
 
 }
