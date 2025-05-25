@@ -7,6 +7,9 @@ import {useMutation, useQuery} from "@tanstack/react-query"
 import {useGlobalContext} from "@/components/GlobalContext";
 import {getProfilePicture, getProfilePictureURL, updateProfilePictureURL} from "@/endpoints/profilePictures";
 import {useEffect} from "react";
+import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
+import {useExistingUserContext} from "@/app/(protected)/(existing_user)/ExistingUserContext";
+import {DEFAULT_PROFILE_PICTURE_URL} from "@/utils/utils";
 
 // fetches listings
 export const useGetListings = (requestBody: GetListingsInAreaRequest | null, options?: { enabled?: boolean }) => {
@@ -41,7 +44,7 @@ export const useGetFavoriteListings = () => {
 
 
 //sets all global state values to their default values
-export const useClearState = () => {
+export const useClearGlobalContext = () => {
     const {setCenterLat, setCenterLong, setUser, setUserPreferences, setFavoriteListings, setNewUserInfo, setIsIntern, setIsFirstTimeUser} = useGlobalContext();
     return () => {
         setCenterLat(0.0);
@@ -52,6 +55,32 @@ export const useClearState = () => {
         setNewUserInfo({userType: '', newUserPreferencesDto: {}})
         setIsIntern(false);
         setIsFirstTimeUser(false)
+    }
+}
+
+// sets all home context state values to their default values
+export const useClearHomeContext = () => {
+    const {setListings, setIsListingsFiltered, setIsFiltersChanged, setIsFiltering, setIsFilterModalUp,
+        setIsListingModalUp, setIsResetting, setFilterRendered, setInitialPreferences, setIsSaving} = useHomeContext();
+
+    return () => {
+        setIsSaving(false);
+        setIsFiltering(false);
+        setIsFilterModalUp(false);
+        setIsFiltersChanged(false);
+        setIsResetting(false);
+        setIsListingsFiltered(false);
+        setIsListingModalUp(false);
+        setListings([])
+        setFilterRendered(null)
+        setInitialPreferences(undefined);
+    }
+}
+
+export const useClearExistingUserContext = () => {
+    const {setProfilePictureUrl} = useExistingUserContext();
+    return () => {
+        setProfilePictureUrl(DEFAULT_PROFILE_PICTURE_URL);
     }
 }
 
