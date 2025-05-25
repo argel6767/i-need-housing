@@ -1,6 +1,11 @@
 'use client'
 import {useExistingUserContext} from "@/app/(protected)/(existing_user)/ExistingUserContext";
-import {useClearState, useProfilePictureWithURL} from "@/hooks/hooks";
+import {
+    useClearExistingUserContext,
+    useClearGlobalContext,
+    useClearHomeContext,
+    useProfilePictureWithURL
+} from "@/hooks/hooks";
 import { useRouter } from "next/navigation";
 import {useEffect, useState} from "react";
 import {logout} from "@/endpoints/auths";
@@ -44,16 +49,20 @@ export const User = () => {
     const [isError, setIsError] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const router = useRouter();
-    const clearState = useClearState();
+    const clearGlobalState = useClearGlobalContext();
+    const clearHomeState = useClearHomeContext();
+    const clearExistingUserState = useClearExistingUserContext();
 
     const logoutUser = async () => {
         setIsLoading(true);
         const response = await logout();
         setIsLoading(false);
         if (response === "Logged out successfully") {
-            router.push("/sign-in");
+            router.replace("/sign-in");
             queryClient.clear();
-            clearState();
+            clearGlobalState();
+            clearHomeState();
+            clearExistingUserState();
         }
         else {
             setIsError(true);

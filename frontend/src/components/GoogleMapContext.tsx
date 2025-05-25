@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useState, ReactNode } from 'react';
+import {createContext, useContext, useState, ReactNode, useMemo} from 'react';
 import { LoadScript } from '@react-google-maps/api';
 import { GOOGLE_API_KEY } from "@/utils/utils";
 import {Loading} from "@/components/Loading";
@@ -30,6 +30,8 @@ interface GoogleMapsProviderProps {
 export const GoogleMapsProvider = ({ children }: GoogleMapsProviderProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const contextValue = useMemo(() => ({isLoaded, setIsLoaded}), [isLoaded]);
+
   const handleLoad = () => {
     setIsLoaded(true);
     console.log("Google Maps API loaded successfully with all libraries");
@@ -37,7 +39,7 @@ export const GoogleMapsProvider = ({ children }: GoogleMapsProviderProps) => {
 
 
   return (
-    <GoogleMapsContext.Provider value={{ isLoaded }}>
+    <GoogleMapsContext.Provider value={contextValue}>
       <LoadScript
         googleMapsApiKey={GOOGLE_API_KEY ?? ""}
         libraries={libraries}
