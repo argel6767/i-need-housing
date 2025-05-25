@@ -33,7 +33,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   if (!isAuthorized) {
     return (
         <main className='flex flex-col justify-center items-center h-screen'>
-            <h1 className='text-4xl text-center animate-pulse'>Checking authentication status. Thank you for you patience! 😁</h1>
+            <h1 className='text-4xl text-center animate-pulse'>Checking authentication status. Thank you for your patience! 😁</h1>
             <div className='flex justify-center'>
                 <LoadingBars/>
             </div>
