@@ -19,7 +19,7 @@ export const VerificationCode = () => {
     })
     const [isVerified, setIsVerified] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [isCallFailed, setIsCalledFailed] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>("");
 
       // set email once component mounts (avoid server rendering issues)
       useEffect(() => {
@@ -51,15 +51,10 @@ export const VerificationCode = () => {
             await sleep(1700)
             router.push("/");
         }
-        if (data.includes("Something went wrong and the api call failed")) { //error
-            setIsCalledFailed(true);
-            await sleep(1500);
-            setIsCalledFailed(false);
-        }
-        if (data === "User has already been verified!") { //user already verified
-            setIsVerified(true);
-            await sleep(1500);
-            router.push("/");
+       else {
+           setErrorMessage(data);
+           await sleep(1500);
+           setErrorMessage("")
         }
     }
 
@@ -79,23 +74,6 @@ export const VerificationCode = () => {
         )
     }
 
-    if (isCallFailed) {
-        return (
-            <section className="flex flex-col gap-2">
-                <h1 className="flex-1 text-xl text-red-600 font-bold">Something went wrong! Please try again.</h1>
-                <p className="text-lg">The following may be at fault:</p>
-                <span className="px-2">
-                    <ul className="list-disc">
-                        <div className="space-y-1 italic">
-                            <li>The Backend server is currently down.</li>
-                            <li>The account the email is attached to is already verified.</li>
-                            <li>The email or verification code is invalid.</li>
-                        </div>
-                    </ul>
-                </span>
-            </section>
-        )
-    }
     
 
     return (
@@ -138,6 +116,7 @@ export const VerificationCode = () => {
             >
                 Verify Account
             </button>
+                <p className={"text-red-500 font-semibold"}>{errorMessage}</p>
             </div>
         </form>
             <ResendVerificationEmail email={credentials.email} message={"Need another code?"} button={"Request another."}/>
