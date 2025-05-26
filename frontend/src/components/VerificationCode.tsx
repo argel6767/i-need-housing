@@ -73,8 +73,8 @@ export const VerificationCode = () => {
     if (isVerified) {
         return (
             <section className="flex flex-col gap-2 text-center mt-3">
-                <h1 className="text-lg font-semibold">You Are Pre-Registered!</h1>
-                <p>Your account has been successfully verified. You will be redirected to the landing page shortly. Welcome to INeedHousing</p>
+                <h1 className="text-lg font-semibold">Welcome to INeedHousing!</h1>
+                <p>Your account has been successfully verified. You will be redirected to the landing page shortly.</p>
             </section>
         )
     }

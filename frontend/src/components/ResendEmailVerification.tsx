@@ -15,6 +15,6 @@ export const ResendVerificationEmail = ({email, message, button}:props) => {
     }
 
     return (
-        <p className="p-4">{message} <button onClick={handleResendRequest} className="hover:underline">{button}</button></p>
+        <p className="p-4 animate-fade">{message} <button onClick={handleResendRequest} className="hover:underline">{button}</button></p>
     )
 }

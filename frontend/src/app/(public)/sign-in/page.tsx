@@ -1,6 +1,6 @@
 "use client"
 import { Footer } from "@/components/Footer";
-import {Form, NewForm} from "@/components/Form";
+import { Form} from "@/components/Form";
 import { FormHeader } from "@/components/FormHeader";
 import Link from "next/link";
 import Image from "next/image";
@@ -22,9 +22,12 @@ const SignIn = () => {
     const router = useRouter();
     const [isRequestingEmail, setIsRequestingEmail] = useState<boolean>(false);
     const [email, setEmail] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
 
     const loginUser = async (credentials: AuthenticateUserDto) => {
+        setIsLoading(true);
         const response = await login(credentials);
+        setIsLoading(false);
         if (response === "new user") {
             setIsFirstTimeUser(true);
             router.prefetch("/new-user/user-type")
@@ -57,10 +60,11 @@ const SignIn = () => {
                     <div className="flex items-center justify-center my-3">
                     <div className="xl:mx-auto shadow-lg rounded-lg p-4 xl:w-full xl:max-w-sm 2xl:max-w-md">
                         <FormHeader header="Sign in to INeedHousing" text="Not already a member? " buttonLabel="Sign Up" path="/sign-up"/>
-                        <NewForm buttonLabel="Sign In" loadingMessage="Logging In" route="/home" request={loginUser} errorMessage={errorState.message} isError={errorState.isError}/>
+                        <Form buttonLabel="Sign In" request={loginUser} isLoading={isLoading} />
                         <div className={`font-semibold ${isRequestingEmail ? "display" : "hidden"}`  } onClick={handleResendHref}>
                             <ResendVerificationEmail email={email} message={"Your account is not verified."} button={"Request code."}/>
                         </div>
+                        <p className={"text-red-500 text-center font-semibold animate-fade"}>{errorState.message}</p>
                     </div>
                     </div>
                 </section>

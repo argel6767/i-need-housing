@@ -28,16 +28,15 @@ export const checkCookie = async () => {
  */
 export const register = async (requestBody: AuthenticateUserDto): Promise<any> => {
     try {
-        const response = await apiClient.post(MODULE_MAPPING+"/register", requestBody);
-        if (response.status === 201) {
-            return "user created";
-        }
-        console.log(response.data);
-        return null;
+        await apiClient.post(MODULE_MAPPING+"/register", requestBody);
+        return {message:"user created", email:requestBody.username};
     }
     catch (error: any) {
         console.log(failedCallMessage(error));
-        return "user could not be created";
+        if (error.response.status === 409) {
+            return "Email is already in use."
+        }
+        return "User could not be created, try again later.";
     }
 }
 

@@ -1,15 +1,39 @@
 "use client"
 import { Footer } from "@/components/Footer";
-import { Form } from "@/components/Form";
+import { Form} from "@/components/Form";
 import { FormHeader } from "@/components/FormHeader";
 import Link from "next/link";
 import Image from "next/image";
 import icon from "../../../../public/file.svg"
-import { register } from "@/endpoints/auths";
+import { register} from "@/endpoints/auths";
+import {useState} from "react";
+import {useRouter} from "next/navigation";
+import {AuthenticateUserDto} from "@/interfaces/requests/authsRequests";
+import {sleep} from "@/utils/utils";
 
 
 
 const SignUp = () => {
+    const [errorState, setErrorState] = useState({
+        isError: false,
+        message: ""
+    });
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
+
+    const signUpUser = async (credentials: AuthenticateUserDto) => {
+        const response = await register(credentials);
+        if (response.message === "user created") {
+            sessionStorage.setItem("email", response.email)
+            router.push("/sign-up/verify");
+        }
+        else {
+            setErrorState({ isError: true, message: response });
+            await sleep(1500);
+            setErrorState({ isError: false, message: "" });
+        }
+    }
+
 
     return ( 
         <main className="h-screen flex flex-col items-center justify-between">
@@ -18,7 +42,8 @@ const SignUp = () => {
                     <div className="flex items-center justify-center my-3">
                     <div className="xl:mx-auto shadow-md p-4 xl:w-full xl:max-w-sm 2xl:max-w-md">
                         <FormHeader header="Sign up to create account" text="Already have an account? " buttonLabel="Sign In" path="sign-in"/>
-                        <Form buttonLabel="Create Account" loadingMessage="Registering User" route="/sign-up/verify" request={register}/>
+                        <Form buttonLabel={"Create Account"} request={signUpUser} isLoading={isLoading}/>
+                        <p className={"text-red-500 text-center font-semibold animate-fade"}>{errorState.message}</p>
                     </div>
                     </div>
                 </section>
