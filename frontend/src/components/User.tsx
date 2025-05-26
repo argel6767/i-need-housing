@@ -3,7 +3,7 @@ import {useExistingUserContext} from "@/app/(protected)/(existing_user)/Existing
 import {
     useClearExistingUserContext,
     useClearGlobalContext,
-    useClearHomeContext,
+    useClearHomeContext, useClearProtectedContext,
     useProfilePictureWithURL
 } from "@/hooks/hooks";
 import { useRouter } from "next/navigation";
@@ -52,6 +52,7 @@ export const User = () => {
     const clearGlobalState = useClearGlobalContext();
     const clearHomeState = useClearHomeContext();
     const clearExistingUserState = useClearExistingUserContext();
+    const clearProtectedState = useClearProtectedContext();
 
     const logoutUser = async () => {
         setIsLoading(true);
@@ -63,6 +64,7 @@ export const User = () => {
             clearGlobalState();
             clearHomeState();
             clearExistingUserState();
+            clearProtectedState();
         }
         else {
             setIsError(true);

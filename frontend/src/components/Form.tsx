@@ -53,7 +53,7 @@ export const Form = ({buttonLabel, request, isLoading}:NewFormProps) => {
 
     if (isLoading) {
         return (
-            <div className={"flex flex-col justify-center items-center gap-4 min-w-96"}>
+            <div className={"flex flex-col justify-center items-center gap-4 min-w-60 md:min-w-96"}>
                 <LoadingBars/>
                 <h2 className={"text-xl"}>Authenticating Request</h2>
             </div>
@@ -62,7 +62,7 @@ export const Form = ({buttonLabel, request, isLoading}:NewFormProps) => {
 
 
     return (
-        <form className={"py-2 min-w-96  flex flex-col justify-items-start gap-8"} onSubmit={runAuthFunction}>
+        <form className={"py-2 min-w-60 md:min-w-96  flex flex-col justify-items-start gap-8"} onSubmit={runAuthFunction}>
             <span>
                 <label className="text-sm text-gray-900">
                     Email

@@ -10,6 +10,7 @@ import {useEffect} from "react";
 import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
 import {useExistingUserContext} from "@/app/(protected)/(existing_user)/ExistingUserContext";
 import {DEFAULT_PROFILE_PICTURE_URL} from "@/utils/utils";
+import {useProtectedContext} from "@/app/(protected)/ProtectedRoute";
 
 // fetches listings
 export const useGetListings = (requestBody: GetListingsInAreaRequest | null, options?: { enabled?: boolean }) => {
@@ -81,6 +82,13 @@ export const useClearExistingUserContext = () => {
     const {setProfilePictureUrl} = useExistingUserContext();
     return () => {
         setProfilePictureUrl(DEFAULT_PROFILE_PICTURE_URL);
+    }
+}
+export const useClearProtectedContext = () => {
+    const {setIsAuthLoading, setIsAuthorized} = useProtectedContext();
+    return () => {
+        setIsAuthLoading(true);
+        setIsAuthorized(false);
     }
 }
 
