@@ -3,7 +3,7 @@ import {isValidEmail, isValidPassword, sleep} from "@/utils/utils";
 import { AuthenticateUserDto } from "@/interfaces/requests/authsRequests";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { Loading } from "./Loading";
+import {Loading, LoadingBars} from "./Loading";
 import { ResendVerificationEmail } from "./ResendEmailVerification";
 import {useGlobalContext} from "@/components/GlobalContext";
 import {post} from "axios";
@@ -138,14 +138,11 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
 
 interface NewFormProps {
     buttonLabel:string
-    loadingMessage?:string
-    route:string
     request: (credentials:AuthenticateUserDto) => Promise<any>
-    isError: boolean
     errorMessage: string
 }
 
-export const NewForm = ({buttonLabel, loadingMessage, route, request, isError, errorMessage}:NewFormProps) => {
+export const NewForm = ({buttonLabel, request, errorMessage}:NewFormProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isInvalidCredentials, setIsInvalidCredentials] = useState({username:false, password:false})
     const credentials: AuthenticateUserDto = {
@@ -187,6 +184,15 @@ export const NewForm = ({buttonLabel, loadingMessage, route, request, isError, e
             await request(credentials);
             setIsLoading(false);
         }
+    }
+
+    if (isLoading) {
+        return (
+            <div className={"flex flex-col justify-center items-center gap-4 min-w-96"}>
+                <LoadingBars/>
+                <h2 className={"text-xl"}>Authenticating Request</h2>
+            </div>
+        )
     }
 
 
