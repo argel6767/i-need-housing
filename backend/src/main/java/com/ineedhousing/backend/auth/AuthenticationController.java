@@ -3,12 +3,14 @@ package com.ineedhousing.backend.auth;
 
 import com.ineedhousing.backend.auth.exceptions.AuthenticationException;
 import com.ineedhousing.backend.auth.exceptions.ExpiredVerificationCodeException;
+import com.ineedhousing.backend.auth.exceptions.InvalidPasswordException;
 import com.ineedhousing.backend.auth.exceptions.UserAlreadyVerifiedException;
 import com.ineedhousing.backend.auth.requests.*;
 import com.ineedhousing.backend.auth.responses.LoginResponse;
 import com.ineedhousing.backend.email.EmailVerificationException;
 import com.ineedhousing.backend.email.InvalidEmailException;
 import com.ineedhousing.backend.jwt.JwtService;
+import com.ineedhousing.backend.jwt.JwtUtils;
 import com.ineedhousing.backend.user.User;
 
 import jakarta.servlet.http.Cookie;
@@ -42,12 +44,13 @@ public class AuthenticationController {
 
     /**
      * used to check if cookie is still valid, will return 200 if is
-     * it wont even be run if it is not due the security chain and return a 403
+     * it won't even be run if it is not due the security chain and return a 403
      */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/cookie-status")
     public ResponseEntity<String> checkCookie() {
-        log.info("Cookie is still valid");
+        String email = JwtUtils.getCurrentUserEmail();
+        log.info("Cookie is still valid for email: " + email);
         return new ResponseEntity<>("Token still valid", HttpStatus.OK);
     }
 
@@ -63,8 +66,8 @@ public class AuthenticationController {
         catch (AuthenticationException ae) {
             return new ResponseEntity<>(ae.getMessage(), HttpStatus.CONFLICT);
         }
-        catch (InvalidEmailException ive) {
-            return new ResponseEntity<>(ive.getMessage(), HttpStatus.BAD_REQUEST);
+        catch (InvalidEmailException | InvalidPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
