@@ -1,11 +1,12 @@
 "use client"
-import { isValidEmail, sleep } from "@/utils/utils";
+import {isValidEmail, isValidPassword, sleep} from "@/utils/utils";
 import { AuthenticateUserDto } from "@/interfaces/requests/authsRequests";
 import { useRouter } from "next/navigation";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useState } from "react";
 import { Loading } from "./Loading";
 import { ResendVerificationEmail } from "./ResendEmailVerification";
 import {useGlobalContext} from "@/components/GlobalContext";
+import {post} from "axios";
 
 interface FormProps {
     buttonLabel:string
@@ -29,7 +30,7 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
     const credentials: AuthenticateUserDto = {
         username:"",
         password:""
-    }   
+    }
     
    //TODO Possibly replace this with a function prop that a parent component can to eliminate all the if statements
     const handleRegistration = async(e: FormEvent<HTMLFormElement>) => {
@@ -59,11 +60,11 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
             setIsLoading(false);
         }
     }
-
     const handleResendHref = (e:any) => {
         e.preventDefault();
         router.push("/sign-up/verify");
     }
+
 
     //rendered with failed called
     if (isCallFailed) {
@@ -88,7 +89,7 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
     if (isLoading) {
         return <Loading loadingMessage={loadingMessage}/>
     }
-        
+
     return (
     <form className="mt-5" onSubmit={handleRegistration}>
         <div className="space-y-6">
@@ -132,5 +133,99 @@ export const Form = ({buttonLabel, loadingMessage, route, request}: FormProps) =
             </div>
         </div>
     </form>
+    )
+}
+
+interface NewFormProps {
+    buttonLabel:string
+    loadingMessage?:string
+    route:string
+    request: (credentials:AuthenticateUserDto) => Promise<any>
+    isError: boolean
+    errorMessage: string
+}
+
+export const NewForm = ({buttonLabel, loadingMessage, route, request, isError, errorMessage}:NewFormProps) => {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isInvalidCredentials, setIsInvalidCredentials] = useState({username:false, password:false})
+    const credentials: AuthenticateUserDto = {
+        username:"",
+        password:""
+    }
+
+    const handleUsernameValidity = (newState:boolean) => {
+        setIsInvalidCredentials(prevState => ({
+           ...prevState, username: newState
+        }))
+    }
+
+    const handlePasswordValidity = (newState:boolean) => {
+        setIsInvalidCredentials(prevState => ({
+            ...prevState, password: newState
+        }))
+    }
+
+
+    const runAuthFunction = async(e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const formData = new FormData(e.currentTarget);
+        credentials.username = formData.get("email") as string;
+        credentials.password = formData.get("password") as string;
+        if (!isValidEmail(credentials.username)) {
+            handleUsernameValidity(true);
+            await sleep(1500);
+            handleUsernameValidity(false);
+        }
+        else if (!isValidPassword(credentials.password)) {
+            handlePasswordValidity(true);
+            await sleep(1500);
+            handlePasswordValidity(false);
+        }
+        else {
+            setIsLoading(true);
+            await request(credentials);
+            setIsLoading(false);
+        }
+    }
+
+
+    return (
+        <form className={"py-2 min-w-96  flex flex-col justify-items-start gap-8"} onSubmit={runAuthFunction}>
+            <span>
+                <label className="text-sm text-gray-900">
+                    Email
+                    <input placeholder="Email" type="email"
+                        className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+                        name="email"/>
+                    <div className="label">
+                        {isInvalidCredentials.username && <span className="label-text-alt text-red-500 animate-fade">Email is not valid. Try again.</span>}
+                    </div>
+                </label>
+            </span>
+                <span>
+                    <label className="text-sm text-gray-900">
+                        Password
+                    <input placeholder="Password" type="password"
+                        className=" h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 "
+                        name="password"/>
+                        <div className="label">
+                        {isInvalidCredentials.password && <span className="label-text-alt text-red-500 animate-fade">Password is in not valid. A password must have the following:
+                            <ul className={"pt-1"}>
+                                <li>One lower case letter (a-z)</li>
+                                <li>One upper case letter (A-Z)</li>
+                                <li>A digit (0-9)</li>
+                                <li>One special symbol (@#$%^&+=!*?)</li>
+                                <li>No spaces</li>
+                            </ul>
+                        </span>}
+                        </div>
+                    </label>
+                </span>
+            <button className="inline-flex w-full items-center justify-center rounded-md bg-primary hover:bg-[#457F9F] px-3.5 py-2.5 font-semibold leading-7 text-white" type="submit">
+                {buttonLabel}
+            </button>
+            <p className={"text-red-500 text-center"}>{errorMessage}</p>
+        </form>
     )
 }

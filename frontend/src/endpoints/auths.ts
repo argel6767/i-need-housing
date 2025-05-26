@@ -56,9 +56,12 @@ export const login = async (requestBody: AuthenticateUserDto): Promise<any> => {
     catch(error: any) {
         console.log(failedCallMessage(error));
         if (error.response.status === 401) {
-            return "user is not verified";
+            return {message:"user is not verified", email: requestBody.username};
         }
-        return "login failed";
+        else if (error.response.status == 403) {
+            return "Bad credentials, try again."
+        }
+        return "Login failed try again later";
     }
 }
 

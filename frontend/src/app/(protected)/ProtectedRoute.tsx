@@ -1,9 +1,19 @@
 'use client';
 
-import { useEffect, useState, ReactNode } from 'react';
+import {useEffect, useState, ReactNode, useMemo, createContext, useContext} from 'react';
 import { useRouter } from 'next/navigation';
 import { LoadingBars } from '@/components/Loading';
 import {checkCookie} from "@/endpoints/auths";
+
+
+interface ProtectedContextType {
+    isAuthorized:boolean,
+    setIsAuthorized: React.Dispatch<React.SetStateAction<boolean>>,
+    isAuthLoading:boolean,
+    setIsAuthLoading: React.Dispatch<React.SetStateAction<boolean>>,
+}
+
+const ProtectedContext = createContext<ProtectedContextType | undefined>(undefined);
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -11,7 +21,12 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
   const router = useRouter();
+
+  const contextValues = useMemo(() => ({
+      isAuthorized, setIsAuthorized, isAuthLoading, setIsAuthLoading
+  }), [isAuthorized, isAuthLoading])
 
   useEffect(() => {
     // Check for token immediately on component mount
@@ -19,9 +34,11 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         const cookieStatus = await checkCookie();
         if (cookieStatus === "Token still valid") {
             setIsAuthorized(true);
+            setIsAuthLoading(false);
         }
         else {
             setIsAuthorized(false);
+            setIsAuthLoading(false);
             router.replace('/sign-in');
         }
     }
@@ -30,7 +47,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }, [router]);
 
   // display this when checking user's authentication status
-  if (!isAuthorized) {
+  if (!isAuthorized || isAuthLoading) {
     return (
         <main className='flex flex-col justify-center items-center h-screen'>
             <h1 className='text-4xl text-center animate-pulse'>Checking authentication status. Thank you for your patience! 😁</h1>
@@ -43,5 +60,13 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   // Only render children when authorized
-  return <>{children}</>;
+  return <ProtectedContext.Provider value={contextValues}>{children}</ProtectedContext.Provider>;
+}
+
+export const useProtectedContext = (): ProtectedContextType => {
+    const context = useContext(ProtectedContext);
+    if (!context) {
+        throw new Error("useProtectedContext must be used within ProtectedContext")
+    }
+    return context;
 }

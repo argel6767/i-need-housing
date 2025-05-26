@@ -98,7 +98,7 @@ public class AuthenticationService {
      * (?=.*[a-z]): makes sure that there is at least one small letter
      * (?=.*[A-Z]): needs at least one capital letter
      * (?=.*\\d): requires at least one digit
-     * (?=.*[@#$%^&+=]): provides a guarantee of at least one special symbol
+     * (?=.*[@#$%^&+=!*?]): provides a guarantee of at least one special symbol
      * .{8,}: imposes the minimum length of 8 characters
      * @param password
      * @return

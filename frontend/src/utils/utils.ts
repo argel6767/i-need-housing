@@ -3,11 +3,18 @@ import {QueryClient} from "@tanstack/react-query";
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export const isValidEmail = (email: string): boolean => {
     return EMAIL_REGEX.test(email);
 }
+
+const PASSWORD_REGEX = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!*?])(?=\S+$).{8,}$/;
+
+export const isValidPassword = (password: string): boolean => {
+    return PASSWORD_REGEX.test(password);
+}
+
 
 export const DEFAULT_PROFILE_PICTURE_URL = "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg";
 

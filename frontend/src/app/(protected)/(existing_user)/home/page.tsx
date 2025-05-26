@@ -14,8 +14,12 @@ import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRe
 import { useEffect, useState } from "react";
 import {Modal} from "@/components/Modal";
 import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
+import {checkCookie} from "@/endpoints/auths";
+import {useProtectedContext} from "@/app/(protected)/ProtectedRoute";
+import {Loading} from "@/components/Loading";
 
 const Home = () => {
+    const {isAuthLoading} = useProtectedContext();
     const [requestBody, setRequestBody] = useState<GetListingsInAreaRequest | null>(null);
     const {listings, setListings, isListingModalUp, setIsListingModalUp, isFilterModalUp, setIsFilterModalUp} = useHomeContext();
     const {setFavoriteListings} = useGlobalContext();
@@ -51,6 +55,14 @@ const Home = () => {
             setFavoriteListings(favorites)
         }
     }, [favorites, setFavoriteListings])
+
+    if (isAuthLoading) {
+        return (
+            <div className={"flex justify-center items-center h-screen"}>
+                <Loading loadingMessage={"Building Dashboard..."}/>
+            </div>
+        )
+    }
 
     return (
             <main className="flex flex-col h-screen">
