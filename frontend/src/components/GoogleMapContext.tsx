@@ -34,7 +34,6 @@ export const GoogleMapsProvider = ({ children }: GoogleMapsProviderProps) => {
 
   const handleLoad = () => {
     setIsLoaded(true);
-    console.log("Google Maps API loaded successfully with all libraries");
   };
 
 

@@ -22,12 +22,11 @@ export const createUserPreferences = async ( requestBody: RawUserPreferenceDto):
         if (response.status === 201) {
             return response.data;
         }
-        console.log(response.data);
         return null;
     }
     catch(error: any) {
-        console.log(error.body)
-        console.log(failedCallMessage(error));
+        console.error(error.body)
+        console.error(failedCallMessage(error));
         if (error.status === 400) {
             return 'One or more preferences were not correctly filled, make sure to fill all before submitting'
         }
@@ -50,7 +49,7 @@ export const updateUserPreferences = async (requestBody: UserPreference): Promis
         return null;
     }
     catch(error) {
-        console.log(failedCallMessage(error));
+        console.error(failedCallMessage(error));
         return null;
     }
 }
@@ -61,7 +60,7 @@ export const updateUserPreferencesViaFilters = async (requestBody: UserPreferenc
         return response.data;
     }
     catch (error) {
-        console.log(failedCallMessage(error));
+        console.error(failedCallMessage(error));
         return requestBody;
     }
 }
@@ -75,14 +74,13 @@ export const getUserPreferences = async () => {
     try {
         const response = await apiClient.get(`${MODULE_MAPPING}/me`);
         if (response.status === 200) {
-            console.log(response.data);
             return response.data;
         }
         console.log(response.data);
         return null;
     }
     catch(error) {
-        console.log(failedCallMessage(error));
+        console.error(failedCallMessage(error));
         return null;
     }
 }
