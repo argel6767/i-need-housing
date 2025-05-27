@@ -13,6 +13,7 @@ import com.ineedhousing.backend.jwt.JwtService;
 import com.ineedhousing.backend.jwt.JwtUtils;
 import com.ineedhousing.backend.user.User;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -68,6 +69,9 @@ public class AuthenticationController {
         }
         catch (InvalidEmailException | InvalidPasswordException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (MessagingException me) {
+            return ResponseEntity.internalServerError().body(me.getMessage());
         }
     }
 
@@ -131,6 +135,12 @@ public class AuthenticationController {
         catch (EmailVerificationException eve) {
             return ResponseEntity.badRequest().body(eve.getMessage());
         }
+        catch (MessagingException me) {
+            return ResponseEntity.internalServerError().body(me.getMessage());
+        }
+        catch (UsernameNotFoundException unfe) {
+            return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
@@ -161,6 +171,8 @@ public class AuthenticationController {
         }
         catch (UsernameNotFoundException unfe) {
             return ResponseEntity.notFound().build();
+        } catch (MessagingException me) {
+            return ResponseEntity.internalServerError().body(me.getMessage());
         }
     }
 

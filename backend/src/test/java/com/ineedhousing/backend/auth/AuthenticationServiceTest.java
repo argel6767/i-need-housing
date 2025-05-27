@@ -211,7 +211,7 @@ class AuthenticationServiceTest {
     }
 
     @Test
-    void testGenerateVerificationCodeFormat() {
+    void testGenerateVerificationCodeFormat() throws MessagingException {
         // Arrange
         String email = "test@example.com";
         String password = "password123";

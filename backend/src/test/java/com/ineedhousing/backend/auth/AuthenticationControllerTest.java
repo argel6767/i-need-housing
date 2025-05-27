@@ -7,6 +7,7 @@ import com.ineedhousing.backend.auth.requests.*;
 import com.ineedhousing.backend.auth.responses.LoginResponse;
 import com.ineedhousing.backend.jwt.JwtService;
 import com.ineedhousing.backend.user.User;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -36,7 +37,7 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    void testRegisterSuccessful() {
+    void testRegisterSuccessful() throws MessagingException {
         // Arrange
         AuthenticateUserDto request = new AuthenticateUserDto("test@example.com", "password123");
         User expectedUser = new User("test@example.com", "encodedPassword123");
@@ -99,7 +100,7 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    void testResendVerificationEmailSuccessful() {
+    void testResendVerificationEmailSuccessful() throws MessagingException {
         // Arrange
         String email = "test@example.com";
         ResendEmailDto emailDto = new ResendEmailDto(email);
@@ -113,7 +114,7 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    void testResendVerificationEmailFailure() {
+    void testResendVerificationEmailFailure() throws MessagingException {
         // Arrange
         String email = "test@example.com";
         ResendEmailDto emailDto = new ResendEmailDto(email);
@@ -142,7 +143,7 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    void testRegisterFailureEmailTaken() {
+    void testRegisterFailureEmailTaken() throws MessagingException {
         // Arrange
         AuthenticateUserDto request = new AuthenticateUserDto("taken@example.com", "password123");
         when(authenticationService.signUp(request))

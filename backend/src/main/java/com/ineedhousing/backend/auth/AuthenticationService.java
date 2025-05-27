@@ -25,12 +25,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Random;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * holds the business logic for authenticating users and sending emails for verification codes
+ * Holds the business logic for authenticating users and sending emails for verification codes
  */
 @Log
 @Service
@@ -51,7 +50,7 @@ public class AuthenticationService {
     /**
      * signs up user to app, will fail if the email is taken as they need to be unique
      */
-    public User signUp(AuthenticateUserDto request) {
+    public User signUp(AuthenticateUserDto request) throws MessagingException {
         log.info("Signing up user");
         if (userRepository.findByEmail(request.getUsername()).isPresent()) {
             log.warning("User with email " + request.getUsername() + " already exists");
@@ -68,19 +67,13 @@ public class AuthenticationService {
         log.info("Creating new user " + request.getUsername());
         User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()));
         user.setAuthorities("ROLE_USER");
-        setVerificationCodeAndSendIt(user, this::sendVerificationEmail);
+        String code = setVerificationCode(user);
+        sendVerificationEmail(user, code);
         log.info("User " + request.getUsername() + " created");
         return userRepository.save(user);
     }
 
-    /**
-     * holds the verification code setting and sending for reduced repeat code
-     */
-    private void setVerificationCodeAndSendIt(User user, Consumer<User> sendEmail) {
-        user.setVerificationCode(generateVerificationCode());
-        user.setCodeExpiry(LocalDateTime.now().plusMinutes(30));
-        sendEmail.accept(user);
-    }
+
 
     /**
      * Checks whether an email is a valid one utilizing
@@ -111,6 +104,18 @@ public class AuthenticationService {
         Pattern pattern = Pattern.compile(regExpn);
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();
+    }
+
+    /**
+     * generates a new verification code for user and sets it
+     * @param user
+     * @return
+     */
+    private String setVerificationCode(User user) {
+        String verificationCode = generateVerificationCode();
+        user.setCodeExpiry(LocalDateTime.now().plusMinutes(30));
+        user.setVerificationCode(verificationCode);
+        return verificationCode;
     }
 
     /**
@@ -163,6 +168,11 @@ public class AuthenticationService {
 
     }
 
+    /**
+     * Grabs user from repository
+     * @param email
+     * @return
+     */
     private User getUser(String email) {
         log.info("getting user " + email);
         return userRepository.findByEmail(email)
@@ -173,14 +183,15 @@ public class AuthenticationService {
      * resends verification email to user but with new code
      * can be used if their last code expired
      */
-    public void resendVerificationEmail(String email) {
+    public void resendVerificationEmail(String email) throws MessagingException {
         User user = getUser(email);
         if (user.isEnabled()) {
             log.warning("user already verified: " + email);
             throw new EmailVerificationException("Email is already verified");
         }
         log.info("resending verification email with new code" + email);
-        setVerificationCodeAndSendIt(user, this::sendVerificationEmail);
+        String code = setVerificationCode(user);
+        sendVerificationEmail(user, code);
         userRepository.save(user);
     }
 
@@ -203,10 +214,12 @@ public class AuthenticationService {
     /**
      * sends a user a verification code for changing one's, should they forget it.
      */
-    public void sendForgottenPasswordVerificationCode(String email) {
+
+    public void sendForgottenPasswordVerificationCode(String email) throws MessagingException {
         log.info("sending forgotten password verification code for user " + email);
         User user = getUser(email);
-        setVerificationCodeAndSendIt(user, this::sendResetPasswordEmail);
+        String code = setVerificationCode(user);
+        sendResetPasswordEmail(user, code);
         userRepository.save(user);
     }
 
@@ -235,277 +248,21 @@ public class AuthenticationService {
     /**
      * formats and generates the verification email that will contain the verification code to the user
      */
-    private void sendVerificationEmail(User user) {
-        log.info("sending verification email for user " + user.getEmail());
-        String to = user.getUsername();
-        String subject = "Verification Email";
-        String code = user.getVerificationCode();
-        String body = String.format("""
-                <!DOCTYPE html>
-                <html>
-                <head>
-                  <meta charset="utf-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1">
-                  <title>Verify Your Account</title>
-                  <style>
-                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-                    :root {
-                      --primary: #176087;
-                      --foreground: #000000;
-                      --slate-50: #f8fafc;
-                      --slate-100: #f1f5f9;
-                      --slate-200: #e2e8f0;
-                    }
-                    body {
-                      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-                      margin: 0;
-                      padding: 0;
-                      line-height: 1.6;
-                      background-color: #f5f5f5;
-                    }
-                    .container {
-                      max-width: 600px;
-                      margin: 0 auto;
-                      background-color: #ffffff;
-                      border-radius: 8px;
-                      overflow: hidden;
-                      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-                    }
-                    .header {
-                      padding: 24px;
-                      background-color: var(--primary);
-                      text-align: center;
-                    }
-                    .header img {
-                      height: 40px;
-                    }
-                    .content {
-                      padding: 32px 24px;
-                      background-color: #ffffff;
-                    }
-                    .title {
-                      font-size: 20px;
-                      font-weight: 600;
-                      color: var(--foreground);
-                      margin-top: 0;
-                      margin-bottom: 16px;
-                    }
-                    .text {
-                      font-size: 16px;
-                      color: #4b5563;
-                      margin-bottom: 24px;
-                    }
-                    .code-container {
-                      background-color: var(--slate-100);
-                      border-radius: 6px;
-                      padding: 16px;
-                      text-align: center;
-                      margin-bottom: 24px;
-                      border: 1px solid var(--slate-200);
-                    }
-                    .verification-code {
-                      font-family: 'Courier New', monospace;
-                      font-size: 24px;
-                      font-weight: 700;
-                      letter-spacing: 4px;
-                      color: var(--primary);
-                    }
-                    .button {
-                      display: inline-block;
-                      background-color: var(--primary);
-                      color: white;
-                      text-decoration: none;
-                      padding: 12px 24px;
-                      border-radius: 6px;
-                      font-weight: 500;
-                      margin-bottom: 24px;
-                    }
-                    .footer {
-                      padding: 24px;
-                      background-color: var(--slate-50);
-                      text-align: center;
-                      border-top: 1px solid var(--slate-200);
-                    }
-                    .footer-text {
-                      font-size: 14px;
-                      color: #6b7280;
-                    }
-                    .help-text {
-                      font-size: 13px;
-                      color: #9ca3af;
-                      text-align: center;
-                      margin-top: 8px;
-                    }
-                  </style>
-                </head>
-                <body>
-                  <div style="padding: 20px;">
-                    <div class="container">
-                      <div class="header">
-                        <h1 style="margin: 0; color: white; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;">INeedHousing</h1>
-                      </div>
-                      <div class="content">
-                        <h1 class="title">Verify Your Email Address</h1>
-                        <p class="text">Thanks for signing up! Please enter the verification code below to complete your account setup.</p>
-                        <div class="code-container">
-                          <div class="verification-code">%s</div>
-                        </div>
-                        <p class="text">This code will expire in 10 minutes. If you didn't request this code, you can safely ignore this email.</p>
-                        <p class="help-text">Having trouble? Contact our support team.</p>
-                      </div>
-                      <div class="footer">
-                        <p class="footer-text">© 2025 INeedHousing. All rights reserved.</p>
-                      </div>
-                    </div>
-                  </div>
-                </body>
-                </html>""", code);
-        sendEmail(to, subject, body);
+    private void sendVerificationEmail(User user, String code) throws MessagingException {
+       String email = user.getEmail();
+       emailService.sendVerificationEmail(code, email);
+       log.info("verification email sent for user " + user.getEmail());
     }
 
     /**
      * formats and generates the reset password email that will contain the verification code to the user
      */
-    private void sendResetPasswordEmail(User user) {
-        log.info("sending forgot password email for user " + user.getEmail());
-        String to = user.getUsername();
-        String subject = "Reset Password";
-        String code = user.getVerificationCode();
-        String body = String.format("""
-                <!DOCTYPE html>
-                <html>
-                <head>
-                  <meta charset="utf-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1">
-                  <title>Verify Your Account</title>
-                  <style>
-                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-                    :root {
-                      --primary: #176087;
-                      --foreground: #000000;
-                      --slate-50: #f8fafc;
-                      --slate-100: #f1f5f9;
-                      --slate-200: #e2e8f0;
-                    }
-                    body {
-                      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-                      margin: 0;
-                      padding: 0;
-                      line-height: 1.6;
-                      background-color: #f5f5f5;
-                    }
-                    .container {
-                      max-width: 600px;
-                      margin: 0 auto;
-                      background-color: #ffffff;
-                      border-radius: 8px;
-                      overflow: hidden;
-                      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-                    }
-                    .header {
-                      padding: 24px;
-                      background-color: var(--primary);
-                      text-align: center;
-                    }
-                    .header img {
-                      height: 40px;
-                    }
-                    .content {
-                      padding: 32px 24px;
-                      background-color: #ffffff;
-                    }
-                    .title {
-                      font-size: 20px;
-                      font-weight: 600;
-                      color: var(--foreground);
-                      margin-top: 0;
-                      margin-bottom: 16px;
-                    }
-                    .text {
-                      font-size: 16px;
-                      color: #4b5563;
-                      margin-bottom: 24px;
-                    }
-                    .code-container {
-                      background-color: var(--slate-100);
-                      border-radius: 6px;
-                      padding: 16px;
-                      text-align: center;
-                      margin-bottom: 24px;
-                      border: 1px solid var(--slate-200);
-                    }
-                    .verification-code {
-                      font-family: 'Courier New', monospace;
-                      font-size: 24px;
-                      font-weight: 700;
-                      letter-spacing: 4px;
-                      color: var(--primary);
-                    }
-                    .button {
-                      display: inline-block;
-                      background-color: var(--primary);
-                      color: white;
-                      text-decoration: none;
-                      padding: 12px 24px;
-                      border-radius: 6px;
-                      font-weight: 500;
-                      margin-bottom: 24px;
-                    }
-                    .footer {
-                      padding: 24px;
-                      background-color: var(--slate-50);
-                      text-align: center;
-                      border-top: 1px solid var(--slate-200);
-                    }
-                    .footer-text {
-                      font-size: 14px;
-                      color: #6b7280;
-                    }
-                    .help-text {
-                      font-size: 13px;
-                      color: #9ca3af;
-                      text-align: center;
-                      margin-top: 8px;
-                    }
-                  </style>
-                </head>
-                <body>
-                  <div style="padding: 20px;">
-                    <div class="container">
-                      <div class="header">
-                        <h1 style="margin: 0; color: white; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;">INeedHousing</h1>
-                      </div>
-                      <div class="content">
-                        <h1 class="title">Verify Your Email Address</h1>
-                        <p class="text">Thanks for signing up! Please enter the verification code below to complete your account setup.</p>
-                        <div class="code-container">
-                          <div class="verification-code">%s</div>
-                        </div>
-                        <p class="text">This code will expire in 10 minutes. If you didn't request this code, you can safely ignore this email.</p>
-                        <p class="help-text">Having trouble? Contact our support team.</p>
-                      </div>
-                      <div class="footer">
-                        <p class="footer-text">© 2025 INeedHousing. All rights reserved.</p>
-                      </div>
-                    </div>
-                  </div>
-                </body>
-                </html>""", code);
-        sendEmail(to, subject, body);
+    private void sendResetPasswordEmail(User user, String code) throws MessagingException {
+       String email = user.getEmail();
+       emailService.sendResetPasswordEmail(code,email);
+       log.info("reset forgot password email sent for user " + user.getEmail());
     }
 
-    /**
-     * holds the try catch logic of sending the email
-     */
-    private void sendEmail(String to, String subject, String body) {
-        try{
-            emailService.sendEmail(to, subject, body);
-            log.info("email successfully sent");
-        } catch (MessagingException e) {
-            log.severe("Failed to send email");
-            throw new RuntimeException("Error sending verification email", e);
-        }
-    }
 
     /**
      * generates a random 6-digit number to be used as a verification code
