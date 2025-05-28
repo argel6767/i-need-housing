@@ -10,6 +10,7 @@ A robust Spring Boot backend application for a housing listing platform, providi
   - User registration and authentication
   - Role-based access control (Admin and User roles)
   - User profile management
+    - User profile pictures housed in Azure Blob Container
   - User search preferences
 
 ### Housing Listings
@@ -22,6 +23,7 @@ A robust Spring Boot backend application for a housing listing platform, providi
 ### Security
 
 - JWT-based authentication
+- Http-Only Cookies
 - Spring Security integration
 - Role-based authorization
 - Secure password handling
@@ -29,7 +31,7 @@ A robust Spring Boot backend application for a housing listing platform, providi
 ### Additional Features
 
 - Email service integration
-- Rate limiting with Bucket4j
+- Rate limiting with Resilience4j
 - Caching implementation
 - Admin dashboard functionality
 
@@ -50,9 +52,10 @@ Key dependencies include:
 - Spring Boot Starters (Web, Data JPA, Security, Mail, Cache)
 - Hibernate Spatial for geographic queries
 - JWT for authentication
-- Bucket4j for rate limiting
+- Resilience4j for rate limiting
 - Vaadin for UI components
 - Lombok for reducing boilerplate code
+- Azure Blob SDK
 
 ## 🏗️ Project Structure
 
@@ -60,6 +63,7 @@ Key dependencies include:
 src/main/java/com/ineedhousing/backend/
 ├── admin/           # Admin-specific functionality
 ├── apis/            # External API calls for listing gathering
+├── azure/           # Azure services management
 ├── auth/            # Authentication and authorization
 ├── configs/         # Configuration classes
 ├── email/           # Email service implementation
@@ -95,6 +99,8 @@ The application includes:
    - Maven
    - PostgreSQL
    - Docker (optional)
+   - a dev.env file with environment variables
+   - Python 3
 
 2. **Setup**
 
@@ -102,14 +108,8 @@ The application includes:
    # Clone the repository
    git clone [repository-url]
    
-   # Navigate to backend directory
-   cd backend
-   
-   # Build the application
-   mvn clean install
-   
-   # Run the application
-   mvn spring-boot:run
+   # Run Python script
+   python scripts/run_backend.py
    ```
 
 3. **Docker Deployment**
@@ -152,6 +152,14 @@ The application provides the following REST API endpoints:
 - `PUT /me` - Update user information
 - `PUT /type` - Update user type
 - `DELETE /me` - Delete user
+
+### Profile Pictures (`/profile-pictures`)
+- `GET /url` - Get user's profile picture's SAS URL
+- `PUT /url` - Update user's profile picture's SAS URL
+- `PUT /upload` - Update user's profile picture
+- `GET /me` - Get user's Profile Picture entity
+- `POST /` - Create user's Profile Picture entity
+- `DELETE /me` - Delete user's Profile Picture entity
 
 ### Housing Listings (`/listings`)
 

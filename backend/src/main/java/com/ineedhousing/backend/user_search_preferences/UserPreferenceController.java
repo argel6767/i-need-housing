@@ -3,6 +3,7 @@ package com.ineedhousing.backend.user_search_preferences;
 import java.io.InvalidObjectException;
 
 import com.ineedhousing.backend.user_search_preferences.responses.FormattedUserPreferenceDto;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -47,6 +48,7 @@ public class UserPreferenceController {
      * @return
      */
     @PostMapping()
+    @RateLimiter(name = "preferences")
     public ResponseEntity<?> createUserPreferences(@RequestBody UserPreferenceDto request) {
         try {
             String email = JwtUtils.getCurrentUserEmail();
@@ -62,6 +64,7 @@ public class UserPreferenceController {
     }
 
     @PostMapping("/coordinates")
+    @RateLimiter(name = "preferences")
     public ResponseEntity<?> createUserPreferencesWithCoordinates(@RequestBody RawCoordinateUserPreferenceRequest request) {
         if (request.getCityOfEmployment() == null || request.getBathrooms() == null ||  request.getBedrooms() == null) {
             return new ResponseEntity<>("BAD REQUEST", HttpStatus.BAD_REQUEST);
@@ -81,7 +84,8 @@ public class UserPreferenceController {
         }
 }
 
-@PostMapping("/addresses")
+    @PostMapping("/addresses")
+    @RateLimiter(name = "preferences")
     public ResponseEntity<?> createUserPreferenceWithAddresses(@RequestBody RawUserPreferencesDto request) {
         log.info("Beginning creation with request" + request.toString());
         try {
@@ -106,6 +110,7 @@ public class UserPreferenceController {
      * @return
      */
     @PutMapping()
+    @RateLimiter(name = "preferences")
     public ResponseEntity<?> updateUserPreferences(@RequestBody UserPreference userPreference) {
         try {
             String email = JwtUtils.getCurrentUserEmail();
@@ -122,6 +127,7 @@ public class UserPreferenceController {
      * @return
      */
     @PutMapping("/filters")
+    @RateLimiter(name = "preferences")
     public ResponseEntity<?> updateUserPreferences(@RequestBody NewFiltersDto request) {
         try {
             FormattedUserPreferenceDto updatedPreferences = userPreferenceService.updateUserPreferences(request);
@@ -137,6 +143,7 @@ public class UserPreferenceController {
      * @return
      */
     @GetMapping("/me")
+    @RateLimiter(name = "preferences")
     public ResponseEntity<?> getPreferences() {
         try {
             Long id = JwtUtils.getCurrentUserId();

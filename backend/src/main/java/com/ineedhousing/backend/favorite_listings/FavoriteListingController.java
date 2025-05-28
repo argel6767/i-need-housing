@@ -3,6 +3,7 @@ package com.ineedhousing.backend.favorite_listings;
 import com.ineedhousing.backend.favorite_listings.requests.AddFavoriteListingsRequest;
 import com.ineedhousing.backend.jwt.JwtUtils;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class FavoriteListingController {
      * @return ResponseEntity
      */
     @GetMapping("/me")
+    @RateLimiter(name = "favorites")
     public ResponseEntity<?> getAllUserFavoriteListings() {
         try {
             Long id = JwtUtils.getCurrentUserId();
@@ -50,6 +52,7 @@ public class FavoriteListingController {
      * @return ResponseEntity
      */
     @PostMapping("/listings")
+    @RateLimiter(name = "favorites")
     public ResponseEntity<?> addNewFavoriteListings(@RequestBody AddFavoriteListingsRequest request) {
         try {
             String email = JwtUtils.getCurrentUserEmail();
@@ -68,6 +71,7 @@ public class FavoriteListingController {
      * @return ResponseEntity
      */
     @DeleteMapping("/listings/{id}")
+    @RateLimiter(name = "favorites")
     public ResponseEntity<?> deleteFavoriteListing(@PathVariable Long id) {
         try {
             Long userId = JwtUtils.getCurrentUserId();
@@ -86,6 +90,7 @@ public class FavoriteListingController {
      * @return ResponseEntity
      */
     @DeleteMapping()
+    @RateLimiter(name = "favorites")
     public ResponseEntity<?> deleteAllUserFavoriteListings() {
         try {
             String email = JwtUtils.getCurrentUserEmail();

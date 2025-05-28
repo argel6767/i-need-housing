@@ -2,6 +2,7 @@ package com.ineedhousing.backend.azure.blob.profile_picture;
 
 import com.ineedhousing.backend.azure.blob.exceptions.UserProfilePictureNotFoundException;
 import com.ineedhousing.backend.jwt.JwtUtils;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class ProfilePictureController {
      * @return
      */
     @PutMapping("/url")
+    @RateLimiter(name = "profile-pictures")
     public ResponseEntity<String> updateURL() {
         try {
             Long id = JwtUtils.getCurrentUserId();
@@ -45,6 +47,7 @@ public class ProfilePictureController {
      * @return
      */
     @GetMapping("/url")
+    @RateLimiter(name = "profile-pictures")
     public ResponseEntity<String> getURL() {
         try {
             Long id = JwtUtils.getCurrentUserId();
@@ -63,6 +66,7 @@ public class ProfilePictureController {
      * @return
      */
     @PutMapping("/upload")
+    @RateLimiter(name = "profile-pictures")
     public ResponseEntity<String> updatePicture(@RequestParam("file") MultipartFile file) {
         try {
             Long id = JwtUtils.getCurrentUserId();
@@ -93,7 +97,8 @@ public class ProfilePictureController {
      * Returns user's Profile Picture
      * @return
      */
-    @GetMapping()
+    @GetMapping("/me")
+    @RateLimiter(name = "profile-pictures")
     public ResponseEntity<?> getUserProfilePicture() {
         try {
             Long id = JwtUtils.getCurrentUserId();
@@ -113,6 +118,7 @@ public class ProfilePictureController {
      * @return
      */
     @PostMapping()
+    @RateLimiter(name = "profile-pictures")
     public ResponseEntity<String> createUserProfilePicture(@RequestParam("file") MultipartFile file) {
         try {
             Long id = JwtUtils.getCurrentUserId();
@@ -142,7 +148,8 @@ public class ProfilePictureController {
      * deletes user's Profile Picture
      * @return
      */
-    @DeleteMapping()
+    @DeleteMapping("/me")
+    @RateLimiter(name = "profile-pictures")
     public ResponseEntity<String> deleteUserProfilePicture() {
         try {
             Long id = JwtUtils.getCurrentUserId();

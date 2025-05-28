@@ -13,6 +13,7 @@ import com.ineedhousing.backend.jwt.JwtService;
 import com.ineedhousing.backend.jwt.JwtUtils;
 import com.ineedhousing.backend.user.User;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -49,6 +50,7 @@ public class AuthenticationController {
      */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/cookie-status")
+    @RateLimiter(name = "auths")
     public ResponseEntity<String> checkCookie() {
         String email = JwtUtils.getCurrentUserEmail();
         log.info("Cookie is still valid for email: " + email);
@@ -59,6 +61,7 @@ public class AuthenticationController {
      * register user endpoint
      */
     @PostMapping("/register")
+    @RateLimiter(name = "auths")
     public ResponseEntity<?> register(@RequestBody AuthenticateUserDto request) {
         try {
             User registeredUser = authenticationService.signUp(request);
@@ -79,6 +82,7 @@ public class AuthenticationController {
      * login user endpoint
      */
     @PostMapping("/login")
+    @RateLimiter(name = "auths")
     public ResponseEntity<?> login(@RequestBody AuthenticateUserDto request, HttpServletResponse response) {
         try {
             User user = authenticationService.authenticateUser(request);
@@ -95,10 +99,12 @@ public class AuthenticationController {
             return new ResponseEntity<>(ive.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     /**
      * verify user endpoint via the code they input
      */
     @PostMapping("/verify")
+    @RateLimiter(name = "auths")
     public ResponseEntity<?> verify(@RequestBody VerifyUserDto request) {
         try {
             authenticationService.verifyUser(request);
@@ -116,6 +122,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
+    @RateLimiter(name = "auths")
     public ResponseEntity<?> logout(HttpServletResponse response) {   
         // Set cookie header with SameSite
         String cookieHeader = jwtService.generateCookie("", Optional.of(0L));
@@ -127,6 +134,7 @@ public class AuthenticationController {
      * resend verification email endpoint
      */
     @PostMapping("/resend")
+    @RateLimiter(name = "auths")
     public ResponseEntity<?> resend(@RequestBody ResendEmailDto email) {
         try {
             authenticationService.resendVerificationEmail(email.getEmail());
@@ -148,6 +156,7 @@ public class AuthenticationController {
      * THIS IS USED ONLY FOR WHEN A USER WANTS TO UPDATE PASSWORD
      */
     @PutMapping("/password")
+    @RateLimiter(name = "auths")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDto request) {
         try {
             return ResponseEntity.ok(authenticationService.changePassword(request));
@@ -164,6 +173,7 @@ public class AuthenticationController {
      * sends email for reset password request
      */
     @PostMapping("/forgot/{email}")
+    @RateLimiter(name = "auths")
     public ResponseEntity<?> forgotPassword(@PathVariable String email) {
         try {
             authenticationService.sendForgottenPasswordVerificationCode(email);
@@ -181,6 +191,7 @@ public class AuthenticationController {
      * ONLY TO BE USED FOR WHEN USER FORGETS PASSWORD
      */
     @PutMapping("/reset")
+    @RateLimiter(name = "auths")
     public ResponseEntity<?> resetPasswordForgottenPassword(@RequestBody ForgotPasswordDto request) {
         try {
             User user = authenticationService.resetPassword(request);

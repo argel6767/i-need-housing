@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.housing_listings;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,6 +53,7 @@ public class HousingListingController {
      * @return listings
      */
     @GetMapping("/area")
+    @RateLimiter(name = "housing")
     public ResponseEntity<?> getListingsInArea(@RequestParam double latitude, @RequestParam double longitude, @RequestParam int radius ) {
         try {
             List<HousingListing> listings = housingListingService.getListingsInArea(latitude, longitude, radius);
@@ -70,6 +72,7 @@ public class HousingListingController {
      * @return
      */
     @GetMapping("/{id}")
+    @RateLimiter(name = "housing")
     public ResponseEntity<?> getListing(@PathVariable Long id) {
         try {
             HousingListing housingListing = housingListingService.getListing(id);
@@ -86,6 +89,7 @@ public class HousingListingController {
      * @return
      */
     @DeleteMapping("/{id}")
+    @RateLimiter(name = "housing")
     public ResponseEntity<?> deleteListing(@PathVariable Long id) {
         if (!JwtUtils.isUserAdmin()) {
             Map<String, String> response = new HashMap<>();
@@ -107,6 +111,7 @@ public class HousingListingController {
      * @return
      */
     @PostMapping("/filter/exact")
+    @RateLimiter(name = "housing")
     public ResponseEntity<?> getListingWithExactPreferences(@RequestBody ExactPreferencesDto request) {
         try {
             List<HousingListing> listings = housingListingService.getListingsByPreferences(request.getId(), request.getListings(), UserPreferencesFilterer::findByExactPreferences);
@@ -124,6 +129,7 @@ public class HousingListingController {
      * @return
      */
     @PostMapping("/filter/non-strict")
+    @RateLimiter(name = "housing")
     public ResponseEntity<?> getListingWithNonStrictPreferences(@RequestBody GetListingsByPreferenceRequest request) {
         try {
             List<HousingListing> listings = housingListingService.getListingsByPreferences(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getPreferences(), UserPreferencesFilterer::findByNonStrictPreferences);
@@ -140,6 +146,7 @@ public class HousingListingController {
      * @return
      */
     @PostMapping("/filter/specific")
+    @RateLimiter(name = "housing")
     public ResponseEntity<?> getListingWithSpecificPreference(@RequestBody GetListingsBySpecificPreferenceRequest request) {
         try {
             List<HousingListing> listings = housingListingService.getListingsBySpecificPreference(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getSpecificPreference());
@@ -156,6 +163,7 @@ public class HousingListingController {
      * @return
      */
     @PostMapping("/preferences/multi")
+    @RateLimiter(name = "housing")
     public ResponseEntity<?> getListingsWithManyPreferences(@RequestBody GetListingsBySpecificPreferenceRequest request) {
         try {
             List<HousingListing> listings = housingListingService.getListingsByMultiplePreferences(request.getLatitude(), request.getLongitude(), request.getRadius(), request.getSpecificPreference());

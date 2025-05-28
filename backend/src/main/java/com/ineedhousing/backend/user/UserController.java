@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.user;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,6 +35,7 @@ public class UserController {
      * @return ResponseEntity
      */
     @GetMapping("/me")
+    @RateLimiter(name = "user")
     public ResponseEntity<?> getCurrentUser() {
         try {
             String email = JwtUtils.getCurrentUserEmail();
@@ -54,6 +56,7 @@ public class UserController {
      * @return User
      */
     @PutMapping("/me")
+    @RateLimiter(name = "user")
     public ResponseEntity<?> updateCurrentUser(@RequestBody User user) {
         try {
             String email = JwtUtils.getCurrentUserEmail();
@@ -74,6 +77,7 @@ public class UserController {
      * @return ResponseEntity
      */
     @PutMapping("/type")
+    @RateLimiter(name = "user")
     public ResponseEntity<?> setUserType(@RequestBody SetUserTypeRequest request) {
         log.info("user type: " + request.toString());
         if (request.getUserType() == null || request.getUserType().toString().isEmpty()) {
@@ -94,6 +98,7 @@ public class UserController {
      * @return ResponseEntity
      */
     @DeleteMapping("/me")
+    @RateLimiter(name = "user")
     public ResponseEntity<?> deleteCurrentUser() {
         try {
             String email = JwtUtils.getCurrentUserEmail();

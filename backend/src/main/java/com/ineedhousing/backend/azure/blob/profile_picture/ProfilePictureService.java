@@ -111,18 +111,19 @@ public class ProfilePictureService {
      * @throws IOException
      */
     public String[] uploadProfilePicture(MultipartFile multipartFile, Long id) throws IOException {
-        String blobName = generateBlobName(id, multipartFile.getContentType());
+        String blobName = generateBlobName(id);
         File file = FileConverter.convertMultipartFileToFile(multipartFile);
+        File convertedFile = FileConverter.convertFileToJpg(file);
         BlobClient blobClient = blobContainerClient.getBlobClient(blobName);
 
         log.info("Building BlobHttpHeaders");
         BlobHttpHeaders headers = new BlobHttpHeaders()
-                .setContentType(multipartFile.getContentType()) // or appropriate image type
+                .setContentType("image/jpg") // or appropriate image type
                 .setContentDisposition("inline");
 
         try {
             log.info("Uploading profile picture to container");
-            String path = file.getAbsolutePath();
+            String path = convertedFile.getAbsolutePath();
             blobClient.uploadFromFile(path,
                     null, // parallelTransferOptions
                     headers, // BlobHttpHeaders
@@ -137,7 +138,8 @@ public class ProfilePictureService {
             throw new IOException("File upload failed!");
         }
         finally { // Clean up temporary file after upload
-            log.info("Deleting temporary file");
+            log.info("Deleting temporary files");
+            convertedFile.delete();
             file.delete();
         }
 
@@ -162,15 +164,8 @@ public class ProfilePictureService {
     }
 
     //creates the blob name depending on the users file type
-    private String generateBlobName(Long id, String contentType) {
-        String fileType = switch (contentType) {
-            case null -> throw new IllegalArgumentException("File cannot be null!"); //null check
-            case "image/jpeg" -> "jpeg";
-            case "image/jpg" -> "jpg";
-            case "image/png" -> "png";
-            default -> throw new IllegalArgumentException("Unsupported content type: " + contentType);
-        };
-        return "profiles/" + id + "." + fileType;
+    private String generateBlobName(Long id) {
+        return "profiles/" + id + "." + "jpg";
     }
 
     /**
