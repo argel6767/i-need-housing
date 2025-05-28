@@ -1,62 +1,232 @@
-# code-with-quarkus
+# INeedHousing Cron Job Service
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+A lightweight Quarkus-based microservice designed to handle scheduled maintenance tasks for the INeedHousing platform, including Azure resource cleanup and database maintenance operations.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## 🚀 Features
 
-## Running the application in dev mode
+### Scheduled Tasks
 
-You can run your application in dev mode that enables live coding using:
+- **Container Registry Cleanup**
+    - Automated deletion of old container images from Azure Container Registry
+    - Configurable retention policies for image versions
+    - Support for repository-specific cleanup rules
 
-```shell script
-./mvnw quarkus:dev
+- **Database Maintenance**
+    - Automated cleanup of old listing data from Azure PostgreSQL
+    - Expired listing removal based on configurable time thresholds
+    - Database optimization and maintenance tasks
+
+### Real-time Monitoring
+
+- **WebSocket Integration**
+    - Live log streaming to INeedHousing admin dashboard
+    - Real-time task execution status updates
+    - Bidirectional communication for task management
+
+### Logging & Auditing
+
+- **Persistent Log Storage**
+    - Automated log archival to Azure Blob Storage
+    - Structured logging with task execution metadata
+    - Searchable log history for audit trails
+
+## 🛠️ Technical Stack
+
+- **Framework**: Quarkus 3.22.3
+- **Language**: Java 21
+- **Database**: SQLite (local task tracking)
+- **Cloud Services**: Azure Container Registry, Azure Blob Storage, Azure PostgreSQL
+- **Build Tool**: Maven
+- **Containerization**: Docker
+
+## 📦 Dependencies
+
+Key dependencies include:
+
+- **Quarkus Core**: Arc (CDI), REST, WebSockets Next, Scheduler
+- **Azure SDKs**: Container Registry, Blob Storage
+- **Database**: SQLite JDBC driver
+- **Testing**: JUnit 5, REST Assured
+
+## 🏗️ Project Structure
+
+```txt
+src/main/java/com/ineedhousing/cronjob/
+├── azure/              # Azure service integrations
+│   ├── blob/           # Blob storage operations
+│   ├── container/      # Container registry management
+│   └── postgres/       # PostgreSQL database operations
+├── config/             # Configuration classes
+├── logging/            # Logging and audit functionality
+├── scheduler/          # Cron job definitions and management
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+## ⚙️ Configuration
 
-## Packaging and running the application
+The application will use environment variables for configuration. Configuration setup is planned for:
 
-The application can be packaged using:
+### Azure Configuration (Planned)
+- Container registry connection settings
+- Blob storage connection configuration
+- PostgreSQL database connection parameters
 
-```shell script
-./mvnw package
+### Scheduling Configuration (Planned)
+- Image retention policies and cleanup schedules
+- Database cleanup schedules and retention periods
+- Task execution parameters and timeouts
+
+### WebSocket Configuration (Planned)
+- Admin dashboard connection settings
+- Real-time logging stream configuration
+
+## 🚀 Getting Started
+
+1. **Prerequisites**
+    - Java 21
+    - Maven
+    - Docker (optional)
+    - Azure account with Container Registry and Blob Storage
+
+2. **Local Development**
+
+   ```bash
+   # Clone the repository
+   git clone [repository-url]
+   
+   # Navigate to service directory
+   cd cron-job-service
+   
+   # Set up environment variables (when configuration is implemented)
+   # cp .env.example .env
+   # Edit .env with your Azure configuration
+   
+   # Run in development mode
+   ./mvnw compile quarkus:dev
+   ```
+
+3. **Docker Deployment**
+
+   ```bash
+   # Build the application
+   ./mvnw package
+   
+   # Build Docker image
+   docker build -f src/main/docker/Dockerfile.jvm -t ineedhousing/cron-service .
+   
+   # Run container (once configuration is implemented)
+   # docker run -p 8080:8080 --env-file .env ineedhousing/cron-service
+   ```
+
+4. **Native Build** (Optional)
+
+   ```bash
+   # Build native executable
+   ./mvnw package -Dnative
+   
+   # Build native Docker image
+   docker build -f src/main/docker/Dockerfile.native -t ineedhousing/cron-service:native .
+   ```
+
+## 📝 API Endpoints
+
+### Planned Endpoints
+
+#### Health & Status (Planned)
+- Health check and service status endpoints
+- Readiness and liveness probes for container orchestration
+
+#### Task Management (Planned)
+- Task execution status monitoring
+- Manual task triggering capabilities
+- Task execution history and logging
+
+#### WebSocket Integration (Planned)
+- Real-time log streaming for admin dashboard
+- Live task execution monitoring
+
+## 🔄 Scheduled Tasks
+
+### Planned Tasks
+
+#### Image Cleanup Task
+**Purpose**: Remove old container images from Azure Container Registry
+**Implementation**: Scheduled cleanup based on configurable retention policies
+**Logging**: Task execution logs will be archived to Azure Blob Storage
+
+#### Listing Cleanup Task
+**Purpose**: Remove expired housing listings from PostgreSQL database
+**Implementation**: Automated cleanup of old listing data based on age thresholds
+**Logging**: Database maintenance logs will be archived to Azure Blob Storage
+
+## 🔌 WebSocket Integration
+
+The service will provide real-time log streaming to the main INeedHousing admin dashboard. This feature is planned to enable:
+
+- Live monitoring of task execution
+- Real-time log streaming during cleanup operations
+- Administrative oversight and debugging capabilities
+
+## 🗄️ Log Management
+
+### Planned Log Storage Structure
+The service will implement a structured logging system with:
+
+- **Task Execution Logs**: Detailed logs for each cleanup operation
+- **System Logs**: Application-level logging and error tracking
+- **Archive Storage**: Long-term log retention in Azure Blob Storage
+- **Real-time Streaming**: Live log delivery to admin dashboard via WebSocket
+
+### Planned Log Features
+- Structured logging with metadata and timestamps
+- Automatic log rotation and archival
+- Searchable log history for audit purposes
+- Integration with Azure Blob Storage for persistence
+
+## 🧪 Testing
+
+```bash
+# Run unit tests
+./mvnw test
+
+# Run integration tests
+./mvnw verify
+
+# Run with coverage
+./mvnw test jacoco:report
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+## 🚨 Monitoring & Alerts
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+The service includes built-in monitoring capabilities:
 
-If you want to build an _über-jar_, execute the following command:
+- **Task Execution Metrics**: Success/failure rates, execution duration
+- **Resource Usage**: Memory, CPU, and network utilization
+- **Error Tracking**: Automatic error logging and notification
+- **Health Checks**: Kubernetes-ready liveness and readiness probes
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+## 🔒 Security
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+- **Azure Authentication**: Managed Identity or Service Principal authentication
+- **WebSocket Security**: Origin validation and connection limits
+- **Database Security**: Encrypted connections and credential management
+- **Log Security**: Sensitive data filtering and secure storage
 
-## Creating a native executable
+## 🐳 Container Support
 
-You can create a native executable using:
+The service is optimized for containerized deployments:
 
-```shell script
-./mvnw package -Dnative
-```
+- **JVM Mode**: Standard Docker container with fast startup
+- **Native Mode**: GraalVM native executable for minimal resource usage
+- **Kubernetes Ready**: Health checks and graceful shutdown support
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+## 📄 License
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
+This project is licensed under the terms specified in the project's license file.
 
-You can then execute your native executable with: `./target/code-with-quarkus-1.0.0-SNAPSHOT-runner`
+## 👥 Authors
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+- Argel Hernandez Amaya
 
-## Provided Code
+## 📞 Support
 
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+For support, please contact the project maintainers or open an issue in the repository.

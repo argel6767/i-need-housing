@@ -1,4 +1,4 @@
-package org.acme;
+package ineedhousing.cronjob;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;

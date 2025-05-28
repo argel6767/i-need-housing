@@ -43,3 +43,13 @@ nb-configuration.xml
 /.quarkus/cli/plugins/
 # TLS Certificates
 .certs/
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+*.s3db
+
+# Database files
+/data/
+/database/
