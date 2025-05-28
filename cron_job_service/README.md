@@ -52,6 +52,7 @@ Key dependencies include:
 
 ```txt
 src/main/java/com/ineedhousing/cronjob/
+├── auth/               # Authentication and authorization
 ├── azure/              # Azure service integrations
 │   ├── blob/           # Blob storage operations
 │   ├── container/      # Container registry management
