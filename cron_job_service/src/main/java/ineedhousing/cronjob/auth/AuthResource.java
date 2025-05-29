@@ -1,6 +1,9 @@
 package ineedhousing.cronjob.auth;
 
+
+import ineedhousing.cronjob.auth.requests.LoginDto;
 import ineedhousing.cronjob.auth.requests.RegistrationDto;
+import ineedhousing.cronjob.auth.responses.AuthUserDto;
 import jakarta.annotation.Resource;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -30,6 +33,16 @@ public class AuthResource {
             case "Username is already taken, choose another" -> Response.status(409).entity(registerMessage).build();
             default -> Response.status(201).entity(registerMessage).build();
         };
+    }
+
+    @POST
+    @Path("/login")
+    public Response login(LoginDto request) {
+        AuthUserDto dto = authUserService.login(request);
+        if (dto == null) {
+            return Response.status(403).entity("Bad credentials try again").build();
+        }
+        return Response.status(200).entity(dto).build();
     }
 
 }

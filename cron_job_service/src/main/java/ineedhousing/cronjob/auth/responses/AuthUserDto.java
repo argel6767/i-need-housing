@@ -1,6 +1,6 @@
 package ineedhousing.cronjob.auth.responses;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-public record AuthUserDto(String username, String token, LocalDateTime expirationTime) {
+public record AuthUserDto(String username, String token, Instant expirationTime) {
 }

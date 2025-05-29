@@ -53,3 +53,5 @@ nb-configuration.xml
 # Database files
 /data/
 /database/
+
+*.pem
