@@ -1,4 +1,4 @@
-package org.acme;
+package ineedhousing.cronjob;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
