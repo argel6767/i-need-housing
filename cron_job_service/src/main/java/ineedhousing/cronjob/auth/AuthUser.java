@@ -14,6 +14,10 @@ public class AuthUser extends PanacheEntity {
     public LocalDateTime lastLoggedIn;
     public LocalDateTime createdAt;
 
+    public static AuthUser findByUsername(String username) {
+        return find("username", username).firstResult();
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

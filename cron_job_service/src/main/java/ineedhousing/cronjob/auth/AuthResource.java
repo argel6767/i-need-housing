@@ -1,11 +1,13 @@
 package ineedhousing.cronjob.auth;
 
 import ineedhousing.cronjob.auth.requests.RegistrationDto;
+import jakarta.annotation.Resource;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
 @Path("/auth")
+@Resource
 public class AuthResource {
 
     private final AuthUserService authUserService;
@@ -20,6 +22,7 @@ public class AuthResource {
      * @return
      */
     @POST
+    @Path("/register")
     public Response register(RegistrationDto request) {
         String registerMessage = authUserService.register(request);
         return switch (registerMessage) {

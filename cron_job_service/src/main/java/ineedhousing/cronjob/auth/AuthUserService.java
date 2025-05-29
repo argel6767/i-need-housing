@@ -3,11 +3,13 @@ package ineedhousing.cronjob.auth;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import ineedhousing.cronjob.auth.requests.RegistrationDto;
 import io.quarkus.elytron.security.common.BcryptUtil;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.transaction.Transactional;
 
+@Service
 public class AuthUserService {
 
     @Value("${registration.secret.key}")
@@ -20,11 +22,12 @@ public class AuthUserService {
      * @param request
      * @return
      */
+    @Transactional
     public String register(RegistrationDto request) {
         if (!(request.registrationKey().equals(secretKey))) {
             return "Registration key is incorrect";
         }
-        AuthUser conflictUser = PanacheEntityBase.find("username", request.username()).firstResult();
+        AuthUser conflictUser = AuthUser.findByUsername(request.username());
         if (conflictUser != null) {
             return "Username is already taken, choose another";
         }
