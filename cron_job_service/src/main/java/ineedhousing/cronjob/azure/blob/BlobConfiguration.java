@@ -1,28 +1,32 @@
-package com.ineedhousing.backend.azure.blob;
+package ineedhousing.cronjob.azure.blob;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.common.StorageSharedKeyCredential;
 
-@Configuration
-public class BlobServiceClientConfiguration {
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
-    @Value("${azure.storage.account-name}")
+/**
+ * Configuration beans to access the logging blob storage
+ */
+@ApplicationScoped
+public class BlobConfiguration {
+
+    @ConfigProperty(name = "azure.storage.account.name")
     private String accountName;
 
-    @Value("${azure.storage.account-key}")
+    @ConfigProperty(name = "azure.storage.account.key")
     private String accountKey;
 
-    @Value("${azure.storage.container-name}")
+    @ConfigProperty(name = "azure.storage.container.name")
     private String containerName;
 
-
-    @Bean
+    @Produces
+    @ApplicationScoped
     BlobServiceClient blobServiceClient() {
         // Create SharedKeyCredential with account name and key
         StorageSharedKeyCredential credential = new StorageSharedKeyCredential(
@@ -38,9 +42,10 @@ public class BlobServiceClientConfiguration {
                 .buildClient();
     }
 
-    @Bean
+    @Produces
+    @ApplicationScoped
     BlobContainerClient blobContainerClient(BlobServiceClient blobServiceClient) {
         return blobServiceClient.getBlobContainerClient(containerName);
     }
-
+    
 }

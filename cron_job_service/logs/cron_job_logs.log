@@ -1,0 +1,23 @@
+2025-05-30 14:31:37 INFO  [io.qu.test] (Test runner thread) Running 1/8. Running: #JUnit Jupiter
+2025-05-30 14:31:37 INFO  [io.qu.test] (Test runner thread) Running 1/8. Running: ineedhousing.cronjob.azure.blob.BlobServiceTest#BlobServiceTest
+2025-05-30 14:31:37 INFO  [io.qu.test] (Test runner thread) Running 1/8. Running: ineedhousing.cronjob.azure.blob.BlobServiceTest#testUploadLogFile_WithFailedUpload()
+2025-05-30 14:31:37 INFO  [in.cr.az.bl.BlobService] (Test runner thread) Attempting to upload logs
+2025-05-30 14:31:37 ERROR [in.cr.az.bl.BlobService] (Test runner thread) Upload failed!
+2025-05-30 14:31:37 ERROR [in.cr.az.bl.BlobService] (Test runner thread) java.io.UncheckedIOException: java.io.IOException: Test exception
+2025-05-30 14:31:37 INFO  [in.cr.az.bl.BlobService] (Test runner thread) Deleting file
+2025-05-30 14:31:37 INFO  [in.cr.az.bl.BlobService] (Test runner thread) File uploaded successfully
+2025-05-30 14:31:37 INFO  [io.qu.test] (Test runner thread) Running 2/8. Running: ineedhousing.cronjob.azure.blob.BlobServiceTest#testUploadLogFile_WithSuccessfulUpload()
+2025-05-30 14:31:37 INFO  [in.cr.az.bl.BlobService] (Test runner thread) Attempting to upload logs
+2025-05-30 14:31:37 INFO  [in.cr.az.bl.BlobService] (Test runner thread) Deleting file
+2025-05-30 14:31:37 INFO  [in.cr.az.bl.BlobService] (Test runner thread) File uploaded successfully
+2025-05-30 14:31:38 INFO  [io.qu.test] (Test runner thread) Running 3/8. Running: ineedhousing.cronjob.GreetingResourceTest#GreetingResourceTest
+2025-05-30 14:31:38 INFO  [or.hi.jp.in.ut.LogHelper] (Test runner thread) HHH000204: Processing PersistenceUnitInfo [name: <default>]
+2025-05-30 14:31:38 INFO  [or.hi.Version] (Test runner thread) HHH000412: Hibernate ORM core version 6.6.14.Final
+2025-05-30 14:31:38 INFO  [or.hi.or.co.pooling] (Test runner thread) HHH10001005: Database info:
+	Database JDBC URL [undefined/unknown]
+	Database driver: undefined/unknown
+	Database version: 2.3.230
+	Autocommit mode: undefined/unknown
+	Isolation level: <unknown>
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
