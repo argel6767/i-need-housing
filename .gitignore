@@ -12,3 +12,5 @@ backend/src/main/frontend/generated/**
 __pycache__/
 *.py[cod]
 *$py.class
+
+cron_job_service/logs/**

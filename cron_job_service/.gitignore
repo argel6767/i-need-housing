@@ -55,3 +55,6 @@ nb-configuration.xml
 /database/
 
 *.pem
+
+#logs
+logs/**

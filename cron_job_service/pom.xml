@@ -57,10 +57,6 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-rest-jackson</artifactId>
         </dependency>
-            <dependency>
-                <groupId>com.azure</groupId>
-                <artifactId>azure-containers-containerregistry</artifactId>
-            </dependency>
         <dependency>
             <groupId>com.azure</groupId>
             <artifactId>azure-storage-blob</artifactId>
