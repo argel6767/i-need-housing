@@ -62,7 +62,7 @@ export const Form = ({buttonLabel, request, isLoading}:NewFormProps) => {
 
 
     return (
-        <form className={"py-2 min-w-60 md:min-w-96  flex flex-col justify-items-start gap-8"} onSubmit={runAuthFunction}>
+        <form className={"py-2 min-w-64 md:min-w-96  flex flex-col justify-items-start gap-8"} onSubmit={runAuthFunction}>
             <span>
                 <label className="text-sm text-gray-900">
                     Email
