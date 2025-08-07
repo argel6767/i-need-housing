@@ -15,7 +15,9 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -34,11 +36,13 @@ public class ProfilePictureService {
     private final BlobContainerClient blobContainerClient;
     private final ProfilePictureRepository profilePictureRepository;
     private final UserService userService;
+    private final RestClient restClient;
 
-    public ProfilePictureService(BlobContainerClient blobContainerClient, ProfilePictureRepository profilePictureRepository, UserService userService) {
+    public ProfilePictureService(BlobContainerClient blobContainerClient, ProfilePictureRepository profilePictureRepository, UserService userService, RestClient restClient) {
         this.blobContainerClient = blobContainerClient;
         this.profilePictureRepository = profilePictureRepository;
         this.userService = userService;
+        this.restClient = restClient;
     }
 
     /**
@@ -92,8 +96,6 @@ public class ProfilePictureService {
      * @param id
      * @return
      */
-    @CacheEvict(key = "#id", value = "url")
-    @Transactional
     public String updateReadSASURL(Long id) {
         UserProfilePicture profilePicture = getUserProfilePicture(id);
         String sasUrl = generateReadSASURL(id);
@@ -201,7 +203,20 @@ public class ProfilePictureService {
     @Cacheable(key = "#id", value = "url")
     public String getSASUrl(Long id) {
         UserProfilePicture userProfilePicture = getUserProfilePicture(id);
-        return userProfilePicture.getProfilePictureUrl();
+        String url = userProfilePicture.getProfilePictureUrl();
+        if (isSignedUrlExpired(url)) {
+            return updateReadSASURL(id);
+        }
+        return url;
+    }
+
+    private boolean isSignedUrlExpired(String url) {
+        ResponseEntity<Void> response = restClient.
+                head()
+                .uri(url)
+                .retrieve()
+                .toBodilessEntity();
+        return !response.getStatusCode().is2xxSuccessful();
     }
 
     /**
