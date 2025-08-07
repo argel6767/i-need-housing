@@ -20,25 +20,19 @@ import {Loader} from "lucide-react";
  */
 export const ProfilePicture = () => {
     const {profilePictureUrl, setProfilePictureUrl} = useExistingUserContext();
-    const profilePictureFetch = useProfilePictureWithURL();
+    const {isLoaded, profilePicUrl, isFailed } = useProfilePictureWithURL();
 
     useEffect(() => {
-        if (profilePictureFetch.isFetched && profilePictureFetch.hasProfilePicture && profilePictureFetch.data) {
-            setProfilePictureUrl(profilePictureFetch.data);
+        if (isLoaded && !isFailed && profilePicUrl) {
+            setProfilePictureUrl(profilePicUrl);
         }
-    }, [profilePictureFetch.isFetched, profilePictureFetch.data, setProfilePictureUrl, profilePictureFetch.hasProfilePicture]);
+    }, [isLoaded, isFailed, profilePicUrl, setProfilePictureUrl]);
 
-    const isFetching = () => {
-        return profilePictureFetch.isLoading || profilePictureFetch.isFetching || profilePictureFetch.isRefetching || profilePictureFetch.isPending;
-    }
-
-    if (isFetching()) {
+    if (!isLoaded) {
         return <Loading />;
     }
 
-    return (
-        <img alt={"user's profile picture"} src={profilePictureUrl}/>
-    )
+    return <img alt="user's profile picture" src={profilePictureUrl} />;
 }
 
 /**

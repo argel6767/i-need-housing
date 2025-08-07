@@ -6,7 +6,7 @@ import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRe
 import {useMutation, useQuery} from "@tanstack/react-query"
 import {useGlobalContext} from "@/components/GlobalContext";
 import {getProfilePicture, getProfilePictureURL, updateProfilePictureURL} from "@/endpoints/profilePictures";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
 import {useExistingUserContext} from "@/app/(protected)/(existing_user)/ExistingUserContext";
 import {DEFAULT_PROFILE_PICTURE_URL} from "@/utils/utils";
@@ -135,57 +135,34 @@ export const useGetProfilePicture = (url: string, options = {}) => {
  * does the entire step by step flow of grabbing a users profile picture
  */
 export const useProfilePictureWithURL = () => {
-    const { data: url, isSuccess, isError, isLoading: urlLoading, refetch: refetchUrl } = useGetProfilePictureURL();
+    const [isLoaded, setIsLoaded] = useState<boolean>(false);
+    const [isFailed, setIsFailed] = useState<boolean>(false);
+    const [profilePicUrl, setProfilePicUrl] = useState<string>("")
 
-    const shouldFetchPicture = (isSuccess && url && (url !== "user does not have profile picture") && url !== "Called failed!");
-
-    // First attempt to get picture
-    const pictureQuery = useGetProfilePicture(url || '', {
-        enabled: shouldFetchPicture && url.startsWith('http') // Extra safety check
-    });
-
-    // Check if we need to refresh URL
-    const needsUrlRefresh = pictureQuery.isSuccess &&
-        pictureQuery.data === "expired url";
-
-    // Mutation to update URL when expired
-    const updateUrlMutation = useMutation({
-        mutationFn: updateProfilePictureURL,
-        onSuccess: () => {
-            // Refetch the URL after updating
-            refetchUrl();
-        }
-    });
-
-    // Auto-trigger URL refresh when expired
     useEffect(() => {
-        if (needsUrlRefresh && !updateUrlMutation.isPending) {
-            updateUrlMutation.mutate();
-        }
-    }, [needsUrlRefresh, updateUrlMutation]);
+        const fetchProfilePicture = async () => {
+            try {
+                const url = await getProfilePictureURL();
 
-    // Return appropriate data based on whether user has profile picture
-    if (!shouldFetchPicture) {
-        return {
-            data: null,
-            isSuccess: true,
-            isError: false,
-            isLoading: urlLoading,
-            isFetched: true,
-            isFetching: false,
-            isRefetching: false,
-            isPending: false,
-            hasProfilePicture: false,
-            urlError: isError,
-            isRefreshingUrl: false
-        };
-    }
+                // ✅ Fixed string comparison
+                if (url === "user does not have profile picture" || url === "Call failed") {
+                    setIsFailed(true);
+                } else {
+                    const profilePic = await getProfilePicture(url);
+                    setProfilePicUrl(profilePic);
+                }
+            } catch (error) {
+                setIsFailed(true);
+            } finally {
+                setIsLoaded(true); // ✅ Always set loaded at the end
+            }
+        }
+        fetchProfilePicture()
+    }, []);
 
     return {
-        ...pictureQuery,
-        hasProfilePicture: true,
-        isLoading: urlLoading || pictureQuery.isLoading || updateUrlMutation.isPending,
-        urlError: isError,
-        isRefreshingUrl: updateUrlMutation.isPending
+        profilePicUrl,
+        isFailed,
+        isLoaded
     };
 };

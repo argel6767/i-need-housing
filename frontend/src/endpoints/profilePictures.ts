@@ -16,7 +16,7 @@ export const getProfilePictureURL = async (): Promise<string> => {
             return "user does not have profile picture";
         }
     }
-    return "Called failed!"
+    return "Call failed!"
 }
 
 /**
@@ -109,8 +109,8 @@ export const getProfilePicture = async (profilePictureURL: string): Promise<stri
     }
     catch (error:any) {
         if (error.response.status === 403) {
-            console.error("Unable to get profile picture, URL expired");
-            return "expired url";
+            const updatedUrl =  await updateProfilePictureURL();
+            return updatedUrl;
         }
         return Promise.reject(error.message);
     }
