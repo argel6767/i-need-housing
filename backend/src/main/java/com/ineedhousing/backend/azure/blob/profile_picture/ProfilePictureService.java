@@ -211,12 +211,17 @@ public class ProfilePictureService {
     }
 
     private boolean isSignedUrlExpired(String url) {
-        ResponseEntity<Void> response = restClient.
-                head()
+        try {
+            restClient
+                .head()
                 .uri(url)
                 .retrieve()
                 .toBodilessEntity();
-        return !response.getStatusCode().is2xxSuccessful();
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 
     /**
