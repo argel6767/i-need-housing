@@ -56,7 +56,6 @@ public class ContainerRegistryResource {
         return containerRegistryRestService.getManifestsByTags(request.repository(), request.tags());
     }
 
-
     @DELETE
     @Path("/manifests")
     public void deleteManifest(@QueryParam("repository") String repository, @QueryParam("digest") String digest) {
