@@ -14,10 +14,7 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import io.quarkus.logging.Log;
@@ -78,7 +75,7 @@ public class ContainerRegistryRestService {
     }
 
     /**
-     * Fetchs all manifests of a given a list of tags at the same time via virtual thread
+     * Fetchs all manifests of a given a list of tags at the same time via virtual threads
      * @param repository
      * @param tags
      * @return
@@ -147,33 +144,49 @@ public class ContainerRegistryRestService {
                 .map(epoc -> "v"+epoc)
                 .toList();
 
-        List<DigestDto.CompleteManifestInfoDto> digestDtos = getManifestsByTags(repository, tagsToBeDeleted);
+        List<String> manifestsDeleted = Collections.synchronizedList(new ArrayList<>());
+        List<String> manifestsFailedToDelete = Collections.synchronizedList(new ArrayList<>());;
 
-        //filter out failed fetched digests
-        List<String> digests = digestDtos.stream()
-                .filter(digestDto -> !digestDto.digestDto().schemaVersion().equals(-1))
-                .map(DigestDto::getDigestValue)
+        List<CompletableFuture<Void>> fetchAndDeleteFutures = tagsToBeDeleted.stream()
+                .map(tag -> CompletableFuture
+                        .supplyAsync(() -> {
+                            try {
+                                DigestDto.CompleteManifestInfoDto digest = getManifestByTag(repository, tag);
+                                Log.info("Successfully fetched digest for tag: " + tag);
+                                return digest;
+                            } catch (Exception e) {
+                                Log.error("Failed to fetch manifest for tag: " + tag + " - " + e.getMessage());
+                                return null;
+                            }
+                        }, virtualThreadExecutor)
+                        .thenCompose(digest -> {
+                            // Skip deletion if fetch failed or returned empty digest
+                            if (digest == null || digest.digestDto().schemaVersion().equals(-1)) {
+                                Log.warn("Skipping deletion for invalid digest from tag: " + tag);
+                                return CompletableFuture.completedFuture(null);
+                            }
+
+                            return CompletableFuture.runAsync(() -> {
+                                String digestValue = DigestDto.getDigestValue(digest);
+                                try {
+                                    deleteManifest(repository, digestValue);
+                                    Log.info("Successfully deleted manifest: " + digestValue);
+                                    manifestsDeleted.add(digestValue);
+                                } catch (Exception e) {
+                                    Log.error("Failed to delete digest: " + digestValue + " - " + e.getMessage());
+                                    manifestsFailedToDelete.add(digestValue);
+                                }
+                            }, virtualThreadExecutor);
+                        })
+                        // Handle fetch failures gracefully
+                        .exceptionally(throwable -> {
+                            Log.error("Fetch-delete pipeline failed for tag: " + tag + " - " + throwable.getMessage());
+                            return null;
+                        }))
                 .toList();
 
-        List<String> manifestsDeleted = new ArrayList<>();
-        List<String> manifestsFailedToDelete = new ArrayList<>();
-
-        //bulk delete
-        List<CompletableFuture<Void>> deleteDigestsFutures = digests.stream()
-                .map(digest -> CompletableFuture.runAsync(() -> {
-                    try {
-                        deleteManifest(repository, digest);
-                        Log.info("Successfully deleted manifest: " + digest);
-                        manifestsDeleted.add(digest);
-                    }
-                    catch (Exception e) {
-                        Log.error("Failed to delete digest: " + digest);
-                        Log.error("Exception: " + e.getMessage());
-                        manifestsFailedToDelete.add(digest);
-                    }
-                }, virtualThreadExecutor)).toList();
-        
-        CompletableFuture.allOf(deleteDigestsFutures.toArray(new CompletableFuture[0]))
+        // Wait for all operations to complete
+        CompletableFuture.allOf(fetchAndDeleteFutures.toArray(new CompletableFuture[0]))
                 .join();
 
         return new ManifestsDeletedDto(manifestsDeleted, manifestsFailedToDelete);

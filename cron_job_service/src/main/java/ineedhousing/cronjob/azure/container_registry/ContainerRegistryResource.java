@@ -1,13 +1,15 @@
 package ineedhousing.cronjob.azure.container_registry;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import ineedhousing.cronjob.azure.container_registry.model.BulkDigestsDto;
 import ineedhousing.cronjob.azure.container_registry.model.DigestDto;
 import ineedhousing.cronjob.azure.container_registry.model.ManifestsDeletedDto;
 import ineedhousing.cronjob.azure.container_registry.model.TagsDto;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+
+import java.util.List;
 
 @Path("/container-registry")
 public class ContainerRegistryResource {
@@ -45,6 +47,15 @@ public class ContainerRegistryResource {
         }
         return containerRegistryRestService.getManifestByTag(repository, tag);
     }
+
+    @POST
+    @Path("/manifests")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<DigestDto.CompleteManifestInfoDto> getManifestsByTags(BulkDigestsDto request) {
+        return containerRegistryRestService.getManifestsByTags(request.repository(), request.tags());
+    }
+
 
     @DELETE
     @Path("/manifests")
