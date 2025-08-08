@@ -17,13 +17,13 @@ import jakarta.enterprise.inject.Produces;
 public class BlobConfiguration {
 
     @ConfigProperty(name = "azure.storage.account.name")
-    private String accountName;
+    String accountName;
 
     @ConfigProperty(name = "azure.storage.account.key")
-    private String accountKey;
+    String accountKey;
 
     @ConfigProperty(name = "azure.storage.container.name")
-    private String containerName;
+    String containerName;
 
     @Produces
     @ApplicationScoped
