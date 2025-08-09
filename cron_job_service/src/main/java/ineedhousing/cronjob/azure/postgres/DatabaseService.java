@@ -1,4 +1,4 @@
-package ineedhousing.cronjob.db;
+package ineedhousing.cronjob.azure.postgres;
 
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
