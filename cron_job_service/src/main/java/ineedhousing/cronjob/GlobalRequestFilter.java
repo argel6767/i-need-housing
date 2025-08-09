@@ -1,11 +1,14 @@
 package ineedhousing.cronjob;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 import jakarta.annotation.Priority;
+import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import java.io.IOException;
 import java.util.Map;
@@ -14,8 +17,16 @@ import java.util.Map;
 @Priority(1000)
 public class GlobalRequestFilter implements ContainerRequestFilter {
 
-    @ConfigProperty(name = "access.token.header")
-    String accessToken;
+    @Inject
+    Config config;
+
+    private String accessToken;
+
+    @PostConstruct
+    void init() {
+        accessToken = config.getOptionalValue("access.token.header", String.class)
+                .orElseThrow(() -> new RuntimeException("Access Token not found!"));
+    }
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {

@@ -6,11 +6,13 @@ import ineedhousing.cronjob.azure.container_registry.model.DigestDto;
 import ineedhousing.cronjob.azure.container_registry.model.ManifestsDeletedDto;
 import ineedhousing.cronjob.azure.container_registry.model.TagsDto;
 import io.quarkus.virtual.threads.VirtualThreads;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -34,11 +36,19 @@ public class ContainerRegistryRestService {
     @Inject
     ObjectMapper objectMapper;
 
-    @ConfigProperty(name = "azure.container.username")
-    String containerUsername;
+    @Inject
+    Config config;
 
-    @ConfigProperty(name = "azure.container.access.key")
-    String containerAccessKey;
+    private String containerUsername;
+    private String containerAccessKey;
+
+    @PostConstruct //only set the values during runtime to allow for native image
+    void init() {
+         containerUsername = config.getOptionalValue("azure.container.username", String.class)
+                .orElseThrow(() -> new RuntimeException("Container Username not present!"));
+         containerAccessKey =  config.getOptionalValue("azure.container.access.key", String.class)
+                .orElseThrow(() -> new RuntimeException("Container Access Key not present!"));
+    }
 
     private final String ACCEPT_MEDIA = "application/vnd.docker.distribution.manifest.v2+json";
 

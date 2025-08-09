@@ -1,7 +1,5 @@
 package ineedhousing.cronjob.azure.container_registry;
 
-import jakarta.enterprise.context.ApplicationScoped;
-
 import java.util.Base64;
 
 public class ContainerRegistryAuthHeaderUtil {
