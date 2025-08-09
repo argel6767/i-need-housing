@@ -5,9 +5,9 @@ import platform
 
 from build_backend_image import build_image, check_if_docker_is_running
 
-# Your existing setup code
 backend = Path.cwd()/"backend"
 isOSWindows = platform.system() == "Windows"
+app_service_name = "i-need-housing-backend"
 
 def load_env_file():
     # Your existing env loading code
@@ -41,11 +41,11 @@ def build_and_push_with_unique_tag(repo_name, service, directory):
     
     return image_name
 
-def update_app_service(image_name):
+def update_app_service(image_name, app_service):
     print("Updating App Service container settings\n\n")
     update = subprocess.run([
         "az", "webapp", "config", "container", "set",
-        "--name", "i-need-housing-backend",
+        "--name", app_service,
         "--resource-group", "INeedHousing",
         "--container-image-name", image_name,
         "--container-registry-url", "https://ineedhousing.azurecr.io"
@@ -57,18 +57,18 @@ def update_app_service(image_name):
     print("Configuring longer startup timeout\n\n")
     config = subprocess.run([
         "az", "webapp", "config", "set",
-        "--name", "i-need-housing-backend",
+        "--name", app_service,
         "--resource-group", "INeedHousing",
         "--generic-configurations", '{"startupTimeLimit": 500}'
     ], shell=isOSWindows)
     print(config)
     print("Startup timeout configured\n\n")
 
-def restart_app_service():
+def restart_app_service(app_service):
     print("Restarting App Service\n\n")
     restart = subprocess.run([
         "az", "webapp", "restart",
-        "--name", "i-need-housing-backend",
+        "--name", app_service,
         "--resource-group", "INeedHousing"
     ], shell=isOSWindows)
     print(restart)
@@ -80,8 +80,8 @@ def main():
     sign_in_to_azure()
     sign_in_to_acr()
     image_name = build_and_push_with_unique_tag("images/backend", "backend", backend)
-    update_app_service(image_name)
-    restart_app_service()
+    update_app_service(image_name, app_service_name)
+    restart_app_service(app_service_name)
     
 if __name__ == "__main__":
     main()
