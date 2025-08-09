@@ -1,6 +1,7 @@
 package ineedhousing.cronjob.cron;
 
 import ineedhousing.cronjob.azure.container_registry.ContainerRegistryRestService;
+import ineedhousing.cronjob.db.DatabaseService;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -15,13 +16,16 @@ public class CronService {
     @Inject
     ContainerRegistryRestService containerRegistryRestService;
 
+    @Inject
+    DatabaseService databaseService;
+
     @ConfigProperty(name = "azure.i-need-housing.repository.name")
     String iNeedHousingRepo;
 
     @ConfigProperty(name = "azure.cron-job-service.repository.name")
     String cronJobServiceRepo;
 
-    @Scheduled(every = "168h")
+    @Scheduled(every = "168h") // every 7 days
     void deleteOldINeedHousingImagesJob() {
         Log.info("Running Cron Job, deleting old INeedHousing API images");
         try {
@@ -33,14 +37,25 @@ public class CronService {
         }
     }
 
-    @Scheduled(every = "169h")
-    void deleteOldCronJobsJob() {
+    @Scheduled(every = "169h") // every 7 days + 1 hour
+    void deleteOldCronJobServiceImagesJob() {
         Log.info("Running Cron Job, deleting old Cron Jobs Service images");
         try {
             containerRegistryRestService.deleteOldImages(cronJobServiceRepo);
             Log.info("Successfully deleted old Cron Job Service images");
         }
         catch (JsonProcessingException e) {
+            Log.error("Failed to run Cron Job", e);
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 1 * ?") //First of every month
+    void deleteOldHousingListingsJob() {
+        Log.info("Running Cron Job, deleting old Housing Listings");
+        try {
+            databaseService.deleteOldListings();
+        }
+        catch (Exception e) {
             Log.error("Failed to run Cron Job", e);
         }
     }
