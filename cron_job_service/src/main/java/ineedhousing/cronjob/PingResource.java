@@ -1,7 +1,5 @@
 package ineedhousing.cronjob;
 
-import io.smallrye.health.SmallRyeHealth;
-import io.smallrye.health.api.HealthRegistry;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
@@ -10,11 +8,9 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped

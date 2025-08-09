@@ -17,13 +17,14 @@ import java.util.Map;
 @Priority(1000)
 public class GlobalRequestFilter implements ContainerRequestFilter {
 
-    @Inject
-    Config config;
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
-        String accessToken = config.getOptionalValue("access.token.header", String.class)
-                .orElseThrow(() -> new RuntimeException("Access Token not found!"));
+        String accessToken = System.getenv("ACCESS_TOKEN_HEADER");
+
+        if (accessToken == null || accessToken.trim().isEmpty()) {
+            throw new RuntimeException("ACCESS_TOKEN_HEADER environment variable not found or empty!");
+        }
 
         String accessTokenRequest = requestContext.getHeaderString("Access-Header");
 
