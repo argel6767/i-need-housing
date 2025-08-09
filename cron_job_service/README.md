@@ -23,19 +23,11 @@ A lightweight Quarkus-based microservice designed to handle scheduled maintenanc
     - Real-time task execution status updates
     - Bidirectional communication for task management
 
-### Logging & Auditing
-
-- **Persistent Log Storage**
-    - Automated log archival to Azure Blob Storage
-    - Structured logging with task execution metadata
-    - Searchable log history for audit trails
-
 ## 🛠️ Technical Stack
 
 - **Framework**: Quarkus 3.22.3
 - **Language**: Java 21
-- **Database**: SQLite (local task tracking)
-- **Cloud Services**: Azure Container Registry, Azure Blob Storage, Azure PostgreSQL
+- **Cloud Services**: Azure Container Registry, Azure PostgreSQL
 - **Build Tool**: Maven
 - **Containerization**: Docker
 
@@ -44,22 +36,19 @@ A lightweight Quarkus-based microservice designed to handle scheduled maintenanc
 Key dependencies include:
 
 - **Quarkus Core**: Arc (CDI), REST, WebSockets Next, Scheduler
-- **Azure SDKs**: Container Registry, Blob Storage
-- **Database**: SQLite JDBC driver
+- **Database**: Postgres JDBC driver
 - **Testing**: JUnit 5, REST Assured
 
 ## 🏗️ Project Structure
 
 ```txt
 src/main/java/com/ineedhousing/cronjob/
-├── auth/               # Authentication and authorization
 ├── azure/              # Azure service integrations
-│   ├── blob/           # Blob storage operations
 │   ├── container/      # Container registry management
 │   └── postgres/       # PostgreSQL database operations
-├── config/             # Configuration classes
-├── logging/            # Logging and audit functionality
-├── scheduler/          # Cron job definitions and management
+├── cron/               # Cron job definitions and management
+├── GlobalRequestFilter.java # Request filter lay to check for Access-Token
+├── PingResouce.java    # Houses '/ping' service pinging endpoint
 ```
 
 ## ⚙️ Configuration
@@ -68,13 +57,7 @@ The application will use environment variables for configuration. Configuration 
 
 ### Azure Configuration (Planned)
 - Container registry connection settings
-- Blob storage connection configuration
 - PostgreSQL database connection parameters
-
-### Scheduling Configuration (Planned)
-- Image retention policies and cleanup schedules
-- Database cleanup schedules and retention periods
-- Task execution parameters and timeouts
 
 ### WebSocket Configuration (Planned)
 - Admin dashboard connection settings
@@ -86,7 +69,7 @@ The application will use environment variables for configuration. Configuration 
     - Java 21
     - Maven
     - Docker (optional)
-    - Azure account with Container Registry and Blob Storage
+    - Azure account with Container Registry
 
 2. **Local Development**
 
@@ -139,7 +122,6 @@ The application will use environment variables for configuration. Configuration 
 #### Task Management (Planned)
 - Task execution status monitoring
 - Manual task triggering capabilities
-- Task execution history and logging
 
 #### WebSocket Integration (Planned)
 - Real-time log streaming for admin dashboard
@@ -152,12 +134,10 @@ The application will use environment variables for configuration. Configuration 
 #### Image Cleanup Task
 **Purpose**: Remove old container images from Azure Container Registry
 **Implementation**: Scheduled cleanup based on configurable retention policies
-**Logging**: Task execution logs will be archived to Azure Blob Storage
 
 #### Listing Cleanup Task
 **Purpose**: Remove expired housing listings from PostgreSQL database
 **Implementation**: Automated cleanup of old listing data based on age thresholds
-**Logging**: Database maintenance logs will be archived to Azure Blob Storage
 
 ## 🔌 WebSocket Integration
 
@@ -166,22 +146,6 @@ The service will provide real-time log streaming to the main INeedHousing admin 
 - Live monitoring of task execution
 - Real-time log streaming during cleanup operations
 - Administrative oversight and debugging capabilities
-
-## 🗄️ Log Management
-
-### Planned Log Storage Structure
-The service will implement a structured logging system with:
-
-- **Task Execution Logs**: Detailed logs for each cleanup operation
-- **System Logs**: Application-level logging and error tracking
-- **Archive Storage**: Long-term log retention in Azure Blob Storage
-- **Real-time Streaming**: Live log delivery to admin dashboard via WebSocket
-
-### Planned Log Features
-- Structured logging with metadata and timestamps
-- Automatic log rotation and archival
-- Searchable log history for audit purposes
-- Integration with Azure Blob Storage for persistence
 
 ## 🧪 Testing
 
@@ -196,21 +160,11 @@ The service will implement a structured logging system with:
 ./mvnw test jacoco:report
 ```
 
-## 🚨 Monitoring & Alerts
-
-The service includes built-in monitoring capabilities:
-
-- **Task Execution Metrics**: Success/failure rates, execution duration
-- **Resource Usage**: Memory, CPU, and network utilization
-- **Error Tracking**: Automatic error logging and notification
-- **Health Checks**: Kubernetes-ready liveness and readiness probes
-
 ## 🔒 Security
 
 - **Azure Authentication**: Managed Identity or Service Principal authentication
 - **WebSocket Security**: Origin validation and connection limits
 - **Database Security**: Encrypted connections and credential management
-- **Log Security**: Sensitive data filtering and secure storage
 
 ## 🐳 Container Support
 

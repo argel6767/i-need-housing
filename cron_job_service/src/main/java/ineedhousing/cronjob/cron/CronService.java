@@ -1,14 +1,13 @@
 package ineedhousing.cronjob.cron;
 
 import ineedhousing.cronjob.azure.container_registry.ContainerRegistryRestService;
-import ineedhousing.cronjob.db.DatabaseService;
+import ineedhousing.cronjob.azure.postgres.DatabaseService;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import io.quarkus.logging.Log;
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 

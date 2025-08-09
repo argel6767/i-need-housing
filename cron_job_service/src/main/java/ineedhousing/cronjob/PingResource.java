@@ -6,6 +6,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
 @ApplicationScoped
+@Path("")
 public class PingResource {
 
     /**
@@ -13,7 +14,7 @@ public class PingResource {
      * @return
      */
     @GET
-    @Path("/")
+    @Path("/ping")
     public Response pingService() {
         return Response.ok().build();
     }
