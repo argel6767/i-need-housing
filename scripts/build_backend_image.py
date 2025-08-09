@@ -1,4 +1,3 @@
-
 from pathlib import Path
 import platform
 import subprocess
@@ -16,23 +15,26 @@ def check_if_docker_is_running():
         print("ERROR: Docker is not running. Please start Docker Desktop.")
         sys.exit(1)
 
-def build_image():
-    print('Build image')
+def build_image(repo_name, service, directory):
+    print(f'Building {service} image\n\n')
     
     # Generate a unique timestamp tag
     tag = str(int(time.time()))
-    image_name = f"ineedhousing.azurecr.io/images/backend:v{tag}"
+    image_name = f"ineedhousing.azurecr.io/{repo_name}:v{tag}"
     
     print(f"Building Image with tag: {tag}\n\n")
-    build_image = subprocess.run(["docker", "build", "-t", image_name, "."], cwd=str(backend), shell=isOSWindows)
-    print(build_image)
+    building_process = subprocess.run(["docker", "build", "-t", image_name, "."], cwd=str(directory), shell=isOSWindows)
+    print(building_process)
+    if building_process.returncode != 0:
+        print("ERROR: Image build failed.")
+        sys.exit(1)
     print("Image built\n\n")
     
     return image_name
 
 def main():
     check_if_docker_is_running()
-    build_image()
+    build_image("images/backend", 'backend', backend)
     
 if __name__ == '__main__':
     main()

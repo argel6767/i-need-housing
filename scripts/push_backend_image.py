@@ -1,6 +1,5 @@
 import os
 import subprocess
-import time
 from pathlib import Path
 import platform
 
@@ -32,8 +31,8 @@ def sign_in_to_acr():
     acr_login = subprocess.run(["az", "acr", "login", "--name", "ineedhousing"])
     print(acr_login)
 
-def build_and_push_with_unique_tag():
-    image_name = build_image()
+def build_and_push_with_unique_tag(repo_name, service, directory):
+    image_name = build_image(repo_name, service, directory)
     
     print(f"Pushing image {image_name} to Azure Registry\n\n")
     push_image = subprocess.run(["docker", "push", image_name], shell=isOSWindows)
@@ -80,7 +79,7 @@ def main():
     load_env_file()
     sign_in_to_azure()
     sign_in_to_acr()
-    image_name = build_and_push_with_unique_tag()
+    image_name = build_and_push_with_unique_tag("images/backend", "backend", backend)
     update_app_service(image_name)
     restart_app_service()
     
