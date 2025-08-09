@@ -42,7 +42,7 @@ def build_and_push_with_unique_tag(repo_name, service, directory):
     return image_name
 
 def update_app_service(image_name, app_service):
-    print("Updating App Service container settings\n\n")
+    print(f"Updating {app_service} App Service container settings\n\n")
     update = subprocess.run([
         "az", "webapp", "config", "container", "set",
         "--name", app_service,
@@ -65,7 +65,7 @@ def update_app_service(image_name, app_service):
     print("Startup timeout configured\n\n")
 
 def restart_app_service(app_service):
-    print("Restarting App Service\n\n")
+    print(f"Restarting {app_service} App Service\n\n")
     restart = subprocess.run([
         "az", "webapp", "restart",
         "--name", app_service,
