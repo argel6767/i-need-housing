@@ -20,16 +20,11 @@ public class GlobalRequestFilter implements ContainerRequestFilter {
     @Inject
     Config config;
 
-    private String accessToken;
-
-    @PostConstruct
-    void init() {
-        accessToken = config.getOptionalValue("access.token.header", String.class)
-                .orElseThrow(() -> new RuntimeException("Access Token not found!"));
-    }
-
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
+        String accessToken = config.getOptionalValue("access.token.header", String.class)
+                .orElseThrow(() -> new RuntimeException("Access Token not found!"));
+
         String accessTokenRequest = requestContext.getHeaderString("Access-Header");
 
         if (accessTokenRequest == null || !accessTokenRequest.equals(accessToken)) {

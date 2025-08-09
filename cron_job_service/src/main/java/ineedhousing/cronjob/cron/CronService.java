@@ -36,7 +36,7 @@ public class CronService {
                 .orElseThrow(() -> new RuntimeException("Cron_Job_Service Repo name not found!"));
     }
 
-    @Scheduled(every = "168h") // every 7 days
+    @Scheduled(cron = "0 0 0 2,9,16,23 * ?") // Midnight on the 2nd, 9th, 16th, and 23rd
     void deleteOldINeedHousingImagesJob() {
         Log.info("Running Cron Job, deleting old INeedHousing API images");
         try {
@@ -48,7 +48,7 @@ public class CronService {
         }
     }
 
-    @Scheduled(every = "169h") // every 7 days + 1 hour
+    @Scheduled(cron = "0 0 0 3,10,17,24 * ?") // Midnight on the 3rd, 10th, 17th, and 24th
     void deleteOldCronJobServiceImagesJob() {
         Log.info("Running Cron Job, deleting old Cron Jobs Service images");
         try {
