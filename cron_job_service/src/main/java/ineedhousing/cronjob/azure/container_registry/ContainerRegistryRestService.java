@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ineedhousing.cronjob.azure.container_registry.model.DigestDto;
 import ineedhousing.cronjob.azure.container_registry.model.ManifestsDeletedDto;
 import ineedhousing.cronjob.azure.container_registry.model.TagsDto;
+import ineedhousing.cronjob.log.LogService;
+import ineedhousing.cronjob.log.model.LoggingLevel;
 import io.quarkus.virtual.threads.VirtualThreads;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -38,6 +40,9 @@ public class ContainerRegistryRestService {
 
     @Inject
     Config config;
+
+    @Inject
+    LogService logService;
 
     private String containerUsername;
     private String containerAccessKey;
@@ -96,11 +101,11 @@ public class ContainerRegistryRestService {
                 .map(tag -> CompletableFuture.supplyAsync(() -> {
                     try {
                         DigestDto.CompleteManifestInfoDto digest = getManifestByTag(repository, tag);
-                        Log.info("Successfully fetched digest for tag: " + tag);
+                        logService.publish("Successfully fetched manifest for tag: " + tag, LoggingLevel.INFO);
                         return digest;
                     }
                     catch (Exception e) {
-                        Log.error("Failed to fetch manifest for tag: " + tag);
+                        logService.publish("Failed to fetch manifest for tag: " + tag, LoggingLevel.ERROR);
                         return null;
                     }
                 }, virtualThreadExecutor)).toList();
@@ -162,17 +167,17 @@ public class ContainerRegistryRestService {
                         .supplyAsync(() -> {
                             try {
                                 DigestDto.CompleteManifestInfoDto digest = getManifestByTag(repository, tag);
-                                Log.info("Successfully fetched digest for tag: " + tag);
+                                logService.publish("Successfully fetched manifest for tag: " + tag, LoggingLevel.INFO);
                                 return digest;
                             } catch (Exception e) {
-                                Log.error("Failed to fetch manifest for tag: " + tag + " - " + e.getMessage());
+                                logService.publish("Failed to fetch manifest for tag: " + tag, LoggingLevel.ERROR);
                                 return null;
                             }
                         }, virtualThreadExecutor)
                         .thenCompose(digest -> {
                             // Skip deletion if fetch failed or returned empty digest
                             if (digest == null || digest.digestDto().schemaVersion().equals(-1)) {
-                                Log.warn("Skipping deletion for invalid digest from tag: " + tag);
+                                logService.publish("Skipping deletion for invalid digest from tag: " + tag, LoggingLevel.WARN);
                                 return CompletableFuture.completedFuture(null);
                             }
 
@@ -181,16 +186,17 @@ public class ContainerRegistryRestService {
                                 try {
                                     deleteManifest(repository, digestValue);
                                     Log.info("Successfully deleted manifest: " + digestValue);
+                                    logService.publish("Successfully deleted manifest: " + digestValue, LoggingLevel.INFO);
                                     manifestsDeleted.add(digestValue);
                                 } catch (Exception e) {
-                                    Log.error("Failed to delete digest: " + digestValue + " - " + e.getMessage());
+                                    logService.publish("Failed to delete digest: " + digestValue + " - " + e.getMessage(), LoggingLevel.ERROR);
                                     manifestsFailedToDelete.add(digestValue);
                                 }
                             }, virtualThreadExecutor);
                         })
                         // Handle fetch failures gracefully
                         .exceptionally(throwable -> {
-                            Log.error("Fetch-delete pipeline failed for tag: " + tag + " - " + throwable.getMessage());
+                            logService.publish("Fetch-delete pipeline failed for tag: " + tag + " - " + throwable.getMessage(), LoggingLevel.ERROR);
                             return null;
                         }))
                 .toList();

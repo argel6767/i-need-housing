@@ -1,5 +1,7 @@
 package ineedhousing.cronjob.azure.postgres;
 
+import ineedhousing.cronjob.log.LogService;
+import ineedhousing.cronjob.log.model.LoggingLevel;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -13,6 +15,9 @@ public class DatabaseService {
 
     @Inject
     AgroalDataSource dataSource;
+
+    @Inject
+    LogService logService;
 
     /**
      * Deletes HouseListings that are older than 6 months in the INeedHousing DB
@@ -29,10 +34,11 @@ public class DatabaseService {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             int rowsDeleted = ps.executeUpdate();
-            Log.infof("Deleted %d old listings", rowsDeleted);
-
+            logService.publish("Deleted " + rowsDeleted + " old listings", LoggingLevel.INFO);
         } catch (Exception e) {
             Log.error("Error deleting old listings", e);
+            logService.publish("Error deleting old listings\n" + e, LoggingLevel.ERROR);
+            throw new RuntimeException(e);
         }
     }
 }

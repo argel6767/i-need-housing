@@ -2,6 +2,8 @@ package ineedhousing.cronjob.cron;
 
 import ineedhousing.cronjob.azure.container_registry.ContainerRegistryRestService;
 import ineedhousing.cronjob.azure.postgres.DatabaseService;
+import ineedhousing.cronjob.log.LogService;
+import ineedhousing.cronjob.log.model.LoggingLevel;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -23,6 +25,9 @@ public class CronService {
     @Inject
     Config config;
 
+    @Inject
+    LogService logService;
+
     private String iNeedHousingRepo;
     private String cronJobServiceRepo;
 
@@ -37,13 +42,13 @@ public class CronService {
 
     @Scheduled(cron = "0 0 0 2,9,16,23 * ?") // Midnight on the 2nd, 9th, 16th, and 23rd
     void deleteOldINeedHousingImagesJob() {
-        Log.info("Running Cron Job, deleting old INeedHousing API images");
+        logService.publish("Running Cron Job, deleting old INeedHousing API images", LoggingLevel.INFO);
         try {
             containerRegistryRestService.deleteOldImages(iNeedHousingRepo);
-            Log.info("Successfully deleted old INeedHousing API images");
+            logService.publish("Successfully deleted old INeedHousing API images", LoggingLevel.INFO);
         }
         catch (JsonProcessingException e) {
-            Log.error("Failed to run Cron Job", e);
+            logService.publish("Failed to delete old INeedHousing API images\n" + e, LoggingLevel.ERROR);
         }
     }
 
@@ -52,10 +57,10 @@ public class CronService {
         Log.info("Running Cron Job, deleting old Cron Jobs Service images");
         try {
             containerRegistryRestService.deleteOldImages(cronJobServiceRepo);
-            Log.info("Successfully deleted old Cron Job Service images");
+            logService.publish("Successfully deleted old Cron Job Service images", LoggingLevel.INFO);
         }
         catch (JsonProcessingException e) {
-            Log.error("Failed to run Cron Job", e);
+            logService.publish("Failed to delete old Cron Job Service images\n" + e, LoggingLevel.ERROR);
         }
     }
 
@@ -64,9 +69,10 @@ public class CronService {
         Log.info("Running Cron Job, deleting old Housing Listings");
         try {
             databaseService.deleteOldListings();
+            logService.publish("Successfully deleted old House Listings", LoggingLevel.INFO);
         }
         catch (Exception e) {
-            Log.error("Failed to run Cron Job", e);
+            logService.publish("Failed to delete old House Listings\n" + e, LoggingLevel.ERROR);
         }
     }
 }
