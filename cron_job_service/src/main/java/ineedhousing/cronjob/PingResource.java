@@ -1,5 +1,7 @@
 package ineedhousing.cronjob;
 
+import ineedhousing.cronjob.log.LogService;
+import ineedhousing.cronjob.log.model.LoggingLevel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
@@ -21,6 +23,9 @@ public class PingResource {
     @Any
     Instance<HealthCheck> healthChecks;
 
+    @Inject
+    LogService logService;
+
     /**
      * Pings service to wake up/check on it
      * @return
@@ -29,6 +34,7 @@ public class PingResource {
     @Path("/ping")
     @Produces(MediaType.APPLICATION_JSON)
     public HealthPing pingService() {
+        logService.publish("Health check endpoint hit", LoggingLevel.INFO);
         List<HealthCheckResponse> healthCheckResponses = healthChecks.stream()
                 .map(HealthCheck::call)
                 .toList();

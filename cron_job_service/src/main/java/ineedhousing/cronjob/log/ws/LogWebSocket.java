@@ -1,5 +1,6 @@
-package ineedhousing.cronjob.log;
+package ineedhousing.cronjob.log.ws;
 
+import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LogEvent;
 import ineedhousing.cronjob.log.model.LoggingLevel;
 import io.quarkus.websockets.next.*;
@@ -14,8 +15,16 @@ public class LogWebSocket {
     @Inject
     LogService logService;
 
+    @Inject
+    WebSocketAuthService authService;
+
     @OnOpen
     public void onOpen(WebSocketConnection connection) {
+        if (!authService.isAuthenticated(connection.handshakeRequest())) {
+            logService.publish("Unauthenticated log connection request: " + connection, LoggingLevel.WARN);
+            connection.closeAndAwait(new CloseReason(403, "Missing or incorrect access token"));
+            throw new WebSocketException("Not authenticated, rejecting connection");
+        }
         currentConnection = connection;
         logService.publish("Live log connection made", LoggingLevel.INFO);
     }

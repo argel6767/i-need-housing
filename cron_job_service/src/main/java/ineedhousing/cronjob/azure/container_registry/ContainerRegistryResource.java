@@ -11,14 +11,14 @@ import jakarta.ws.rs.core.MediaType;
 
 import java.util.List;
 
-@Path("/container-registry")
+@Path("/container-registries")
 public class ContainerRegistryResource {
 
     @Inject
     ContainerRegistryRestService containerRegistryRestService;
 
     @GET
-    @Path("/repositories")
+    @Path("/repos")
     @Produces(MediaType.APPLICATION_JSON)
     public String listRepositories() {
         return containerRegistryRestService.getRepositories();
