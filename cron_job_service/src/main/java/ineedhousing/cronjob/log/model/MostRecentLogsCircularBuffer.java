@@ -27,8 +27,11 @@ public class MostRecentLogsCircularBuffer<T> {
     }
 
     public List<T> getMostRecentLogs(int numOfLogs) {
-        if (numOfLogs >= MAX_SIZE) {
+        if (numOfLogs > MAX_SIZE) {
             throw new IllegalArgumentException("Number of logs requested is too large. The max is " + MAX_SIZE);
+        }
+        if (numOfLogs < 0) {
+            throw new IllegalArgumentException("Number of logs requested is negative. What is a negative amount of logs?");
         }
         if (buffer.size() < numOfLogs) {
             return buffer.stream().toList();

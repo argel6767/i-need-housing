@@ -29,8 +29,8 @@ public class LogService {
             case LoggingLevel.ERROR -> Log.error(message);
         }
         LogEvent logEvent = new LogEvent(message, level.toString(), LocalDateTime.now());
-        logEventPublisher.fireAsync(logEvent);
         mostRecentLogsCircularBuffer.add(logEvent);
+        logEventPublisher.fireAsync(logEvent);
     }
 
     public List<LogEvent> getMostRecentLogs(Integer limit) {
