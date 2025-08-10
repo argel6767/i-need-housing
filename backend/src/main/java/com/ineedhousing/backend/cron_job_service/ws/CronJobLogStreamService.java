@@ -1,10 +1,12 @@
-package com.ineedhousing.backend.cron_job_service;
+package com.ineedhousing.backend.cron_job_service.ws;
 
 import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
 import com.ineedhousing.backend.model.CircularBuffer;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CronJobLogStreamService {
 
     private final int MAX_LOGS_SAVED = 1000;

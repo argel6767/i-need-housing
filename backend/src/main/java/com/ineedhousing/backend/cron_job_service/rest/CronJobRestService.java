@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.cron_job_service;
+package com.ineedhousing.backend.cron_job_service.rest;
 
 import com.ineedhousing.backend.cron_job_service.model.HealthPing;
 import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;

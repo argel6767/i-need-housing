@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.cron_job_service;
+package com.ineedhousing.backend.cron_job_service.rest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
