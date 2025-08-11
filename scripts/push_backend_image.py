@@ -24,12 +24,12 @@ def load_env_file():
 def sign_in_to_azure():
     print("Signing In to Azure via CLI\n\n")
     sign_in = subprocess.run(["az", "login", "--tenant", os.environ.get("TENANT_ID"), "-u", os.environ.get("USERNAME"), "-p", os.environ.get("PASSWORD")], shell=isOSWindows)
-    print(sign_in)
+    print("Signed in to Azure\n\n")
     
 def sign_in_to_acr():
     print("Logging into Azure Container Registry\n\n")
     acr_login = subprocess.run(["az", "acr", "login", "--name", "ineedhousing"])
-    print(acr_login)
+    print("Logged into Azure Container Registry\n\n")
 
 def build_and_push_with_unique_tag(repo_name, service, directory):
     image_name = build_image(repo_name, service, directory)

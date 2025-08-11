@@ -36,7 +36,7 @@ The project has successfully reached its MVP milestone:
 
 - `/backend`: Spring Boot application with PostgreSQL integration
 - `/frontend`: Next.js application with Tailwind CSS
-- `/cron-job-service`: Quarkus microservice for automated maintenance (in development)
+- `/cron-job-service`: Quarkus microservice for automated maintenance
 - `/scripts`: Utility scripts for deployment and environment management
 
 ## Getting Started
