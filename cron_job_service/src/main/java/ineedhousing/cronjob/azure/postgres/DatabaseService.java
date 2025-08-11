@@ -1,14 +1,15 @@
 package ineedhousing.cronjob.azure.postgres;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
+import io.agroal.api.AgroalDataSource;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import io.agroal.api.AgroalDataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 
 @ApplicationScoped
 public class DatabaseService {
