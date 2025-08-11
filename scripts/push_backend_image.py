@@ -9,6 +9,13 @@ backend = Path.cwd()/"backend"
 isOSWindows = platform.system() == "Windows"
 app_service_name = "i-need-housing-backend"
 
+def is_cicd_pipeline():
+    if (len(sys.argv) > 1 and sys.argv[1] == "cicd"):
+        print("Running in CI/CD pipeline\n\n")
+        return True
+    print("Running locally\n\n")
+    return False
+
 def load_env_file():
     # Your existing env loading code
     file_path = Path.cwd()/"azure.env"
@@ -76,7 +83,11 @@ def restart_app_service(app_service):
 
 def main():
     check_if_docker_is_running()
-    load_env_file()
+    
+    if not is_cicd_pipeline():
+        print("Skipping env file loading\n\n")
+        load_env_file()
+    
     sign_in_to_azure()
     sign_in_to_acr()
     image_name = build_and_push_with_unique_tag("images/backend", "backend", backend)

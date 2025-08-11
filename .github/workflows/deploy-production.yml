@@ -95,7 +95,7 @@ jobs:
           
       - name: Build and Push Backend Image
         run: |
-          python scripts/push_backend_image.py
+          python scripts/push_backend_image.py cicd
 
   deploy-cron-service:
     name: Deploy Cron Job Service
@@ -131,7 +131,7 @@ jobs:
           
       - name: Build and Push Cron Service Image
         run: |
-          python scripts/push_cron_image.py
+          python scripts/push_cron_image.py cicd
 
   deployment-summary:
     name: Deployment Summary
