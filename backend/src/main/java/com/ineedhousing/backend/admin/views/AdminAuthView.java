@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Lazy;
 
 import com.ineedhousing.backend.admin.AdminService;
 import com.ineedhousing.backend.auth.requests.AuthenticateUserDto;
-import com.ineedhousing.backend.auth.responses.LoginResponse;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
@@ -22,7 +21,6 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinSession;
 
 
 
