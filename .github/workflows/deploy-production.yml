@@ -68,6 +68,14 @@ jobs:
     if: needs.check-changes.outputs.backend-changed == 'true'
     environment: prod-env
     
+    env:
+      AZURE_CONTAINER_REGISTRY: ineedhousing.azurecr.io
+      BACKEND_APP_SERVICE: i-need-housing-backend
+      RESOURCE_GROUP: INeedHousing
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_USERNAME: ${{ secrets.AZURE_USERNAME }}
+      AZURE_PASSWORD: ${{ secrets.AZURE_PASSWORD }}
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -76,59 +84,19 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          
-      - name: Install Azure CLI
-        run: |
-          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-          
+
       - name: Install Docker
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo systemctl start docker
-          sudo usermod -aG docker $USER
+            sudo apt-get update
+            sudo apt-get install -y docker.io
+            sudo systemctl start docker
+            sudo usermod -aG docker $USER
+            echo "Docker installed and started"
           
-      - name: Login to Azure
+      - name: Build and Push Backend Image
         run: |
-          az login --tenant ${{ secrets.AZURE_TENANT_ID }} -u ${{ secrets.AZURE_USERNAME }} -p ${{ secrets.AZURE_PASSWORD }}
-          
-      - name: Login to Azure Container Registry
-        run: |
-          az acr login --name ineedhousing
-          
-      - name: Build and push backend image
-        run: |
-          cd backend
-          # Generate unique timestamp tag
-          TIMESTAMP=$(date +%s)
-          IMAGE_NAME="ineedhousing.azurecr.io/images/backend:v$TIMESTAMP"
-          
-          # Build Docker image
-          docker build -t $IMAGE_NAME .
-          
-          # Push to ACR
-          docker push $IMAGE_NAME
-          
-          # Update App Service container settings
-          az webapp config container set \
-            --name ${{ env.BACKEND_APP_SERVICE }} \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --container-image-name $IMAGE_NAME \
-            --container-registry-url https://${{ env.AZURE_CONTAINER_REGISTRY }}
-            
-          # Configure startup timeout
-          az webapp config set \
-            --name ${{ env.BACKEND_APP_SERVICE }} \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --generic-configurations '{"startupTimeLimit": 500}'
-            
-          # Restart App Service
-          az webapp restart \
-            --name ${{ env.BACKEND_APP_SERVICE }} \
-            --resource-group ${{ env.RESOURCE_GROUP }}
-            
-          echo "Backend deployment completed successfully"
-          
+          python scripts/push_backend_image.py
+
   deploy-cron-service:
     name: Deploy Cron Job Service
     runs-on: ubuntu-latest
@@ -136,6 +104,14 @@ jobs:
     if: needs.check-changes.outputs.cron-changed == 'true'
     environment: prod-env
     
+    env:
+      AZURE_CONTAINER_REGISTRY: ineedhousing.azurecr.io
+      BACKEND_APP_SERVICE: i-need-housing-backend
+      RESOURCE_GROUP: INeedHousing
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_USERNAME: ${{ secrets.AZURE_USERNAME }}
+      AZURE_PASSWORD: ${{ secrets.AZURE_PASSWORD }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -144,59 +120,19 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          
-      - name: Install Azure CLI
-        run: |
-          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-          
+
       - name: Install Docker
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo systemctl start docker
-          sudo usermod -aG docker $USER
+            sudo apt-get update
+            sudo apt-get install -y docker.io
+            sudo systemctl start docker
+            sudo usermod -aG docker $USER
+            echo "Docker installed and started"
           
-      - name: Login to Azure
+      - name: Build and Push Cron Service Image
         run: |
-          az login --tenant ${{ secrets.AZURE_TENANT_ID }} -u ${{ secrets.AZURE_USERNAME }} -p ${{ secrets.AZURE_PASSWORD }}
-          
-      - name: Login to Azure Container Registry
-        run: |
-          az acr login --name ineedhousing
-          
-      - name: Build and push cron service image
-        run: |
-          cd cron_job_service
-          # Generate unique timestamp tag
-          TIMESTAMP=$(date +%s)
-          IMAGE_NAME="ineedhousing.azurecr.io/images/cron_job_service:v$TIMESTAMP"
-          
-          # Build Docker image
-          docker build -t $IMAGE_NAME .
-          
-          # Push to ACR
-          docker push $IMAGE_NAME
-          
-          # Update App Service container settings
-          az webapp config container set \
-            --name ${{ env.CRON_APP_SERVICE }} \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --container-image-name $IMAGE_NAME \
-            --container-registry-url https://${{ env.AZURE_CONTAINER_REGISTRY }}
-            
-          # Configure startup timeout
-          az webapp config set \
-            --name ${{ env.CRON_APP_SERVICE }} \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --generic-configurations '{"startupTimeLimit": 500}'
-            
-          # Restart App Service
-          az webapp restart \
-            --name ${{ env.CRON_APP_SERVICE }} \
-            --resource-group ${{ env.RESOURCE_GROUP }}
-            
-          echo "Cron service deployment completed successfully"
-          
+          python scripts/push_cron_image.py
+
   deployment-summary:
     name: Deployment Summary
     runs-on: ubuntu-latest
