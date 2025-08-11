@@ -84,14 +84,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
-      - name: Install Docker
-        run: |
-            sudo apt-get update
-            sudo apt-get install -y docker.io
-            sudo systemctl start docker
-            sudo usermod -aG docker $USER
-            echo "Docker installed and started"
           
       - name: Build and Push Backend Image
         run: |
@@ -120,14 +112,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
-      - name: Install Docker
-        run: |
-            sudo apt-get update
-            sudo apt-get install -y docker.io
-            sudo systemctl start docker
-            sudo usermod -aG docker $USER
-            echo "Docker installed and started"
           
       - name: Build and Push Cron Service Image
         run: |
