@@ -7,7 +7,7 @@ import org.springframework.web.client.RestClient;
 
 @Lazy
 @Configuration("geometryRestClientConfiguration")
-public class RestClientConfiguration {
+public class GoogleRestClientConfiguration {
     
     /**
      * Bean for defining Geo GeoCode API RestClient

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
 @Configuration
-public class RestClientConfiguration {
+public class CronJobServiceRestClientConfiguration {
 
     @Value("${cron.job.service.url}")
     private String serviceUrl;

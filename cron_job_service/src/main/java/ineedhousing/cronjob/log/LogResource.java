@@ -1,6 +1,7 @@
 package ineedhousing.cronjob.log;
 
 import ineedhousing.cronjob.log.model.LogEvent;
+import ineedhousing.cronjob.log.model.LogEventListWrapper;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -19,7 +20,7 @@ public class LogResource {
     @GET
     @Path("/logs")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<LogEvent> getLogs(@QueryParam("limit") Integer limit) {
+    public LogEventListWrapper getLogs(@QueryParam("limit") Integer limit) {
         if (limit == null) {
             return logService.getMostRecentLogsCircularBuffer();
         }

@@ -3,15 +3,14 @@ package com.ineedhousing.backend.configs;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestClient;
 
-import com.ineedhousing.backend.apis.RestClientConfiguration;
+import com.ineedhousing.backend.apis.NewListingsRetrievalRestClientConfiguration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RestClientConfigurationTest {
+class GoogleCronJobServiceNewListingsRetrievalRestClientConfigurationTest {
 
     private static final String RENT_CAST_BASE_URL = "https://rentcast.example.com";
     private static final String RENT_CAST_API_KEY = "test-rentcast-key";
@@ -25,7 +24,7 @@ class RestClientConfigurationTest {
     private static final String CRAIGSLIST_API_KEY = "test-craigslist-key";
 
     @InjectMocks
-    private RestClientConfiguration restClientConfiguration;
+    private NewListingsRetrievalRestClientConfiguration newListingsRetrievalRestClientConfiguration;
 
     @BeforeEach
     void setUp() {

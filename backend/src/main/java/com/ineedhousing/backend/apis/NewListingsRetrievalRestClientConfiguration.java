@@ -11,7 +11,7 @@ import org.springframework.web.client.RestClient;
  */
 @Lazy
 @Configuration("housingGatheringRestClientConfiguration")
-public class RestClientConfiguration {
+public class NewListingsRetrievalRestClientConfiguration {
 
     @Value("${rent.cast.base.url}")
     private String rentCastBaseUrl;

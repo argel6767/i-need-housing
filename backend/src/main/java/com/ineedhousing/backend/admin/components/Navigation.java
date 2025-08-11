@@ -1,11 +1,6 @@
 package com.ineedhousing.backend.admin.components;
 
-import com.ineedhousing.backend.admin.views.AdminAuthView;
-import com.ineedhousing.backend.admin.views.AdminDashboardView;
-import com.ineedhousing.backend.admin.views.FindNewListingsView;
-import com.ineedhousing.backend.admin.views.ListingsView;
-import com.ineedhousing.backend.admin.views.SettingsView;
-import com.ineedhousing.backend.admin.views.UsersView;
+import com.ineedhousing.backend.admin.views.*;
 
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -33,12 +28,14 @@ public class Navigation {
                         VaadinIcon.HOME.create());
                 SideNavItem findListings = new SideNavItem("Find Listings",
                         FindNewListingsView.class, VaadinIcon.SEARCH.create());
+                SideNavItem cronJobService = new SideNavItem("Check Cron Job Service",
+                        CronJobServiceView.class,VaadinIcon.AUTOMATION.create());
                 SideNavItem settingsLink = new SideNavItem("Settings",
                         SettingsView.class, VaadinIcon.COG.create());
                 SideNavItem logoutLink = new SideNavItem("Logout", AdminAuthView.class,
                 VaadinIcon.SIGN_OUT.create());
                 
-                nav.addItem(homeLink,usersLink, listingsLink, findListings, settingsLink, logoutLink);
+                nav.addItem(homeLink,usersLink, listingsLink, findListings, cronJobService, settingsLink, logoutLink);
                 return nav;
         }
 

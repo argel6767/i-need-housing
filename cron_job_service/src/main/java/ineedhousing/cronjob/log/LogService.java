@@ -1,6 +1,7 @@
 package ineedhousing.cronjob.log;
 
 import ineedhousing.cronjob.log.model.LogEvent;
+import ineedhousing.cronjob.log.model.LogEventListWrapper;
 import ineedhousing.cronjob.log.model.LoggingLevel;
 import ineedhousing.cronjob.log.model.MostRecentLogsCircularBuffer;
 import io.quarkus.logging.Log;
@@ -33,11 +34,13 @@ public class LogService {
         logEventPublisher.fireAsync(logEvent);
     }
 
-    public List<LogEvent> getMostRecentLogs(Integer limit) {
-        return mostRecentLogsCircularBuffer.getMostRecentLogs(limit);
+    public LogEventListWrapper getMostRecentLogs(Integer limit) {
+        List<LogEvent> logs =  mostRecentLogsCircularBuffer.getMostRecentLogs(limit);
+        return new LogEventListWrapper(logs);
     }
 
-    public ArrayDeque<LogEvent> getMostRecentLogsCircularBuffer() {
-        return mostRecentLogsCircularBuffer.getBuffer();
+    public LogEventListWrapper getMostRecentLogsCircularBuffer() {
+        ArrayDeque<LogEvent> logs =  mostRecentLogsCircularBuffer.getBuffer();
+        return new LogEventListWrapper(logs);
     }
 }

@@ -2,6 +2,7 @@ package com.ineedhousing.backend.admin.components;
 
 import java.util.List;
 
+import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
@@ -39,5 +40,12 @@ public class GridCreator {
             grid.setItems(listings);
             grid.setWidth("100%");
             return grid;
+    }
+
+    public static Grid<LogEventResponse.LogEvent> buildLogEventsGrid(List<LogEventResponse.LogEvent> logs) {
+        Grid<LogEventResponse.LogEvent> grid = new Grid<>(LogEventResponse.LogEvent.class);
+        grid.setItems(logs);
+        grid.setWidth("100%");
+        return grid;
     }
 }
