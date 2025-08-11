@@ -1,5 +1,10 @@
 package ineedhousing.cronjob.exception;
 
+import java.time.Instant;
+
+import org.jboss.resteasy.reactive.ClientWebApplicationException;
+
+import static ineedhousing.cronjob.exception.UtilFunctions.buildFailedRequestDto;
 import ineedhousing.cronjob.exception.model.FailedRequestDto;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
@@ -8,11 +13,7 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
-import org.jboss.resteasy.reactive.ClientWebApplicationException;
 
-import java.time.Instant;
-
-import static ineedhousing.cronjob.exception.UtilFunctions.buildFailedRequestDto;
 
 
 @Provider

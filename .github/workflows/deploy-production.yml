@@ -72,9 +72,9 @@ jobs:
       AZURE_CONTAINER_REGISTRY: ineedhousing.azurecr.io
       BACKEND_APP_SERVICE: i-need-housing-backend
       RESOURCE_GROUP: INeedHousing
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      AZURE_USERNAME: ${{ secrets.AZURE_USERNAME }}
-      AZURE_PASSWORD: ${{ secrets.AZURE_PASSWORD }}
+      TENANT_ID: ${{ secrets.TENANT_ID }}
+      USERNAME: ${{ secrets.USERNAME }}
+      PASSWORD: ${{ secrets.PASSWORD }}
       
     steps:
       - name: Checkout code
@@ -84,6 +84,11 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+          echo "Azure CLI installed"
           
       - name: Build and Push Backend Image
         run: |
@@ -100,9 +105,9 @@ jobs:
       AZURE_CONTAINER_REGISTRY: ineedhousing.azurecr.io
       BACKEND_APP_SERVICE: i-need-housing-backend
       RESOURCE_GROUP: INeedHousing
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      AZURE_USERNAME: ${{ secrets.AZURE_USERNAME }}
-      AZURE_PASSWORD: ${{ secrets.AZURE_PASSWORD }}
+      TENANT_ID: ${{ secrets.TENANT_ID }}
+      USERNAME: ${{ secrets.USERNAME }}
+      PASSWORD: ${{ secrets.PASSWORD }}
 
     steps:
       - name: Checkout code
@@ -112,7 +117,12 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          
+
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+          echo "Azure CLI installed"
+
       - name: Build and Push Cron Service Image
         run: |
           python scripts/push_cron_image.py cicd
