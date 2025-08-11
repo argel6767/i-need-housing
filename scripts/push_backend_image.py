@@ -2,7 +2,7 @@ import os
 import subprocess
 from pathlib import Path
 import platform
-
+import sys
 from build_backend_image import build_image, check_if_docker_is_running
 
 backend = Path.cwd()/"backend"

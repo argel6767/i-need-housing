@@ -22,6 +22,7 @@ import com.ineedhousing.backend.geometry.GeometrySingleton;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.housing_listings.HousingListingRepository;
 
+
 /**
  * Houses business logic for Airbnb calls
  */
