@@ -12,32 +12,36 @@ INeedHousing.com is a web application designed to help incoming interns and new-
 - Customizable housing preferences
 - Email verification system
 - Admin dashboard for property management
+- Automated maintenance tasks via cron job service
 
 ## Tech Stack
 
-- **Frontend**: Next.js with Tailwind CSS
-- **Backend**: Spring Boot with PostgreSQL
-- **Microservices**: Quarkus-based cron job service
-- **APIs**: Google Maps, Zillow, Airbnb, Craigslist, RentCast
+- **Frontend**: Next.js 15.2.4 with Tailwind CSS + DaisyUI
+- **Backend**: Spring Boot 3.4.4 with PostgreSQL
+- **Microservices**: Quarkus 3.22.3-based cron job service
+- **APIs**: Google Maps, Zillow, Airbnb, RentCast
 - **Infrastructure**: Azure App Service (Backend), Vercel (Frontend), Azure Container Registry
+- **CI/CD**: GitHub Actions with automated deployment to production
 
 ## Project Status
 
-The project has successfully reached its MVP milestone:
+The project has successfully reached its MVP milestone and continues to evolve:
 
-- Complete MVP web application now available and fully functional
-- Frontend deployed and accessible on Vercel
-- Backend services running on Azure App Service
-- Core features implemented and tested
-- **New**: Cron job microservice in development for automated maintenance tasks
-- Ongoing enhancements and refinements continue as we expand beyond the MVP
+- ✅ **Complete MVP web application** - Fully functional and deployed
+- ✅ **Frontend deployed** - Accessible on Vercel with modern Next.js 15
+- ✅ **Backend services running** - Spring Boot application on Azure App Service
+- ✅ **Core features implemented** - All major functionality tested and working
+- ✅ **Cron job microservice** - Quarkus-based service for automated maintenance tasks
+- ✅ **Automated deployment** - GitHub Actions workflow for production deployments
+- 🔄 **Ongoing enhancements** - Continuous improvements and new features
 
 ## Project Structure
 
-- `/backend`: Spring Boot application with PostgreSQL integration
-- `/frontend`: Next.js application with Tailwind CSS
-- `/cron-job-service`: Quarkus microservice for automated maintenance
+- `/backend`: Spring Boot 3.4.4 application with PostgreSQL integration
+- `/frontend`: Next.js 15.2.4 application with Tailwind CSS and DaisyUI
+- `/cron_job_service`: Quarkus 3.22.3 microservice for automated maintenance
 - `/scripts`: Utility scripts for deployment and environment management
+- `/.github/workflows`: GitHub Actions deployment workflows
 
 ## Getting Started
 
@@ -45,7 +49,16 @@ Detailed setup instructions can be found in the respective README files:
 
 - [Backend Setup](backend/README.md)
 - [Frontend Setup](frontend/README.md)
-- [Cron Job Service](cron_job_service/README.md) *(in development)*
+- [Cron Job Service](cron_job_service/README.md)
+
+## Deployment
+
+The project uses automated deployment via GitHub Actions:
+
+- **Production Branch**: Automatic deployment when code is pushed to `production` branch
+- **Smart Change Detection**: Only deploys services with actual changes
+- **Azure Integration**: Seamless deployment to Azure App Services
+- **Container Registry**: Automated image building and pushing to Azure Container Registry
 
 ## Contact
 

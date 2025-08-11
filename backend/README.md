@@ -10,7 +10,7 @@ A robust Spring Boot backend application for a housing listing platform, providi
   - User registration and authentication
   - Role-based access control (Admin and User roles)
   - User profile management
-    - User profile pictures housed in Azure Blob Container
+  - User profile pictures housed in Azure Blob Container
   - User search preferences
 
 ### Housing Listings
@@ -34,16 +34,18 @@ A robust Spring Boot backend application for a housing listing platform, providi
 - Rate limiting with Resilience4j
 - Caching implementation
 - Admin dashboard functionality
+- Integration with cron job microservice for maintenance tasks
 
 ## 🛠️ Technical Stack
 
 - **Framework**: Spring Boot 3.4.4
 - **Language**: Java 21
-- **Database**: PostgreSQL with Hibernate Spatial
+- **Database**: PostgreSQL with Hibernate Spatial 6.2.6.Final
 - **Security**: Spring Security + JWT
 - **UI Framework**: Vaadin 24.6.2
 - **Build Tool**: Maven
 - **Containerization**: Docker
+- **Cloud Services**: Azure Blob Storage, Azure App Service
 
 ## 📦 Dependencies
 
@@ -55,24 +57,27 @@ Key dependencies include:
 - Resilience4j for rate limiting
 - Vaadin for UI components
 - Lombok for reducing boilerplate code
-- Azure Blob SDK
+- Azure Blob SDK 1.2.33
+- Spring Boot Docker Compose support
 
 ## 🏗️ Project Structure
 
 ```txt
 src/main/java/com/ineedhousing/backend/
-├── admin/           # Admin-specific functionality
-├── apis/            # External API calls for listing gathering
-├── azure/           # Azure services management
-├── auth/            # Authentication and authorization
-├── configs/         # Configuration classes
-├── email/           # Email service implementation
-├── exception/       # Custom exception handling
-├── favorite_listings/ # Favorite listings functionality
-├── geometry/        # Geographic data handling
-├── housing_listings/ # Property listing management
-├── jwt/            # JWT token handling
-├── user/           # User management
+├── admin/                 # Admin-specific functionality
+├── apis/                  # External API calls for listing gathering
+├── azure/                 # Azure services management
+├── auth/                  # Authentication and authorization
+├── configs/               # Configuration classes
+├── cron_job_service/      # Integration with cron job microservice
+├── email/                 # Email service implementation
+├── exception/             # Custom exception handling
+├── favorite_listings/     # Favorite listings functionality
+├── geometry/              # Geographic data handling
+├── housing_listings/      # Property listing management
+├── jwt/                   # JWT token handling
+├── model/                 # Shared data models
+├── user/                  # User management
 └── user_search_preferences/ # User search preferences
 ```
 
@@ -80,9 +85,9 @@ src/main/java/com/ineedhousing/backend/
 
 The application uses environment variables for configuration. Key configuration files:
 
-- `dev.env`: Development environment configuration
-- `prod.env`: Production environment configuration
+- `azure.env`: Azure service configuration
 - `application.properties`: Core application settings
+- Environment-specific configurations for different deployment stages
 
 ## 🐳 Docker Support
 
@@ -91,6 +96,7 @@ The application includes:
 - `Dockerfile` for containerization
 - `compose.yaml` for Docker Compose setup
 - `.dockerignore` for optimized builds
+- Spring Boot Docker Compose starter for easy local development
 
 ## 🚀 Getting Started
 
@@ -99,8 +105,8 @@ The application includes:
    - Maven
    - PostgreSQL
    - Docker (optional)
-   - a dev.env file with environment variables
-   - Python 3
+   - Azure account for cloud services
+   - Python 3 for deployment scripts
 
 2. **Setup**
 
@@ -108,7 +114,7 @@ The application includes:
    # Clone the repository
    git clone [repository-url]
    
-   # Run Python script
+   # Run Python script for local development
    python scripts/run_backend.py
    ```
 
@@ -122,6 +128,10 @@ The application includes:
    docker-compose up
    ```
 
+4. **Production Deployment**
+
+   The backend is automatically deployed to Azure App Service via GitHub Actions when changes are pushed to the `production` branch.
+
 ## 🔒 Security
 
 The application implements:
@@ -130,6 +140,7 @@ The application implements:
 - Role-based access control
 - Secure password storage
 - Rate limiting for API endpoints
+- Http-Only cookies for enhanced security
 
 ## 📝 API Documentation
 
@@ -154,6 +165,7 @@ The application provides the following REST API endpoints:
 - `DELETE /me` - Delete user
 
 ### Profile Pictures (`/profile-pictures`)
+
 - `GET /url` - Get user's profile picture's SAS URL
 - `PUT /url` - Update user's profile picture's SAS URL
 - `PUT /upload` - Update user's profile picture
@@ -193,6 +205,21 @@ The project includes:
 
 - Unit tests
 - Integration tests
+- Comprehensive test coverage for all major components
+
+## 🚀 Deployment
+
+### Automated Deployment
+
+- **GitHub Actions**: Automated deployment to Azure App Service
+- **Production Branch**: Deploys when code is pushed to `production` branch
+- **Smart Change Detection**: Only deploys when backend changes are detected
+- **Azure Integration**: Seamless deployment to Azure cloud services
+
+### Manual Deployment
+
+- Use the provided Python scripts in the `/scripts` directory
+- Docker-based deployment for containerized environments
 
 ## 📄 License
 

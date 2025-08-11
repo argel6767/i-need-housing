@@ -10,11 +10,13 @@ A lightweight Quarkus-based microservice designed to handle scheduled maintenanc
     - Automated deletion of old container images from Azure Container Registry
     - Configurable retention policies for image versions
     - Support for repository-specific cleanup rules
+    - REST API endpoints for manual cleanup operations
 
 - **Database Maintenance**
     - Automated cleanup of old listing data from Azure PostgreSQL
     - Expired listing removal based on configurable time thresholds
     - Database optimization and maintenance tasks
+    - Health check endpoints for monitoring
 
 ### Real-time Monitoring
 
@@ -22,6 +24,14 @@ A lightweight Quarkus-based microservice designed to handle scheduled maintenanc
     - Live log streaming to INeedHousing admin dashboard
     - Real-time task execution status updates
     - Bidirectional communication for task management
+    - WebSocket endpoints for real-time monitoring
+
+### Health & Monitoring
+
+- **Health Checks**
+    - Readiness and liveness probes for container orchestration
+    - Service status monitoring endpoints
+    - Ping endpoint for basic connectivity testing
 
 ## 🛠️ Technical Stack
 
@@ -29,39 +39,57 @@ A lightweight Quarkus-based microservice designed to handle scheduled maintenanc
 - **Language**: Java 21
 - **Cloud Services**: Azure Container Registry, Azure PostgreSQL
 - **Build Tool**: Maven
-- **Containerization**: Docker
+- **Containerization**: Docker with native and JVM modes
+- **Deployment**: Azure App Service via GitHub Actions
 
 ## 📦 Dependencies
 
 Key dependencies include:
 
 - **Quarkus Core**: Arc (CDI), REST, WebSockets Next, Scheduler
-- **Database**: Postgres JDBC driver
+- **Database**: Postgres JDBC driver with connection pooling
+- **Azure SDK**: Azure Container Registry management
 - **Testing**: JUnit 5, REST Assured
+- **Health**: SmallRye Health for monitoring
+- **Performance**: Virtual Threads for improved scalability
 
 ## 🏗️ Project Structure
 
 ```txt
-src/main/java/com/ineedhousing/cronjob/
-├── azure/              # Azure service integrations
-│   ├── container/      # Container registry management
-│   └── postgres/       # PostgreSQL database operations
-├── cron/               # Cron job definitions and management
-├── GlobalRequestFilter.java # Request filter lay to check for Access-Token
-├── PingResouce.java    # Houses '/ping' service pinging endpoint
+src/main/java/ineedhousing/cronjob/
+├── azure/                    # Azure service integrations
+│   ├── container_registry/   # Container registry management
+│   │   ├── model/           # Data models for container operations
+│   │   ├── ContainerRegistryResource.java      # REST endpoints
+│   │   ├── ContainerRegistryRestService.java   # Business logic
+│   │   ├── ContainerRegistryAuthHeaderUtil.java # Authentication utilities
+│   │   └── ContainerRegisterRestClient.java    # REST client
+│   └── postgres/            # PostgreSQL database operations
+├── cron/                    # Cron job definitions and management
+│   └── CronService.java     # Scheduled task orchestration
+├── exception/               # Custom exception handling
+├── filters/                 # Request filtering and validation
+│   └── GlobalRequestFilter.java # Global request filter for Access-Token
+├── log/                     # Logging and monitoring services
+├── ws/                      # WebSocket implementations
+└── PingResource.java        # Health check and ping endpoint
 ```
 
 ## ⚙️ Configuration
 
-The application will use environment variables for configuration. Configuration setup is planned for:
+The application uses environment variables for configuration:
 
-### Azure Configuration (Planned)
+### Azure Configuration
+
 - Container registry connection settings
 - PostgreSQL database connection parameters
+- Authentication credentials and endpoints
 
-### WebSocket Configuration (Planned)
+### WebSocket Configuration
+
 - Admin dashboard connection settings
 - Real-time logging stream configuration
+- Connection limits and security settings
 
 ## 🚀 Getting Started
 
@@ -69,7 +97,7 @@ The application will use environment variables for configuration. Configuration 
     - Java 21
     - Maven
     - Docker (optional)
-    - Azure account with Container Registry
+    - Azure account with Container Registry and PostgreSQL
 
 2. **Local Development**
 
@@ -78,11 +106,10 @@ The application will use environment variables for configuration. Configuration 
    git clone [repository-url]
    
    # Navigate to service directory
-   cd cron-job-service
+   cd cron_job_service
    
-   # Set up environment variables (when configuration is implemented)
-   # cp .env.example .env
-   # Edit .env with your Azure configuration
+   # Set up environment variables
+   # Configure Azure credentials and database connections
    
    # Run in development mode
    ./mvnw compile quarkus:dev
@@ -97,8 +124,8 @@ The application will use environment variables for configuration. Configuration 
    # Build Docker image
    docker build -f src/main/docker/Dockerfile.jvm -t ineedhousing/cron-service .
    
-   # Run container (once configuration is implemented)
-   # docker run -p 8080:8080 --env-file .env ineedhousing/cron-service
+   # Run container
+   docker run -p 8080:8080 --env-file .env ineedhousing/cron-service
    ```
 
 4. **Native Build** (Optional)
@@ -111,41 +138,49 @@ The application will use environment variables for configuration. Configuration 
    docker build -f src/main/docker/Dockerfile.native -t ineedhousing/cron-service:native .
    ```
 
+5. **Production Deployment**
+
+   The service is automatically deployed to Azure App Service via GitHub Actions when changes are pushed to the `production` branch.
+
 ## 📝 API Endpoints
 
-### Planned Endpoints
+### Health & Status
 
-#### Health & Status (Planned)
-- Health check and service status endpoints
-- Readiness and liveness probes for container orchestration
+- `GET /ping` - Basic connectivity test
 
-#### Task Management (Planned)
-- Task execution status monitoring
-- Manual task triggering capabilities
+### Container Registry Management
 
-#### WebSocket Integration (Planned)
-- Real-time log streaming for admin dashboard
-- Live task execution monitoring
+- `GET /container-registries/repos` - List all repos in a given Azure Container Registry
+- `GET /container-registries/tags` - List all tags of a given Repository
+- `GET /container-registries/manifests` - Get manifest of a given tag
+- `POST /container-registries/manifests` - Bulk fetch manifests of all given tags
+- `DELETE /container-registries/manifests` - Delete manifest
+- `DELETE /container-registries/manifests/bulk` - Bulk delete manifests
 
-## 🔄 Scheduled Tasks
+### WebSocket Integration
 
-### Planned Tasks
+- `WS /live-logs` - Real-time log streaming
 
 #### Image Cleanup Task
+
 **Purpose**: Remove old container images from Azure Container Registry
 **Implementation**: Scheduled cleanup based on configurable retention policies
+**Status**: ✅ Implemented and tested
 
 #### Listing Cleanup Task
+
 **Purpose**: Remove expired housing listings from PostgreSQL database
 **Implementation**: Automated cleanup of old listing data based on age thresholds
+**Status**: ✅ Implemented and tested
 
 ## 🔌 WebSocket Integration
 
-The service will provide real-time log streaming to the main INeedHousing admin dashboard. This feature is planned to enable:
+The service provides real-time log streaming to the main INeedHousing admin dashboard:
 
 - Live monitoring of task execution
 - Real-time log streaming during cleanup operations
 - Administrative oversight and debugging capabilities
+- Bidirectional communication for task management
 
 ## 🧪 Testing
 
@@ -158,13 +193,17 @@ The service will provide real-time log streaming to the main INeedHousing admin 
 
 # Run with coverage
 ./mvnw test jacoco:report
+
+# Run specific test suite
+./mvnw test -Dtest=ContainerRegistryTest
 ```
 
 ## 🔒 Security
 
-- **Azure Authentication**: Managed Identity or Service Principal authentication
+- **Azure Authentication**: Service Principal authentication with Azure SDK
 - **WebSocket Security**: Origin validation and connection limits
 - **Database Security**: Encrypted connections and credential management
+- **Request Filtering**: Global request filter for access token validation
 
 ## 🐳 Container Support
 
@@ -173,6 +212,22 @@ The service is optimized for containerized deployments:
 - **JVM Mode**: Standard Docker container with fast startup
 - **Native Mode**: GraalVM native executable for minimal resource usage
 - **Kubernetes Ready**: Health checks and graceful shutdown support
+- **Azure App Service**: Optimized for Azure cloud deployment
+
+## 🚀 Deployment
+
+### Automated Deployment
+
+- **GitHub Actions**: Automated deployment to Azure App Service
+- **Production Branch**: Deploys when code is pushed to `production` branch
+- **Smart Change Detection**: Only deploys when cron service changes are detected
+- **Azure Integration**: Seamless deployment to Azure cloud services
+
+### Manual Deployment
+
+- Use the provided Python scripts in the `/scripts` directory
+- Docker-based deployment for containerized environments
+- Azure CLI deployment for direct Azure integration
 
 ## 📄 License
 
