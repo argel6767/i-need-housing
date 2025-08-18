@@ -29,6 +29,6 @@ public class RentCastSubscriber {
     }
 
     private void fetchNewListings() {
-
+        //fetches data. transforms it into a HousingListing object, then saves to DB
     }
 }
