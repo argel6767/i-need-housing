@@ -49,10 +49,19 @@ public class HousingListing {
 
     private Double numBaths;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt  = LocalDateTime.now();
 
-    public class HousingListingBuilder{
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Point getLocation() {
+        return location;
+    }
+
+    public static class HousingListingBuilder{
         HousingListing housingListing = new HousingListing();
 
         public HousingListing build() {
@@ -76,6 +85,11 @@ public class HousingListing {
 
         public HousingListingBuilder description(String description) {
             housingListing.description = description;
+            return this;
+        }
+
+        public  HousingListingBuilder rate(Double rate) {
+            housingListing.rate = rate;
             return this;
         }
 
