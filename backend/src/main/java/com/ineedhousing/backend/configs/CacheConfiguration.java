@@ -38,6 +38,12 @@ public class CacheConfiguration {
                         .maximumSize(MAXIMUM_CACHE_SIZE)
                         .build());
 
+        cacheManager.registerCustomCache("listings",
+                Caffeine.newBuilder()
+                        .expireAfterWrite(8, TimeUnit.HOURS)
+                        .maximumSize(MAXIMUM_CACHE_SIZE)
+                        .build());
+
         return cacheManager;
     }
 }
