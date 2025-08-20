@@ -6,7 +6,6 @@ import com.ineedhousing.new_listings_service.models.HousingListing;
 import com.ineedhousing.new_listings_service.models.NewListingsEvent;
 import com.ineedhousing.new_listings_service.repositories.HousingListingRepository;
 import com.ineedhousing.new_listings_service.services.GoogleAPIService;
-import com.ineedhousing.new_listings_service.utils.HousingListingUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -20,11 +19,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.client.RestClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.ineedhousing.new_listings_service.constants.LocationCoordinates.getCityCoordinates;
+import static com.ineedhousing.new_listings_service.utils.NewListingsCreationUtils.saveNewListings;
 
 @Component
 public class RentCastSubscriber {
@@ -34,7 +34,7 @@ public class RentCastSubscriber {
     private final HousingListingRepository housingListingRepository;
     private final GoogleAPIService googleAPIService;
     private final String SOURCE = "RentCast";
-    private final int LIMIT = 300;
+    private final int LIMIT = 500;
     private final int RADIUS = 30;
 
     public RentCastSubscriber(@Qualifier("RentCast API") RestClient restClient, HousingListingRepository housingListingRepository, GoogleAPIService googleAPIService) {
@@ -43,24 +43,14 @@ public class RentCastSubscriber {
         this.googleAPIService = googleAPIService;
     }
 
-
     @EventListener
     @Async
     public void handleNewListingsEvent(NewListingsEvent event) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-
-        List<CityCoordinates> cities = getCityCoordinates();
-        List<HousingListing> newListings = cities.parallelStream()
-                .map(this::fetchNewListings)
-                .map(this::transformRawListingData)
-                .flatMap(List::stream)
-                .filter(HousingListingUtils.distinctByKey(HousingListing::getLocation))
-                .filter(listing -> HousingListingUtils.listingAlreadyExists(housingListingRepository, listing))
-                .toList();
-
+        int size = saveNewListings(housingListingRepository, this::fetchNewListings, this::transformRawListingData);
         stopWatch.stop();
-        logger.info("{} New Listings Created by RentCast. Runtime: {}", newListings.size(), stopWatch.getTotalTimeMillis());
+        logger.info("{} New Listings Created by RentCast. Runtime: {}", size, stopWatch.getTotalTimeMillis());
     }
 
     private List<Map<String, Object>> fetchNewListings(CityCoordinates cityCoordinates) {
@@ -77,6 +67,7 @@ public class RentCastSubscriber {
                 .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {});
         if (response == null) {
             logger.warn("RentCast API request failed for {}. Check usage rates, and make sure latitude and longitude are valid.", cityCoordinates.cityName());
+            return new ArrayList<>();
         }
         if (response.isEmpty()) {
             logger.info("No new listings found for {}", cityCoordinates.cityName());
