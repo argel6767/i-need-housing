@@ -22,15 +22,6 @@ public class RestClientConfiguration {
     @Value("${airbnb.api.key}")
     private String airbnbApiKey;
 
-    @Value("${craigslist.base.url}")
-    private String craigslistBaseUrl;
-
-    @Value("${craigslist.host}")
-    private String craigslistHost;
-
-    @Value("${craigslist.api.key}")
-    private String craigslistApiKey;
-
     @Value("${zillow.base.url}")
     private String zillowBaseUrl;
 
@@ -63,21 +54,6 @@ public class RestClientConfiguration {
                 .defaultHeaders(httpHeaders -> {
                     httpHeaders.set("x-rapidapi-key", airbnbApiKey);
                     httpHeaders.set("x-rapidapi-host", airbnbHost);
-                })
-                .build();
-    }
-
-    /**
-     * bean for http requests for Craigslist api
-     * @return RestClient bean for Craigslist
-     */
-    @Bean(name = "Craigslist API")
-    RestClient craigslistRestClient() {
-        return RestClient.builder()
-                .baseUrl(craigslistBaseUrl)
-                .defaultHeaders(httpHeaders -> {
-                    httpHeaders.set("x-rapidapi-key", craigslistApiKey);
-                    httpHeaders.set("x-rapidapi-host", craigslistHost);
                 })
                 .build();
     }

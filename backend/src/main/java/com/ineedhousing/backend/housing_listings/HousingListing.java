@@ -11,6 +11,7 @@ import org.locationtech.jts.geom.Point;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDateTime;
 import java.util.List;
 //TODO add date field, such as listing or availability date
 @Data
@@ -73,5 +74,12 @@ public class HousingListing {
     private Boolean isPetFriendly;
 
     private Boolean isFurnished;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
 }

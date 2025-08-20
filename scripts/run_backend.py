@@ -12,7 +12,7 @@ isOSWindows = platform.system() == "Windows"
 
 def load_env_file():
     environment = input("Is this Dev? Y/N\n")
-    file_path="";
+    file_path=""
     
     if (environment == "Y"):
         file_path = backend/"dev.env"
@@ -40,14 +40,15 @@ def find_maven_home():
         
     return mvn_path
 
+def run_application(mvn_path, curr_working_dir, isOSWindows):
+    process = subprocess.run([mvn_path, "spring-boot:run"], cwd= curr_working_dir, shell=isOSWindows)
+    print(process)
+
 def main():
     load_env_file()
     mvn_path = find_maven_home()
     print(mvn_path)
-    # Run the Spring Boot application
-    process = subprocess.run([mvn_path, "spring-boot:run"], cwd=str(backend), shell=isOSWindows)
-    
-    print(process)
+    run_application(mvn_path=mvn_path, curr_working_dir=backend, isOSWindows=isOSWindows)
 
 if __name__ == "__main__":
     main()

@@ -25,12 +25,12 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static ch.qos.logback.core.util.StringUtil.capitalizeFirstLetter;
-import static com.ineedhousing.new_listings_service.utils.NewListingsCreationUtils.saveNewListings;
+import static com.ineedhousing.new_listings_service.utils.NewListingsCreationUtils.saveNewListing;
 
 @Component
 public class ZillowSubscriber {
 
-    Logger logger = LoggerFactory.getLogger(RentCastSubscriber.class);
+    Logger logger = LoggerFactory.getLogger(ZillowSubscriber.class);
 
     private final RestClient restClient;
     private final HousingListingRepository housingListingRepository;
@@ -48,45 +48,51 @@ public class ZillowSubscriber {
     public void handleNewListingsEvent(NewListingsEvent event) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        int size = saveNewListings(housingListingRepository, this::fetchNewListings, this::transformRawListingData);
+        int size = saveNewListing(housingListingRepository, this::fetchNewListings, this::transformRawListingData);
         stopWatch.stop();
         logger.info("{} New Listings Created by Zillow. Runtime: {}", size, stopWatch.getTotalTimeMillis());
     }
 
     private List<Map<String, Object>> fetchNewListings(CityCoordinates cityCoordinates) {
-        Map response = restClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/search/bycoordinates")
-                        .queryParam("latitude", cityCoordinates.latitude())
-                        .queryParam("longitude", cityCoordinates.longitude())
-                        .queryParam("radius", "10")
-                        .queryParam("page", "1")
-                        .queryParam("listingStatus", "For_Rent")
-                        .queryParam("homeType", "Houses, Townhomes, Multi-family, Condos/Co-ops, Lots-Land, Apartments, Manufactured")
-                        .queryParam("listingTypeOptions", "Agent listed,New Construction,Fore-closures,Auctions")
-                        .build())
-                .retrieve()
-                .body(Map.class);
-        if (response == null) {
-            logger.warn("RentCast API request failed for {}. Check usage rates, and make sure latitude and longitude are valid.", cityCoordinates.cityName());
+        try {
+            Map response = restClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/search/bycoordinates")
+                            .queryParam("latitude", cityCoordinates.latitude())
+                            .queryParam("longitude", cityCoordinates.longitude())
+                            .queryParam("radius", "20")
+                            .queryParam("page", "1")
+                            .queryParam("listingStatus", "For_Rent")
+                            .queryParam("homeType", "Houses, Townhomes, Multi-family, Condos/Co-ops, Lots-Land, Apartments, Manufactured")
+                            .queryParam("listingTypeOptions", "Agent listed,New Construction,Fore-closures,Auctions")
+                            .build())
+                    .retrieve()
+                    .body(Map.class);
+            if (response == null) {
+                logger.warn("Zillow API request failed for {}. Check usage rates, and make sure latitude and longitude are valid.", cityCoordinates.cityName());
+                return new ArrayList<>();
+            }
+            if (response.isEmpty()) {
+                logger.info("No new listings found for {}", cityCoordinates.cityName());
+            }
+            logger.info("Zillow API response for {} successful.", cityCoordinates.cityName());
+
+            List<Map<String, Object>> newListings = (List<Map<String, Object>>) response.get("searchResults");
+
+            if (newListings == null) {
+                logger.info("\"property\" field should not be null, check official documentation!");
+                return new ArrayList<>();
+            }
+
+            if (newListings.isEmpty()) {
+                logger.info("No new listings found for {}", cityCoordinates.cityName());
+            }
+            return newListings;
+        }
+        catch (Exception e) {
+            logger.error("Failed to fetch new listings for {} from Zillow API. Error message: {}", cityCoordinates.cityName(), e.getMessage());
             return new ArrayList<>();
         }
-        if (response.isEmpty()) {
-            logger.info("No new listings found for {}", cityCoordinates.cityName());
-        }
-        logger.info("RentCast API response for {} successful.", cityCoordinates.cityName());
-
-        List<Map<String, Object>> newListings = (List<Map<String, Object>>) response.get("property");
-
-        if (newListings == null) {
-            logger.info("\"property\" field should not be null, check official documentation!");
-            return new ArrayList<>();
-        }
-
-        if (newListings.isEmpty()) {
-            logger.info("No new listings found for {}", cityCoordinates.cityName());
-        }
-        return newListings;
     }
 
     private List<HousingListing> transformRawListingData(List<Map<String, Object>> response) {
@@ -96,7 +102,7 @@ public class ZillowSubscriber {
                     Map<String, Object> property = (Map<String, Object>)listing.get("property");
 
                     if (listing.get("resultType").equals("propertyGroup")) {
-                        List<Map<String, Object>> listingProperties = (List<Map<String, Object>>) property.get("listingProperties");
+                        List<Map<String, Object>> listingProperties = (List<Map<String, Object>>) property.get("unitsGroup");
 
                         return listingProperties.stream()
                                 .map(unit -> createMultipleListings(factory, property, unit));
@@ -127,7 +133,7 @@ public class ZillowSubscriber {
                     .build();
         }
         catch (Exception e) {
-            logger.error("Error while creating listing for {}", property.get("cityName"), e);
+            logger.error("Error while creating listing for {}. Error message: {}", property.get("cityName"), e.getMessage());
             return null;
         }
     }
@@ -155,7 +161,7 @@ public class ZillowSubscriber {
             return builder.build();
         }
         catch (Exception e) {
-            logger.error("Error while creating listing for {}", property.get("cityName"), e);
+            logger.error("Error while creating listing from a mutiple unit data value {}. Error message: {}", property.get("cityName"), e.getMessage());
             return null;
         }
     }

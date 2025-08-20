@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.ineedhousing.new_listings_service.utils.NewListingsCreationUtils.saveNewListings;
+import static com.ineedhousing.new_listings_service.utils.NewListingsCreationUtils.saveNewListingsAsync;
 
 @Component
 public class RentCastSubscriber {
@@ -48,32 +48,39 @@ public class RentCastSubscriber {
     public void handleNewListingsEvent(NewListingsEvent event) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        int size = saveNewListings(housingListingRepository, this::fetchNewListings, this::transformRawListingData);
+        int size = saveNewListingsAsync(housingListingRepository, this::fetchNewListings, this::transformRawListingData);
         stopWatch.stop();
         logger.info("{} New Listings Created by RentCast. Runtime: {}", size, stopWatch.getTotalTimeMillis());
     }
 
     private List<Map<String, Object>> fetchNewListings(CityCoordinates cityCoordinates) {
-        List<Map<String, Object>> response = restClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/listings/rental/long-term")
-                        .queryParam("latitude", cityCoordinates.latitude())
-                        .queryParam("longitude", cityCoordinates.longitude())
-                        .queryParam("radius", RADIUS)
-                        .queryParam("limit", LIMIT)
-                        .queryParam("status", "Active")
-                        .build())
-                .retrieve()
-                .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {});
-        if (response == null) {
-            logger.warn("RentCast API request failed for {}. Check usage rates, and make sure latitude and longitude are valid.", cityCoordinates.cityName());
+        try {
+            List<Map<String, Object>> response = restClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/listings/rental/long-term")
+                            .queryParam("latitude", cityCoordinates.latitude())
+                            .queryParam("longitude", cityCoordinates.longitude())
+                            .queryParam("radius", RADIUS)
+                            .queryParam("limit", LIMIT)
+                            .queryParam("status", "Active")
+                            .build())
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {
+                    });
+            if (response == null) {
+                logger.warn("RentCast API request failed for {}. Check usage rates, and make sure latitude and longitude are valid.", cityCoordinates.cityName());
+                return new ArrayList<>();
+            }
+            if (response.isEmpty()) {
+                logger.info("No new listings found for {}", cityCoordinates.cityName());
+            }
+            logger.info("RentCast API response for {} successful.", cityCoordinates.cityName());
+            return response;
+        }
+        catch (Exception e) {
+            logger.error("Failed to fetch new listings for {} from RentCast API. Error message: {}", cityCoordinates.cityName(), e.getMessage());
             return new ArrayList<>();
         }
-        if (response.isEmpty()) {
-            logger.info("No new listings found for {}", cityCoordinates.cityName());
-        }
-        logger.info("RentCast API response for {} successful.", cityCoordinates.cityName());
-        return response;
     }
 
     private List<HousingListing> transformRawListingData(List<Map<String, Object>> response) {
@@ -103,7 +110,7 @@ public class RentCastSubscriber {
                                 .build();
                     }
                     catch (Exception e) {
-                        logger.error("Failed to transform and build new listing", e);
+                        logger.error("Failed to transform and build new listing. Error Message: {}", e.getMessage());
                         return null;
                     }
                 })

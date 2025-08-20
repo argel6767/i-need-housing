@@ -22,18 +22,32 @@ public class NewListingsCreationUtils {
         return t -> seen.add(keyExtractor.apply(t));
     }
 
-    public static boolean listingAlreadyExists(HousingListingRepository repository, HousingListing listing) {
-        return repository.existsByLocation(listing.getLocation());
+    public static boolean listingDoesNotExist(HousingListingRepository repository, HousingListing listing) {
+        return !repository.existsByLocation(listing.getLocation());
     }
 
-    public static int saveNewListings(HousingListingRepository housingListingRepository, Function<CityCoordinates, List<Map<String, Object>>> fetchListings, Function<List<Map<String, Object>>, List<HousingListing>> transformRawListingData) {
+    public static int saveNewListingsAsync(HousingListingRepository housingListingRepository, Function<CityCoordinates, List<Map<String, Object>>> fetchListings, Function<List<Map<String, Object>>, List<HousingListing>> transformRawListingData) {
         List<CityCoordinates> cities = getCityCoordinates();
         List<HousingListing> newListings = cities.parallelStream()
                 .map(fetchListings)
                 .map(transformRawListingData)
                 .flatMap(List::stream)
                 .filter(distinctByKey(HousingListing::getLocation))
-                .filter(listing -> listingAlreadyExists(housingListingRepository, listing))
+                .filter(listing -> listingDoesNotExist(housingListingRepository, listing))
+                .toList();
+
+        housingListingRepository.saveAll(newListings);
+        return newListings.size();
+    }
+
+    public static int  saveNewListing(HousingListingRepository housingListingRepository, Function<CityCoordinates, List<Map<String, Object>>> fetchListings, Function<List<Map<String, Object>>, List<HousingListing>> transformRawListingData) {
+        List<CityCoordinates> cities = getCityCoordinates();
+        List<HousingListing> newListings = cities.stream()
+                .map(fetchListings)
+                .map(transformRawListingData)
+                .flatMap(List::stream)
+                .filter(distinctByKey(HousingListing::getLocation))
+                .filter(listing -> listingDoesNotExist(housingListingRepository, listing))
                 .toList();
 
         housingListingRepository.saveAll(newListings);

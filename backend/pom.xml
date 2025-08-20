@@ -168,7 +168,9 @@
 							<version>1.18.30</version>
 						</path>
 					</annotationProcessorPaths>
-				</configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

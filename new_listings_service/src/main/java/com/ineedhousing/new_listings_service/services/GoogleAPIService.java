@@ -1,6 +1,8 @@
 package com.ineedhousing.new_listings_service.services;
 
+import com.ineedhousing.new_listings_service.subscribers.RentCastSubscriber;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,7 @@ import java.util.Map;
 @Service
 public class GoogleAPIService {
 
-    Logger logger = Logger.getLogger(GoogleAPIService.class.getName());
+    Logger logger = LoggerFactory.getLogger(GoogleAPIService.class);
     private final RestClient restClient;
 
     @Value("${google.geo.code.api.key}")

@@ -28,14 +28,15 @@ public class DatabaseService {
 
         String sql = """
             DELETE FROM house_listings
-            WHERE created_date < NOW() - INTERVAL '6 months'
+            WHERE created_at IS NULL OR 
+            created_at < NOW() - INTERVAL '6 months';
         """;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             int rowsDeleted = ps.executeUpdate();
-            logService.publish("Deleted " + rowsDeleted + " old listings", LoggingLevel.INFO);
+            logService.publish("Deleted " + rowsDeleted + " old listings", LoggingLevel.INFO); //TODO conditionally send a webhook event to only trigger after a threshold of deletions
         } catch (Exception e) {
             Log.error("Error deleting old listings", e);
             logService.publish("Error deleting old listings\n" + e, LoggingLevel.ERROR);
