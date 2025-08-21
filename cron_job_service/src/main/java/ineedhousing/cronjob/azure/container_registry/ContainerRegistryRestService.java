@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ineedhousing.cronjob.azure.container_registry.model.DigestDto;
 import ineedhousing.cronjob.azure.container_registry.model.ManifestsDeletedDto;
 import ineedhousing.cronjob.azure.container_registry.model.TagsDto;
+import ineedhousing.cronjob.exception.exceptions.MissingConfigurationValueException;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
 import io.quarkus.virtual.threads.VirtualThreads;
@@ -49,9 +50,9 @@ public class ContainerRegistryRestService {
     @PostConstruct //only set the values during runtime to allow for native image
     void init() {
          containerUsername = config.getOptionalValue("azure.container.username", String.class)
-                .orElseThrow(() -> new RuntimeException("Container Username not present!"));
+                .orElseThrow(() -> new MissingConfigurationValueException("Container Username not present!"));
          containerAccessKey =  config.getOptionalValue("azure.container.access.key", String.class)
-                .orElseThrow(() -> new RuntimeException("Container Access Key not present!"));
+                .orElseThrow(() -> new MissingConfigurationValueException("Container Access Key not present!"));
     }
 
     private final String ACCEPT_MEDIA = "application/vnd.docker.distribution.manifest.v2+json";

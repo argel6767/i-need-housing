@@ -1,5 +1,6 @@
 package ineedhousing.cronjob.filters;
 
+import ineedhousing.cronjob.exception.exceptions.MissingConfigurationValueException;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
 import jakarta.annotation.Priority;
@@ -22,7 +23,7 @@ public class GlobalRequestFilter implements ContainerRequestFilter {
         String accessToken = System.getenv("ACCESS_TOKEN_HEADER");
 
         if (accessToken == null || accessToken.trim().isEmpty()) {
-            throw new RuntimeException("ACCESS_TOKEN_HEADER environment variable not found or empty!");
+            throw new MissingConfigurationValueException("ACCESS_TOKEN_HEADER environment variable not found or empty!");
         }
 
         String accessTokenRequest = requestContext.getHeaderString("Access-Header");

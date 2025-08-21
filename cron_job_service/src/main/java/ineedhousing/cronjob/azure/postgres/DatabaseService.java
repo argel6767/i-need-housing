@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
+import ineedhousing.cronjob.new_listings_service.NewListingsEventPublisher;
+import ineedhousing.cronjob.new_listings_service.models.NewListingEvent;
 import io.agroal.api.AgroalDataSource;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -19,6 +21,9 @@ public class DatabaseService {
 
     @Inject
     LogService logService;
+
+    @Inject
+    NewListingsEventPublisher newListingsEventPublisher;
 
     /**
      * Deletes HouseListings that are older than 6 months in the INeedHousing DB
@@ -36,7 +41,11 @@ public class DatabaseService {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             int rowsDeleted = ps.executeUpdate();
-            logService.publish("Deleted " + rowsDeleted + " old listings", LoggingLevel.INFO); //TODO conditionally send a webhook event to only trigger after a threshold of deletions
+            logService.publish("Deleted " + rowsDeleted + " old listings", LoggingLevel.INFO);
+
+            if (rowsDeleted > 5000) {
+                newListingsEventPublisher.publishNewListingEvent("Webhook event created, " + rowsDeleted + " total listings deleted");
+            }
         } catch (Exception e) {
             Log.error("Error deleting old listings", e);
             logService.publish("Error deleting old listings\n" + e, LoggingLevel.ERROR);

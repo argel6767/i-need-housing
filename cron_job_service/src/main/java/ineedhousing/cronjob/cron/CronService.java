@@ -2,6 +2,7 @@ package ineedhousing.cronjob.cron;
 
 import ineedhousing.cronjob.azure.container_registry.ContainerRegistryRestService;
 import ineedhousing.cronjob.azure.postgres.DatabaseService;
+import ineedhousing.cronjob.exception.exceptions.MissingConfigurationValueException;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
 import io.quarkus.scheduler.Scheduled;
@@ -34,10 +35,10 @@ public class CronService {
     @PostConstruct
     void init() {
         iNeedHousingRepo = config.getOptionalValue("azure.i-need-housing.repository.name", String.class)
-                .orElseThrow(() -> new RuntimeException("INeedHousing Repo name not found!"));
+                .orElseThrow(() -> new MissingConfigurationValueException("INeedHousing Repo name not found!"));
 
         cronJobServiceRepo = config.getOptionalValue("azure.cron-job-service.repository.name", String.class)
-                .orElseThrow(() -> new RuntimeException("Cron_Job_Service Repo name not found!"));
+                .orElseThrow(() -> new MissingConfigurationValueException("Cron_Job_Service Repo name not found!"));
     }
 
     @Scheduled(cron = "0 0 0 2,9,16,23 * ?") // Midnight on the 2nd, 9th, 16th, and 23rd
