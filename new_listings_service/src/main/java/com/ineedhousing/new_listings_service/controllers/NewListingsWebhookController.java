@@ -1,9 +1,8 @@
 package com.ineedhousing.new_listings_service.controllers;
 
-import com.ineedhousing.new_listings_service.models.NewListingsEvent;
+import com.ineedhousing.new_listings_service.models.requests.NewListingsEventDto;
 import com.ineedhousing.new_listings_service.services.NewListingsEventPublisher;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +19,8 @@ public class NewListingsWebhookController {
     }
 
     @PostMapping("/new-listings")
-    public ResponseEntity<String> publishNewListingsEvent(NewListingsEvent newListingsEvent) {
-        eventPublisher.publishEvent(newListingsEvent);
+    public ResponseEntity<String> publishNewListingsEvent(NewListingsEventDto newListingsEventDto) {
+        eventPublisher.publishEvent(newListingsEventDto);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("New Listings Event Published");
     }
 }
