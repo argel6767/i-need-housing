@@ -9,11 +9,13 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @ApplicationScoped
 public class NewListingsWebhookService {
 
     @Inject
+    @RestClient
     NewListingsServiceRestClient  newListingsServiceRestClient;
 
     @Inject
