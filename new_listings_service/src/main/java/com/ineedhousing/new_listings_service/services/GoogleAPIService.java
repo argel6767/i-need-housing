@@ -1,6 +1,5 @@
 package com.ineedhousing.new_listings_service.services;
 
-import com.ineedhousing.new_listings_service.subscribers.RentCastSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;

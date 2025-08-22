@@ -146,6 +146,7 @@ jobs:
           echo "=== Deployment Summary ==="
           echo "Backend changes detected: ${{ needs.check-changes.outputs.backend-changed }}"
           echo "Cron service changes detected: ${{ needs.check-changes.outputs.cron-changed }}"
+          echo "New Listings service changes detected: ${{ needs.check-changes.outputs.new-listings-changed }}"
           echo ""
           
           # Check backend deployment status

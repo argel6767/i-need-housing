@@ -74,7 +74,7 @@ public class CronService {
     void deleteOldNewListingsServiceImagesJob() {
         Log.info("Running Cron Job, deleting old New Listings Service images");
         try {
-            containerRegistryRestService.deleteOldImages(cronJobServiceRepo);
+            containerRegistryRestService.deleteOldImages(newHousingListingRepo);
             logService.publish("Successfully deleted old New Listings Service images", LoggingLevel.INFO);
         }
         catch (JsonProcessingException e) {

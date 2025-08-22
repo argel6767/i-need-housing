@@ -6,7 +6,6 @@ import com.ineedhousing.backend.auth.exceptions.ExpiredVerificationCodeException
 import com.ineedhousing.backend.auth.exceptions.InvalidPasswordException;
 import com.ineedhousing.backend.auth.exceptions.UserAlreadyVerifiedException;
 import com.ineedhousing.backend.auth.requests.*;
-import com.ineedhousing.backend.auth.responses.LoginResponse;
 import com.ineedhousing.backend.email.EmailVerificationException;
 import com.ineedhousing.backend.email.InvalidEmailException;
 import com.ineedhousing.backend.jwt.JwtService;
@@ -15,7 +14,6 @@ import com.ineedhousing.backend.user.User;
 
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Optional;
