@@ -1,18 +1,19 @@
 package ineedhousing.cronjob.cron;
 
+import org.eclipse.microprofile.config.Config;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import ineedhousing.cronjob.azure.container_registry.ContainerRegistryRestService;
 import ineedhousing.cronjob.azure.postgres.DatabaseService;
 import ineedhousing.cronjob.exception.exceptions.MissingConfigurationValueException;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
+import io.quarkus.logging.Log;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import io.quarkus.logging.Log;
-import org.eclipse.microprofile.config.Config;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 @ApplicationScoped
 public class CronService {
@@ -31,6 +32,7 @@ public class CronService {
 
     private String iNeedHousingRepo;
     private String cronJobServiceRepo;
+    private String newHousingListingRepo;
 
     @PostConstruct
     void init() {
@@ -38,6 +40,9 @@ public class CronService {
                 .orElseThrow(() -> new MissingConfigurationValueException("INeedHousing Repo name not found!"));
 
         cronJobServiceRepo = config.getOptionalValue("azure.cron-job-service.repository.name", String.class)
+                .orElseThrow(() -> new MissingConfigurationValueException("Cron_Job_Service Repo name not found!"));
+
+        newHousingListingRepo = config.getOptionalValue("azure.new-listings-service.repository.name", String.class)
                 .orElseThrow(() -> new MissingConfigurationValueException("Cron_Job_Service Repo name not found!"));
     }
 
@@ -59,6 +64,18 @@ public class CronService {
         try {
             containerRegistryRestService.deleteOldImages(cronJobServiceRepo);
             logService.publish("Successfully deleted old Cron Job Service images", LoggingLevel.INFO);
+        }
+        catch (JsonProcessingException e) {
+            logService.publish("Failed to delete old Cron Job Service images\n" + e, LoggingLevel.ERROR);
+        }
+    }
+
+     @Scheduled(cron = "0 0 0 3,10,17,24 * ?") // Midnight on the 3rd, 10th, 17th, and 24th
+    void deleteOldNewListingsServiceImagesJob() {
+        Log.info("Running Cron Job, deleting old New Listings Service images");
+        try {
+            containerRegistryRestService.deleteOldImages(cronJobServiceRepo);
+            logService.publish("Successfully deleted old New Listings Service images", LoggingLevel.INFO);
         }
         catch (JsonProcessingException e) {
             logService.publish("Failed to delete old Cron Job Service images\n" + e, LoggingLevel.ERROR);

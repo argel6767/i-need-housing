@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
 import ineedhousing.cronjob.new_listings_service.NewListingsEventPublisher;
-import ineedhousing.cronjob.new_listings_service.models.NewListingEvent;
 import io.agroal.api.AgroalDataSource;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
