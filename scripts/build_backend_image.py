@@ -14,13 +14,16 @@ def check_if_docker_is_running():
     if docker_check.returncode != 0:
         print("ERROR: Docker is not running. Please start Docker Desktop.")
         sys.exit(1)
+        
+def make_azure_image_name(repo_name, tag):
+    return f"ineedhousing.azurecr.io/{repo_name}:v{tag}"
 
-def build_image(repo_name, service, directory):
+def build_image(repo_name, service, directory, image_name_creator):
     print(f'Building {service} image\n\n')
     
     # Generate a unique timestamp tag
     tag = str(int(time.time()))
-    image_name = f"ineedhousing.azurecr.io/{repo_name}:v{tag}"
+    image_name = image_name_creator(repo_name, tag)
     
     print(f"Building Image with tag: {tag}\n\n")
     building_process = subprocess.run(["docker", "build", "-t", image_name, "."], cwd=str(directory), shell=isOSWindows)

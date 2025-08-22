@@ -3,7 +3,7 @@ import subprocess
 from pathlib import Path
 import platform
 import sys
-from build_backend_image import build_image, check_if_docker_is_running
+from build_backend_image import build_image, check_if_docker_is_running, make_azure_image_name
 
 backend = Path.cwd()/"backend"
 isOSWindows = platform.system() == "Windows"
@@ -38,14 +38,17 @@ def sign_in_to_acr():
     acr_login = subprocess.run(["az", "acr", "login", "--name", "ineedhousing"])
     print("Logged into Azure Container Registry\n\n")
 
-def build_and_push_with_unique_tag(repo_name, service, directory):
-    image_name = build_image(repo_name, service, directory)
+def build_and_push_with_unique_tag(repo_name, service, directory, image_name_creator):
+    image_name = build_image(repo_name, service, directory, image_name_creator)
     
-    print(f"Pushing image {image_name} to Azure Registry\n\n")
+    print(f"Pushing image {image_name} to appropriate registry\n\n")
     push_image = subprocess.run(["docker", "push", image_name], shell=isOSWindows)
     print(push_image)
+    if (push_image.returncode != 0):
+        print("Failed to push image! Halting deployment")
+        sys.exit(1)
+        
     print("Image pushed\n\n")
-    
     return image_name
 
 def update_app_service(image_name, app_service):
@@ -85,12 +88,12 @@ def main():
     check_if_docker_is_running()
     
     if not is_cicd_pipeline():
-        print("Skipping env file loading\n\n")
+        print("Parsing env file\n\n")
         load_env_file()
     
     sign_in_to_azure()
     sign_in_to_acr()
-    image_name = build_and_push_with_unique_tag("images/backend", "backend", backend)
+    image_name = build_and_push_with_unique_tag("images/backend", "backend", backend, make_azure_image_name)
     update_app_service(image_name, app_service_name)
     restart_app_service(app_service_name)
     

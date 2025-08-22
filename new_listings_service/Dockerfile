@@ -1,12 +1,5 @@
 # Build stage
-FROM eclipse-temurin:21-jdk-jammy AS builder
-
-# Install Node.js and npm in a single RUN command
-RUN apt-get update && apt-get install -y curl maven \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+FROM maven:3.9-eclipse-temurin-21 AS builder
 
 # Set working directory
 WORKDIR /app
@@ -20,7 +13,7 @@ RUN mvn dependency:go-offline
 COPY . .
 
 # Build the application
-RUN mvn clean package -Pproduction -DskipTests
+RUN mvn clean package -DskipTests
 
 # Final stage - use JRE instead of JDK
 FROM eclipse-temurin:21-jre-jammy
