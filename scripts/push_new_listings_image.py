@@ -11,7 +11,7 @@ def main():
     check_if_docker_is_running()
     
     if not is_cicd_pipeline():
-        load_env_file
+        load_env_file()
 
     sign_in_to_azure()
     sign_in_to_acr()
