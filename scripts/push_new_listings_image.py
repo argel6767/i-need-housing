@@ -15,7 +15,7 @@ def main():
 
     sign_in_to_azure()
     sign_in_to_acr()
-    image_name = build_and_push_with_unique_tag(repo_name="new-listings-service", service="new-listings-service", directory=new_listings_service, image_name_creator=make_azure_image_name)
+    image_name = build_and_push_with_unique_tag(repo_name="images/new_listings_service", service="new-listings-service", directory=new_listings_service, image_name_creator=make_azure_image_name)
     
 
 if __name__ == "__main__":
