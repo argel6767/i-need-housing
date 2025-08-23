@@ -27,15 +27,13 @@ public class ApiTokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.equals("/v1/auths/register") || path.startsWith("/actuator/");
+    }
 
-        String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/actuator")) {
-            logger.debug("Skipping token validation for actuator endpoint: {}", requestURI);
-            filterChain.doFilter(request, response);
-            return;
-        }
-        
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String apiToken = request.getHeader("X-Api-Token");
         String serviceName = request.getHeader("X-Service-Name");
 

@@ -42,7 +42,16 @@ def configure_docker_for_gcr():
 def make_gcp_image(repo_name, tag):
     registry_name = os.environ["REGISTRY_NAME"]
     project_id = os.environ["PROJECT_ID"]
-    return f"{registry_name}/{project_id}/{repo_name}/image-{tag}:tag"
+    return f"{registry_name}/{project_id}/{repo_name}/image-{tag}:{tag}"
+
+def deploy_new_image(image_name, service_name):
+    print("Deploying new image to Cloud Run instance\n\n")
+    subprocess.run([
+        "gcloud", "run", "deploy", service_name,
+        f"--image={image_name}",
+        "--region=us-central1",
+        "--platform=managed"
+    ], check=True)
 
 def main():
     project_id = os.environ["PROJECT_ID"]
@@ -55,7 +64,8 @@ def main():
     file_path = create_tmp_service_acc_key_file(key=key)
     sign_in_to_gcp(file_path=file_path, project_id=project_id)
     configure_docker_for_gcr()
-    build_and_push_with_unique_tag(repo_name="new-listings-service-repo", service="new-listings-service", directory=new_listings_service, image_name_creator=make_gcp_image)
+    image_name = build_and_push_with_unique_tag(repo_name="new-listings-service-repo", service=app_service_name, directory=new_listings_service, image_name_creator=make_gcp_image)
+    deploy_new_image(image_name=image_name, service_name=app_service_name)
 
 
 if __name__ == "__main__":
