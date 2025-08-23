@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.ineedhousing</groupId>
 	<artifactId>new_listings_service</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
 	<name>new_listings_service</name>
 	<description>Fetches new listings after a success deletion via </description>
 	<url/>
