@@ -35,8 +35,9 @@ def sign_in_to_gcp(file_path, project_id):
             ], check=True, capture_output=True, text=True)
 
 def configure_docker_for_gcr():
+    registry_name = os.environ["REGISTRY_NAME"]
     print("Configuring Docker to access Artifact Registry\n\n")
-    subprocess.run(["gcloud", "auth", "configure-docker"])
+    subprocess.run(["gcloud", "auth", "configure-docker", registry_name])
 
 def make_gcp_image(repo_name, tag):
     registry_name = os.environ["REGISTRY_NAME"]
