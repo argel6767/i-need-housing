@@ -1,13 +1,21 @@
 package com.ineedhousing.new_listings_service.models;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.locationtech.jts.geom.Point;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.PrePersist;
 
 @Entity
 public class HousingListing {
@@ -48,7 +56,6 @@ public class HousingListing {
     private Integer numBeds;
 
     private Double numBaths;
-
 
     private LocalDateTime createdAt;
 

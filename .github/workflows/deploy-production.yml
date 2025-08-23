@@ -109,12 +109,9 @@ jobs:
     environment: prod-env
     
     env:
-      AZURE_CONTAINER_REGISTRY: ineedhousing.azurecr.io
-      BACKEND_APP_SERVICE: i-need-housing-backend
-      RESOURCE_GROUP: INeedHousing
-      TENANT_ID: ${{ secrets.TENANT_ID }}
-      USERNAME: ${{ secrets.USERNAME }}
-      PASSWORD: ${{ secrets.PASSWORD }}
+      SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
 
     steps:
       - name: Checkout code
@@ -125,10 +122,13 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Azure CLI
-        run: |
-          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-          echo "Azure CLI installed"
+      - name: Authenticate Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: SERVICE_ACCOUNT_KEY
+        
+      - name: Setup Google Cloud
+        uses: google-github-actions/setup-gcloud@v2
 
       - name: Build and Push New Listings Service Image
         run: |
