@@ -122,14 +122,6 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Authenticate Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: SERVICE_ACCOUNT_KEY
-        
-      - name: Setup Google Cloud
-        uses: google-github-actions/setup-gcloud@v2
-
       - name: Build and Push New Listings Service Image
         run: |
           python scripts/push_new_listings_image.py cicd
