@@ -42,7 +42,7 @@ def configure_docker_for_gcr():
 def make_gcp_image(repo_name, tag):
     registry_name = os.environ["REGISTRY_NAME"]
     project_id = os.environ["PROJECT_ID"]
-    return f"{registry_name}/{project_id}/{repo_name}/image:{tag}"
+    return f"{registry_name}/{project_id}/{repo_name}/image-{tag}:tag"
 
 def main():
     project_id = os.environ["PROJECT_ID"]
