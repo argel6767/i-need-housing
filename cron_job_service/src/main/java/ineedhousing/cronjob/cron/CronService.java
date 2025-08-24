@@ -1,5 +1,6 @@
 package ineedhousing.cronjob.cron;
 
+import ineedhousing.cronjob.gcp.artifact_registry.ArtifactRegistryService;
 import org.eclipse.microprofile.config.Config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,6 +26,9 @@ public class CronService {
     DatabaseService databaseService;
 
     @Inject
+    ArtifactRegistryService artifactRegistryService;
+
+    @Inject
     Config config;
 
     @Inject
@@ -32,7 +36,10 @@ public class CronService {
 
     private String iNeedHousingRepo;
     private String cronJobServiceRepo;
-    private String newHousingListingRepo;
+
+    private String gcpProject;
+    private String gcpRegistryLocation;
+    private String gcpRepository;
 
     @PostConstruct
     void init() {
@@ -42,8 +49,14 @@ public class CronService {
         cronJobServiceRepo = config.getOptionalValue("azure.cron-job-service.repository.name", String.class)
                 .orElseThrow(() -> new MissingConfigurationValueException("Cron_Job_Service Repo name not found!"));
 
-        newHousingListingRepo = config.getOptionalValue("azure.new-listings-service.repository.name", String.class)
-                .orElseThrow(() -> new MissingConfigurationValueException("Cron_Job_Service Repo name not found!"));
+        gcpProject = config.getOptionalValue("gcp.project.id", String.class)
+                .orElseThrow(() -> new MissingConfigurationValueException("GCP_Project id not found!"));
+
+        gcpRegistryLocation = config.getOptionalValue("gcp.registry.location", String.class)
+                .orElseThrow(() -> new MissingConfigurationValueException("GCP registry location not found!"));
+
+        gcpRepository = config.getOptionalValue("gcp.repository.name", String.class)
+                .orElseThrow(() -> new MissingConfigurationValueException("GCP registry repository not found!"));
     }
 
     @Scheduled(cron = "0 0 0 2,9,16,23 * ?") // Midnight on the 2nd, 9th, 16th, and 23rd
@@ -70,14 +83,14 @@ public class CronService {
         }
     }
 
-     @Scheduled(cron = "0 0 0 3,10,17,24 * ?") // Midnight on the 3rd, 10th, 17th, and 24th
+    @Scheduled(cron = "0 0 0 3,10,17,24 * ?") // Midnight on the 3rd, 10th, 17th, and 24th
     void deleteOldNewListingsServiceImagesJob() {
         Log.info("Running Cron Job, deleting old New Listings Service images");
         try {
-            containerRegistryService.deleteOldImages(newHousingListingRepo);
+            artifactRegistryService.deleteOldImages(gcpProject, gcpRegistryLocation, gcpRepository);
             logService.publish("Successfully deleted old New Listings Service images", LoggingLevel.INFO);
         }
-        catch (JsonProcessingException e) {
+        catch (Exception e) {
             logService.publish("Failed to delete old Cron Job Service images\n" + e, LoggingLevel.ERROR);
         }
     }
