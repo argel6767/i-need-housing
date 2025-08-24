@@ -70,11 +70,11 @@ public class ArtifactRegistryService {
         String actualImageName = Arrays.stream(entireImageName.split("/"))
                 .toList()
                 .getLast();
-        int indexOfVersion = actualImageName.indexOf('v');
-        if (indexOfVersion == -1) {
+        int indexOfDash = actualImageName.indexOf('-');
+        if (indexOfDash == -1) {
             return null;
         }
-        return actualImageName.substring(indexOfVersion);
+        return actualImageName.substring(indexOfDash);
     }
 
 

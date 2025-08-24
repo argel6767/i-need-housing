@@ -15,6 +15,7 @@ import java.util.Base64;
 @Component
 public class ApiTokenGenerator {
 
+
     @Value("${token.generation.secret.key}")
     private String secretKey;
 
