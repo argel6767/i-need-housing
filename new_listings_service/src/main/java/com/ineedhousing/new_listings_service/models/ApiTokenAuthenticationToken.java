@@ -7,8 +7,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collection;
 import java.util.List;
 
-//dummy commit
-
 public class ApiTokenAuthenticationToken extends AbstractAuthenticationToken {
 
     private final String serviceName;
