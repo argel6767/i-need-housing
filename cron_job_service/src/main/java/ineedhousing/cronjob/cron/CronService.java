@@ -1,6 +1,5 @@
 package ineedhousing.cronjob.cron;
 
-import ineedhousing.cronjob.gcp.artifact_registry.ArtifactRegistryService;
 import org.eclipse.microprofile.config.Config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -8,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import ineedhousing.cronjob.azure.container_registry.ContainerRegistryService;
 import ineedhousing.cronjob.azure.postgres.DatabaseService;
 import ineedhousing.cronjob.exception.exceptions.MissingConfigurationValueException;
+import ineedhousing.cronjob.gcp.artifact_registry.ArtifactRegistryService;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
 import io.quarkus.logging.Log;
@@ -83,7 +83,7 @@ public class CronService {
         }
     }
 
-    @Scheduled(cron = "0 0 0 3,10,17,24 * ?") // Midnight on the 3rd, 10th, 17th, and 24th
+    @Scheduled(cron = "0 0 0 4,11,18,25 * ?") // Midnight on the 4th, 11th, 18th, and 25th
     void deleteOldNewListingsServiceImagesJob() {
         Log.info("Running Cron Job, deleting old New Listings Service images");
         try {

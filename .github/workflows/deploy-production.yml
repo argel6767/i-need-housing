@@ -144,12 +144,12 @@ jobs:
           # Check backend deployment status
           if [ "${{ needs.check-changes.outputs.backend-changed }}" == "true" ]; then
             if [ "${{ needs.deploy-backend.result }}" == "success" ]; then
-              echo "✅ Backend deployed successfully"
+              echo "✅ INeedHousing API deployed successfully"
             else
-              echo "❌ Backend deployment failed"
+              echo "❌ INeedHousing API deployment failed"
             fi
           else
-            echo "⏭️  Backend skipped (no changes)"
+            echo "⏭️ INeedHousing API skipped (no changes)"
           fi
           
           # Check cron service deployment status
