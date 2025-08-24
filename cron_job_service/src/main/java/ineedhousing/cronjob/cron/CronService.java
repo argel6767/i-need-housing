@@ -4,7 +4,7 @@ import org.eclipse.microprofile.config.Config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import ineedhousing.cronjob.azure.container_registry.ContainerRegistryRestService;
+import ineedhousing.cronjob.azure.container_registry.ContainerRegistryService;
 import ineedhousing.cronjob.azure.postgres.DatabaseService;
 import ineedhousing.cronjob.exception.exceptions.MissingConfigurationValueException;
 import ineedhousing.cronjob.log.LogService;
@@ -19,7 +19,7 @@ import jakarta.inject.Inject;
 public class CronService {
 
     @Inject
-    ContainerRegistryRestService containerRegistryRestService;
+    ContainerRegistryService containerRegistryService;
 
     @Inject
     DatabaseService databaseService;
@@ -50,7 +50,7 @@ public class CronService {
     void deleteOldINeedHousingImagesJob() {
         logService.publish("Running Cron Job, deleting old INeedHousing API images", LoggingLevel.INFO);
         try {
-            containerRegistryRestService.deleteOldImages(iNeedHousingRepo);
+            containerRegistryService.deleteOldImages(iNeedHousingRepo);
             logService.publish("Successfully deleted old INeedHousing API images", LoggingLevel.INFO);
         }
         catch (JsonProcessingException e) {
@@ -62,7 +62,7 @@ public class CronService {
     void deleteOldCronJobServiceImagesJob() {
         Log.info("Running Cron Job, deleting old Cron Jobs Service images");
         try {
-            containerRegistryRestService.deleteOldImages(cronJobServiceRepo);
+            containerRegistryService.deleteOldImages(cronJobServiceRepo);
             logService.publish("Successfully deleted old Cron Job Service images", LoggingLevel.INFO);
         }
         catch (JsonProcessingException e) {
@@ -74,7 +74,7 @@ public class CronService {
     void deleteOldNewListingsServiceImagesJob() {
         Log.info("Running Cron Job, deleting old New Listings Service images");
         try {
-            containerRegistryRestService.deleteOldImages(newHousingListingRepo);
+            containerRegistryService.deleteOldImages(newHousingListingRepo);
             logService.publish("Successfully deleted old New Listings Service images", LoggingLevel.INFO);
         }
         catch (JsonProcessingException e) {

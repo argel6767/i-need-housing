@@ -1,10 +1,10 @@
 package ineedhousing.cronjob.azure.container_registry;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import ineedhousing.cronjob.azure.container_registry.model.BulkDigestsDto;
-import ineedhousing.cronjob.azure.container_registry.model.DigestDto;
-import ineedhousing.cronjob.azure.container_registry.model.ManifestsDeletedDto;
-import ineedhousing.cronjob.azure.container_registry.model.TagsDto;
+import ineedhousing.cronjob.azure.container_registry.models.BulkDigestsDto;
+import ineedhousing.cronjob.azure.container_registry.models.DigestDto;
+import ineedhousing.cronjob.azure.container_registry.models.ManifestsDeletedDto;
+import ineedhousing.cronjob.azure.container_registry.models.TagsDto;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -15,13 +15,13 @@ import java.util.List;
 public class ContainerRegistryResource {
 
     @Inject
-    ContainerRegistryRestService containerRegistryRestService;
+    ContainerRegistryService containerRegistryService;
 
     @GET
     @Path("/repos")
     @Produces(MediaType.APPLICATION_JSON)
     public String listRepositories() {
-        return containerRegistryRestService.getRepositories();
+        return containerRegistryService.getRepositories();
     }
 
     // GET /acr/myapp/tags
@@ -32,7 +32,7 @@ public class ContainerRegistryResource {
         if (repository == null || repository.isEmpty()) {
             throw new BadRequestException("Repository parameter is required");
         }
-        return containerRegistryRestService.listTags(repository);
+        return containerRegistryService.listTags(repository);
     }
 
     @GET
@@ -45,7 +45,7 @@ public class ContainerRegistryResource {
         if (tag == null || tag.isEmpty()) {
             throw new BadRequestException("Tag parameter is required");
         }
-        return containerRegistryRestService.getManifestByTag(repository, tag);
+        return containerRegistryService.getManifestByTag(repository, tag);
     }
 
     @POST
@@ -53,7 +53,7 @@ public class ContainerRegistryResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public List<DigestDto.CompleteManifestInfoDto> getManifestsByTags(BulkDigestsDto request) {
-        return containerRegistryRestService.getManifestsByTags(request.repository(), request.tags());
+        return containerRegistryService.getManifestsByTags(request.repository(), request.tags());
     }
 
     @DELETE
@@ -65,7 +65,7 @@ public class ContainerRegistryResource {
         if (digest == null || digest.isEmpty()) {
             throw new BadRequestException("Tag parameter is required");
         }
-        containerRegistryRestService.deleteManifest(repository, digest);
+        containerRegistryService.deleteManifest(repository, digest);
     }
 
     @DELETE
@@ -74,6 +74,6 @@ public class ContainerRegistryResource {
         if (repository == null || repository.isEmpty()) {
             throw new BadRequestException("Repository parameter is required");
         }
-        return containerRegistryRestService.deleteOldImages(repository);
+        return containerRegistryService.deleteOldImages(repository);
     }
 }

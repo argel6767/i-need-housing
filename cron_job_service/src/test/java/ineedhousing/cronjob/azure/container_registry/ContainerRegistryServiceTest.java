@@ -1,9 +1,9 @@
 package ineedhousing.cronjob.azure.container_registry;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import ineedhousing.cronjob.azure.container_registry.model.DigestDto;
-import ineedhousing.cronjob.azure.container_registry.model.ManifestsDeletedDto;
-import ineedhousing.cronjob.azure.container_registry.model.TagsDto;
+import ineedhousing.cronjob.azure.container_registry.models.DigestDto;
+import ineedhousing.cronjob.azure.container_registry.models.ManifestsDeletedDto;
+import ineedhousing.cronjob.azure.container_registry.models.TagsDto;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
@@ -20,10 +20,10 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @QuarkusTest
-class ContainerRegistryRestServiceTest {
+class ContainerRegistryServiceTest {
 
     @Inject
-    ContainerRegistryRestService service;
+    ContainerRegistryService service;
 
 
 

@@ -1,4 +1,4 @@
-package ineedhousing.cronjob.azure.container_registry.model;
+package ineedhousing.cronjob.azure.container_registry.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

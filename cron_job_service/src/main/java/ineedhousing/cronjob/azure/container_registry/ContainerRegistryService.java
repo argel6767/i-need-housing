@@ -2,9 +2,9 @@ package ineedhousing.cronjob.azure.container_registry;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ineedhousing.cronjob.azure.container_registry.model.DigestDto;
-import ineedhousing.cronjob.azure.container_registry.model.ManifestsDeletedDto;
-import ineedhousing.cronjob.azure.container_registry.model.TagsDto;
+import ineedhousing.cronjob.azure.container_registry.models.DigestDto;
+import ineedhousing.cronjob.azure.container_registry.models.ManifestsDeletedDto;
+import ineedhousing.cronjob.azure.container_registry.models.TagsDto;
 import ineedhousing.cronjob.exception.exceptions.MissingConfigurationValueException;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
@@ -25,7 +25,7 @@ import io.quarkus.logging.Log;
 
 
 @ApplicationScoped
-public class ContainerRegistryRestService {
+public class ContainerRegistryService {
 
     @Inject
     @RestClient
