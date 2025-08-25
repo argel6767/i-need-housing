@@ -61,7 +61,10 @@ public class ArtifactRegistryService {
         }
 
         tags.parallelStream()
-                .forEach(tag -> artifactRegistryRestClient.deleteImage(project, location, repository, tag, bearerHeader));
+                .forEach(tag -> {
+                    logService.publish(String.format("Attempting to delete image: %s from repository: %s"), tag, repository)
+                    artifactRegistryRestClient.deleteImage(project, location, repository, tag, bearerHeader)
+                });
         stopWatch.stop();
         logService.publish(String.format("Deleted %d stale images for %s. Runtime: %s", tags.size(), repository, stopWatch.getTime()), LoggingLevel.INFO);
     }
