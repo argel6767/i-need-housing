@@ -1,6 +1,7 @@
 package ineedhousing.cronjob.gcp.artifact_registry;
 
 import ineedhousing.cronjob.gcp.models.GetImagesDto;
+import ineedhousing.cronjob.gcp.models.ImageVersionDto.*;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import org.apache.commons.lang3.ObjectUtils;
@@ -15,16 +16,32 @@ public class ArtifactRegistryResource {
 
     @GET
     @Path("/images")
-    public GetImagesDto getImages(@QueryParam("project") String project, @QueryParam("location") String location, @QueryParam("repository") String repository) throws IOException {
+    public GetImagesDto getImages(@QueryParam("project") String project,
+                                  @QueryParam("location") String location,
+                                  @QueryParam("repository") String repository) throws IOException {
         if (!ObjectUtils.allNotNull(project, location, repository)) {
             throw new BadRequestException("One or more required parameters are missing");
         }
         return artifactRegistryService.getImages(project, location, repository);
     }
 
+    @GET
+    @Path("/images/versions")
+    public ImageVersions getImagesVersions(@QueryParam("project") String project,
+                                    @QueryParam("location") String location,
+                                    @QueryParam("repository") String repository,
+                                    @QueryParam("image") String image) throws IOException {
+        if (!ObjectUtils.allNotNull(project, location, repository, image)) {
+            throw new BadRequestException("One or more required parameters are missing");
+        }
+        return artifactRegistryService.getVersionsForImage(project, location, repository, image);
+    }
+
     @DELETE
     @Path("/images")
-    public void deleteStaleImages(@QueryParam("project") String project, @QueryParam("location") String location, @QueryParam("repository") String repository) throws IOException {
+    public void deleteStaleImages(@QueryParam("project") String project,
+                                  @QueryParam("location") String location,
+                                  @QueryParam("repository") String repository) throws IOException {
         if (!ObjectUtils.allNotNull(project, location, repository)) {
             throw new BadRequestException("One or more required parameters are missing");
         }

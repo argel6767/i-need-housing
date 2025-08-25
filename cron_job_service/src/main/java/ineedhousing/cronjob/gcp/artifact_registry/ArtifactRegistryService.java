@@ -4,15 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ineedhousing.cronjob.gcp.GCPServiceAccessKeyDecoder;
 import ineedhousing.cronjob.gcp.models.ArtifactRegistryPackage;
 import ineedhousing.cronjob.gcp.models.GetImagesDto;
+import ineedhousing.cronjob.gcp.models.ImageVersionDto.*;
+import ineedhousing.cronjob.gcp.models.ArtifactRegistryPackage;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.time.StopWatch;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.reactive.ClientWebApplicationException;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,24 +53,59 @@ public class ArtifactRegistryService {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         String bearerHeader = getServiceAccessKeyHeader();
-        GetImagesDto packages = getImages(project, location, repository);
-        List<String> tags = packages.packages().stream()
-                .map(this::getImageTimeTag)
-                .filter(Objects::nonNull)
-                .toList();
 
-        if (tags.size() < 4) {
+        GetImagesDto response = getImages(project, location, repository);
+        List<ArtifactRegistryPackage> packages = response.packages();
+
+        if (packages.size() < 4) {
             stopWatch.stop();
             logService.publish("Minimum amount of images present, skipping deletion. Runtime: " + stopWatch.getTime(), LoggingLevel.INFO);
+            return;
         }
 
-        tags.parallelStream()
-                .forEach(tag -> {
-                    logService.publish(String.format("Attempting to delete image: %s from repository: %s"), tag, repository)
-                    artifactRegistryRestClient.deleteImage(project, location, repository, tag, bearerHeader)
-                });
+        List<String> imageNames = packages.stream()
+                .map(this::getImageTimeTag)
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(Long::valueOf))
+                .limit(Math.max(0, packages.size() - 3))
+                .map(tag -> "image-" + tag)
+                .toList();
+
+
+        List<String> successfulDeleted = imageNames.parallelStream()
+                .map(imageName -> {
+                    try {
+                        return getVersionsForImage(project, location, repository, imageName);
+                    } catch (IOException e) {
+                        logService.publish("Unable to fetch versions for " + imageName, LoggingLevel.ERROR);
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .map(imageVersions -> imageVersions.getFirst())
+                .map(imageVersions -> {
+
+                    try {
+                        logService.publish(String.format("Attempting to delete image: %s from repository: %s", image, repository), LoggingLevel.INFO);
+                        String res = artifactRegistryRestClient.deleteImage(project, location, repository, packageName, image, bearerHeader);
+                        logService.publish(res, LoggingLevel.INFO);
+                        return "success";
+                    } catch (Exception e) {
+                        logService.publish(String.format("Failed to delete image: %s from repository: %s\n%s", image, repository, e.getMessage()), LoggingLevel.ERROR);
+                        return "failure";
+                    }
+                })
+                .filter(message -> message.equals("success"))
+                .toList();
+
+        if (successfulDeleted.isEmpty()) {
+            stopWatch.stop();
+            logService.publish(String.format("No images were successfully deleted for %s. Runtime: %s", repository, stopWatch.getTime()), LoggingLevel.WARN);
+            throw new ClientWebApplicationException(String.format("No images were successfully deleted for %s. Runtime: %s", repository, stopWatch.getTime()));
+        }
+
         stopWatch.stop();
-        logService.publish(String.format("Deleted %d stale images for %s. Runtime: %s", tags.size(), repository, stopWatch.getTime()), LoggingLevel.INFO);
+        logService.publish(String.format("Deleted %d stale images for %s. Runtime: %s", successfulDeleted.size(), repository, stopWatch.getTime()), LoggingLevel.INFO);
     }
 
     private String getImageTimeTag(ArtifactRegistryPackage artifactRegistryPackage) {
@@ -78,10 +117,22 @@ public class ArtifactRegistryService {
         if (indexOfDash == -1) {
             return null;
         }
-        return actualImageName.substring(indexOfDash);
+        return actualImageName.substring(indexOfDash + 1);
     }
 
+    public ImageVersions getVersionsForImage(String project, String location, String repository, String packageName) throws IOException {
+        logService.publish("Fetching versions for " + packageName, LoggingLevel.INFO);
 
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        String bearerHeader = getServiceAccessKeyHeader();
+
+        String response = artifactRegistryRestClient.listVersions(project, location, repository, packageName, bearerHeader);
+        ImageVersions imageVersions = objectMapper.readValue(response, ImageVersions.class);
+        stopWatch.stop();
+        logService.publish(String.format("Successfully fetched versions for %s. Runtime: %s", packageName, stopWatch.getTime()), LoggingLevel.INFO);
+        return imageVersions;
+    }
 
     private String getServiceAccessKeyHeader() throws IOException {
         String serviceAccessKey = gcpServiceAccessKeyDecoder.getServiceAccessKey();
