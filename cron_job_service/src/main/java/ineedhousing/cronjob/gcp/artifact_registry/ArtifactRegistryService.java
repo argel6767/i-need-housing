@@ -35,12 +35,13 @@ public class ArtifactRegistryService {
     public GetImagesDto getImages(String project, String location, String repository) throws IOException {
         logService.publish("Fetching images for " + repository, LoggingLevel.INFO);
         StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         String bearerHeader = getServiceAccessKeyHeader();
         String response =  artifactRegistryRestClient.listImages(project, location, repository, bearerHeader);
         GetImagesDto responseObject =  objectMapper.readValue(response, GetImagesDto.class);
         stopWatch.stop();
         logService.publish(String.format("%d image names fetched for %s. Runtime %s", responseObject.packages().size(), repository, stopWatch.getTime()), LoggingLevel.INFO);
-        return  responseObject;
+        return responseObject;
     }
 
     public void deleteOldImages(String project, String location, String repository) throws IOException {
