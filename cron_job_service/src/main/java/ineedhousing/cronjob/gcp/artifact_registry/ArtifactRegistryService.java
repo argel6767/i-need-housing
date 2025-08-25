@@ -4,13 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ineedhousing.cronjob.gcp.GCPServiceAccessKeyDecoder;
 import ineedhousing.cronjob.gcp.models.ArtifactRegistryPackage;
 import ineedhousing.cronjob.gcp.models.GetImagesDto;
+import ineedhousing.cronjob.gcp.models.ImageVersionDto;
 import ineedhousing.cronjob.gcp.models.ImageVersionDto.*;
-import ineedhousing.cronjob.gcp.models.ArtifactRegistryPackage;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.ClientWebApplicationException;
 
@@ -71,7 +73,6 @@ public class ArtifactRegistryService {
                 .map(tag -> "image-" + tag)
                 .toList();
 
-
         List<String> successfulDeleted = imageNames.parallelStream()
                 .map(imageName -> {
                     try {
@@ -82,19 +83,18 @@ public class ArtifactRegistryService {
                     }
                 })
                 .filter(Objects::nonNull)
-                .map(imageVersions -> imageVersions.getFirst())
-                .map(imageVersions -> {
-
+                .map(imageVersions -> imageVersions.versions().getFirst())
+                .map(imageVersionDto -> {
                     try {
-                        logService.publish(String.format("Attempting to delete image: %s from repository: %s", image, repository), LoggingLevel.INFO);
-                        String res = artifactRegistryRestClient.deleteImage(project, location, repository, packageName, image, bearerHeader);
-                        logService.publish(res, LoggingLevel.INFO);
-                        return "success";
-                    } catch (Exception e) {
-                        logService.publish(String.format("Failed to delete image: %s from repository: %s\n%s", image, repository, e.getMessage()), LoggingLevel.ERROR);
-                        return "failure";
+                       return getImageNameAndVersion(imageVersionDto);
+                    }
+                    catch (Exception e) {
+                        logService.publish(String.format("Could not parse and find image name and version for %s", imageVersionDto.name()), LoggingLevel.ERROR);
+                        return null;
                     }
                 })
+                .filter(Objects::nonNull)
+                .map(imageNameAndVersion -> deleteImage(project, location, repository, imageNameAndVersion.getLeft(), imageNameAndVersion.getRight(), bearerHeader))
                 .filter(message -> message.equals("success"))
                 .toList();
 
@@ -105,7 +105,38 @@ public class ArtifactRegistryService {
         }
 
         stopWatch.stop();
-        logService.publish(String.format("Deleted %d stale images for %s. Runtime: %s", successfulDeleted.size(), repository, stopWatch.getTime()), LoggingLevel.INFO);
+        logService.publish(String.format("Successfully began deletion process for %d stale images for %s. Runtime: %s", successfulDeleted.size(), repository, stopWatch.getTime()), LoggingLevel.INFO);
+    }
+
+    public String deleteImage(String project, String location, String repository, String imageName, String version, String bearerHeader){
+        try {
+            logService.publish(String.format("Attempting to begin deletion for image: %s from repository: %s", imageName, repository), LoggingLevel.INFO);
+            String res = artifactRegistryRestClient.deleteImage(project, location, repository, imageName, version, bearerHeader);
+            return "success";
+        } catch (Exception e) {
+            logService.publish(String.format("Failed to begin deletion for image: %s from repository: %s\n%s", imageName, repository, e.getMessage()), LoggingLevel.ERROR);
+            return "failure";
+        }
+    }
+
+    private Pair<String, String> getImageNameAndVersion(ImageVersionDto imageVersionDto) {
+        String name = imageVersionDto.name();
+        String[] nameSplit = name.split("/");
+        String imageName = "";
+        String version = "";
+        for (String section: nameSplit) {
+            if (section.matches("image-\\d+")) {
+                imageName = section;
+            }
+            if (section.startsWith("sha256:")) {
+                version = section;
+            }
+        }
+        if (imageName.isBlank() || version.isBlank()) {
+            throw new RuntimeException("Could not find image name or version inside of " + imageName);
+        }
+
+        return new ImmutablePair<>(imageName, version);
     }
 
     private String getImageTimeTag(ArtifactRegistryPackage artifactRegistryPackage) {
