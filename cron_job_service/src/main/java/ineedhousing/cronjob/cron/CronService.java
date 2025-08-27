@@ -26,9 +26,6 @@ public class CronService {
     DatabaseService databaseService;
 
     @Inject
-    ArtifactRegistryService artifactRegistryService;
-
-    @Inject
     Config config;
 
     @Inject
@@ -82,18 +79,7 @@ public class CronService {
             logService.publish("Failed to delete old Cron Job Service images\n" + e, LoggingLevel.ERROR);
         }
     }
-
-    @Scheduled(cron = "0 0 0 4,11,18,25 * ?") // Midnight on the 4th, 11th, 18th, and 25th
-    void deleteOldNewListingsServiceImagesJob() {
-        Log.info("Running Cron Job, deleting old New Listings Service images");
-        try {
-            artifactRegistryService.deleteOldImages(gcpProject, gcpRegistryLocation, gcpRepository);
-            logService.publish("Successfully deleted old New Listings Service images", LoggingLevel.INFO);
-        }
-        catch (Exception e) {
-            logService.publish("Failed to delete old Cron Job Service images\n" + e, LoggingLevel.ERROR);
-        }
-    }
+    //TODO possibly re introduce gcp service should policies not work as intended, if not delete module
 
     @Scheduled(cron = "0 0 0 1 * ?") //First of every month
     void deleteOldHousingListingsJob() {
