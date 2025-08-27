@@ -1,6 +1,6 @@
 package ineedhousing.cronjob.filters;
 
-import ineedhousing.cronjob.exception.exceptions.MissingConfigurationValueException;
+import ineedhousing.cronjob.auth.ApiTokenValidationService;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
 import jakarta.annotation.Priority;
@@ -9,6 +9,8 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 @Provider
@@ -18,23 +20,30 @@ public class GlobalRequestFilter implements ContainerRequestFilter {
     @Inject
     LogService logService;
 
+    @Inject
+    ApiTokenValidationService apiTokenValidationService;
+
     @Override
     public void filter(ContainerRequestContext requestContext) {
-        String accessToken = System.getenv("ACCESS_TOKEN_HEADER");
 
-        if (accessToken == null || accessToken.trim().isEmpty()) {
-            throw new MissingConfigurationValueException("ACCESS_TOKEN_HEADER environment variable not found or empty!");
+        String apiToken = requestContext.getHeaderString("X-Api-Token");
+        String serviceName = requestContext.getHeaderString("X-Service-Name");
+
+        if (ObjectUtils.allNull(apiToken, serviceName) || StringUtils.isAllBlank(apiToken, serviceName)) {
+            logService.publish("Missing required headers \"X-Api-Token\" or \"X-Service-Name\". Unauthenticated request attempted:\n" + requestContext.getRequest().toString(), LoggingLevel.WARN);
+            requestContext.abortWith(
+                    Response.status(Response.Status.BAD_REQUEST)
+                            .entity("Missing required headers \"X-Api-Token\" or \"X-Service-Name\"")
+                            .build());
+            return;
         }
 
-        String accessTokenRequest = requestContext.getHeaderString("Access-Header");
-
-        if (accessTokenRequest == null || !accessTokenRequest.equals(accessToken)) {
-            logService.publish("Unauthenticated request attempt:\n" + requestContext.getRequest().toString(), LoggingLevel.WARN);
+        if (!apiTokenValidationService.isServiceAuthenticated(apiToken, serviceName)) {
+            logService.publish("Invalid API token  \"X-Api-Token\" or \"X-Service-Name\". Unauthenticated request attempted:\n" + requestContext.getRequest().toString(), LoggingLevel.WARN);
             requestContext.abortWith(
                     Response.status(Response.Status.FORBIDDEN)
-                            .entity("Missing or invalid Access-Header")
-                            .build()
-            );
+                            .entity(String.format("%s is not a valid API token or %s is not registered", apiToken, serviceName))
+                            .build());
         }
     }
 }
