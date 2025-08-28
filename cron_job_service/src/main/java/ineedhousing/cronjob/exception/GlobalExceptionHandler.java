@@ -8,6 +8,7 @@ import static ineedhousing.cronjob.exception.UtilFunctions.buildFailedRequestDto
 import ineedhousing.cronjob.exception.model.FailedRequestDto;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
+import io.smallrye.faulttolerance.api.RateLimitException;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.Response;
@@ -65,6 +66,18 @@ class ClientWebApplicationExceptionHandler implements ExceptionMapper<ClientWebA
         logService.publish("Failed Downstream Request Error:\n" + exception.getMessage(), LoggingLevel.ERROR);
         FailedRequestDto dto = buildFailedRequestDto(exception);
         return Response.status(Response.Status.BAD_GATEWAY).entity(dto).build();
+    }
+}
+
+@Provider
+class RateLimitExceptionHandler implements ExceptionMapper<RateLimitException> {
+    @Inject
+    LogService logService;
+    @Override
+    public Response toResponse(RateLimitException exception) {
+        logService.publish("Rate Limit Exception:\n" + exception.getMessage(), LoggingLevel.ERROR);
+        FailedRequestDto dto = buildFailedRequestDto(exception);
+        return Response.status(Response.Status.TOO_MANY_REQUESTS).entity(dto).build();
     }
 }
 

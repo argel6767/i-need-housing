@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.ineedhousing.new_listings_service.models.ApiTokenAuthenticationToken;
-import com.ineedhousing.new_listings_service.services.ServiceRegistrationService;
+import com.ineedhousing.new_listings_service.services.ServiceAuthorizationService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,17 +19,17 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class ApiTokenFilter extends OncePerRequestFilter {
 
-    private final ServiceRegistrationService serviceRegistrationService;
+    private final ServiceAuthorizationService serviceRegistrationService;
     private final Logger logger = LoggerFactory.getLogger(ApiTokenFilter.class);
 
-    public ApiTokenFilter(ServiceRegistrationService serviceRegistrationService) {
+    public ApiTokenFilter(ServiceAuthorizationService serviceRegistrationService) {
         this.serviceRegistrationService = serviceRegistrationService;
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.equals("/v1/auths/register") || path.startsWith("/actuator/");
+        return path.startsWith("/actuator/");
     }
 
     @Override

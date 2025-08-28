@@ -2,11 +2,13 @@ package ineedhousing.cronjob.gcp.artifact_registry;
 
 import ineedhousing.cronjob.gcp.models.GetImagesDto;
 import ineedhousing.cronjob.gcp.models.ImageVersionDto.*;
+import io.smallrye.faulttolerance.api.RateLimit;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.IOException;
+import java.time.temporal.ChronoUnit;
 
 @Path("/artifact-registries")
 public class ArtifactRegistryResource {
@@ -16,6 +18,7 @@ public class ArtifactRegistryResource {
 
     @GET
     @Path("/images")
+    @RateLimit(value = 10, window = 5, windowUnit = ChronoUnit.MINUTES)
     public GetImagesDto getImages(@QueryParam("project") String project,
                                   @QueryParam("location") String location,
                                   @QueryParam("repository") String repository) throws IOException {
