@@ -43,6 +43,7 @@ public class DatabaseService {
             logService.publish("Deleted " + rowsDeleted + " old listings", LoggingLevel.INFO);
 
             if (rowsDeleted > 5000) {
+                logService.publish("Triggering new-listings-service webhook", LoggingLevel.INFO);
                 newListingsEventPublisher.publishNewListingEvent("Webhook event created, " + rowsDeleted + " total listings deleted");
             }
         } catch (Exception e) {
