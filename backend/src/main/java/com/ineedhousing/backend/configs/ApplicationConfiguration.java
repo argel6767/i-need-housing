@@ -44,9 +44,6 @@ public class ApplicationConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean(name = "Argon")
-    Argon2PasswordEncoder argon2PasswordEncoder() {return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();}
-
     /*
      * returns an AuthenticationManager to handle user authentication, utilizing AuthenticationConfiguration
      */

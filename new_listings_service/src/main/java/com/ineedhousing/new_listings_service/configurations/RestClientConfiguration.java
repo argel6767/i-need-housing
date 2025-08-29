@@ -31,6 +31,15 @@ public class RestClientConfiguration {
     @Value("${zillow.api.key}")
     private String zillowApiKey;
 
+    @Value("${keymaster.service.url}")
+    private String keymasterServiceUrl;
+
+    @Value("${service.api.token}")
+    private String serviceApiToken;
+
+    @Value("${service.name}")
+    private String serviceName;
+
     /**
      * bean for http requests for RentCast api
      * @return RestClient bean for RentCast
@@ -77,6 +86,17 @@ public class RestClientConfiguration {
     RestClient googleGeoCodeRestClient() {
         return RestClient.builder()
                 .baseUrl("https://maps.googleapis.com/maps/api/geocode/json")
+                .build();
+    }
+
+    @Bean(name = "keymaster_service")
+    RestClient keymasterRestClient() {
+        return  RestClient.builder()
+                .baseUrl(keymasterServiceUrl)
+                .defaultHeaders(httpHeaders -> {
+                    httpHeaders.set("X-Api-Token",  serviceApiToken);
+                    httpHeaders.set("X-Service-Name",serviceName);
+                })
                 .build();
     }
 }

@@ -19,11 +19,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class ApiTokenFilter extends OncePerRequestFilter {
 
-    private final ServiceAuthorizationService serviceRegistrationService;
+    private final ServiceAuthorizationService serviceAuthorizationService;
     private final Logger logger = LoggerFactory.getLogger(ApiTokenFilter.class);
 
-    public ApiTokenFilter(ServiceAuthorizationService serviceRegistrationService) {
-        this.serviceRegistrationService = serviceRegistrationService;
+    public ApiTokenFilter(ServiceAuthorizationService serviceAuthorizationService) {
+        this.serviceAuthorizationService = serviceAuthorizationService;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ApiTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (!serviceRegistrationService.isApiTokenAndServiceNameValid(apiToken, serviceName)) {
+        if (!serviceAuthorizationService.isApiTokenAndServiceNameValid(apiToken, serviceName)) {
             logger.warn("API Token is not attached to given service: {}", serviceName);
             filterChain.doFilter(request, response);
             return;
