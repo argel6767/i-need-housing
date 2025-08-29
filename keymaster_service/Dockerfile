@@ -19,7 +19,7 @@ RUN ./mvnw dependency:go-offline
 COPY --chown=quarkus:quarkus src ./src
 
 # Build the native executable
-RUN ./mvnw package -Pnative -DskipTests
+RUN ./mvnw package -Pnative -DskipTests -Dde.mkammerer.argon2jni.native=false
 
 # Stage 2: Create the runtime image
 FROM registry.access.redhat.com/ubi8/ubi-minimal
