@@ -2,8 +2,6 @@ package com.ineedhousing.services;
 
 import com.ineedhousing.models.RegisteredServiceDto;
 import com.ineedhousing.models.RegistrationDto;
-import de.mkammerer.argon2.Argon2;
-import de.mkammerer.argon2.Argon2Factory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
@@ -24,22 +22,8 @@ public class ServiceAuthenticatorService {
     @Inject
     ApiTokenGenerator apiTokenGenerator;
 
-    private volatile Argon2 argon2;
-
-    private Argon2 getArgon2() {
-        if (argon2 == null) {
-            synchronized (this) {
-                if (argon2 == null) {
-                    argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id, 32, 16);
-                }
-            }
-        }
-        return argon2;
-    }
-
-    private final int HASH_ITERATIONS = 3;
-    private final int MEMORY_USED = 16384;
-    private final int PARALLELISM = 1;
+    @Inject
+    TokenHasher tokenHasher;
 
     public RegisteredServiceDto registerService(RegistrationDto registrationDto) {
         String registrationKey = rotator.getKey();
@@ -94,7 +78,7 @@ public class ServiceAuthenticatorService {
 
     private String hashToken(String apiToken) {
         try {
-            return getArgon2().hash(HASH_ITERATIONS, MEMORY_USED, PARALLELISM, apiToken.toCharArray());
+            return tokenHasher.hashToken(apiToken);
         }
         catch (Exception e) {
             throw new RuntimeException("Failed to hash API Token", e);

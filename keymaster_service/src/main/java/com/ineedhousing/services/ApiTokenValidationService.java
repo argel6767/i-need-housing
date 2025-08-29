@@ -1,7 +1,7 @@
 package com.ineedhousing.services;
 
-import de.mkammerer.argon2.Argon2;
-import de.mkammerer.argon2.Argon2Factory;
+import com.ineedhousing.models.ServiceVerificationDto;
+import com.ineedhousing.models.VerifiedServiceDto;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import io.quarkus.logging.Log;
@@ -20,17 +21,14 @@ public class ApiTokenValidationService {
     @Inject
     DataSource dataSource;
 
-    private volatile Argon2 argon2;
+    @Inject
+    TokenHasher tokenHasher;
 
-    private Argon2 getArgon2() {
-        if (argon2 == null) {
-            synchronized (this) {
-                if (argon2 == null) {
-                    argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id, 32, 16);
-                }
-            }
+    public VerifiedServiceDto isServiceAuthenticated(ServiceVerificationDto serviceVerificationDto) {
+        if (!isServiceAuthenticated(serviceVerificationDto.apiToken(), serviceVerificationDto.serviceName())) {
+            return new VerifiedServiceDto("Service is not authorized", LocalDateTime.now());
         }
-        return argon2;
+        return new VerifiedServiceDto("Service is authorized", LocalDateTime.now());
     }
 
     public boolean isServiceAuthenticated(String token, String serviceName) {
@@ -65,7 +63,7 @@ public class ApiTokenValidationService {
 
     private boolean isApiTokenCorrect(String token, String tokenHash) {
         try {
-            return getArgon2().verify(tokenHash, token.toCharArray());
+            return tokenHasher.matches(token, tokenHash);
         }
         catch (Exception e) {
             Log.error("Failed to verify api token", e);
