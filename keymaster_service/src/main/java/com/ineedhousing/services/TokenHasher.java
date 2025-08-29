@@ -38,7 +38,8 @@ public class TokenHasher {
 
     public boolean matches(String token, String storedHash) {
         String tokenHash = hashToken(token);
-        // Use constant-time comparison to prevent timing attacks
-        return MessageDigest.isEqual(tokenHash.getBytes(StandardCharsets.UTF_8), storedHash.getBytes(StandardCharsets.UTF_8));
+        byte[] tokenHashBytes = Base64.getDecoder().decode(tokenHash);
+        byte[] storedHashBytes = Base64.getDecoder().decode(storedHash);
+        return MessageDigest.isEqual(tokenHashBytes, storedHashBytes);
     }
 }

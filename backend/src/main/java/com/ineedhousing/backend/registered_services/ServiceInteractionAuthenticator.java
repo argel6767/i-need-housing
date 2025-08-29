@@ -32,6 +32,7 @@ public class ServiceInteractionAuthenticator {
        try {
            log.info("Checking if service {} is authorized", serviceName);
            VerifiedServiceDto dto = restClient.post()
+               .uri("/v1/auth/token-validity")
                .body(serviceVerificationDto)
                .accept(MediaType.APPLICATION_JSON)
                .retrieve()
