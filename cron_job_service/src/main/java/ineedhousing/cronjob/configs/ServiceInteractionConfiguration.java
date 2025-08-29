@@ -16,9 +16,9 @@ public class ServiceInteractionConfiguration {
 
     @PostConstruct
     void init() {
-        apiToken = config.getOptionalValue("new.listings.service.api.token", String.class)
+        apiToken = config.getOptionalValue("service.api.token", String.class)
                 .orElseThrow(() -> new MissingConfigurationValueException("new_listings_service API token not present!"));
-        serviceName = config.getOptionalValue("new.listings.service.name", String.class)
+        serviceName = config.getOptionalValue("service.name", String.class)
                 .orElseThrow(() -> new MissingConfigurationValueException("new_listings_service service name not present!"));
     }
 
