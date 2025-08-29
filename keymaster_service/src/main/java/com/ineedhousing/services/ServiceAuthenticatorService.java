@@ -24,8 +24,18 @@ public class ServiceAuthenticatorService {
     @Inject
     ApiTokenGenerator apiTokenGenerator;
 
-    @Inject
-    Argon2  argon2;
+    private volatile Argon2 argon2;
+
+    private Argon2 getArgon2() {
+        if (argon2 == null) {
+            synchronized (this) {
+                if (argon2 == null) {
+                    argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id, 32, 16);
+                }
+            }
+        }
+        return argon2;
+    }
 
     private final int HASH_ITERATIONS = 3;
     private final int MEMORY_USED = 16384;
@@ -84,7 +94,7 @@ public class ServiceAuthenticatorService {
 
     private String hashToken(String apiToken) {
         try {
-            return argon2.hash(HASH_ITERATIONS, MEMORY_USED, PARALLELISM, apiToken.toCharArray());
+            return getArgon2().hash(HASH_ITERATIONS, MEMORY_USED, PARALLELISM, apiToken.toCharArray());
         }
         catch (Exception e) {
             throw new RuntimeException("Failed to hash API Token", e);

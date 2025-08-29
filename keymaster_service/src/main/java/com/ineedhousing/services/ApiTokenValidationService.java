@@ -1,6 +1,7 @@
 package com.ineedhousing.services;
 
 import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -19,8 +20,18 @@ public class ApiTokenValidationService {
     @Inject
     DataSource dataSource;
 
-   @Inject
-   Argon2 argon2;
+    private volatile Argon2 argon2;
+
+    private Argon2 getArgon2() {
+        if (argon2 == null) {
+            synchronized (this) {
+                if (argon2 == null) {
+                    argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id, 32, 16);
+                }
+            }
+        }
+        return argon2;
+    }
 
     public boolean isServiceAuthenticated(String token, String serviceName) {
         Optional<String> tokenHash = getApiTokenHash(serviceName);
@@ -54,7 +65,7 @@ public class ApiTokenValidationService {
 
     private boolean isApiTokenCorrect(String token, String tokenHash) {
         try {
-            return argon2.verify(tokenHash, token.toCharArray());
+            return getArgon2().verify(tokenHash, token.toCharArray());
         }
         catch (Exception e) {
             Log.error("Failed to verify api token", e);
