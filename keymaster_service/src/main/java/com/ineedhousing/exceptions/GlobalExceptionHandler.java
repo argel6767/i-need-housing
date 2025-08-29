@@ -13,10 +13,8 @@ import org.jboss.resteasy.reactive.ClientWebApplicationException;
 import java.time.Instant;
 
 import static com.ineedhousing.exceptions.UtilFunctions.getTimeStamp;
-
 @Provider
 class ExceptionHandler implements ExceptionMapper<Exception> {
-
     @Override
     public Response toResponse(Exception exception) {
         Log.error("Internal Server Error:\n" + exception);
@@ -28,7 +26,6 @@ class ExceptionHandler implements ExceptionMapper<Exception> {
 
 @Provider
 class BadRequestExceptionHandler implements ExceptionMapper<BadRequestException> {
-
     @Override
     public Response toResponse(BadRequestException exception) {
         Log.error("Bad Request:\n" + exception.getMessage());
@@ -39,7 +36,6 @@ class BadRequestExceptionHandler implements ExceptionMapper<BadRequestException>
 
 @Provider
 class IllegalStateExceptionHandler implements ExceptionMapper<IllegalStateException> {
-
     @Override
     public Response toResponse(IllegalStateException exception) {
         Log.error("Illegal Argument:\n" + exception.getMessage());
@@ -79,7 +75,6 @@ class ClientWebApplicationExceptionHandler implements ExceptionMapper<ClientWebA
 }
 
 class UtilFunctions {
-
     public static FailedRequestDto buildFailedRequestDto(Exception exception) {
         return new FailedRequestDto(exception.getMessage(), getTimeStamp(), exception.toString());
     }
