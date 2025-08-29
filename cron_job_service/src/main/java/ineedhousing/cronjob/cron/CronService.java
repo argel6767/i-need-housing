@@ -1,5 +1,7 @@
 package ineedhousing.cronjob.cron;
 
+import ineedhousing.cronjob.keymaster.KeymasterWebhookService;
+import ineedhousing.cronjob.keymaster.models.RotatingKeyEvent;
 import org.eclipse.microprofile.config.Config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,6 +18,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.time.LocalDateTime;
+
 @ApplicationScoped
 public class CronService {
 
@@ -30,6 +34,9 @@ public class CronService {
 
     @Inject
     LogService logService;
+
+    @Inject
+    KeymasterWebhookService keymasterWebhookService;
 
     private String iNeedHousingRepo;
     private String cronJobServiceRepo;
@@ -91,5 +98,11 @@ public class CronService {
         catch (Exception e) {
             logService.publish("Failed to delete old House Listings\n" + e, LoggingLevel.ERROR);
         }
+    }
+
+    @Scheduled(cron = "0 0 0 1,8,15,22 * ?") // Midnight on the 1st, 8th, 15th, and 22nd
+    void triggerRegistrationRotationJob() {
+        Log.info("Running Cron Job, triggering registration rotation");
+        keymasterWebhookService.triggerRegistrationKeyRotation(new RotatingKeyEvent("Requesting new service registration key for Keymaster Service", LocalDateTime.now()));
     }
 }

@@ -1,21 +1,19 @@
-package ineedhousing.cronjob.new_listings_service;
+package ineedhousing.cronjob.keymaster;
 
 import ineedhousing.cronjob.configs.ServiceInteractionConfiguration;
+import ineedhousing.cronjob.keymaster.models.RotatingKeyEvent;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LoggingLevel;
-import ineedhousing.cronjob.new_listings_service.models.NewListingEvent;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
-
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @ApplicationScoped
-public class NewListingsWebhookService {
+public class KeymasterWebhookService {
 
     @Inject
     @RestClient
-    NewListingsServiceRestClient  newListingsServiceRestClient;
+    KeymasterServiceRestClient keymasterServiceRestClient;
 
     @Inject
     LogService logService;
@@ -23,15 +21,15 @@ public class NewListingsWebhookService {
     @Inject
     ServiceInteractionConfiguration serviceInteractionConfiguration;
 
-    public void onSuccessfulListingsDeletion(@ObservesAsync NewListingEvent newListingEvent) {
+    public void triggerRegistrationKeyRotation(RotatingKeyEvent rotatingKeyEvent) {
         try {
             String apiToken = serviceInteractionConfiguration.getApiToken();
             String serviceName = serviceInteractionConfiguration.getServiceName();
-            String successMessage = newListingsServiceRestClient.newListingsWebhook(apiToken, serviceName, newListingEvent);
+            String successMessage = keymasterServiceRestClient.rotateKey(apiToken, serviceName, rotatingKeyEvent);
             logService.publish(successMessage, LoggingLevel.INFO);
         }
         catch (Exception e) {
-            logService.publish("Failed to trigger new_listings_service webhook: " + e.getMessage(), LoggingLevel.ERROR);
+            logService.publish(e.getMessage(), LoggingLevel.ERROR);
         }
     }
 }
