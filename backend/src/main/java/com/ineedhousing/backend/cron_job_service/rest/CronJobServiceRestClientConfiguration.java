@@ -14,7 +14,7 @@ public class CronJobServiceRestClientConfiguration {
     @Value("${service.api.token}")
     private String apiToken;
 
-    @Value("service.name")
+    @Value("${service.name}")
     private String serviceName;
 
     @Bean(name = "Cron Job Service Client")
