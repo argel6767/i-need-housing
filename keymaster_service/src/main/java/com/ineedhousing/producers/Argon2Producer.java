@@ -3,7 +3,7 @@ package com.ineedhousing.producers;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.Produces;
+import jakarta.enterprise.inject.Produces;
 
 @ApplicationScoped
 public class Argon2Producer {
