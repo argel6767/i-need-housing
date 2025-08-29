@@ -52,11 +52,11 @@ jobs:
       TENANT_ID: ${{ secrets.TENANT_ID }}
       USERNAME: ${{ secrets.USERNAME }}
       PASSWORD: ${{ secrets.PASSWORD }}
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -66,7 +66,7 @@ jobs:
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           echo "Azure CLI installed"
-          
+
       - name: Build and Push Backend Image
         run: |
           python scripts/push_backend_image.py cicd
@@ -89,7 +89,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -119,7 +119,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -149,7 +149,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Build and Push New Listings Service Image
+      - name: Build and Push Keymaster Service Image
         run: |
           python scripts/push_keymaster_image.py cicd
 
@@ -168,6 +168,7 @@ jobs:
 
     steps:
       - name: Check deployment status
+        shell: bash
         run: |
           echo "=== Deployment Summary ==="
           echo "Backend changes detected: ${{ needs.check-changes.outputs.backend-changed }}"
@@ -177,8 +178,8 @@ jobs:
           echo ""
           
           # Check backend deployment status
-          if [ "${{ needs.check-changes.outputs.backend-changed }}" == "true" ]; then
-            if [ "${{ needs.deploy-backend.result }}" == "success" ]; then
+          if [[ "${{ needs.check-changes.outputs.backend-changed }}" == "true" ]]; then
+            if [[ "${{ needs.deploy-backend.result }}" == "success" ]]; then
               echo "✅ INeedHousing API deployed successfully"
             else
               echo "❌ INeedHousing API deployment failed"
@@ -188,36 +189,36 @@ jobs:
           fi
           
           # Check cron service deployment status
-          if [ "${{ needs.check-changes.outputs.cron-changed }}" == "true" ]; then
-            if [ "${{ needs.deploy-cron-service.result }}" == "success" ]; then
+          if [[ "${{ needs.check-changes.outputs.cron-changed }}" == "true" ]]; then
+            if [[ "${{ needs.deploy-cron-service.result }}" == "success" ]]; then
               echo "✅ Cron service deployed successfully"
             else
               echo "❌ Cron service deployment failed"
             fi
           else
-            echo "⏭️  Cron service skipped (no changes)"
+            echo "⏭️ Cron service skipped (no changes)"
           fi
           
           # Check new listings service deployment status
-          if [ "${{ needs.check-changes.outputs.new-listings-changed }}" == "true" ]; then
-            if [ "${{ needs.deploy-new-listings-service.result }}" == "success" ]; then
+          if [[ "${{ needs.check-changes.outputs.new-listings-changed }}" == "true" ]]; then
+            if [[ "${{ needs.deploy-new-listings-service.result }}" == "success" ]]; then
               echo "✅ New Listings service deployed successfully"
             else
               echo "❌ New Listings service deployment failed"
             fi
           else
-            echo "⏭️  New Listings service skipped (no changes)"
+            echo "⏭️ New Listings service skipped (no changes)"
           fi
           
           # Check key master service deployment status
-          if [ "${{ needs.check-changes.outputs.keymaster-changed }}" == "true" ]; then
-            if [ "${{ needs.deploy-keymaster-service.result }}" == "success" ]; then
+          if [[ "${{ needs.check-changes.outputs.keymaster-changed }}" == "true" ]]; then
+            if [[ "${{ needs.deploy-keymaster-service.result }}" == "success" ]]; then
               echo "✅ Key Master service deployed successfully"
             else
               echo "❌ Key Master service deployment failed"
             fi
           else
-            echo "⏭️  Key Master service skipped (no changes)"
+            echo "⏭️ Key Master service skipped (no changes)"
           fi
           
           echo ""
@@ -228,31 +229,31 @@ jobs:
           any_failed=false
           
           # Check if any service had changes
-          if [ "${{ needs.check-changes.outputs.backend-changed }}" == "true" ] || \
-             [ "${{ needs.check-changes.outputs.cron-changed }}" == "true" ] || \
-             [ "${{ needs.check-changes.outputs.new-listings-changed }}" == "true" ] || \
-             [ "${{ needs.check-changes.outputs.keymaster-changed }}" == "true" ]; then
+          if [[ "${{ needs.check-changes.outputs.backend-changed }}" == "true" ]] || \
+             [[ "${{ needs.check-changes.outputs.cron-changed }}" == "true" ]] || \
+             [[ "${{ needs.check-changes.outputs.new-listings-changed }}" == "true" ]] || \
+             [[ "${{ needs.check-changes.outputs.keymaster-changed }}" == "true" ]]; then
             all_skipped=false
           fi
           
           # Check for failures
-          if [ "${{ needs.check-changes.outputs.backend-changed }}" == "true" ] && [ "${{ needs.deploy-backend.result }}" != "success" ]; then
+          if [[ "${{ needs.check-changes.outputs.backend-changed }}" == "true" ]] && [[ "${{ needs.deploy-backend.result }}" != "success" ]]; then
             any_failed=true
           fi
-          if [ "${{ needs.check-changes.outputs.cron-changed }}" == "true" ] && [ "${{ needs.deploy-cron-service.result }}" != "success" ]; then
+          if [[ "${{ needs.check-changes.outputs.cron-changed }}" == "true" ]] && [[ "${{ needs.deploy-cron-service.result }}" != "success" ]]; then
             any_failed=true
           fi
-          if [ "${{ needs.check-changes.outputs.new-listings-changed }}" == "true" ] && [ "${{ needs.deploy-new-listings-service.result }}" != "success" ]; then
+          if [[ "${{ needs.check-changes.outputs.new-listings-changed }}" == "true" ]] && [[ "${{ needs.deploy-new-listings-service.result }}" != "success" ]]; then
             any_failed=true
           fi
-          if [ "${{ needs.check-changes.outputs.keymaster-changed }}" == "true" ] && [ "${{ needs.deploy-keymaster-service.result }}" != "success" ]; then
+          if [[ "${{ needs.check-changes.outputs.keymaster-changed }}" == "true" ]] && [[ "${{ needs.deploy-keymaster-service.result }}" != "success" ]]; then
             any_failed=true
           fi
           
-          if [ "$all_skipped" == "true" ]; then
+          if [[ "$all_skipped" == "true" ]]; then
             echo "🎉 No changes detected - no deployment needed!"
             exit 0
-          elif [ "$any_failed" == "false" ]; then
+          elif [[ "$any_failed" == "false" ]]; then
             echo "🎉 All required deployments completed successfully!"
             exit 0
           else
