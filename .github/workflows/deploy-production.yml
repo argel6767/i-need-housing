@@ -258,3 +258,4 @@ jobs:
           else
             echo "❌ Some deployments failed"
             exit 1
+          fi
