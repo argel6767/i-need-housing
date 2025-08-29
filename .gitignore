@@ -13,4 +13,4 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-cron_job_service/logs/**
+out/**
