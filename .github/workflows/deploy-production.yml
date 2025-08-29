@@ -35,7 +35,7 @@ jobs:
               - 'backend/**'
             new_listings_service:
               - 'new_listings_service/**'
-            key_master_service:
+            keymaster_service:
               - 'keymaster_service/**'
 
   deploy-backend:
