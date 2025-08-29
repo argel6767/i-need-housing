@@ -23,7 +23,7 @@ def main():
     file_path = create_tmp_service_acc_key_file(key=key)
     sign_in_to_gcp(file_path=file_path, project_id=project_id)
     configure_docker_for_gcr()
-    image_name = build_and_push_with_unique_tag(repo_name="keymaster-repo", service=app_service_name, directory=keymaster_service, image_name_creator=make_gcp_image)
+    image_name = build_and_push_with_unique_tag(repo_name="keymaster-service-repo", service=app_service_name, directory=keymaster_service, image_name_creator=make_gcp_image)
     #deploy_new_image(image_name=image_name, service_name=app_service_name)
 
 
