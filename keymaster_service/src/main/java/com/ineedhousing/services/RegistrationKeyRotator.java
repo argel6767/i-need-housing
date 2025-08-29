@@ -27,7 +27,6 @@ public class RegistrationKeyRotator {
         Log.info("Service Initialized, setting first key");
         key = generateKey();
         Log.info("Registration key successfully generated at startup, firing notify event");
-        Log.warn(String.format("Key: %s. REMOVE THIS LOG ONCE KEYMASTER SERVICE IS REGISTERED", key));
         publisher.fireAsync(new SuccessfulKeyRotationEvent("Key Successfully Rotated", key, LocalDateTime.now()));
     }
 
