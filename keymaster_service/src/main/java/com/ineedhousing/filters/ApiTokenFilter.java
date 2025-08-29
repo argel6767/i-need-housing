@@ -20,7 +20,7 @@ public class ApiTokenFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) {
 
-        if (isRegistrationEndpoint(requestContext)) {
+        if (isOpenEndpoints(requestContext)) {
             return;
         }
 
@@ -49,7 +49,7 @@ public class ApiTokenFilter implements ContainerRequestFilter {
         return apiToken == null || apiToken.isEmpty() || serviceName == null || serviceName.isEmpty();
     }
 
-    private boolean isRegistrationEndpoint(ContainerRequestContext requestContext) {
-        return requestContext.getUriInfo().getPath().equals("/v1/auth/register");
+    private boolean isOpenEndpoints(ContainerRequestContext requestContext) {
+        return requestContext.getUriInfo().getPath().equals("/v1/auth/register") || requestContext.getUriInfo().getPath().equals("ping");
     }
 }
