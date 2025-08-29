@@ -2,6 +2,7 @@ package com.ineedhousing.backend.jwt;
 
 import java.io.IOException;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.function.ServerRequest;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -34,7 +36,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.startsWith("/actuator/");
+        return path.startsWith("/actuator/") || isAServiceToServiceRequest(request);
+    }
+
+    private boolean isAServiceToServiceRequest(HttpServletRequest request) {
+        return request.getHeader("X-Api-Token") != null && request.getHeader("X-Service-Name") != null;
     }
 
 

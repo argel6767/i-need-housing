@@ -8,6 +8,7 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
+import org.jboss.resteasy.reactive.ClientWebApplicationException;
 
 import java.time.Instant;
 
@@ -64,6 +65,16 @@ class RateLimitExceptionHandler implements ExceptionMapper<RateLimitException> {
         Log.error("Rate Limit Exception:\n" + exception.getMessage());
         FailedRequestDto dto = new FailedRequestDto("Too many requests being sent. Try again later.", getTimeStamp(), exception.toString());
         return Response.status(Response.Status.TOO_MANY_REQUESTS).entity(dto).build();
+    }
+}
+
+@Provider
+class ClientWebApplicationExceptionHandler implements ExceptionMapper<ClientWebApplicationException> {
+    @Override
+    public Response toResponse(ClientWebApplicationException exception) {
+        Log.error("Client Web Application Exception:\n" + exception.getMessage());
+        FailedRequestDto dto = UtilFunctions.buildFailedRequestDto(exception);
+        return Response.status(Response.Status.BAD_GATEWAY).entity(dto).build();
     }
 }
 

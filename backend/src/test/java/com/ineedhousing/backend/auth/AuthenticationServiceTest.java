@@ -6,7 +6,7 @@ import com.ineedhousing.backend.auth.requests.AuthenticateUserDto;
 import com.ineedhousing.backend.auth.requests.ChangePasswordDto;
 import com.ineedhousing.backend.auth.requests.ForgotPasswordDto;
 import com.ineedhousing.backend.auth.requests.VerifyUserDto;
-import com.ineedhousing.backend.email.EmailService;
+import com.ineedhousing.backend.email.ClientEmailService;
 import com.ineedhousing.backend.email.EmailVerificationException;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserRepository;
@@ -35,7 +35,7 @@ class AuthenticationServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
-    private EmailService emailService;
+    private ClientEmailService clientEmailService;
 
     private AuthenticationService authenticationService;
 
@@ -50,7 +50,7 @@ class AuthenticationServiceTest {
                 userRepository,
                 authenticationManager,
                 passwordEncoder,
-                emailService
+                clientEmailService
         );
 
         successfulUser.setEmail("test@example.com");
@@ -77,7 +77,7 @@ class AuthenticationServiceTest {
         assertEquals(encodedPassword, result.getPassword());
         assertNotNull(result.getVerificationCode());
         assertNotNull(result.getCodeExpiry());
-        verify(emailService).sendEmail(any(), anyString(), anyString());
+        verify(clientEmailService).sendEmail(any(), anyString(), anyString());
         verify(userRepository).save(any(User.class));
     }
 
@@ -167,7 +167,7 @@ class AuthenticationServiceTest {
         // Act
         authenticationService.resendVerificationEmail(email);
         // Assert
-        verify(emailService).sendEmail(any(), any(), any());
+        verify(clientEmailService).sendEmail(any(), any(), any());
         verify(userRepository).save(user);
         assertNotNull(user.getVerificationCode());
         assertNotNull(user.getCodeExpiry());
@@ -186,7 +186,7 @@ class AuthenticationServiceTest {
         assertThrows(EmailVerificationException.class, () ->
                 authenticationService.resendVerificationEmail(email)
         );
-        verify(emailService, never()).sendEmail(anyString(), anyString(), anyString());
+        verify(clientEmailService, never()).sendEmail(anyString(), anyString(), anyString());
         verify(userRepository, never()).save(any(User.class));
     }
 
@@ -280,7 +280,7 @@ class AuthenticationServiceTest {
 
         //Assert
         verify(userRepository).save(any(User.class));
-        verify(emailService).sendEmail(anyString(), anyString(), anyString());
+        verify(clientEmailService).sendEmail(anyString(), anyString(), anyString());
     }
 
     @Test
@@ -289,7 +289,8 @@ class AuthenticationServiceTest {
 
         //Act and Assert
         assertThrows(UsernameNotFoundException.class,
-                () -> {authenticationService.sendForgottenPasswordVerificationCode("test@example.com");});
+                () -> {
+                    authenticationService.sendForgottenPasswordVerificationCode("test@example.com");});
     }
 
     @Test
@@ -316,7 +317,8 @@ class AuthenticationServiceTest {
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
 
         //Act and Assert
-        assertThrows(UsernameNotFoundException.class, () -> {authenticationService.resetPassword(request);});
+        assertThrows(UsernameNotFoundException.class, () -> {
+            authenticationService.resetPassword(request);});
     }
 
     @Test
@@ -327,7 +329,8 @@ class AuthenticationServiceTest {
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(successfulUser));
 
         //Act and Assert
-        assertThrows(ExpiredVerificationCodeException.class, () -> {authenticationService.resetPassword(request);});
+        assertThrows(ExpiredVerificationCodeException.class, () -> {
+            authenticationService.resetPassword(request);});
     }
 
     @Test
@@ -339,7 +342,8 @@ class AuthenticationServiceTest {
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(successfulUser));
 
         //Act and Assert
-        assertThrows(AuthenticationException.class, () -> {authenticationService.resetPassword(request);});
+        assertThrows(AuthenticationException.class, () -> {
+            authenticationService.resetPassword(request);});
     }
 
 }

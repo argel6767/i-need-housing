@@ -3,6 +3,7 @@ package com.ineedhousing.backend.configs;
 
 import java.util.List;
 
+import com.ineedhousing.backend.registered_services.ServiceApiTokenFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,13 +34,15 @@ public class SecurityConfiguration{
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ServiceApiTokenFilter serviceApiTokenFilter;
 
     @Value("${frontend.domain}")
     private String frontendDomain;
 
-    public SecurityConfiguration(AuthenticationProvider authenticationProvider, JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfiguration(AuthenticationProvider authenticationProvider, JwtAuthenticationFilter jwtAuthenticationFilter, ServiceApiTokenFilter serviceApiTokenFilter) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.serviceApiTokenFilter = serviceApiTokenFilter;
     }
 
     /*
@@ -59,7 +62,8 @@ public class SecurityConfiguration{
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(serviceApiTokenFilter, JwtAuthenticationFilter.class);
         
         return httpSecurity.build();
     }

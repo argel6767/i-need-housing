@@ -12,6 +12,7 @@ import jakarta.inject.Inject;
 
 import java.security.SecureRandom;
 
+import java.time.LocalDateTime;
 import java.util.Base64;
 
 @ApplicationScoped
@@ -26,13 +27,13 @@ public class RegistrationKeyRotator {
         Log.info("Service Initialized, setting first key");
         key = generateKey();
         Log.info("Registration key successfully generated at startup, firing notify event");
-        //publisher.fireAsync(new SuccessfulKeyRotationEvent("Key successfully created", key, LocalDateTime.now()));
+        publisher.fireAsync(new SuccessfulKeyRotationEvent("Key Successfully Rotated", key, LocalDateTime.now()));
     }
 
     public void rotateKey(@ObservesAsync RotatingKeyEvent event) {
         key = generateKey();
         Log.info("Key successfully rotated, firing notify event");
-        //publisher.fireAsync(new SuccessfulKeyRotationEvent("Key successfully created", key, LocalDateTime.now()));
+        publisher.fireAsync(new SuccessfulKeyRotationEvent("Key Successfully Rotated", key, LocalDateTime.now()));
     }
 
     private String generateKey() {

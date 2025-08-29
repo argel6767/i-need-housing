@@ -1,6 +1,7 @@
 package com.ineedhousing.backend.configs;
 
 
+import com.ineedhousing.backend.registered_services.ServiceApiTokenFilter;
 import com.ineedhousing.backend.jwt.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,13 +13,10 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -34,6 +32,9 @@ class SecurityConfigurationTest {
     @Mock
     private HttpSecurity httpSecurity;
 
+    @Mock
+    private ServiceApiTokenFilter serviceApiTokenFilter;
+
     private SecurityConfiguration securityConfiguration;
 
     HttpServletRequest request = new MockHttpServletRequest("GET", "/**");
@@ -41,7 +42,7 @@ class SecurityConfigurationTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        securityConfiguration = new SecurityConfiguration(authenticationProvider, jwtAuthenticationFilter);
+        securityConfiguration = new SecurityConfiguration(authenticationProvider, jwtAuthenticationFilter, serviceApiTokenFilter);
     }
 
     @Test

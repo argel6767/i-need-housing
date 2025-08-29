@@ -1,12 +1,17 @@
 package ineedhousing.cronjob.log.ws;
 
+import ineedhousing.cronjob.auth.ApiTokenValidationService;
 import io.quarkus.websockets.next.HandshakeRequest;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import org.apache.commons.lang3.ObjectUtils;
 
 @ApplicationScoped
 public class WebSocketAuthService {
 
-    private String accessToken;
+    @Inject
+    ApiTokenValidationService apiTokenValidationService;
+
 
     /**
      * Checks for access token in Access-Header token
@@ -14,18 +19,12 @@ public class WebSocketAuthService {
      * @return
      */
     public boolean isAuthenticated(HandshakeRequest handshakeRequest) {
-        String accessToken = getAccessToken();
-        String requestToken = handshakeRequest.header("Access-Header");
-        return accessToken.equals(requestToken);
+        String apiToken = handshakeRequest.header("X-Api-Token");
+        String serviceName = handshakeRequest.header("X-Service-Name");
+        if (ObjectUtils.allNull(apiToken, serviceName)) {
+            return false;
+        }
+        return apiTokenValidationService.isServiceAuthenticated(apiToken, serviceName);
     }
 
-    private String getAccessToken() {
-        if (accessToken == null) {
-            accessToken = System.getenv("ACCESS_TOKEN_HEADER");
-        }
-        if (accessToken == null || accessToken.trim().isEmpty()) {
-            throw new RuntimeException("ACCESS_TOKEN_HEADER environment variable not found or empty!");
-        }
-        return accessToken;
-    }
 }

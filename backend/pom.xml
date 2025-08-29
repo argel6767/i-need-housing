@@ -154,6 +154,11 @@
 			<artifactId>Java-WebSocket</artifactId>
 			<version>1.5.4</version>
 		</dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>1.80</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>

@@ -8,7 +8,7 @@ import com.ineedhousing.backend.auth.requests.AuthenticateUserDto;
 import com.ineedhousing.backend.auth.requests.ChangePasswordDto;
 import com.ineedhousing.backend.auth.requests.ForgotPasswordDto;
 import com.ineedhousing.backend.auth.requests.VerifyUserDto;
-import com.ineedhousing.backend.email.EmailService;
+import com.ineedhousing.backend.email.ClientEmailService;
 import com.ineedhousing.backend.email.EmailVerificationException;
 import com.ineedhousing.backend.email.InvalidEmailException;
 import com.ineedhousing.backend.user.User;
@@ -17,6 +17,7 @@ import jakarta.mail.MessagingException;
 
 import lombok.extern.java.Log;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,14 +38,14 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
+    private final ClientEmailService clientEmailService;
 
-    public AuthenticationService(UserRepository userRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder,
-                                 EmailService emailService) {
+    public AuthenticationService(UserRepository userRepository, AuthenticationManager authenticationManager, @Qualifier("BCrypt") PasswordEncoder passwordEncoder,
+                                 ClientEmailService clientEmailService) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
-        this.emailService = emailService;
+        this.clientEmailService = clientEmailService;
     }
 
     /**
@@ -250,7 +251,7 @@ public class AuthenticationService {
      */
     private void sendVerificationEmail(User user, String code) throws MessagingException {
        String email = user.getEmail();
-       emailService.sendVerificationEmail(code, email);
+       clientEmailService.sendVerificationEmail(code, email);
        log.info("verification email sent for user " + user.getEmail());
     }
 
@@ -259,7 +260,7 @@ public class AuthenticationService {
      */
     private void sendResetPasswordEmail(User user, String code) throws MessagingException {
        String email = user.getEmail();
-       emailService.sendResetPasswordEmail(code,email);
+       clientEmailService.sendResetPasswordEmail(code,email);
        log.info("reset forgot password email sent for user " + user.getEmail());
     }
 

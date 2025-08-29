@@ -1,7 +1,6 @@
 package com.ineedhousing.backend.email;
 
 
-import com.ineedhousing.backend.user.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.java.Log;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Log
 @Service
 @Lazy
-public class EmailService {
+public class ClientEmailService {
 
     @Autowired
     private JavaMailSender mailSender;
@@ -33,7 +32,7 @@ public class EmailService {
     public void sendEmail(String to, String subject, String body) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-	helper.setFrom(emailUsername);
+	    helper.setFrom(emailUsername);
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(body, true);

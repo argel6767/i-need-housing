@@ -15,8 +15,11 @@ public class CronJobStreamClientFactory {
     @Value("${cron.job.service.web.socket.endpoint}")
     private String serviceUrl;
 
-    @Value("${cron.job.service.access.header}")
-    private String accessToken;
+    @Value("${service.api.token}")
+    private String apiToken;
+
+    @Value("service.name")
+    private String serviceName;
 
     private final LogStreamProcessor logStreamProcessor;
     private final ApplicationEventPublisher eventPublisher;
@@ -29,7 +32,7 @@ public class CronJobStreamClientFactory {
     public CronJobLogStreamClient createClient() throws URISyntaxException {
         return new CronJobLogStreamClient(
                 new URI(serviceUrl),
-                Map.of("Access-Header", accessToken),
+                Map.of("X-Api-Token", apiToken, "X-Service-Name", serviceName),
                 logStreamProcessor,
                 eventPublisher
         );

@@ -1,5 +1,6 @@
 package com.ineedhousing.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ineedhousing.models.SuccessfulKeyRotationEvent;
 import com.ineedhousing.rest_clients.MainAPIEmailServiceRestClient;
 import io.quarkus.logging.Log;
@@ -8,6 +9,7 @@ import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.reactive.ClientWebApplicationException;
 
 public class KeyRotationSubscriber {
 
@@ -17,6 +19,9 @@ public class KeyRotationSubscriber {
 
     @Inject
     Config config;
+
+    @Inject
+    ObjectMapper objectMapper;
 
     private String apiToken;
     private String serviceName;
@@ -30,7 +35,23 @@ public class KeyRotationSubscriber {
     }
 
     public void notifyNewKeyRotation(@ObservesAsync SuccessfulKeyRotationEvent successfulKeyRotationEvent) {
-        mainAPIEmailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, successfulKeyRotationEvent);
-        Log.info("Notify New Key Rotation Successfully!");
+        try {
+            String eventJson = stringify(successfulKeyRotationEvent);
+            mainAPIEmailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, eventJson);
+            Log.info("Notify New Key Rotation Event Successfully!");
+        }
+        catch (ClientWebApplicationException e) {
+            Log.error("Notify New Key Rotation Event Failed! Cause: " +  e.getResponse().getStatusInfo().getReasonPhrase());
+        }
+    }
+
+    private String stringify(SuccessfulKeyRotationEvent successfulKeyRotationEvent) {
+        try {
+            return objectMapper.writeValueAsString(successfulKeyRotationEvent);
+        }
+        catch (Exception e) {
+            Log.error("Failed to parse: " + e.getMessage());
+            return  e.getMessage();
+        }
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
@@ -38,10 +39,13 @@ public class ApplicationConfiguration {
      * default password encoder used
      * BCrypt hard hashing
      */
-    @Bean
+    @Bean(name = "BCrypt")
     BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean(name = "Argon")
+    Argon2PasswordEncoder argon2PasswordEncoder() {return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();}
 
     /*
      * returns an AuthenticationManager to handle user authentication, utilizing AuthenticationConfiguration

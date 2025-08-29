@@ -11,14 +11,20 @@ public class CronJobServiceRestClientConfiguration {
     @Value("${cron.job.service.url}")
     private String serviceUrl;
 
-    @Value("${cron.job.service.access.header}")
-    private String accessHeader;
+    @Value("${service.api.token}")
+    private String apiToken;
+
+    @Value("service.name")
+    private String serviceName;
 
     @Bean(name = "Cron Job Service Client")
     public RestClient restClient() {
         return RestClient.builder()
                 .baseUrl(serviceUrl)
-                .defaultHeaders(httpHeaders -> httpHeaders.set("Access-Header", accessHeader))
+                .defaultHeaders(httpHeaders -> {
+                    httpHeaders.set("X-Api-Token", apiToken);
+                    httpHeaders.set("X-Service-Name", serviceName);
+                })
                 .build();
     }
 }
