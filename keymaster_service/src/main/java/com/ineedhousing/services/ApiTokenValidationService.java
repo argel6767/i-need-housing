@@ -1,7 +1,6 @@
 package com.ineedhousing.services;
 
 import de.mkammerer.argon2.Argon2;
-import de.mkammerer.argon2.Argon2Factory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -20,7 +19,8 @@ public class ApiTokenValidationService {
     @Inject
     DataSource dataSource;
 
-    private final Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+   @Inject
+   Argon2 argon2;
 
     public boolean isServiceAuthenticated(String token, String serviceName) {
         Optional<String> tokenHash = getApiTokenHash(serviceName);

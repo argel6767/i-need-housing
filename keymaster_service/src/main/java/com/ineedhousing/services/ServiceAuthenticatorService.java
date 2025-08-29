@@ -24,7 +24,9 @@ public class ServiceAuthenticatorService {
     @Inject
     ApiTokenGenerator apiTokenGenerator;
 
-    private final Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id, 32, 16);
+    @Inject
+    Argon2  argon2;
+
     private final int HASH_ITERATIONS = 3;
     private final int MEMORY_USED = 16384;
     private final int PARALLELISM = 1;
