@@ -24,7 +24,8 @@ public class ApiTokenValidationService {
     @Inject
     TokenHasher tokenHasher;
 
-    public VerifiedServiceDto isServiceAuthenticated(ServiceVerificationDto serviceVerificationDto) {
+    public VerifiedServiceDto isServiceAuthenticated(ServiceVerificationDto serviceVerificationDto, String requestingService) {
+        Log.info(String.format("Checking authorization status of %s for %s", serviceVerificationDto.serviceName(), requestingService));
         if (!isServiceAuthenticated(serviceVerificationDto.apiToken(), serviceVerificationDto.serviceName())) {
             return new VerifiedServiceDto("Service is not authorized", LocalDateTime.now());
         }

@@ -94,7 +94,7 @@ public class RestClientConfiguration {
         return  RestClient.builder()
                 .baseUrl(keymasterServiceUrl)
                 .defaultHeaders(httpHeaders -> {
-                    httpHeaders.set("X-Api-Token",  serviceApiToken);
+                    httpHeaders.set("X-Api-Token", serviceApiToken);
                     httpHeaders.set("X-Service-Name",serviceName);
                 })
                 .build();
