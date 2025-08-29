@@ -50,6 +50,6 @@ public class ApiTokenFilter implements ContainerRequestFilter {
     }
 
     private boolean isRegistrationEndpoint(ContainerRequestContext requestContext) {
-        return requestContext.getUriInfo().getPath().equals("/v1/register");
+        return requestContext.getUriInfo().getPath().equals("/v1/auth/register");
     }
 }
