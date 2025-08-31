@@ -68,6 +68,13 @@ const MobileListItems = ({ children, isModalUp=false}: MobileListItemsProps) => 
  * @returns
  */
 export const Navbar = () => {
+    const isSignedIn = () => {
+        if (sessionStorage.getItem("status") === null) {
+            sessionStorage.setItem("status", "signed out")
+        }
+        return sessionStorage.getItem("status") === "signed in";
+    }
+
   return (
       <main className="navbar bg-background border-b-2 border-gray-200 shadow-md" data-testid="navbar">
         <div className="navbar-start">
@@ -83,7 +90,7 @@ export const Navbar = () => {
           </ul>
         </div>
         <div className="navbar-end">
-          <Link className="btn btn-primary hover:bg-[#457F9F] w-32" href="/sign-in">Sign In</Link>
+            {!isSignedIn() && <Link className="btn btn-primary hover:bg-[#457F9F] w-32" href="/sign-in">Sign In</Link>}
         </div>
       </main>
   )

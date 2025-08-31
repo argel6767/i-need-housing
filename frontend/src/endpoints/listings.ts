@@ -1,6 +1,11 @@
 import { apiClient, failedCallMessage} from "./apiConfig";
-import { ExactPreferencesDTO, GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
-import { HouseListing, UserPreference } from "@/interfaces/entities";
+import {
+    ExactPreferencesDTO,
+    GetListingsInAreaRequest,
+    GetListingsInAreaRequestV2
+} from "@/interfaces/requests/housingListingRequests";
+import { HouseListing } from "@/interfaces/entities";
+import {ListingsResultsPageDto} from "@/interfaces/responses/listingsResponses";
 
 const MODULE_MAPPING = "/listings"
 
@@ -35,6 +40,32 @@ export const getListingsInArea = async(requestBody: GetListingsInAreaRequest | n
     catch(error) {
         console.log(failedCallMessage(error));
         return [];
+    }
+}
+
+export const getListingsInAreaV2 = async (requestBody: GetListingsInAreaRequestV2 | null): Promise<ListingsResultsPageDto> => {
+    if (!requestBody) {
+        console.warn("Null request body. Halting call!");
+        return {housingListings:[], pageNumber:1, totalPages:1};
+    }
+    try {
+        const response =  await apiClient.get(`${MODULE_MAPPING}/v2/area`, {
+            params: {
+                latitude: requestBody.latitude,
+                longitude: requestBody.longitude,
+                radius: requestBody.radius,
+                page: requestBody.page
+            }
+        });
+        if (response.status === 200) {
+            return response.data;
+        }
+        console.log(response.data);
+        return {housingListings:[], pageNumber:1, totalPages:1};
+    }
+    catch(error) {
+        console.log(failedCallMessage(error));
+        return {housingListings:[], pageNumber:1, totalPages:1};
     }
 }
 

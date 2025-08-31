@@ -1,16 +1,17 @@
 import { getFavoriteListings } from "@/endpoints/favorites"
-import { getListingsInArea } from "@/endpoints/listings"
+import {getListingsInArea, getListingsInAreaV2} from "@/endpoints/listings"
 import { getUserPreferences } from "@/endpoints/preferences"
 import { FavoriteListing, HouseListing, UserPreference } from "@/interfaces/entities"
-import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests"
-import {useMutation, useQuery} from "@tanstack/react-query"
+import {GetListingsInAreaRequest, GetListingsInAreaRequestV2} from "@/interfaces/requests/housingListingRequests"
+import { useQuery} from "@tanstack/react-query"
 import {useGlobalContext} from "@/components/GlobalContext";
-import {getProfilePicture, getProfilePictureURL, updateProfilePictureURL} from "@/endpoints/profilePictures";
+import {getProfilePicture, getProfilePictureURL} from "@/endpoints/profilePictures";
 import {useEffect, useState} from "react";
 import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
 import {useExistingUserContext} from "@/app/(protected)/(existing_user)/ExistingUserContext";
 import {DEFAULT_PROFILE_PICTURE_URL} from "@/utils/utils";
 import {useProtectedContext} from "@/app/(protected)/ProtectedRoute";
+import {ListingsResultsPageDto} from "@/interfaces/responses/listingsResponses";
 
 // fetches listings
 export const useGetListings = (requestBody: GetListingsInAreaRequest | null, options?: { enabled?: boolean }) => {
@@ -18,6 +19,16 @@ export const useGetListings = (requestBody: GetListingsInAreaRequest | null, opt
         queryKey: ['listings', requestBody],
         queryFn: async ():Promise<Array<HouseListing>> => {
             return await getListingsInArea(requestBody);
+        },
+        enabled: options?.enabled ?? !!requestBody
+    })
+}
+
+export const useGetListingsV2 = (requestBody: GetListingsInAreaRequestV2 | null, options?: { enabled?: boolean }) => {
+    return useQuery({
+        queryKey: ['listings, page: ' + requestBody?.page, requestBody],
+        queryFn: async ():Promise<ListingsResultsPageDto> => {
+            return await getListingsInAreaV2(requestBody);
         },
         enabled: options?.enabled ?? !!requestBody
     })
@@ -61,7 +72,7 @@ export const useClearGlobalContext = () => {
 
 // sets all home context state values to their default values
 export const useClearHomeContext = () => {
-    const {setListings, setIsListingsFiltered, setIsFiltersChanged, setIsFiltering, setIsFilterModalUp,
+    const {setListings, setListingsPage, setIsListingsFiltered, setIsFiltersChanged, setIsFiltering, setIsFilterModalUp,
         setIsListingModalUp, setIsResetting, setFilterRendered, setInitialPreferences, setIsSaving} = useHomeContext();
 
     return () => {
@@ -73,6 +84,7 @@ export const useClearHomeContext = () => {
         setIsListingsFiltered(false);
         setIsListingModalUp(false);
         setListings([])
+        setListingsPage({housingListings: [], pageNumber: 1, totalPages: 1})
         setFilterRendered(null)
         setInitialPreferences(undefined);
     }

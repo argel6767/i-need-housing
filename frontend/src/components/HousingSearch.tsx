@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import extend from "../../public/sidebar/sidebar-extend.svg"
 import collapse from "../../public/sidebar/sidebar-collapse.svg"
 import Image from "next/image";
@@ -9,10 +9,76 @@ import { HousingCard } from "./HousingsList";
 import { GroupOfSkeletons, SkeletonText } from "./Loading";
 import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
 import {useGlobalContext} from "@/components/GlobalContext";
+import {ListingsResultsPageDto} from "@/interfaces/responses/listingsResponses";
 
+interface PaginationButtonProps {
+    page: number | string;
+    currentPage: number;
+}
+
+const PaginationButton = ({page, currentPage}: PaginationButtonProps) => {
+    const {setListingsPage, setGetListingsRequest} = useHomeContext();
+    const isDisabled = () => {
+        return page === "..."
+    }
+    const isCurrentPage = () => {
+        return page === currentPage;
+    }
+
+    const onClick = () => {
+        const pageNumber = Number(page);
+
+        // Update both the listings page state AND the request
+        setListingsPage((prevState) => ({...prevState, pageNumber: pageNumber}));
+        setGetListingsRequest((prev) => {
+            if (!prev) {
+                return prev;
+            }
+            return {...prev, page: pageNumber}
+        });
+    }
+
+    return (
+        <button onClick={onClick} disabled={isDisabled()} className={`join-item btn ${isCurrentPage()? "bg-slate-300" : "bg-slate-200"}`}>{page}</button>
+    )
+}
+
+interface HousingSearchFooterProps {
+    listingsPage: ListingsResultsPageDto
+}
+const getPageNumbers = (current: number, total: number) => {
+    const pages: Array<number | string> = [];
+    if (total <= 6) {
+        for (let i = 1; i <= total; i++) pages.push(i);
+    } else {
+        if (current > 4) pages.push(1, "...");
+        for (let i = Math.max(2, current - 2); i <= Math.min(total - 1, current + 2); i++) {
+            pages.push(i);
+        }
+        if (current < total - 3) pages.push("...", total);
+        else if (current < total) pages.push(total);
+    }
+    return pages;
+};
+
+const HousingSearchFooter = ({listingsPage}: HousingSearchFooterProps) => {
+    const pages = getPageNumbers(listingsPage.pageNumber, listingsPage.totalPages);
+
+        return(
+            <div className={"join"}>
+                {pages.map((page, idx) => (
+                   <PaginationButton
+                        key={idx}
+                        page={page}
+                        currentPage={listingsPage.pageNumber}
+                   />
+                ))}
+            </div>
+        )
+
+}
 
 interface HousingSearchProps {
-    listings: HouseListing[]
     isLoading: boolean
     isFetching: boolean
     isGrabbingFavorites: boolean
@@ -25,13 +91,13 @@ interface HousingSearchProps {
  * @param param
  * @returns 
  */
-export const HousingSearch = ({listings, isLoading, isFetching, isGrabbingFavorites, setRenderedListing, setIsModalUp}:HousingSearchProps) => {
+export const HousingSearch = ({ isLoading, isFetching, isGrabbingFavorites, setRenderedListing, setIsModalUp}:HousingSearchProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(true);
-    const {isResetting, isFiltering} = useHomeContext();
+    const {isResetting, isFiltering, listingsPage} = useHomeContext();
     const {userPreferences} = useGlobalContext();
 
     const isListingsChanging = () => {
-        return isFetching || isLoading || isGrabbingFavorites || isResetting || isFiltering
+        return isFetching || isLoading || isGrabbingFavorites || isResetting || isFiltering || !listingsPage || !listingsPage.housingListings || !listingsPage.totalPages || !listingsPage.pageNumber;
     }
 
     return (
@@ -54,20 +120,26 @@ export const HousingSearch = ({listings, isLoading, isFetching, isGrabbingFavori
                     isOpen ? 'translate-x-0' : 'translate-x-full'} z-30 shadow-lg rounded-l-lg overflow-y-scroll`}>
                 <div className="p-4">
                     <h2 className="text-3xl font-bold text-center p-4 flex justify-center items-center">
-                    {isListingsChanging()? <SkeletonText /> :  "View Listings Around " + userPreferences?.cityOfEmployment}
+                        {isListingsChanging() ?
+                            <SkeletonText/> : "View Listings Around " + userPreferences?.cityOfEmployment}
                     </h2>
-                    <nav className="flex justify-center w-full">
+                    <nav className="flex flex-col justify-center w-full overflow-y-auto">
                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4">
-                            {isListingsChanging() || isLoading || isGrabbingFavorites?  <GroupOfSkeletons numOfSkeletons={8}/> :
-                            listings
-                            .filter((listing) => (listing.coordinates !== null))
-                            .map((listing) => (
-                                <HousingCard key={listing.id} listing={listing} setIsModalUp={setIsModalUp} setRenderedListing={setRenderedListing}/>
-                            ))}
+                            {isListingsChanging() || isLoading || isGrabbingFavorites ?
+                                <GroupOfSkeletons numOfSkeletons={8}/> :
+                                listingsPage.housingListings
+                                    .filter((listing) => (listing.coordinates !== null))
+                                    .map((listing) => (
+                                        <HousingCard key={listing.id} listing={listing} setIsModalUp={setIsModalUp}
+                                                     setRenderedListing={setRenderedListing}/>
+                                    ))}
                         </ul>
                     </nav>
+                    <div className={"shrink-0 pt-4 pb-2 border-t bg-slate-50 sticky bottom-0 z-10 flex justify-center items-center"}>
+                        <HousingSearchFooter listingsPage={listingsPage}/>
+                    </div>
                 </div>
             </div>
-            </main>
+        </main>
     );
 };

@@ -53,6 +53,7 @@ export const User = () => {
         const response = await logout();
         setIsLoading(false);
         if (response === "Logged out successfully") {
+            sessionStorage.setItem("status", "signed out");
             router.replace("/sign-in");
             queryClient.clear();
             clearGlobalState();

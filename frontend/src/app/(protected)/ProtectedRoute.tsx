@@ -28,6 +28,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       isAuthorized, setIsAuthorized, isAuthLoading, setIsAuthLoading
   }), [isAuthorized, isAuthLoading])
 
+
   useEffect(() => {
     // Check for token immediately on component mount
     const checkCookieStatus = async () => {
@@ -45,6 +46,31 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
     checkCookieStatus()
   }, [router]);
+
+  const handleUnauthorized = () => {
+      setIsAuthorized(false);
+      setIsAuthLoading(false);
+      router.replace('/sign-in');
+  };
+
+    // Global 403 response interceptor
+    useEffect(() => {
+        // Create a global event listener for API responses
+        const handleGlobal403 = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            if (customEvent.detail?.status === 403) {
+                console.log('403 detected - redirecting to sign in');
+                handleUnauthorized();
+            }
+        };
+
+        // Listen for custom 403 events
+        window.addEventListener('auth:unauthorized', handleGlobal403);
+
+        return () => {
+            window.removeEventListener('auth:unauthorized', handleGlobal403);
+        };
+    }, []);
 
   // display this when checking user's authentication status
   if (!isAuthorized || isAuthLoading) {

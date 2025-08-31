@@ -42,7 +42,7 @@ const SignUp = () => {
                     <div className="flex items-center justify-center my-3">
                     <div className="xl:mx-auto shadow-md p-4 xl:w-full xl:max-w-sm 2xl:max-w-md">
                         <FormHeader header="Sign up to create account" text="Already have an account? " buttonLabel="Sign In" path="sign-in"/>
-                        <Form buttonLabel={"Create Account"} request={signUpUser} isLoading={isLoading}/>
+                        <Form buttonLabel={"Create Account"} request={signUpUser} isLoading={isLoading} formType={"signUp"}/>
                         <p className={"text-red-500 text-center font-semibold animate-fade"}>{errorState.message}</p>
                     </div>
                     </div>

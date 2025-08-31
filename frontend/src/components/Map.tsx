@@ -59,7 +59,7 @@ export const Map = ({listings, setRenderedListing, setIsModalUp}: MapProps) => {
     }, [centerLat, centerLong]);
 
 
-    if (!isLoaded || !userPreferences) {
+    if (!isLoaded || !userPreferences || !listings) {
         return <div className="h-full flex items-center justify-center"><Loading/></div>;
     }
 

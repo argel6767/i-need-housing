@@ -34,6 +34,7 @@ const SignIn = () => {
             router.push("/new-user/user-type");
         }
         else if (response === "logged in") {
+            sessionStorage.setItem("status", "signed in")
             router.prefetch("/home")
             router.push("/home");
         }
@@ -60,7 +61,7 @@ const SignIn = () => {
                     <div className="flex items-center justify-center my-3">
                     <div className="xl:mx-auto shadow-lg rounded-lg p-4 xl:w-full xl:max-w-sm 2xl:max-w-md">
                         <FormHeader header="Sign in to INeedHousing" text="Not already a member? " buttonLabel="Sign Up" path="/sign-up"/>
-                        <Form buttonLabel="Sign In" request={loginUser} isLoading={isLoading} />
+                        <Form buttonLabel="Sign In" request={loginUser} isLoading={isLoading} formType={"signIn"}/>
                         <div className={`font-semibold ${isRequestingEmail ? "display" : "hidden"}`  } onClick={handleResendHref}>
                             <ResendVerificationEmail email={email} message={"Your account is not verified."} button={"Request code."}/>
                         </div>

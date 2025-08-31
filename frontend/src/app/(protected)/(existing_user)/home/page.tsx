@@ -8,27 +8,24 @@ import { ListingModal } from "@/components/HousingsList";
 
 import { Map } from "@/components/Map";
 import {LoggedInMobileNavbar, LoggedInNavBar} from "@/components/Navbar";
-import { useGetListings, useGetUserPreferences, useGetFavoriteListings } from "@/hooks/hooks";
+import {useGetUserPreferences, useGetFavoriteListings, useGetListingsV2} from "@/hooks/hooks";
 import {  HouseListing } from "@/interfaces/entities";
-import { GetListingsInAreaRequest } from "@/interfaces/requests/housingListingRequests";
 import { useEffect, useState } from "react";
 import {Modal} from "@/components/Modal";
 import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
-import {checkCookie} from "@/endpoints/auths";
 import {useProtectedContext} from "@/app/(protected)/ProtectedRoute";
 import {Loading} from "@/components/Loading";
 
 const Home = () => {
     const {isAuthLoading} = useProtectedContext();
-    const [requestBody, setRequestBody] = useState<GetListingsInAreaRequest | null>(null);
-    const {listings, setListings, isListingModalUp, setIsListingModalUp, isFilterModalUp, setIsFilterModalUp} = useHomeContext();
+    const {listingsPage,setListingsPage, getListingsRequest, setGetListingsRequest, isListingModalUp, setIsListingModalUp, isFilterModalUp, setIsFilterModalUp} = useHomeContext();
     const {setFavoriteListings} = useGlobalContext();
     const [renderedListing, setRenderedListing] = useState<HouseListing | undefined>(undefined);
     const {setCenterLat, setCenterLong, setUserPreferences} = useGlobalContext();
 
     //fetch calls
     const {isLoading:isGrabbing, isError:isFetchingFailed, data:preferences} = useGetUserPreferences();
-    const {isLoading, isError, data, refetch, isFetching} = useGetListings(requestBody, {enabled: !!requestBody});
+    const {isLoading, isError, data, refetch, isFetching} = useGetListingsV2(getListingsRequest, {enabled: !!getListingsRequest});
     const {isLoading:isGettingFavorites, data:favorites, isError:isCallFailed} = useGetFavoriteListings();
 
     /** sets state of user preferences should it ever change via the query call */
@@ -38,16 +35,16 @@ const Home = () => {
             const coords = preferences.cityOfEmploymentCoords;
             setCenterLat(coords[0]);
             setCenterLong(coords[1]);
-            setRequestBody({latitude: coords[0], longitude: coords[1], radius:preferences.maxRadius});
+            setGetListingsRequest({latitude: coords[0], longitude: coords[1], radius:preferences.maxRadius, page:1});
         }
-    }, [preferences, setCenterLat, setCenterLong, setUserPreferences]); //possibly get rid of additional dependencies
+    }, [preferences, setCenterLat, setCenterLong, setGetListingsRequest, setUserPreferences]); //possibly get rid of additional dependencies
     
     //setting listings once they're fetched
     useEffect(() => {
         if (data) {
-            setListings(data);
+            setListingsPage(data);
         }
-    }, [data]);
+    }, [data, setListingsPage]);
 
     //sets favorite listings once they fetched
     useEffect(() => {
@@ -73,7 +70,7 @@ const Home = () => {
                     <LoggedInNavBar/>
                 </nav>
                 <span className="pt-2 hidden md:block">
-                    <Filters refetch={refetch} listings={listings} setListings={setListings} />
+                    <Filters refetch={refetch} listings={listingsPage.housingListings} setListings={setListingsPage} />
                 </span>
                 {isListingModalUp && ( /** This modal is rendered when a user clicks on a specific listing off the listings sidebar */
                     <Modal onClick={() => setIsListingModalUp(true)}>
@@ -86,8 +83,8 @@ const Home = () => {
                     </Modal>
                 )}
                 <span className="flex relative flex-1 w-full rounded-lg py-2 overflow-x-hidden min-h-[45rem]">
-                    <div className="relative flex-grow min-w-0"><Map listings={listings} setRenderedListing={setRenderedListing} setIsModalUp={setIsListingModalUp}/></div>
-                    <HousingSearch  listings={listings} isLoading={isLoading} isFetching={isFetching} isGrabbingFavorites = {isGettingFavorites} setRenderedListing={setRenderedListing} setIsModalUp={setIsListingModalUp}/>
+                    <div className="relative flex-grow min-w-0"><Map listings={listingsPage.housingListings} setRenderedListing={setRenderedListing} setIsModalUp={setIsListingModalUp}/></div>
+                    <HousingSearch  isLoading={isLoading} isFetching={isFetching} isGrabbingFavorites = {isGettingFavorites} setRenderedListing={setRenderedListing} setIsModalUp={setIsListingModalUp}/>
                 </span>
                 <footer className="w-full border-t-2">
                     <Footer/>

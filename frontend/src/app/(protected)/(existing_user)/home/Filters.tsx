@@ -7,6 +7,7 @@ import { updateUserPreferencesViaFilters } from "@/endpoints/preferences";
 import { RangeBar, MaxPrice, OtherFilters } from "@/app/(protected)/(existing_user)/home/InnerFilters";
 import { filterListingsByPreferences } from "@/endpoints/listings";
 import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
+import {ListingsResultsPageDto} from "@/interfaces/responses/listingsResponses";
 
 interface CollapseDownProps {
     children: ReactNode;
@@ -42,7 +43,7 @@ const CollapseDown = ({children, label, isOpen, onToggle}: CollapseDownProps) =>
 interface FiltersProps {
     refetch: any
     listings: HouseListing[]
-    setListings: React.Dispatch<React.SetStateAction<HouseListing[]>>
+    setListings: React.Dispatch<React.SetStateAction<ListingsResultsPageDto>>
 
 }
 
@@ -99,8 +100,9 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
         
         setIsFiltering(true);
         const data = await filterListingsByPreferences({listings: listings, id: userPreferences.id});
+        //TODO update this when filtering logic is updated to handle pagination as well
         console.log(data);
-        setListings(data);
+        setListings((prevListings) => ({...prevListings, housingListings: data}));
         setIsFiltering(false);
         setIsListingsFiltered(true);
     }

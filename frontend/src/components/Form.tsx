@@ -8,9 +8,10 @@ interface NewFormProps {
     buttonLabel:string
     request: (credentials:AuthenticateUserDto) => Promise<any>
     isLoading: boolean
+    formType:string
 }
 
-export const Form = ({buttonLabel, request, isLoading}:NewFormProps) => {
+export const Form = ({buttonLabel, request, isLoading, formType}:NewFormProps) => {
     const [isInvalidCredentials, setIsInvalidCredentials] = useState({username:false, password:false})
     const credentials: AuthenticateUserDto = {
         username:"",
@@ -36,12 +37,12 @@ export const Form = ({buttonLabel, request, isLoading}:NewFormProps) => {
         const formData = new FormData(e.currentTarget);
         credentials.username = formData.get("email") as string;
         credentials.password = formData.get("password") as string;
-        if (!isValidEmail(credentials.username)) {
+        if (!isValidEmail(credentials.username) && formType === "signUp") {
             handleUsernameValidity(true);
             await sleep(1500);
             handleUsernameValidity(false);
         }
-        else if (!isValidPassword(credentials.password)) {
+        else if (!isValidPassword(credentials.password) && formType === "signUp") {
             handlePasswordValidity(true);
             await sleep(1500);
             handlePasswordValidity(false);

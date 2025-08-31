@@ -3,6 +3,8 @@
 import React, {createContext, useContext, useState, useMemo, ReactNode} from "react";
 import {Loading} from "@/components/Loading";
 import {HouseListing, UserPreference} from "@/interfaces/entities";
+import {ListingsResultsPageDto} from "@/interfaces/responses/listingsResponses";
+import {GetListingsInAreaRequestV2} from "@/interfaces/requests/housingListingRequests";
 
 interface HomeContextType {
     filterRendered: ReactNode,
@@ -13,6 +15,10 @@ interface HomeContextType {
     setIsListingsFiltered: React.Dispatch<React.SetStateAction<boolean>>,
     listings: HouseListing[],
     setListings: React.Dispatch<React.SetStateAction<HouseListing[]>>,
+    listingsPage: ListingsResultsPageDto,
+    setListingsPage: React.Dispatch<React.SetStateAction<ListingsResultsPageDto>>,
+    getListingsRequest: GetListingsInAreaRequestV2 | null,
+    setGetListingsRequest: React.Dispatch<React.SetStateAction<GetListingsInAreaRequestV2 | null>>
     initialPreferences: UserPreference | undefined,
     setInitialPreferences: React.Dispatch<React.SetStateAction<UserPreference| undefined>>
     isListingModalUp: boolean,
@@ -42,6 +48,8 @@ export const HomeProvider = ({ children }: HomeProviderProps) => {
     const [isFiltersChanged, setIsFiltersChanged] = useState<boolean>(false);
     const [isListingsFiltered, setIsListingsFiltered] = useState<boolean>(false);
     const [listings, setListings] = useState<HouseListing[]>([]);
+    const [listingsPage, setListingsPage] = useState<ListingsResultsPageDto>({housingListings: [], pageNumber: 1, totalPages: 1});
+    const [getListingsRequest, setGetListingsRequest] = React.useState<GetListingsInAreaRequestV2 | null>(null);
     const [initialPreferences, setInitialPreferences] = useState<UserPreference>();
     const [isListingModalUp, setIsListingModalUp] = useState(false);
     const [isFilterModalUp, setIsFilterModalUp] = useState(false);
@@ -50,9 +58,9 @@ export const HomeProvider = ({ children }: HomeProviderProps) => {
     const [isResetting, setIsResetting] = useState(false);
 
     const contextValues = useMemo(() => ({
-        filterRendered, setFilterRendered, isFiltersChanged, setIsFiltersChanged, isListingsFiltered, setIsListingsFiltered, listings, setListings, initialPreferences, setInitialPreferences,
+        filterRendered, setFilterRendered, isFiltersChanged, setIsFiltersChanged, isListingsFiltered, setIsListingsFiltered, listings, setListings, listingsPage, setListingsPage, getListingsRequest, setGetListingsRequest, initialPreferences, setInitialPreferences,
         isListingModalUp, setIsListingModalUp, isFilterModalUp, setIsFilterModalUp, isFiltering, setIsFiltering, isSaving, setIsSaving, isResetting, setIsResetting
-    }), [filterRendered, isFiltersChanged, isListingsFiltered, listings, initialPreferences, isListingModalUp, isFilterModalUp, isFiltering, isSaving, isResetting]);
+    }), [filterRendered, isFiltersChanged, isListingsFiltered, listings, listingsPage, setListingsPage, getListingsRequest, setGetListingsRequest, initialPreferences, isListingModalUp, isFilterModalUp, isFiltering, isSaving, isResetting]);
 
     return (
         <HomeContext.Provider value={contextValues}>
