@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.cron_job_service.ws;
 
+import com.ineedhousing.backend.constants.ServiceInteractionConstants;
 import com.ineedhousing.backend.cron_job_service.LogStreamProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -12,27 +13,20 @@ import java.util.Map;
 @Component
 public class CronJobStreamClientFactory {
 
-    @Value("${cron.job.service.web.socket.endpoint}")
-    private String serviceUrl;
-
-    @Value("${service.api.token}")
-    private String apiToken;
-
-    @Value("service.name")
-    private String serviceName;
-
+    private final ServiceInteractionConstants serviceInteractionConstants;
     private final LogStreamProcessor logStreamProcessor;
     private final ApplicationEventPublisher eventPublisher;
 
-    public CronJobStreamClientFactory(LogStreamProcessor logStreamProcessor, ApplicationEventPublisher eventPublisher) {
+    public CronJobStreamClientFactory(ServiceInteractionConstants serviceInteractionConstants, LogStreamProcessor logStreamProcessor, ApplicationEventPublisher eventPublisher) {
+        this.serviceInteractionConstants = serviceInteractionConstants;
         this.logStreamProcessor = logStreamProcessor;
         this.eventPublisher = eventPublisher;
     }
 
     public CronJobLogStreamClient createClient() throws URISyntaxException {
         return new CronJobLogStreamClient(
-                new URI(serviceUrl),
-                Map.of("X-Api-Token", apiToken, "X-Service-Name", serviceName),
+                new URI(serviceInteractionConstants.getWebSocketEndpoint()),
+                Map.of("X-Api-Token", serviceInteractionConstants.getApiToken(), "X-Service-Name", serviceInteractionConstants.getServiceName()),
                 logStreamProcessor,
                 eventPublisher
         );

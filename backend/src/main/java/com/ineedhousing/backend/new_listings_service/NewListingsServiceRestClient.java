@@ -1,24 +1,22 @@
-package com.ineedhousing.backend.cron_job_service.rest;
+package com.ineedhousing.backend.new_listings_service;
 
 import com.ineedhousing.backend.constants.ServiceInteractionConstants;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
 @Configuration
-public class CronJobServiceRestClientConfiguration {
+public class NewListingsServiceRestClient {
 
     private final ServiceInteractionConstants serviceInteractionConstants;
 
-    public CronJobServiceRestClientConfiguration(ServiceInteractionConstants serviceInteractionConstants) {
+    public NewListingsServiceRestClient(ServiceInteractionConstants serviceInteractionConstants) {
         this.serviceInteractionConstants = serviceInteractionConstants;
     }
 
-    @Bean(name = "Cron Job Service Client")
-    public RestClient restClient() {
-        return RestClient.builder()
-                .baseUrl(serviceInteractionConstants.getCronJobServiceUrl())
+    @Bean(name = "new listings service")
+    RestClient restClient() {
+        return RestClient.builder().baseUrl(serviceInteractionConstants.getNewListingsServiceUrl())
                 .defaultHeaders(httpHeaders -> {
                     httpHeaders.set("X-Api-Token", serviceInteractionConstants.getApiToken());
                     httpHeaders.set("X-Service-Name", serviceInteractionConstants.getServiceName());

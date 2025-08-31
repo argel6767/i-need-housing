@@ -1,9 +1,8 @@
-package com.ineedhousing.backend.registered_services;
+package com.ineedhousing.backend.registered_services.models;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;

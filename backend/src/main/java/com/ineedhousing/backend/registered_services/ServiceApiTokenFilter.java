@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.registered_services;
 
+import com.ineedhousing.backend.registered_services.models.ApiTokenAuthenticationToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

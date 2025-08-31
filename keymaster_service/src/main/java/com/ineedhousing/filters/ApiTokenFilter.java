@@ -50,6 +50,6 @@ public class ApiTokenFilter implements ContainerRequestFilter {
     }
 
     private boolean isOpenEndpoints(ContainerRequestContext requestContext) {
-        return requestContext.getUriInfo().getPath().equals("/v1/auth/register") || requestContext.getUriInfo().getPath().equals("ping");
+        return requestContext.getUriInfo().getPath().equals("/v1/auth/register") || requestContext.getUriInfo().getPath().equals("/ping");
     }
 }

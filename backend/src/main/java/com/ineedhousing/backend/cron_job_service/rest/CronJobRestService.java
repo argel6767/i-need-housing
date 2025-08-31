@@ -2,11 +2,16 @@ package com.ineedhousing.backend.cron_job_service.rest;
 
 import com.ineedhousing.backend.cron_job_service.model.HealthPing;
 import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
+import com.ineedhousing.backend.ping_services.models.models.PingEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 @Service
+@Slf4j
 public class CronJobRestService {
 
     private final RestClient restClient;
@@ -26,6 +31,13 @@ public class CronJobRestService {
                 .retrieve()
                 .body(HealthPing.class);
         return successfulPing;
+    }
+
+    @EventListener
+    @Async
+    public void pingService(PingEvent pingEvent) {
+        log.info("Pinging New Listings Service");
+        pingService();
     }
 
     /**

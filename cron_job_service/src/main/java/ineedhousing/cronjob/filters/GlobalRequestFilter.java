@@ -26,6 +26,10 @@ public class GlobalRequestFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) {
 
+        if (requestContext.getUriInfo().getPath().equals("/ping")) {
+            return;
+        }
+
         String apiToken = requestContext.getHeaderString("X-Api-Token");
         String serviceName = requestContext.getHeaderString("X-Service-Name");
 
