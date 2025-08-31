@@ -36,7 +36,7 @@ public class ApiTokenFilter implements ContainerRequestFilter {
             return;
         }
 
-        if (!apiTokenValidationService.isServiceAuthenticated(apiToken, serviceName)) {
+        if (!apiTokenValidationService.isServiceAuthorized(apiToken, serviceName)) {
             Log.warn("Invalid API token  \"X-Api-Token\" or \"X-Service-Name\". Unauthenticated request attempted:\n" + requestContext.getRequest().toString());
             requestContext.abortWith(
                     Response.status(Response.Status.FORBIDDEN)

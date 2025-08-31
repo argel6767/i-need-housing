@@ -1,5 +1,9 @@
 package com.ineedhousing.services;
 
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ineedhousing.models.ServiceVerificationDto;
 import com.ineedhousing.models.VerifiedServiceDto;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -14,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import io.quarkus.logging.Log;
+import jakarta.ws.rs.BadRequestException;
 
 @ApplicationScoped
 public class ApiTokenValidationService {
@@ -24,15 +29,27 @@ public class ApiTokenValidationService {
     @Inject
     TokenHasher tokenHasher;
 
-    public VerifiedServiceDto isServiceAuthenticated(ServiceVerificationDto serviceVerificationDto, String requestingService) {
-        Log.warn(String.format("Checking authorization status of %s for %s", serviceVerificationDto.serviceName(), requestingService));
-        if (!isServiceAuthenticated(serviceVerificationDto.apiToken(), serviceVerificationDto.serviceName())) {
+    @Inject
+    ObjectMapper objectMapper;
+
+    public VerifiedServiceDto isServiceAuthenticated(String serviceVerificationDto, String requestingService) {
+        ServiceVerificationDto dtoParsed = parseRequestBody(serviceVerificationDto);
+        Log.warn(String.format("Checking authorization status of %s for %s", dtoParsed.serviceName(), requestingService));
+        if (!isServiceAuthorized(dtoParsed.apiToken(), dtoParsed.serviceName())) {
             return new VerifiedServiceDto("Service is not authorized", LocalDateTime.now());
         }
         return new VerifiedServiceDto("Service is authorized", LocalDateTime.now());
     }
 
-    public boolean isServiceAuthenticated(String token, String serviceName) {
+    private ServiceVerificationDto parseRequestBody(String serviceVerificationDto) {
+        try {
+            return objectMapper.readValue(serviceVerificationDto, ServiceVerificationDto.class);
+        } catch (JacksonException e) {
+            throw new BadRequestException("Could not parse request body, " + e.getMessage());
+        }
+    }
+
+    public boolean isServiceAuthorized(String token, String serviceName) {
         Optional<String> tokenHash = getApiTokenHash(serviceName);
 
         if (!tokenHash.isPresent()) {

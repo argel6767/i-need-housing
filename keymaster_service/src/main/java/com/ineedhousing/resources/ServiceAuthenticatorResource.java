@@ -2,7 +2,6 @@ package com.ineedhousing.resources;
 
 import com.ineedhousing.models.RegisteredServiceDto;
 import com.ineedhousing.models.RegistrationDto;
-import com.ineedhousing.models.ServiceVerificationDto;
 import com.ineedhousing.models.VerifiedServiceDto;
 import com.ineedhousing.services.ApiTokenValidationService;
 import com.ineedhousing.services.ServiceAuthenticatorService;
@@ -36,7 +35,7 @@ public class ServiceAuthenticatorResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RateLimit(window = 1, windowUnit = ChronoUnit.MINUTES)
-    public VerifiedServiceDto verifyServiceToken(ServiceVerificationDto serviceVerificationDto, @HeaderParam("X-Service-Name") String serviceName) {
+    public VerifiedServiceDto verifyServiceToken(String serviceVerificationDto, @HeaderParam("X-Service-Name") String serviceName) {
         return apiTokenValidationService.isServiceAuthenticated(serviceVerificationDto, serviceName);
     }
 }
