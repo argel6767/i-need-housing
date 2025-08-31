@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,5 +20,8 @@ public interface HousingListingRepository extends JpaRepository<HousingListing, 
 
     @Query("SELECT l FROM HousingListing l WHERE ST_Within(l.location, :area) = true")
     List<HousingListing> getAllListingsInsideArea(@Param("area") Polygon area);
+
+    @Query("SELECT l FROM HousingListing l WHERE ST_Within(l.location, :area) = true")
+    Page<HousingListing> getAllListingsInsideArea(@Param("area") Polygon area, Pageable pageable);
 
 }

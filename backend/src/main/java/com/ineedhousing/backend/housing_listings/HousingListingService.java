@@ -5,12 +5,16 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import lombok.extern.java.Log;
+import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
 
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
 import com.ineedhousing.backend.geometry.GeometrySingleton;
@@ -19,6 +23,8 @@ import com.ineedhousing.backend.housing_listings.exceptions.NoListingFoundExcept
 import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 import com.ineedhousing.backend.user_search_preferences.UserPreferenceService;
+
+import static java.util.stream.Collectors.toList;
 
 
 /**
@@ -29,6 +35,7 @@ import com.ineedhousing.backend.user_search_preferences.UserPreferenceService;
 public class HousingListingService {
     private final HousingListingRepository housingListingRepository;
     private final UserPreferenceService userPreferenceService;
+    private final int PAGE_SIZE = 50;
 
     public HousingListingService(HousingListingRepository housingListingRepository, UserPreferenceService userPreferenceService) {
         this.housingListingRepository = housingListingRepository;
@@ -46,6 +53,38 @@ public class HousingListingService {
      */
     @Cacheable("listings")
     public List<HousingListing> getListingsInArea(double latitude, double longitude, int radius) {
+        verifyGetListingsInAreaInputs(latitude, longitude, radius);
+
+        GeometryFactory factory = GeometrySingleton.getInstance();
+        Point center = factory.createPoint(new Coordinate(longitude, latitude)); //Point objects have longitude first
+        Polygon area = PolygonCreator.createCircle(center, radius, 32);
+
+        List<HousingListing> listings = housingListingRepository.getAllListingsInsideArea(area);
+        if (listings.isEmpty()) {
+            return listings; //no need to do sorting logic
+        }
+        listings = listings.stream()
+                .sorted((listingOne, listingTwo) -> (int) sortListingsByDistance(listingOne, listingTwo, center)
+        ).toList();
+        return listings;
+    }
+
+    @Cacheable(key = "T(java.lang.String).format('%s:%s:%s:%s', #latitude, #longitude, #radius, #page)", cacheNames = "listings")
+    public ListingsResultsPageDto getListingsInArea(double latitude, double longitude, int radius, int page) {
+        verifyGetListingsInAreaInputs(latitude, longitude, radius);
+
+        GeometryFactory factory = GeometrySingleton.getInstance();
+        Point center = factory.createPoint(new Coordinate(longitude, latitude)); //Point objects have longitude first
+        Polygon area = PolygonCreator.createCircle(center, radius, 32);
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        Page<HousingListing> results = housingListingRepository.getAllListingsInsideArea(area, pageable);
+        List <HousingListing> listings = results.get()
+                .sorted((listingOne, listingTwo) -> (int) sortListingsByDistance(listingOne, listingTwo, center))
+                .toList();
+        return new ListingsResultsPageDto(listings, results.getNumber(), results.getTotalPages());
+    }
+
+    private static void verifyGetListingsInAreaInputs(double latitude, double longitude, int radius) {
         if (radius <= 0 || radius > 30) {
             throw new IllegalArgumentException("radius must be between 1 and 30!");
         }
@@ -55,20 +94,13 @@ public class HousingListingService {
         if (longitude < -125.00 || longitude > -67.00) {
             throw new IllegalArgumentException("longitude value must be in the US!");
         }
+    }
 
-        GeometryFactory factory = GeometrySingleton.getInstance();
-        Point center = factory.createPoint(new Coordinate(longitude, latitude)); //Point objects have longitude first
-        Polygon area = PolygonCreator.createCircle(center, radius, 32);
-        List<HousingListing> listings = housingListingRepository.getAllListingsInsideArea(area);
-        if (listings.isEmpty()) {
-            return listings; //no need to do sorting logic
-        }
-        listings = listings.stream().sorted((listingOne, listingTwo) -> {
-            double distanceOne = center.distance(listingOne.getLocation());
-            double distanceTwo = center.distance(listingTwo.getLocation());
-            return Double.compare(distanceOne, distanceTwo);
-        }).toList();
-        return listings;
+
+    private double sortListingsByDistance(HousingListing listingOne, HousingListing listingTwo, Point center) {
+        double distanceOne = center.distance(listingOne.getLocation());
+        double distanceTwo = center.distance(listingTwo.getLocation());
+        return Double.compare(distanceOne, distanceTwo);
     }
 
     /**

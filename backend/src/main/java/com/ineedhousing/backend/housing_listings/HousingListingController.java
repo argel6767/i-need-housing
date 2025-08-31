@@ -66,6 +66,13 @@ public class HousingListingController {
         }
     }
 
+    @GetMapping("/v2/area")
+    @RateLimiter(name = "housing")
+    public ResponseEntity<ListingsResultsPageDto> getListingsInAreaV2(@RequestParam double latitude, @RequestParam double longitude, @RequestParam int radius, @RequestParam int page) {
+        ListingsResultsPageDto dto =  housingListingService.getListingsInArea(latitude, longitude, radius, page);
+        return ResponseEntity.ok(dto);
+    }
+
     /**
      * get HousingListing info
      * @param id
