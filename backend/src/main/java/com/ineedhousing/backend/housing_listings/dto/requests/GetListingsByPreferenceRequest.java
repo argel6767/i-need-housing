@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.housing_listings.requests;
+package com.ineedhousing.backend.housing_listings.dto.requests;
 
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 

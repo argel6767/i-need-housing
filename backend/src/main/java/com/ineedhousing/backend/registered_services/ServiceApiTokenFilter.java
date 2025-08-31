@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -15,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class ServiceApiTokenFilter extends OncePerRequestFilter {
 
     private final ServiceInteractionAuthenticator serviceInteractionAuthenticator;
@@ -39,15 +41,24 @@ public class ServiceApiTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("Request not a client, utilizing Service filter");
         String apiToken = request.getHeader("X-Api-Token");
         String serviceName = request.getHeader("X-Service-Name");
 
-        if (ObjectUtils.allNull(apiToken, serviceName) || StringUtils.isAllEmpty(apiToken, serviceName)) {
+        if (!ObjectUtils.allNotNull(apiToken, serviceName) || StringUtils.isAllEmpty(apiToken, serviceName)) {
+            log.warn("Missing or null X-Api-Token or X-Service-Name given in request attempted");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             filterChain.doFilter(request, response);
             return;
         }
 
+        log.info("Authenticating service {} with API Token {}", serviceName, apiToken.substring(0,6) + "****");
+
         if (!serviceInteractionAuthenticator.isApiTokenAndServiceNameValid(apiToken, serviceName)) {
+            log.warn("Invalid X-Api-Token or Service-Name given in request attempted");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             filterChain.doFilter(request, response);
             return;
         }

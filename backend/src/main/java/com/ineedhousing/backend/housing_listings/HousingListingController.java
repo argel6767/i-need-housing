@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.housing_listings;
 
+import com.ineedhousing.backend.housing_listings.dto.responses.ListingsResultsPageDto;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -7,17 +8,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ineedhousing.backend.housing_listings.exceptions.NoListingFoundException;
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
-import com.ineedhousing.backend.housing_listings.requests.ExactPreferencesDto;
-import com.ineedhousing.backend.housing_listings.requests.GetListingsByPreferenceRequest;
-import com.ineedhousing.backend.housing_listings.requests.GetListingsBySpecificPreferenceRequest;
-import com.ineedhousing.backend.housing_listings.requests.GetListingsInAreaRequest;
+import com.ineedhousing.backend.housing_listings.dto.requests.ExactPreferencesDto;
+import com.ineedhousing.backend.housing_listings.dto.requests.GetListingsByPreferenceRequest;
+import com.ineedhousing.backend.housing_listings.dto.requests.GetListingsBySpecificPreferenceRequest;
 import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
 import com.ineedhousing.backend.jwt.JwtUtils;
 
 
 import lombok.extern.java.Log;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
@@ -128,6 +126,14 @@ public class HousingListingController {
         catch(NoListingsFoundException nlfe) {
             return new ResponseEntity<>(nlfe.getMessage(), HttpStatus.NO_CONTENT);
         }
+    }
+
+    @GetMapping("/filter/v2/exact")
+    @RateLimiter(name = "housing")
+    public ResponseEntity<ListingsResultsPageDto> getListingsWithExactPreferencesV2(@RequestParam int page) {
+        Long id = JwtUtils.getCurrentUserId();
+        ListingsResultsPageDto dto = housingListingService.getListingsByPreference(id, page);
+        return ResponseEntity.ok(dto);
     }
 
     /**

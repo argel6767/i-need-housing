@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.function.ServerRequest;
 
 @Component
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final HandlerExceptionResolver handlerExceptionResolver;
@@ -49,6 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     @Override
 protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("authenticating client request");
     try {
         // Extract JWT token from cookie instead of Authorization header
         Cookie[] cookies = request.getCookies();
@@ -80,6 +82,7 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
         }
         filterChain.doFilter(request, response);
     } catch (NullPointerException npe) {
+        log.error("NPE during attempting to authenticate client, {}", npe.getMessage());
         handlerExceptionResolver.resolveException(request, response, null, npe);
     }
     }

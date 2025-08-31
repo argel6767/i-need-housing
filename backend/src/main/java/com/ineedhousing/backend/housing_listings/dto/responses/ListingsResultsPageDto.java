@@ -1,4 +1,6 @@
-package com.ineedhousing.backend.housing_listings;
+package com.ineedhousing.backend.housing_listings.dto.responses;
+
+import com.ineedhousing.backend.housing_listings.HousingListing;
 
 import java.util.List;
 

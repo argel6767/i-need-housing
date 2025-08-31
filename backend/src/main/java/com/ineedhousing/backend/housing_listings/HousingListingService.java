@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import com.ineedhousing.backend.housing_listings.dto.responses.ListingsResultsPageDto;
+import com.ineedhousing.backend.user.User;
+import com.ineedhousing.backend.user.UserService;
+import com.ineedhousing.backend.user.UserType;
 import lombok.extern.java.Log;
-import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -13,6 +16,7 @@ import org.locationtech.jts.geom.Polygon;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 
@@ -24,8 +28,6 @@ import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
 import com.ineedhousing.backend.user_search_preferences.UserPreference;
 import com.ineedhousing.backend.user_search_preferences.UserPreferenceService;
 
-import static java.util.stream.Collectors.toList;
-
 
 /**
  * Houses HouseListing business logic
@@ -35,11 +37,13 @@ import static java.util.stream.Collectors.toList;
 public class HousingListingService {
     private final HousingListingRepository housingListingRepository;
     private final UserPreferenceService userPreferenceService;
+    private final UserService userService;
     private final int PAGE_SIZE = 50;
 
-    public HousingListingService(HousingListingRepository housingListingRepository, UserPreferenceService userPreferenceService) {
+    public HousingListingService(HousingListingRepository housingListingRepository, UserPreferenceService userPreferenceService, UserService userService) {
         this.housingListingRepository = housingListingRepository;
         this.userPreferenceService = userPreferenceService;
+        this.userService = userService;
     }
 
     /**
@@ -157,6 +161,33 @@ public class HousingListingService {
         }
         log.info(filteredListings.size() + " matching listings found");
         return filteredListings;
+    }
+
+    /**
+     * New implementation using
+     * @param userId
+     * @param page
+     * @return
+     */
+    @Cacheable(key = "T(java.lang.String).format('s:s', #userId, #page)", cacheNames = "listings")
+    public ListingsResultsPageDto getListingsByPreference(Long userId, int page) {
+        log.info("Getting listings for user: " + userId);
+        User user = userService.getUserById(userId);
+        UserPreference preferences = user.getUserPreferences();
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        Page<HousingListing> listingsFound;
+        Polygon area = preferences.getDesiredArea();
+        if (user.getUserType().equals(UserType.NEW_GRAD)) {
+            listingsFound = housingListingRepository.filterListingByPreferences(pageable, area, preferences.getMaxRent(), preferences.getMinNumberOfBedrooms(), preferences.getMinNumberOfBathrooms());
+        }
+        else {
+            listingsFound = housingListingRepository.filterListingByPreferences(pageable, area, preferences.getMaxRent(), preferences.getMinNumberOfBedrooms(), preferences.getMinNumberOfBathrooms(),
+                    preferences.getInternshipStart(), preferences.getInternshipEnd());
+        }
+        List <HousingListing> listingsSorted = listingsFound.get()
+                .sorted((listingOne, listingTwo) -> (int) sortListingsByDistance(listingOne, listingTwo, area.getCentroid()))
+                .toList();
+        return new ListingsResultsPageDto(listingsSorted, listingsFound.getNumber(), listingsFound.getTotalPages());
     }
 
     /**

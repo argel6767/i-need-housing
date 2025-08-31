@@ -1,12 +1,10 @@
 package com.ineedhousing.backend.housing_listings;
 
 import com.ineedhousing.backend.apis.exceptions.NoListingsFoundException;
-import com.ineedhousing.backend.housing_listings.requests.ExactPreferencesDto;
-import com.ineedhousing.backend.housing_listings.requests.GetListingsByPreferenceRequest;
-import com.ineedhousing.backend.housing_listings.requests.GetListingsInAreaRequest;
+import com.ineedhousing.backend.housing_listings.dto.requests.ExactPreferencesDto;
+import com.ineedhousing.backend.housing_listings.dto.requests.GetListingsInAreaRequest;
 import com.ineedhousing.backend.housing_listings.utils.UserPreferencesFilterer;
 import com.ineedhousing.backend.housing_listings.exceptions.NoListingFoundException;
-import com.ineedhousing.backend.user_search_preferences.UserPreference;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

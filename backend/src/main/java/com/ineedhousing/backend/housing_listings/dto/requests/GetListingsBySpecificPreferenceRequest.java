@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.housing_listings.requests;
+package com.ineedhousing.backend.housing_listings.dto.requests;
 
 import java.util.Map;
 

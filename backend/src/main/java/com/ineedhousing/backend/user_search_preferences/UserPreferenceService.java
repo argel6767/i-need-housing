@@ -13,6 +13,8 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
@@ -42,11 +44,13 @@ public class UserPreferenceService {
     private final UserPreferenceRepository userPreferenceRepository;
     private final UserService userService;
     private final GoogleGeoCodeApiService geoService;
+    private final CacheManager cacheManager;
 
-    public UserPreferenceService(UserPreferenceRepository userPreferenceRepository, UserService userService, GoogleGeoCodeApiService geoService) {
+    public UserPreferenceService(UserPreferenceRepository userPreferenceRepository, UserService userService, GoogleGeoCodeApiService geoService, CacheManager cacheManager) {
         this.userPreferenceRepository = userPreferenceRepository;
         this.userService = userService;
         this.geoService = geoService;
+        this.cacheManager = cacheManager;
     }
 
     /**
@@ -237,17 +241,16 @@ public class UserPreferenceService {
         preferences.setMinNumberOfBedrooms(newPreferences.getMinNumberOfBedrooms());
         preferences.setMinNumberOfBathrooms(newPreferences.getMinNumberOfBathrooms().doubleValue());
         preferences.setUpdatedAt(LocalDateTime.now());
+        userPreferenceRepository.save(preferences);
+
         Long id = JwtUtils.getCurrentUserId();
         log.info("Invalidating cache for user: " + id);
-        evictUserPreferencesCache(id);
-        userPreferenceRepository.save(preferences);
+        Cache cache = cacheManager.getCache("preferences");
+        if (cache != null) {
+            cache.evict(id);
+        }
         return getFormattedUserPreferenceDto(preferences);
     }
 
-    //TODO FIGURE OUT WHY CACHING IS NOT RESETTING
-    @CacheEvict(value = "preferences", key = "#id")
-    public void evictUserPreferencesCache(Long id) {
-        // This method just evicts the cache and doesn't need to do anything else
-    }
 
 }
