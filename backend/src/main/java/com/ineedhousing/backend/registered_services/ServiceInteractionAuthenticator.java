@@ -41,7 +41,7 @@ public class ServiceInteractionAuthenticator {
            return dto.authorizedStatus().equals("Service is authorized");
        }
        catch (Exception e) {
-           log.error("Failed to verify service {}", serviceName, e);
+           log.error("Failed to verify service {}, Type of failure: {}, message: {}", serviceName, e.getClass(), e.getMessage());
            return false;
        }
     }
