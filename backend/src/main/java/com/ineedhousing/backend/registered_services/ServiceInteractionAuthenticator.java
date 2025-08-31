@@ -38,6 +38,11 @@ public class ServiceInteractionAuthenticator {
                .retrieve()
                .toEntity(VerifiedServiceDto.class)
                .getBody();
+           if (dto == null) {
+               log.warn("Keymaster service call failed to return authorized status of {}", serviceName);
+               return false;
+           }
+           log.info("Successfully fetched status of {}, verifying if {} is authorized", serviceName, serviceName);
            return dto.authorizedStatus().equals("Service is authorized");
        }
        catch (Exception e) {

@@ -50,6 +50,7 @@ public class ApiTokenValidationService {
     }
 
     public boolean isServiceAuthorized(String token, String serviceName) {
+        Log.warn("Verifying authorization status for " + serviceName);
         Optional<String> tokenHash = getApiTokenHash(serviceName);
 
         if (!tokenHash.isPresent()) {

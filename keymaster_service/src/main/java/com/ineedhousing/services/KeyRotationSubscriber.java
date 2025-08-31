@@ -45,7 +45,7 @@ public class KeyRotationSubscriber {
         }
         catch (WebApplicationException e) {
             Log.error("Notify New Key Rotation Event Failed! Cause: " +  e.getResponse().getStatusInfo().getReasonPhrase());
-            Log.error("Logging response: " + e.getResponse().getEntity());
+            Log.error("Logging response: " + e.getResponse().readEntity(String.class));
         }
         catch (Exception e) {
             Log.error("Notify New Key Rotation Event Failed! Cause: " + e.getMessage());
