@@ -46,17 +46,26 @@ const PaginationButton = ({page, currentPage}: PaginationButtonProps) => {
 interface HousingSearchFooterProps {
     listingsPage: ListingsResultsPageDto
 }
+
 const getPageNumbers = (current: number, total: number) => {
     const pages: Array<number | string> = [];
     if (total <= 6) {
         for (let i = 1; i <= total; i++) pages.push(i);
     } else {
-        if (current > 4) pages.push(1, "...");
-        for (let i = Math.max(2, current - 2); i <= Math.min(total - 1, current + 2); i++) {
+        pages.push(1);
+        if (current > 4) {
+            pages.push("...");
+        }
+        const start = Math.max(2, current - 2);
+        const end = Math.min(total - 1, current + 2);
+
+        for (let i = start; i <= end; i++) {
             pages.push(i);
         }
-        if (current < total - 3) pages.push("...", total);
-        else if (current < total) pages.push(total);
+        if (current < total - 3) {
+            pages.push("...");
+        }
+        pages.push(total);
     }
     return pages;
 };

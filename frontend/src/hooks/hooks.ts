@@ -72,7 +72,7 @@ export const useClearGlobalContext = () => {
 
 // sets all home context state values to their default values
 export const useClearHomeContext = () => {
-    const {setListings, setListingsPage, setIsListingsFiltered, setIsFiltersChanged, setIsFiltering, setIsFilterModalUp,
+    const {setListingsPage, setIsListingsFiltered, setIsFiltersChanged, setIsFiltering, setIsFilterModalUp,
         setIsListingModalUp, setIsResetting, setFilterRendered, setInitialPreferences, setIsSaving} = useHomeContext();
 
     return () => {
@@ -83,7 +83,6 @@ export const useClearHomeContext = () => {
         setIsResetting(false);
         setIsListingsFiltered(false);
         setIsListingModalUp(false);
-        setListings([])
         setListingsPage({housingListings: [], pageNumber: 1, totalPages: 1})
         setFilterRendered(null)
         setInitialPreferences(undefined);
@@ -177,4 +176,20 @@ export const useProfilePictureWithURL = () => {
         isFailed,
         isLoaded
     };
+};
+
+
+export const usePingServer = () => {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
+
+    useEffect(() => {
+        // Only run in browser
+        if (typeof window !== "undefined") {
+            const hasAlreadyPinged = sessionStorage.getItem("hasAlreadyPinged");
+            if (hasAlreadyPinged === null || hasAlreadyPinged === "false") {
+                fetch(backendUrl + "ping");
+                sessionStorage.setItem("hasAlreadyPinged", "true");
+            }
+        }
+    }, [backendUrl]);
 };

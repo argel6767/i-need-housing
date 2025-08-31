@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.startsWith("/actuator/") || isAServiceToServiceRequest(request);
+        return path.startsWith("/actuator/") || isAServiceToServiceRequest(request) || path.startsWith("/ping");
     }
 
     private boolean isAServiceToServiceRequest(HttpServletRequest request) {

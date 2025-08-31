@@ -10,6 +10,7 @@ import {updateUserPreferencesViaFilters} from "@/endpoints/preferences";
 import {filterListingsByPreferences} from "@/endpoints/listings";
 import {User} from "@/components/User";
 import Link from "next/link";
+import {usePingServer} from "@/hooks/hooks";
 
 
 interface MobileListItemsProps {
@@ -68,6 +69,7 @@ const MobileListItems = ({ children, isModalUp=false}: MobileListItemsProps) => 
  * @returns
  */
 export const Navbar = () => {
+    usePingServer();
     const isSignedIn = () => {
         if (sessionStorage.getItem("status") === null) {
             sessionStorage.setItem("status", "signed out")
@@ -101,6 +103,7 @@ export const Navbar = () => {
  * @returns
  */
 export const MobileNavbar = () => {
+    usePingServer();
   return (
     <main className="navbar bg-base-100">
       <MobileListItems>

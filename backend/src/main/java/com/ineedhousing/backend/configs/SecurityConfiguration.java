@@ -55,7 +55,7 @@ public class SecurityConfiguration{
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/auths/**").permitAll()
+                .requestMatchers("/", "/auths/**", "/ping").permitAll()
                 .requestMatchers("/VAADIN/**", "/frontend/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()

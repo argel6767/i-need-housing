@@ -54,6 +54,7 @@ export const User = () => {
         setIsLoading(false);
         if (response === "Logged out successfully") {
             sessionStorage.setItem("status", "signed out");
+            sessionStorage.setItem("hasAlreadyPinged", "false");
             router.replace("/sign-in");
             queryClient.clear();
             clearGlobalState();

@@ -26,7 +26,7 @@ public class ServiceApiTokenFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         // Skip this filter if already authenticated by JWT
-        return request.getContextPath().startsWith("/actuator") || isClientAuthenticated(request);
+        return request.getContextPath().startsWith("/actuator") || isClientAuthenticated(request) ||  request.getContextPath().startsWith("/ping");
 
     }
 
