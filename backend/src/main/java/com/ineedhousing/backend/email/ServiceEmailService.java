@@ -14,10 +14,11 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
-@Lazy
+
 public class ServiceEmailService {
 
     private final JavaMailSender mailSender;
@@ -44,14 +45,15 @@ public class ServiceEmailService {
     public void sendKeyRotationEmail(SuccessfulKeyRotationEvent event) {
         String emailMessage = "New key has been set after successful rotation.\nNew key: " + event.newKey();
         List<User> admins = userRepository.findUsersWithAdminRole();
-
-        admins.forEach(admin -> {
-            String adminEmail = admin.getEmail();
-            try {
-                sendEmail(adminEmail, event.message(), emailMessage);
-            } catch (MessagingException e) {
-                log.error("Failed to send email to {}. Reason: {}", adminEmail, e.getMessage());
-            }
+            CompletableFuture.runAsync(() -> {
+            admins.forEach(admin -> {
+                String adminEmail = admin.getEmail();
+                try {
+                    sendEmail(adminEmail, event.message(), emailMessage);
+                } catch (MessagingException e) {
+                    log.error("Failed to send email to {}. Reason: {}", adminEmail, e.getMessage());
+                }
+            });
         });
     }
 }
