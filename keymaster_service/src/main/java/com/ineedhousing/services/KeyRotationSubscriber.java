@@ -8,6 +8,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.ClientWebApplicationException;
@@ -38,22 +39,16 @@ public class KeyRotationSubscriber {
 
     public void notifyNewKeyRotation(@ObservesAsync SuccessfulKeyRotationEvent successfulKeyRotationEvent) {
         try {
-            String eventJson = stringify(successfulKeyRotationEvent);
+            String eventJson = objectMapper.writeValueAsString(successfulKeyRotationEvent);
             mainAPIEmailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, eventJson);
             Log.info("Notify New Key Rotation Event Successfully!");
         }
-        catch (ClientWebApplicationException e) {
+        catch (WebApplicationException e) {
             Log.error("Notify New Key Rotation Event Failed! Cause: " +  e.getResponse().getStatusInfo().getReasonPhrase());
-        }
-    }
-
-    private String stringify(SuccessfulKeyRotationEvent successfulKeyRotationEvent) {
-        try {
-            return objectMapper.writeValueAsString(successfulKeyRotationEvent);
+            Log.error("Logging response: " + e.getResponse().getEntity());
         }
         catch (Exception e) {
-            Log.error("Failed to parse: " + e.getMessage());
-            return  e.getMessage();
+            Log.error("Notify New Key Rotation Event Failed! Cause: " + e.getMessage());
         }
     }
 }
