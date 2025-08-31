@@ -149,8 +149,8 @@ interface LoggedInMobileNavbarProps {
 export const LoggedInMobileNavbar = ({setIsModalUp, refetch}:LoggedInMobileNavbarProps) => {
 
     const {userPreferences, setUserPreferences} = useGlobalContext();
-    const {setFilterRendered, isListingsFiltered, setIsListingsFiltered, isFiltersChanged, setIsFiltersChanged, listings, setListings, setInitialPreferences,
-        isFilterModalUp, isFiltering, setIsFiltering, isSaving, setIsSaving, isResetting, setIsResetting} = useHomeContext();
+    const {setFilterRendered, isListingsFiltered, setIsListingsFiltered, isFiltersChanged, setIsFiltersChanged, setInitialPreferences,
+        isFilterModalUp, isFiltering, setIsFiltering, isSaving, setIsSaving, isResetting, setIsResetting, setListingsPage, listingsPage} = useHomeContext();
 
     const handleFilterRendered = (filter: ReactNode) => {
         setFilterRendered(filter);
@@ -176,9 +176,9 @@ export const LoggedInMobileNavbar = ({setIsModalUp, refetch}:LoggedInMobileNavba
         }
 
         setIsFiltering(true);
-        const data = await filterListingsByPreferences({listings: listings, id: userPreferences.id});
+        const data = await filterListingsByPreferences({listings: listingsPage.housingListings, id: userPreferences.id});
         console.log(data);
-        setListings(data);
+        setListingsPage((prevState) => ({...prevState, housingListings:data}));
         setIsFiltering(false);
         setIsListingsFiltered(true);
     }
@@ -187,7 +187,7 @@ export const LoggedInMobileNavbar = ({setIsModalUp, refetch}:LoggedInMobileNavba
     const handleRefetch = async () => {
         setIsResetting(true);
         const response = await refetch();
-        setListings(response.data);
+        setListingsPage((prevState) => ({...prevState, housingListings:response.data}));
         setIsListingsFiltered(false);
         setIsResetting(false);
     }
