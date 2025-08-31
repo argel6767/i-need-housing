@@ -5,12 +5,14 @@ import com.ineedhousing.models.SuccessfulKeyRotationEvent;
 import com.ineedhousing.rest_clients.MainAPIEmailServiceRestClient;
 import io.quarkus.logging.Log;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.ClientWebApplicationException;
 
+@ApplicationScoped
 public class KeyRotationSubscriber {
 
     @Inject
