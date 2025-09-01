@@ -1,14 +1,17 @@
 package com.ineedhousing.services;
 
+import com.ineedhousing.models.RegistrationKeyDto;
 import com.ineedhousing.models.RotatingKeyEvent;
 import com.ineedhousing.models.SuccessfulKeyRotationEvent;
 import io.quarkus.logging.Log;
 import io.quarkus.runtime.StartupEvent;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.config.Config;
 
 import java.security.SecureRandom;
 
@@ -19,6 +22,17 @@ import java.util.Base64;
 public class RegistrationKeyRotator {
 
     private String key;
+
+    @Inject
+    Config config;
+
+    private String mainApiServiceName;
+
+    @PostConstruct
+    void init() {
+        mainApiServiceName = config.getOptionalValue("ineedhousing.service.name", String.class)
+                .orElseThrow(() -> new IllegalStateException("INeedHousing service name not found"));
+    }
 
     @Inject
     Event<SuccessfulKeyRotationEvent> publisher;
@@ -49,5 +63,13 @@ public class RegistrationKeyRotator {
             key = generateKey();
         }
         return key;
+    }
+
+    public RegistrationKeyDto getRegistrationKey(String serviceName) {
+        if (!serviceName.equals(mainApiServiceName)) {
+            Log.warn("Registration key can only be accessed by INeedHousing API only");
+            throw new SecurityException("Registration key can only be accessed by INeedHousing API only");
+        }
+        return new RegistrationKeyDto(key, LocalDateTime.now());
     }
 }

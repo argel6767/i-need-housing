@@ -1,8 +1,8 @@
-package com.ineedhousing.backend.registered_services;
+package com.ineedhousing.backend.keymaster_service;
 
 import com.ineedhousing.backend.ping_services.models.models.PingEvent;
-import com.ineedhousing.backend.registered_services.models.ServiceVerificationDto;
-import com.ineedhousing.backend.registered_services.models.VerifiedServiceDto;
+import com.ineedhousing.backend.keymaster_service.models.ServiceVerificationDto;
+import com.ineedhousing.backend.keymaster_service.models.VerifiedServiceDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
@@ -58,7 +58,7 @@ public class ServiceInteractionAuthenticator {
     @EventListener
     @Async
     public void pingService(PingEvent pingEvent) {
-        log.info("Pinging New Listings Service");
+        log.info("Pinging Keymaster Service");
         try {
             String response = restClient.post()
                     .uri("/ping")

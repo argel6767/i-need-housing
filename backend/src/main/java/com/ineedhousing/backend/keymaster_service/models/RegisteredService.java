@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.registered_services;
+package com.ineedhousing.backend.keymaster_service.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

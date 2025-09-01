@@ -1,5 +1,6 @@
-package com.ineedhousing.backend.registered_services;
+package com.ineedhousing.backend.keymaster_service;
 
+import com.ineedhousing.backend.keymaster_service.models.RegisteredService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

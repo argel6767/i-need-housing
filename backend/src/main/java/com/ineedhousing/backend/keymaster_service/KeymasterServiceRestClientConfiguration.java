@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.registered_services;
+package com.ineedhousing.backend.keymaster_service;
 
 import com.ineedhousing.backend.constants.ServiceInteractionConstants;
 import org.springframework.context.annotation.Bean;
