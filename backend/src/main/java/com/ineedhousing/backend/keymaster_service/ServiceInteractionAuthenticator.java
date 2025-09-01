@@ -1,16 +1,12 @@
 package com.ineedhousing.backend.keymaster_service;
 
-import com.ineedhousing.backend.ping_services.models.models.PingEvent;
-import com.ineedhousing.backend.keymaster_service.models.ServiceVerificationDto;
-import com.ineedhousing.backend.keymaster_service.models.VerifiedServiceDto;
+import com.ineedhousing.backend.keymaster_service.models.requests.ServiceVerificationDto;
+import com.ineedhousing.backend.keymaster_service.models.responses.VerifiedServiceDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientException;
 
 import java.time.LocalDateTime;
 
@@ -53,26 +49,6 @@ public class ServiceInteractionAuthenticator {
            log.error("Failed to verify service {}, Type of failure: {}, message: {}", serviceName, e.getClass(), e.getMessage());
            return false;
        }
-    }
-
-    @EventListener
-    @Async
-    public void pingService(PingEvent pingEvent) {
-        log.info("Pinging Keymaster Service");
-        try {
-            String response = restClient.post()
-                    .uri("/ping")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .retrieve()
-                    .body(String.class);
-                log.info(response);
-            }
-        catch (RestClientException e) {
-            log.warn("Service was pinged but overall request was not successful: {},", e.getMessage());
-        }
-        catch (Exception e) {
-            log.error("Service was unsuccessful: {},", e.getMessage());
-        }
     }
 
     private boolean isServicePresent(String serviceName) {

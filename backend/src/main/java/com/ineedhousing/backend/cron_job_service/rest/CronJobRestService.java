@@ -36,7 +36,7 @@ public class CronJobRestService {
     @EventListener
     @Async
     public void pingService(PingEvent pingEvent) {
-        log.info("Pinging New Listings Service");
+        log.info("Pinging Cron Job Service");
         pingService();
     }
 

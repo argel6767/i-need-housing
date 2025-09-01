@@ -1,6 +1,5 @@
 package com.ineedhousing.resources;
 
-import com.ineedhousing.models.FetchRegistrationKeyEvent;
 import com.ineedhousing.models.RegistrationKeyDto;
 import com.ineedhousing.models.RotatingKeyEvent;
 import com.ineedhousing.services.RegistrationKeyRotator;
@@ -10,7 +9,6 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Path("/v1")
@@ -21,8 +19,6 @@ public class RotationKeyResource {
 
     @Inject
     RegistrationKeyRotator registrationKeyRotator;
-
-
 
     @POST
     @Path("/webhooks/rotate-key")

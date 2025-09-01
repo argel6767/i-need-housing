@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 
+import com.ineedhousing.backend.admin.models.AuthenticatedAdminDto;
+import com.ineedhousing.backend.user.responses.UserDto;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +27,7 @@ import com.ineedhousing.backend.user.UserRepository;
 
 @Service
 @Lazy
+@Slf4j
 public class AdminService {
 
     private final UserRepository userRepository;
@@ -38,7 +42,7 @@ public class AdminService {
         this.authenticationManager = authenticationManager;
     }
 
-    public String authenticateAdmin(AuthenticateUserDto request)  {
+    public AuthenticatedAdminDto authenticateAdmin(AuthenticateUserDto request)  {
         if (!isValidEmail(request.getUsername())) {
             throw new InvalidEmailException(request.getUsername() + " is an invalid email");
         }
@@ -55,7 +59,9 @@ public class AdminService {
         String token = jwtService.generateToken(user);
         String cookie = jwtService.generateCookie(token, Optional.empty());
         userRepository.save(user);
-        return cookie;
+        UserDto dto = createUserDto(user);
+        log.info("Signed in user: {}", dto);
+        return new AuthenticatedAdminDto(cookie, dto);
     }
 
     private boolean isValidEmail(String email) {
@@ -66,6 +72,10 @@ public class AdminService {
     private boolean isUserAdmin(User user) {
         return user.getAuthorities().stream()
             .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    private UserDto createUserDto(User user) {
+        return new UserDto(user.getId(), user.getEmail(), user.getAuthorities(), user.getLastLogin(), user.getCreatedAt());
     }
 
     public List<User> getAllUsers() {

@@ -1,6 +1,8 @@
 package com.ineedhousing.backend.exception;
 
+import com.ineedhousing.backend.exception.exceptions.ServiceUnavailableException;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
+import jakarta.servlet.ServletException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,27 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleRateLimitException(RequestNotPermitted ex) {
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
                 .body("Rate limit exceeded. Please try again later.");
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception exc) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(exc.getMessage());
+    }
+
+    @ExceptionHandler(ServletException.class)
+    public ResponseEntity<String> handleServletException(ServletException exc) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(exc.getMessage());
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<String> handleServiceUnavailableException(ServiceUnavailableException exc) {
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(exc.getMessage());
     }
 
 }

@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.keymaster_service.models;
+package com.ineedhousing.backend.keymaster_service.models.responses;
 
 import java.time.LocalDateTime;
 

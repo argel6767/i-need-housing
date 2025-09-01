@@ -3,7 +3,7 @@ package com.ineedhousing.backend.configs;
 
 import java.util.List;
 
-import com.ineedhousing.backend.registered_services.ServiceApiTokenFilter;
+import com.ineedhousing.backend.keymaster_service.ServiceApiTokenFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,7 +55,7 @@ public class SecurityConfiguration{
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/auths/**", "/ping").permitAll()
+                .requestMatchers("/", "/auths/**", "/ping", "/admin/login").permitAll()
                 .requestMatchers("/VAADIN/**", "/frontend/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
