@@ -55,7 +55,7 @@ public class HousingListingService {
      * @param radius
      * @return
      */
-    @Cacheable("listings")
+    @Cacheable(key = "T(java.lang.String).format('%s:%s:%s', #latitude, #longitude, #radius)", cacheNames ="listings")
     public List<HousingListing> getListingsInArea(double latitude, double longitude, int radius) {
         verifyGetListingsInAreaInputs(latitude, longitude, radius);
 
@@ -169,7 +169,7 @@ public class HousingListingService {
      * @param page
      * @return
      */
-    @Cacheable(key = "T(java.lang.String).format('s:s', #userId, #page)", cacheNames = "listings")
+    @Cacheable(key = "T(java.lang.String).format('%s:%s', #userId, #page)", cacheNames = "listings")
     public ListingsResultsPageDto getListingsByPreference(Long userId, int page) {
         log.info("Getting listings for user: " + userId);
         User user = userService.getUserById(userId);
