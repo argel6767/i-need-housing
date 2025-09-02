@@ -107,3 +107,18 @@ export const filterListingsByPreferences = async (request: ExactPreferencesDTO):
         return request.listings
     }
 }
+
+/**
+ * Paginated preferences endpoint
+ * @param page
+ */
+export const filterListingsByPreferencesV2 = async (page: number): Promise<ListingsResultsPageDto> => {
+    try {
+        const response = await apiClient.get(`${MODULE_MAPPING}/filter/v2/exact?page=${page}`);
+        return response.data;
+    }
+    catch (error) {
+        console.log(failedCallMessage(error));
+        return {housingListings:[], pageNumber:1, totalPages:1};
+    }
+}

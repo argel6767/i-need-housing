@@ -1,5 +1,5 @@
 import { getFavoriteListings } from "@/endpoints/favorites"
-import {getListingsInArea, getListingsInAreaV2} from "@/endpoints/listings"
+import {filterListingsByPreferencesV2, getListingsInArea, getListingsInAreaV2} from "@/endpoints/listings"
 import { getUserPreferences } from "@/endpoints/preferences"
 import { FavoriteListing, HouseListing, UserPreference } from "@/interfaces/entities"
 import {GetListingsInAreaRequest, GetListingsInAreaRequestV2} from "@/interfaces/requests/housingListingRequests"
@@ -31,6 +31,15 @@ export const useGetListingsV2 = (requestBody: GetListingsInAreaRequestV2 | null,
             return await getListingsInAreaV2(requestBody);
         },
         enabled: options?.enabled ?? !!requestBody
+    })
+}
+
+export const useGetFilteredListings= (page: number) => {
+    return useQuery({
+        queryKey: ['listings, page: ', page],
+        queryFn: async ():Promise<ListingsResultsPageDto> => {
+            return await filterListingsByPreferencesV2(page)
+        }
     })
 }
 
