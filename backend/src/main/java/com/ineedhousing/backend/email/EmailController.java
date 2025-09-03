@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -21,7 +22,7 @@ public class EmailController {
     }
 
     @PostMapping("/notifications/key-rotation")
-    public ResponseEntity<String> sendNotificationKeyRotation(@RequestBody String event) throws IOException {
+    public ResponseEntity<String> sendNotificationKeyRotation(@RequestBody Map<String, String> event) {
         log.info("Sending notification key rotation event: {}", event);
         serviceEmailService.sendKeyRotationEmail(event);
         return ResponseEntity.ok().body("Successfully sent key rotation");

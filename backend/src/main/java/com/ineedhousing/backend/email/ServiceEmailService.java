@@ -1,8 +1,5 @@
 package com.ineedhousing.backend.email;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ineedhousing.backend.email.models.SuccessfulKeyRotationEvent;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserRepository;
 import jakarta.mail.MessagingException;
@@ -15,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -22,15 +20,13 @@ public class ServiceEmailService {
 
     private final JavaMailSender mailSender;
     private final UserRepository userRepository;
-    private final ObjectMapper objectMapper;
 
     @Value("${support.email}")
     private String emailUsername;
 
-    public ServiceEmailService(JavaMailSender mailSender, UserRepository userRepository, ObjectMapper objectMapper) {
+    public ServiceEmailService(JavaMailSender mailSender, UserRepository userRepository) {
         this.mailSender = mailSender;
         this.userRepository = userRepository;
-        this.objectMapper = objectMapper;
     }
 
     public void sendEmail(String to, String subject, String body) throws MessagingException {
@@ -44,17 +40,15 @@ public class ServiceEmailService {
     }
 
     @Async
-    public void sendKeyRotationEmail(String event) {
+    public void sendKeyRotationEmail(Map<String, String> event) {
         log.info("Sending key rotation email with data: {}", event);
-        SuccessfulKeyRotationEvent eventParsed = objectMapper.convertValue(event, SuccessfulKeyRotationEvent.class);
+        
         log.info("Processing the following event: {}", event);
-        if (eventParsed.newKey() == null || eventParsed.newKey().isEmpty()) {
+        if (event.get("newKey")== null || event.get("newKey").isEmpty()) {
             throw new IllegalArgumentException("New Key is null or empty");
         }
-        log.info("Sending key rotation email with subject {} and new key", eventParsed.message());
-        if (eventParsed.message() == null || eventParsed.message().isEmpty()) {
-            SuccessfulKeyRotationEvent nonNull = new SuccessfulKeyRotationEvent("Successful Key Rotation", eventParsed.newKey(), eventParsed.timeStamp());
-        }
+        log.info("Sending key rotation email with subject {} and new key", event.get("message"));
+        
         String body = String.format("""
             <!DOCTYPE html>
             <html>
@@ -170,11 +164,11 @@ public class ServiceEmailService {
               </div>
             </body>
             </html>
-            """, eventParsed.newKey());
+            """, event.get("newKey"));
         List<User> admins = userRepository.findUsersWithAdminRole();
         admins.forEach(admin -> {
             try {
-                sendEmail(admin.getEmail(), eventParsed.message(), body);
+                sendEmail(admin.getEmail(), event.get("message"), body);
             } catch (MessagingException e) {
                 log.error("Failed to send email to {}", admin.getEmail(), e);
             }

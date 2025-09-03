@@ -4,13 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ineedhousing.models.SuccessfulKeyRotationEvent;
 import com.ineedhousing.rest_clients.MainAPIEmailServiceRestClient;
 import io.quarkus.logging.Log;
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import java.util.Map;
 
 @ApplicationScoped
 public class KeyRotationSubscriber {
@@ -38,9 +39,9 @@ public class KeyRotationSubscriber {
                 serviceName =  config.getOptionalValue("keymaster_service.service.name", String.class)
                         .orElseThrow(() -> new IllegalStateException("keymaster_service service name not present!"));
             }
-            String eventStringfied = objectMapper.writeValueAsString(successfulKeyRotationEvent);
-            Log.warn("Sending the following request: " + eventStringfied);
-            mainAPIEmailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, eventStringfied);
+            Map<String, String> dto = Map.of("message", successfulKeyRotationEvent.message(), "newKey", successfulKeyRotationEvent.newKey());
+            Log.warn("Sending the following request: " + dto);
+            mainAPIEmailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, dto);
             Log.info("Notify New Key Rotation Event Successfully!");
         }
         catch (WebApplicationException e) {

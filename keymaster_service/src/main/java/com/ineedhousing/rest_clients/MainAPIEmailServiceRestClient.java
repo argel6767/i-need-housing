@@ -6,6 +6,8 @@ import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+import java.util.Map;
+
 @RegisterRestClient(configKey = "api-email")
 public interface MainAPIEmailServiceRestClient {
 
@@ -14,5 +16,5 @@ public interface MainAPIEmailServiceRestClient {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Retry(maxRetries = 5, delay = 1000)
-    String notifyNewKeyRotation(@HeaderParam("X-Api-Token") String apiToken, @HeaderParam("X-Service-Name") String serviceName, String successfulKeyRotationEventJson);
+    String notifyNewKeyRotation(@HeaderParam("X-Api-Token") String apiToken, @HeaderParam("X-Service-Name") String serviceName, Map<String, String> successfulKeyRotationEventJson);
 }
