@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,12 +26,9 @@ public class EmailController {
     }
 
     @PostMapping("/notifications/key-rotation")
-    public ResponseEntity<String> sendNotificationKeyRotation(@RequestBody SuccessfulKeyRotationEvent event, HttpServletRequest request) throws IOException {
-        String body = new BufferedReader(request.getReader())
-                .lines()
-                .collect(Collectors.joining("\n"));
-        log.info("Body for request: {}", body);
-        serviceEmailService.sendKeyRotationEmail(event);
+    public ResponseEntity<String> sendNotificationKeyRotation(@RequestBody Map<String, String> event) throws IOException {
+        log.info("Sending notification key rotation event: {}", event);
+        serviceEmailService.sendKeyRotationEmail(null);
         return ResponseEntity.ok().body("Successfully sent key rotation");
     }
 }
