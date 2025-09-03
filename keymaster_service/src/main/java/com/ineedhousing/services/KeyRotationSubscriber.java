@@ -11,7 +11,6 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.jboss.resteasy.reactive.ClientWebApplicationException;
 
 @ApplicationScoped
 public class KeyRotationSubscriber {
@@ -29,16 +28,16 @@ public class KeyRotationSubscriber {
     private String apiToken;
     private String serviceName;
 
-    @PostConstruct
-    public void init() {
-        apiToken = config.getOptionalValue("keymaster_service.api.token", String.class)
-                .orElseThrow(() -> new IllegalStateException("keymaster_service API token not present!"));
-        serviceName =  config.getOptionalValue("keymaster_service.service.name", String.class)
-                .orElseThrow(() -> new IllegalStateException("keymaster_service service name not present!"));
-    }
-
     public void notifyNewKeyRotation(@ObservesAsync SuccessfulKeyRotationEvent successfulKeyRotationEvent) {
         try {
+            if (apiToken == null) {
+                apiToken = config.getOptionalValue("keymaster_service.api.token", String.class)
+                        .orElseThrow(() -> new IllegalStateException("keymaster_service API token not present!"));
+            }
+            if (serviceName == null) {
+                serviceName =  config.getOptionalValue("keymaster_service.service.name", String.class)
+                        .orElseThrow(() -> new IllegalStateException("keymaster_service service name not present!"));
+            }
             String eventJson = objectMapper.writeValueAsString(successfulKeyRotationEvent);
             mainAPIEmailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, eventJson);
             Log.info("Notify New Key Rotation Event Successfully!");
