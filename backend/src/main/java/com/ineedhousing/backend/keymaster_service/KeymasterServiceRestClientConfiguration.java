@@ -8,19 +8,13 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class KeymasterServiceRestClientConfiguration {
 
-    private final ServiceInteractionConstants serviceInteractionConstants;
-
-    public KeymasterServiceRestClientConfiguration(ServiceInteractionConstants serviceInteractionConstants) {
-        this.serviceInteractionConstants = serviceInteractionConstants;
-    }
-
     @Bean(name = "keymaster_service")
-    RestClient restClient() {
+    RestClient restClient(ServiceInteractionConstants constants) {
         return RestClient.builder()
-                .baseUrl(serviceInteractionConstants.getKeymasterServiceUrl())
+                .baseUrl(constants.getKeymasterServiceUrl())
                 .defaultHeaders(httpHeaders -> {
-                    httpHeaders.set("X-Api-Token", serviceInteractionConstants.getApiToken());
-                    httpHeaders.set("X-Service-Name", serviceInteractionConstants.getServiceName());
+                    httpHeaders.set("X-Api-Token", constants.getApiToken());
+                    httpHeaders.set("X-Service-Name", constants.getServiceName());
                 }).build();
     }
 }

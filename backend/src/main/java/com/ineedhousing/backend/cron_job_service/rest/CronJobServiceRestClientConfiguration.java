@@ -9,19 +9,13 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class CronJobServiceRestClientConfiguration {
 
-    private final ServiceInteractionConstants serviceInteractionConstants;
-
-    public CronJobServiceRestClientConfiguration(ServiceInteractionConstants serviceInteractionConstants) {
-        this.serviceInteractionConstants = serviceInteractionConstants;
-    }
-
     @Bean(name = "Cron Job Service Client")
-    public RestClient restClient() {
+    public RestClient restClient(ServiceInteractionConstants constants) {
         return RestClient.builder()
-                .baseUrl(serviceInteractionConstants.getCronJobServiceUrl())
+                .baseUrl(constants.getCronJobServiceUrl())
                 .defaultHeaders(httpHeaders -> {
-                    httpHeaders.set("X-Api-Token", serviceInteractionConstants.getApiToken());
-                    httpHeaders.set("X-Service-Name", serviceInteractionConstants.getServiceName());
+                    httpHeaders.set("X-Api-Token", constants.getApiToken());
+                    httpHeaders.set("X-Service-Name", constants.getServiceName());
                 })
                 .build();
     }

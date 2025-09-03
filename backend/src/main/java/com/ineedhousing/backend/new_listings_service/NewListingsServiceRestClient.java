@@ -8,18 +8,12 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class NewListingsServiceRestClient {
 
-    private final ServiceInteractionConstants serviceInteractionConstants;
-
-    public NewListingsServiceRestClient(ServiceInteractionConstants serviceInteractionConstants) {
-        this.serviceInteractionConstants = serviceInteractionConstants;
-    }
-
     @Bean(name = "new listings service")
-    RestClient restClient() {
-        return RestClient.builder().baseUrl(serviceInteractionConstants.getNewListingsServiceUrl())
+    RestClient restClient(ServiceInteractionConstants constants) {
+        return RestClient.builder().baseUrl(constants.getNewListingsServiceUrl())
                 .defaultHeaders(httpHeaders -> {
-                    httpHeaders.set("X-Api-Token", serviceInteractionConstants.getApiToken());
-                    httpHeaders.set("X-Service-Name", serviceInteractionConstants.getServiceName());
+                    httpHeaders.set("X-Api-Token", constants.getApiToken());
+                    httpHeaders.set("X-Service-Name", constants.getServiceName());
                 })
                 .build();
     }
