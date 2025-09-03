@@ -1,0 +1,28 @@
+# Stage 1: Build the JAR with Java 21
+FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 AS build
+WORKDIR /code
+
+COPY --chown=quarkus:quarkus mvnw mvnw
+COPY --chown=quarkus:quarkus .mvn ./.mvn
+COPY --chown=quarkus:quarkus pom.xml pom.xml
+
+USER quarkus
+
+RUN ./mvnw dependency:go-offline
+
+COPY --chown=quarkus:quarkus src ./src
+
+# Build the JAR (not native)
+RUN ./mvnw package -DskipTests
+
+# Stage 2: Create the runtime image
+FROM eclipse-temurin:21-jre
+
+WORKDIR /work/
+COPY --from=build /code/target/quarkus-app /work/quarkus-app
+
+EXPOSE 8080
+
+USER 1001
+
+CMD ["java", "-jar", "/work/quarkus-app/quarkus-run.jar"]

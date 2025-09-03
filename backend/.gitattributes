@@ -1,2 +1,18 @@
-/mvnw text eol=lf
+# Maven wrapper files (all locations)
+mvnw text eol=lf
+**/mvnw text eol=lf
+
+# Windows batch files
 *.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Shell scripts should always use LF  
+*.sh text eol=lf
+
+# Handle line endings automatically for other text files
+* text=auto
+
+# Binary files
+*.jar binary
+*.war binary
+*.ear binary
