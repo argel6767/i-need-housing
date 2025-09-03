@@ -38,7 +38,9 @@ public class KeyRotationSubscriber {
                 serviceName =  config.getOptionalValue("keymaster_service.service.name", String.class)
                         .orElseThrow(() -> new IllegalStateException("keymaster_service service name not present!"));
             }
-            mainAPIEmailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, successfulKeyRotationEvent);
+            String eventStringfied = objectMapper.writeValueAsString(successfulKeyRotationEvent);
+            Log.info("Sending the following request: " + eventStringfied);
+            mainAPIEmailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, eventStringfied);
             Log.info("Notify New Key Rotation Event Successfully!");
         }
         catch (WebApplicationException e) {

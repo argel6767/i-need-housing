@@ -14,5 +14,5 @@ public interface MainAPIEmailServiceRestClient {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Retry(maxRetries = 5, delay = 1000)
-    String notifyNewKeyRotation(@HeaderParam("X-Api-Token") String apiToken, @HeaderParam("X-Service-Name") String serviceName, SuccessfulKeyRotationEvent successfulKeyRotationEvent);
+    String notifyNewKeyRotation(@HeaderParam("X-Api-Token") String apiToken, @HeaderParam("X-Service-Name") String serviceName, String successfulKeyRotationEventJson);
 }

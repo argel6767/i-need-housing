@@ -42,6 +42,7 @@ public class ServiceEmailService {
 
     @Async
     public void sendKeyRotationEmail(SuccessfulKeyRotationEvent event) {
+        log.info("Processing the following event: {}", event);
         if (event.newKey() == null || event.newKey().isEmpty()) {
             throw new IllegalArgumentException("New Key is null or empty");
         }
