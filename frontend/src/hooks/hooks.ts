@@ -20,17 +20,21 @@ export const useGetListings = (requestBody: GetListingsInAreaRequest | null, opt
         queryFn: async ():Promise<Array<HouseListing>> => {
             return await getListingsInArea(requestBody);
         },
-        enabled: options?.enabled ?? !!requestBody
+        enabled: options?.enabled ?? !!requestBody,
     })
 }
 
-export const useGetListingsV2 = (requestBody: GetListingsInAreaRequestV2 | null, options?: { enabled?: boolean }) => {
+interface EnabledOptions {
+    enabled?: boolean;
+}
+
+export const useGetListingsV2 = (requestBody: GetListingsInAreaRequestV2 | null, options: EnabledOptions, isInFilteredMode: boolean,)  => {
     return useQuery({
         queryKey: ['listings, page: ' + requestBody?.page, requestBody],
         queryFn: async ():Promise<ListingsResultsPageDto> => {
             return await getListingsInAreaV2(requestBody);
         },
-        enabled: options?.enabled ?? !!requestBody
+        enabled: !isInFilteredMode && (options?.enabled ?? !!requestBody),
     })
 }
 

@@ -18,14 +18,14 @@ import {Loading} from "@/components/Loading";
 
 const Home = () => {
     const {isAuthLoading} = useProtectedContext();
-    const {listingsPage,setListingsPage, getListingsRequest, setGetListingsRequest, isListingModalUp, setIsListingModalUp, isFilterModalUp, setIsFilterModalUp} = useHomeContext();
+    const {listingsPage,setListingsPage, getListingsRequest, setGetListingsRequest, isListingModalUp, setIsListingModalUp, isFilterModalUp, setIsFilterModalUp, isInFilteredMode} = useHomeContext();
     const {setFavoriteListings} = useGlobalContext();
     const [renderedListing, setRenderedListing] = useState<HouseListing | undefined>(undefined);
     const {setCenterLat, setCenterLong, setUserPreferences} = useGlobalContext();
 
     //fetch calls
     const {isLoading:isGrabbing, isError:isFetchingFailed, data:preferences} = useGetUserPreferences();
-    const {isLoading, isError, data, refetch, isFetching} = useGetListingsV2(getListingsRequest, {enabled: !!getListingsRequest});
+    const {isLoading, isError, data, refetch, isFetching} = useGetListingsV2(getListingsRequest, {enabled: !!getListingsRequest && !isInFilteredMode}, isInFilteredMode);
     const {isLoading:isGettingFavorites, data:favorites, isError:isCallFailed} = useGetFavoriteListings();
 
     /** sets state of user preferences should it ever change via the query call */
@@ -70,7 +70,7 @@ const Home = () => {
                     <LoggedInNavBar/>
                 </nav>
                 <span className="pt-2 hidden md:block">
-                    <Filters refetch={refetch} listings={listingsPage.housingListings} setListings={setListingsPage} />
+                    <Filters refetch={refetch} />
                 </span>
                 {isListingModalUp && ( /** This modal is rendered when a user clicks on a specific listing off the listings sidebar */
                     <Modal onClick={() => setIsListingModalUp(true)}>

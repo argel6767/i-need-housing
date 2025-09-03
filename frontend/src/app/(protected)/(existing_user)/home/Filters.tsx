@@ -1,13 +1,12 @@
 "use client"
 import { ReactNode, useEffect, useState } from "react"
 import {ChevronDown, CircleX, Loader} from 'lucide-react';
-import {HouseListing, UserPreference} from "@/interfaces/entities";
+import { UserPreference} from "@/interfaces/entities";
 import { useGlobalContext } from "@/components/GlobalContext";
 import { updateUserPreferencesViaFilters } from "@/endpoints/preferences";
 import { RangeBar, MaxPrice, OtherFilters } from "@/app/(protected)/(existing_user)/home/InnerFilters";
-import { filterListingsByPreferences } from "@/endpoints/listings";
+import { filterListingsByPreferencesV2} from "@/endpoints/listings";
 import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
-import {ListingsResultsPageDto} from "@/interfaces/responses/listingsResponses";
 
 interface CollapseDownProps {
     children: ReactNode;
@@ -24,7 +23,7 @@ interface CollapseDownProps {
 const CollapseDown = ({children, label, isOpen, onToggle}: CollapseDownProps) => {
     return (
         <div className="w-full border rounded-lg bg-white shadow-lg">
-            <button onClick={onToggle}className="w-full p-4 flex justify-between items-center bg-slate-100 hover:bg-gray-50 transition-colors rounded-xl">
+            <button onClick={onToggle} className="w-full p-4 flex justify-between items-center bg-slate-100 hover:bg-gray-50 transition-colors rounded-xl">
                 <span className="font-medium text-gray-900">{label}</span>
                 <ChevronDown className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`}/>
             </button>
@@ -42,8 +41,6 @@ const CollapseDown = ({children, label, isOpen, onToggle}: CollapseDownProps) =>
 
 interface FiltersProps {
     refetch: any
-    listings: HouseListing[]
-    setListings: React.Dispatch<React.SetStateAction<ListingsResultsPageDto>>
 
 }
 
@@ -51,13 +48,13 @@ interface FiltersProps {
  * All different available filters for listings
  * @returns 
  */
-export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
+export const Filters = ({refetch}: FiltersProps) => {
     const [openFilter, setOpenFilter] = useState<string | null>(null);
     const [isFiltersChanged, setIsFiltersChanged] = useState<boolean>(false);
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
     const [isListingsFiltered, setIsListingsFiltered] = useState<boolean>(false);
     const {userPreferences, setUserPreferences} = useGlobalContext();
-    const {isFiltering, setIsFiltering, isSaving, setIsSaving, isResetting, setIsResetting} = useHomeContext();
+    const {isFiltering, setIsFiltering, isSaving, setIsSaving, isResetting, setIsResetting, setListingsPage, listingsPage, setIsInFilteredMode} = useHomeContext();
     const [initialPreferences, setInitialPreferences] = useState<UserPreference>();
 
     //create a deep copy for an initial userPreference for any changes
@@ -91,18 +88,17 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
     }
 
     //calls the filtering endpoint  using the id of the user's preferences and listings
-    
+
     const handleFiltering = async () => {
         if (!userPreferences) {
             console.warn("No user preferences available");
             return; // Early return if no preferences
         }
-        
+        setIsInFilteredMode(true);
+        setListingsPage((prevState) => ({...prevState, pageNumber: 1}));
         setIsFiltering(true);
-        const data = await filterListingsByPreferences({listings: listings, id: userPreferences.id});
-        //TODO update this when filtering logic is updated to handle pagination as well
-        console.log(data);
-        setListings((prevListings) => ({...prevListings, housingListings: data}));
+        const data = await filterListingsByPreferencesV2(listingsPage.pageNumber)
+        setListingsPage(data);
         setIsFiltering(false);
         setIsListingsFiltered(true);
     }
@@ -111,8 +107,10 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
     const handleRefetch = async () => {
         setIsResetting(true);
         const response = await refetch();
-        setListings(response.data);
+        setListingsPage(response.data);
+        setIsInFilteredMode(false);
         setIsListingsFiltered(false);
+        setIsInFilteredMode(false);
         setIsResetting(false);
     }
 
@@ -143,7 +141,7 @@ export const Filters = ({refetch, listings, setListings}: FiltersProps) => {
                 </CollapseDown>
             </div>
             <div className="relative">
-                <CollapseDown label="Price"isOpen={openFilter === 'price'} onToggle={() => handleToggle('price')}>
+                <CollapseDown label="Price" isOpen={openFilter === 'price'} onToggle={() => handleToggle('price')}>
                     <MaxPrice maxPrice={userPreferences!.maxRent} setUpdatedPreferences={setUserPreferences}/>
                 </CollapseDown>
             </div>

@@ -168,7 +168,7 @@ public class UserPreferenceService {
      * @param id
      * @return
      */
-    @Cacheable(value = "preferences", key = "#id")
+    @Cacheable(cacheNames = "preferences", key = "#id")
     public FormattedUserPreferenceDto getUserPreferences(Long id) {
         log.info("Fetching user preferences for " + id);
         User user = userService.getUserById(id);

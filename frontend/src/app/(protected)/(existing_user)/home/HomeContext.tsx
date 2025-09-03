@@ -25,6 +25,8 @@ interface HomeContextType {
     setIsFilterModalUp: React.Dispatch<React.SetStateAction<boolean>>,
     isFiltering: boolean,
     setIsFiltering: React.Dispatch<React.SetStateAction<boolean>>,
+    isInFilteredMode: boolean,
+    setIsInFilteredMode: React.Dispatch<React.SetStateAction<boolean>>,
     isSaving: boolean,
     setIsSaving: React.Dispatch<React.SetStateAction<boolean>>,
     isResetting: boolean,
@@ -53,11 +55,12 @@ export const HomeProvider = ({ children }: HomeProviderProps) => {
     const [isSaving, setIsSaving] = useState(false);
     const [isFiltering, setIsFiltering] = useState(false);
     const [isResetting, setIsResetting] = useState(false);
+    const [isInFilteredMode, setIsInFilteredMode] = useState<boolean>(false);
 
     const contextValues = useMemo(() => ({
         filterRendered, setFilterRendered, isFiltersChanged, setIsFiltersChanged, isListingsFiltered, setIsListingsFiltered, listingsPage, setListingsPage, getListingsRequest, setGetListingsRequest, initialPreferences, setInitialPreferences,
-        isListingModalUp, setIsListingModalUp, isFilterModalUp, setIsFilterModalUp, isFiltering, setIsFiltering, isSaving, setIsSaving, isResetting, setIsResetting
-    }), [filterRendered, isFiltersChanged, isListingsFiltered, listingsPage, setListingsPage, getListingsRequest, setGetListingsRequest, initialPreferences, isListingModalUp, isFilterModalUp, isFiltering, isSaving, isResetting]);
+        isListingModalUp, setIsListingModalUp, isFilterModalUp, setIsFilterModalUp, isFiltering, setIsFiltering, isSaving, setIsSaving, isResetting, setIsResetting, isInFilteredMode, setIsInFilteredMode
+    }), [filterRendered, isFiltersChanged, isListingsFiltered, listingsPage, getListingsRequest, initialPreferences, isListingModalUp, isFilterModalUp, isFiltering, isSaving, isResetting, isInFilteredMode]);
 
     return (
         <HomeContext.Provider value={contextValues}>

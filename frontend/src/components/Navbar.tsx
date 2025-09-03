@@ -7,7 +7,7 @@ import {MaxPrice, OtherFilters, RangeBar} from "@/app/(protected)/(existing_user
 import {useGlobalContext} from "@/components/GlobalContext";
 import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
 import {updateUserPreferencesViaFilters} from "@/endpoints/preferences";
-import {filterListingsByPreferences} from "@/endpoints/listings";
+import { filterListingsByPreferencesV2} from "@/endpoints/listings";
 import {User} from "@/components/User";
 import Link from "next/link";
 import {usePingServer} from "@/hooks/hooks";
@@ -150,7 +150,7 @@ export const LoggedInMobileNavbar = ({setIsModalUp, refetch}:LoggedInMobileNavba
 
     const {userPreferences, setUserPreferences} = useGlobalContext();
     const {setFilterRendered, isListingsFiltered, setIsListingsFiltered, isFiltersChanged, setIsFiltersChanged, setInitialPreferences,
-        isFilterModalUp, isFiltering, setIsFiltering, isSaving, setIsSaving, isResetting, setIsResetting, setListingsPage, listingsPage} = useHomeContext();
+        isFilterModalUp, isFiltering, setIsFiltering, isSaving, setIsSaving, isResetting, setIsResetting, setListingsPage, listingsPage, setIsInFilteredMode} = useHomeContext();
 
     const handleFilterRendered = (filter: ReactNode) => {
         setFilterRendered(filter);
@@ -175,10 +175,11 @@ export const LoggedInMobileNavbar = ({setIsModalUp, refetch}:LoggedInMobileNavba
             return; // Early return if no preferences
         }
 
+        setIsInFilteredMode(true);
+        setListingsPage((prevState) => ({...prevState, pageNumber: 1}));
         setIsFiltering(true);
-        const data = await filterListingsByPreferences({listings: listingsPage.housingListings, id: userPreferences.id});
-        console.log(data);
-        setListingsPage((prevState) => ({...prevState, housingListings:data}));
+        const data = await filterListingsByPreferencesV2(listingsPage.pageNumber);
+        setListingsPage(data);
         setIsFiltering(false);
         setIsListingsFiltered(true);
     }
@@ -189,6 +190,7 @@ export const LoggedInMobileNavbar = ({setIsModalUp, refetch}:LoggedInMobileNavba
         const response = await refetch();
         setListingsPage((prevState) => ({...prevState, housingListings:response.data}));
         setIsListingsFiltered(false);
+        setIsInFilteredMode(false);
         setIsResetting(false);
     }
 

@@ -10,38 +10,52 @@ import { GroupOfSkeletons, SkeletonText } from "./Loading";
 import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
 import {useGlobalContext} from "@/components/GlobalContext";
 import {ListingsResultsPageDto} from "@/interfaces/responses/listingsResponses";
+import {filterListingsByPreferencesV2} from "@/endpoints/listings";
 
 interface PaginationButtonProps {
     page: number | string;
     currentPage: number;
 }
 
-const PaginationButton = ({page, currentPage}: PaginationButtonProps) => {
-    const {setListingsPage, setGetListingsRequest} = useHomeContext();
-    const isDisabled = () => {
-        return page === "..."
-    }
-    const isCurrentPage = () => {
-        return page === currentPage;
-    }
+const PaginationButton = ({ page, currentPage }: PaginationButtonProps) => {
+    const {
+        setListingsPage,
+        setGetListingsRequest,
+        isInFilteredMode,
+    } = useHomeContext();
 
-    const onClick = () => {
+    const isDisabled = () => page === "...";
+    const isCurrentPage = () => page === currentPage;
+
+    const onClick = async () => {
         const pageNumber = Number(page);
+        if (isDisabled()) return;
 
-        // Update both the listings page state AND the request
-        setListingsPage((prevState) => ({...prevState, pageNumber: pageNumber}));
-        setGetListingsRequest((prev) => {
-            if (!prev) {
-                return prev;
-            }
-            return {...prev, page: pageNumber}
-        });
-    }
+        if (isInFilteredMode) {
+            // 🔹 Call filtered endpoint directly
+            const data = await filterListingsByPreferencesV2(pageNumber);
+            setListingsPage(data);
+        } else {
+            // 🔹 Normal mode → update request so React Query refetches
+            setListingsPage((prev) => ({ ...prev, pageNumber }));
+            setGetListingsRequest((prev) =>
+                prev ? { ...prev, page: pageNumber } : prev
+            );
+        }
+    };
 
     return (
-        <button onClick={onClick} disabled={isDisabled()} className={`join-item btn ${isCurrentPage()? "bg-slate-300" : "bg-slate-200"}`}>{page}</button>
-    )
-}
+        <button
+            onClick={onClick}
+            disabled={isDisabled()}
+            className={`join-item btn ${
+                isCurrentPage() ? "bg-slate-300" : "bg-slate-200"
+            }`}
+        >
+            {page}
+        </button>
+    );
+};
 
 interface HousingSearchFooterProps {
     listingsPage: ListingsResultsPageDto
