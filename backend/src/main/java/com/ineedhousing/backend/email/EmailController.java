@@ -26,7 +26,7 @@ public class EmailController {
     }
 
     @PostMapping("/notifications/key-rotation")
-    public ResponseEntity<String> sendNotificationKeyRotation(@RequestBody Map<String, String> event) throws IOException {
+    public ResponseEntity<String> sendNotificationKeyRotation(@RequestBody SuccessfulKeyRotationEvent event) throws IOException {
         log.info("Sending notification key rotation event: {}", event);
         serviceEmailService.sendKeyRotationEmail(null);
         return ResponseEntity.ok().body("Successfully sent key rotation");
