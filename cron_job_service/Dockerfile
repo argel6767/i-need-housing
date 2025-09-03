@@ -10,6 +10,8 @@ COPY --chown=quarkus:quarkus pom.xml pom.xml
 # Switch to quarkus user
 USER quarkus
 
+RUN chmod +x mvnw
+
 # Download dependencies (for better layer caching)
 RUN ./mvnw dependency:go-offline
 
