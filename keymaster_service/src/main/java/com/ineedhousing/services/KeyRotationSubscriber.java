@@ -41,7 +41,6 @@ public class KeyRotationSubscriber {
             }
             Map<String, String> dto = Map.of("message", successfulKeyRotationEvent.message(), "newKey", successfulKeyRotationEvent.newKey());
             String dtoJson = objectMapper.writeValueAsString(dto);
-            Log.warn("Sending the following request: " + dto);
             mainAPIEmailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, dtoJson);
             Log.info("Notify New Key Rotation Event Successfully!");
         }

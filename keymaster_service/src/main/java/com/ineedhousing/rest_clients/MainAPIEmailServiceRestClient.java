@@ -1,12 +1,10 @@
 package com.ineedhousing.rest_clients;
 
-import com.ineedhousing.models.SuccessfulKeyRotationEvent;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import java.util.Map;
 
 @RegisterRestClient(configKey = "api-email")
 public interface MainAPIEmailServiceRestClient {

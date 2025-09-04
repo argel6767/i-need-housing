@@ -41,9 +41,7 @@ public class ServiceEmailService {
 
     @Async
     public void sendKeyRotationEmail(Map<String, String> event) {
-        log.info("Sending key rotation email with data: {}", event);
-        
-        log.info("Processing the following event: {}", event);
+        log.info("Sending key rotation email");
         if (event.get("newKey")== null || event.get("newKey").isEmpty()) {
             throw new IllegalArgumentException("New Key is null or empty");
         }
@@ -169,6 +167,7 @@ public class ServiceEmailService {
         admins.forEach(admin -> {
             try {
                 sendEmail(admin.getEmail(), event.get("message"), body);
+                log.info("Successfully sent email to " + admin.getEmail());
             } catch (MessagingException e) {
                 log.error("Failed to send email to {}", admin.getEmail(), e);
             }
