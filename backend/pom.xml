@@ -167,8 +167,8 @@
 							<version>1.18.30</version>
 						</path>
 					</annotationProcessorPaths>
-                    <source>8</source>
-                    <target>8</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
 			</plugin>
 			<plugin>
