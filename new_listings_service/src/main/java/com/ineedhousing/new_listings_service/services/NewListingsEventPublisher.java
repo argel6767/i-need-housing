@@ -1,6 +1,6 @@
 package com.ineedhousing.new_listings_service.services;
 
-import com.ineedhousing.new_listings_service.models.requests.NewListingsEventDto;
+import com.ineedhousing.new_listings_service.models.events.NewListingsEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ public class NewListingsEventPublisher {
         this.eventPublisher = eventPublisher;
     }
 
-    public void publishEvent(NewListingsEventDto event) {
+    public void publishEvent(NewListingsEvent event) {
         eventPublisher.publishEvent(event);
     }
 }

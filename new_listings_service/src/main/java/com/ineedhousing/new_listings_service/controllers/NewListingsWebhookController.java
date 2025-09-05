@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ineedhousing.new_listings_service.models.requests.NewListingsEventDto;
+import com.ineedhousing.new_listings_service.models.events.NewListingsEvent;
 import com.ineedhousing.new_listings_service.services.NewListingsEventPublisher;
 
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
@@ -23,8 +23,8 @@ public class NewListingsWebhookController {
     }
 
     @PostMapping("/new-listings")
-    public ResponseEntity<String> publishNewListingsEvent(NewListingsEventDto newListingsEventDto) {
-        eventPublisher.publishEvent(newListingsEventDto);
+    public ResponseEntity<String> publishNewListingsEvent(NewListingsEvent newListingsEvent) {
+        eventPublisher.publishEvent(newListingsEvent);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("New Listings Event Published");
     }
 }

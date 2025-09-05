@@ -1,6 +1,6 @@
 package com.ineedhousing.new_listings_service.subscribers;
 
-import com.ineedhousing.new_listings_service.models.requests.NewListingsEventDto;
+import com.ineedhousing.new_listings_service.models.events.NewListingsEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ public class AirbnbSubscriber {
 
     @EventListener
     @Async
-    public void handleNewListingsEvent(NewListingsEventDto event) {
+    public void handleNewListingsEvent(NewListingsEvent event) {
 
     }
 }

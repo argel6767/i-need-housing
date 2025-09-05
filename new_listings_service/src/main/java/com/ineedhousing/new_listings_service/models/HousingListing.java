@@ -3,23 +3,15 @@ package com.ineedhousing.new_listings_service.models;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.persistence.*;
 import org.locationtech.jts.geom.Point;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.PrePersist;
-
-
-
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_address", columnList = "address")
+})
 public class HousingListing {
 
     public HousingListing() {}
@@ -70,7 +62,7 @@ public class HousingListing {
         return location;
     }
 
-    public static class HousingListingBuilder{
+    public static class HousingListingBuilder {
         HousingListing housingListing = new HousingListing();
 
         public HousingListing build() {
@@ -97,7 +89,7 @@ public class HousingListing {
             return this;
         }
 
-        public  HousingListingBuilder rate(Double rate) {
+        public HousingListingBuilder rate(Double rate) {
             housingListing.rate = rate;
             return this;
         }
@@ -136,11 +128,5 @@ public class HousingListing {
             housingListing.numBaths = numBaths;
             return this;
         }
-
-        public HousingListingBuilder createdAt(LocalDateTime createdAt) {
-            housingListing.createdAt = createdAt;
-            return this;
-        }
     }
-
 }

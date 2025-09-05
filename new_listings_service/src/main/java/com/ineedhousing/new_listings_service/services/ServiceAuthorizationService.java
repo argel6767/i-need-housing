@@ -43,10 +43,14 @@ public class ServiceAuthorizationService {
                     .retrieve()
                     .toEntity(VerifiedServiceDto.class)
                     .getBody();
+            if (verifiedServiceDto == null) {
+                logger.error("{} service verification failed, defaulting to false", serviceName);
+                return false;
+            }
             return verifiedServiceDto.authorizedStatus().equals("Service is authorized");
         }
         catch (Exception e) {
-            logger.error("{} service verification failed", serviceName, e);
+            logger.error("{} service verification failed, defaulting to false", serviceName, e);
             return false;
         }
     }

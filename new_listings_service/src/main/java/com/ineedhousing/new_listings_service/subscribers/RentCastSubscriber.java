@@ -3,7 +3,7 @@ package com.ineedhousing.new_listings_service.subscribers;
 import com.ineedhousing.new_listings_service.geometry.GeometrySingleton;
 import com.ineedhousing.new_listings_service.models.CityCoordinates;
 import com.ineedhousing.new_listings_service.models.HousingListing;
-import com.ineedhousing.new_listings_service.models.requests.NewListingsEventDto;
+import com.ineedhousing.new_listings_service.models.events.NewListingsEvent;
 import com.ineedhousing.new_listings_service.repositories.HousingListingRepository;
 import com.ineedhousing.new_listings_service.services.GoogleAPIService;
 import org.locationtech.jts.geom.Coordinate;
@@ -12,6 +12,7 @@ import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
@@ -33,19 +34,21 @@ public class RentCastSubscriber {
     private final RestClient restClient;
     private final HousingListingRepository housingListingRepository;
     private final GoogleAPIService googleAPIService;
+    private final ApplicationEventPublisher eventPublisher;
     private final String SOURCE = "RentCast";
     private final int LIMIT = 500;
     private final int RADIUS = 30;
 
-    public RentCastSubscriber(@Qualifier("RentCast API") RestClient restClient, HousingListingRepository housingListingRepository, GoogleAPIService googleAPIService) {
+    public RentCastSubscriber(@Qualifier("RentCast API") RestClient restClient, HousingListingRepository housingListingRepository, GoogleAPIService googleAPIService, ApplicationEventPublisher eventPublisher) {
         this.restClient = restClient;
         this.housingListingRepository = housingListingRepository;
         this.googleAPIService = googleAPIService;
+        this.eventPublisher = eventPublisher;
     }
 
     @EventListener
     @Async
-    public void handleNewListingsEvent(NewListingsEventDto event) {
+    public void handleNewListingsEvent(NewListingsEvent event) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         int size = saveNewListingsAsync(housingListingRepository, this::fetchNewListings, this::transformRawListingData);

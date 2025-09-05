@@ -3,7 +3,7 @@ package com.ineedhousing.new_listings_service.subscribers;
 import com.ineedhousing.new_listings_service.geometry.GeometrySingleton;
 import com.ineedhousing.new_listings_service.models.CityCoordinates;
 import com.ineedhousing.new_listings_service.models.HousingListing;
-import com.ineedhousing.new_listings_service.models.requests.NewListingsEventDto;
+import com.ineedhousing.new_listings_service.models.events.NewListingsEvent;
 import com.ineedhousing.new_listings_service.repositories.HousingListingRepository;
 import com.ineedhousing.new_listings_service.services.GoogleAPIService;
 import org.locationtech.jts.geom.Coordinate;
@@ -45,7 +45,7 @@ public class ZillowSubscriber {
 
     @EventListener
     @Async
-    public void handleNewListingsEvent(NewListingsEventDto event) {
+    public void handleNewListingsEvent(NewListingsEvent event) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         int size = saveNewListing(housingListingRepository, this::fetchNewListings, this::transformRawListingData);
