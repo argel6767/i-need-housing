@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.email;
 
+import com.ineedhousing.backend.email.models.ListingsCacheInvalidationEvent;
 import com.ineedhousing.backend.email.models.NewDataSuccessfullyFetchedEvent;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserRepository;
@@ -7,11 +8,13 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -21,13 +24,15 @@ public class ServiceEmailService {
 
     private final JavaMailSender mailSender;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Value("${support.email}")
     private String emailUsername;
 
-    public ServiceEmailService(JavaMailSender mailSender, UserRepository userRepository) {
+    public ServiceEmailService(JavaMailSender mailSender, UserRepository userRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.mailSender = mailSender;
         this.userRepository = userRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public void sendEmail(String to, String subject, String body) throws MessagingException {
@@ -291,6 +296,7 @@ public class ServiceEmailService {
         </html>
         """, event.source(), event.message(), event.newListingsCount(), event.timeStamp(), event.source());
         notifyAllAdmins(event.message(), body);
+        applicationEventPublisher.publishEvent(new ListingsCacheInvalidationEvent(event.source(), LocalDateTime.now()));
     }
 
     private void notifyAllAdmins(String message, String body) {

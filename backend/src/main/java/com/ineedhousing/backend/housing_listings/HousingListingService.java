@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import com.ineedhousing.backend.email.models.ListingsCacheInvalidationEvent;
 import com.ineedhousing.backend.housing_listings.dto.responses.ListingsResultsPageDto;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserService;
@@ -13,7 +14,10 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
@@ -38,12 +42,14 @@ public class HousingListingService {
     private final HousingListingRepository housingListingRepository;
     private final UserPreferenceService userPreferenceService;
     private final UserService userService;
+    private final CacheManager cacheManager;
     private final int PAGE_SIZE = 50;
 
-    public HousingListingService(HousingListingRepository housingListingRepository, UserPreferenceService userPreferenceService, UserService userService) {
+    public HousingListingService(HousingListingRepository housingListingRepository, UserPreferenceService userPreferenceService, UserService userService, CacheManager cacheManager) {
         this.housingListingRepository = housingListingRepository;
         this.userPreferenceService = userPreferenceService;
         this.userService = userService;
+        this.cacheManager = cacheManager;
     }
 
     /**
@@ -211,9 +217,6 @@ public class HousingListingService {
      * @param preferences
      * @return
      */
-
-
-
     public List<HousingListing> getListingsByMultiplePreferences(double latitude, double longitude, int radius, Map<String, Object> preferences) {
         List<HousingListing> listings = getListingsInArea(latitude, longitude, radius);
         List<HousingListing> filteredListings = UserPreferencesFilterer.findByMultiplePreferences(preferences, listings);
@@ -221,6 +224,16 @@ public class HousingListingService {
             throw new NoListingsFoundException("No listings found for given preferences" + preferences.toString());
         }
         return filteredListings;
+    }
+
+    @EventListener(ListingsCacheInvalidationEvent.class)
+    public void onHouseListingUpdated(ListingsCacheInvalidationEvent event) {
+        log.info("Clearing listings cache to reflect new listings");
+        Cache cache = cacheManager.getCache("listings");
+
+        if (cache != null) {
+            cache.clear();
+        }
     }
 
 }
