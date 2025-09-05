@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.email;
 
+import com.ineedhousing.backend.email.models.NewDataSuccessfullyFetchedEvent;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserRepository;
 import jakarta.mail.MessagingException;
@@ -163,11 +164,141 @@ public class ServiceEmailService {
             </body>
             </html>
             """, event.get("newKey"));
+        notifyAllAdmins(event.get("message"), body);
+    }
+
+    @Async
+    public void sendNewListingsEmail(NewDataSuccessfullyFetchedEvent event){
+        log.info("Sending New Listings Email");
+        String body = String.format("""
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>New Listings Event Notification - Admin</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+            :root {
+              --primary: #176087;
+              --foreground: #000000;
+              --slate-50: #f8fafc;
+              --slate-100: #f1f5f9;
+              --slate-200: #e2e8f0;
+            }
+            body {
+              font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+              margin: 0;
+              padding: 0;
+              line-height: 1.6;
+              background-color: #f5f5f5;
+            }
+            .container {
+              max-width: 600px;
+              margin: 0 auto;
+              background-color: #ffffff;
+              border-radius: 8px;
+              overflow: hidden;
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+              padding: 24px;
+              background-color: #176087;
+              text-align: center;
+            }
+            .header h1 {
+              margin: 0;
+              color: white;
+              font-size: 24px;
+              font-weight: 700;
+              letter-spacing: 0.5px;
+            }
+            .content {
+              padding: 32px 24px;
+              background-color: #ffffff;
+            }
+            .title {
+              font-size: 20px;
+              font-weight: 600;
+              color: #000000;
+              margin-top: 0;
+              margin-bottom: 16px;
+            }
+            .text {
+              font-size: 16px;
+              color: #4b5563;
+              margin-bottom: 24px;
+            }
+            .code-container {
+              background-color: #f1f5f9;
+              border-radius: 6px;
+              padding: 16px;
+              text-align: center;
+              margin-bottom: 24px;
+              border: 1px solid #e2e8f0;
+            }
+            .listing-info {
+              font-family: 'Courier New', monospace;
+              font-size: 18px;
+              font-weight: 700;
+              letter-spacing: 2px;
+              color: #176087;
+              word-break: break-all;
+            }
+            .footer {
+              padding: 24px;
+              background-color: #f8fafc;
+              text-align: center;
+              border-top: 1px solid #e2e8f0;
+            }
+            .footer-text {
+              font-size: 14px;
+              color: #6b7280;
+            }
+            .help-text {
+              font-size: 13px;
+              color: #9ca3af;
+              text-align: center;
+              margin-top: 8px;
+            }
+          </style>
+        </head>
+        <body>
+          <div style="padding: 20px;">
+            <div class="container">
+              <div class="header">
+                <h1>INeedHousing Admin</h1>
+              </div>
+              <div class="content">
+                <h1 class="title">New Listing Event Notification</h1>
+                <p class="text"><strong>Third Party API Service:</strong> %s</p>
+                <p class="text">%s</p>
+                <div class="code-container">
+                  <div class="listing-info">
+                    Items Processed: %d<br>
+                    Timestamp: %s
+                  </div>
+                </div>
+                <p class="text">This is an automated notification from the <strong>%s</strong> API integration in New Listings Service. No action is required unless you notice discrepancies. For more details, check the admin dashboard or logs.</p>
+                <p class="help-text">Questions? Contact the engineering team.</p>
+              </div>
+              <div class="footer">
+                <p class="footer-text">© 2025 INeedHousing. Internal Admin Notification.</p>
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+        """, event.source(), event.message(), event.newListingsCount(), event.timeStamp(), event.source());
+        notifyAllAdmins(event.message(), body);
+    }
+
+    private void notifyAllAdmins(String message, String body) {
         List<User> admins = userRepository.findUsersWithAdminRole();
         admins.forEach(admin -> {
             try {
-                sendEmail(admin.getEmail(), event.get("message"), body);
-                log.info("Successfully sent email to " + admin.getEmail());
+                sendEmail(admin.getEmail(), message, body);
+                log.info("Successfully sent email to {}", admin.getEmail());
             } catch (MessagingException e) {
                 log.error("Failed to send email to {}", admin.getEmail(), e);
             }

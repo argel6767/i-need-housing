@@ -34,6 +34,9 @@ public class RestClientConfiguration {
     @Value("${keymaster.service.url}")
     private String keymasterServiceUrl;
 
+    @Value("${ineedhousing.api.url}")
+    private String ineedhousingApiUrl;
+
     @Value("${service.api.token}")
     private String serviceApiToken;
 
@@ -93,6 +96,17 @@ public class RestClientConfiguration {
     RestClient keymasterRestClient() {
         return  RestClient.builder()
                 .baseUrl(keymasterServiceUrl)
+                .defaultHeaders(httpHeaders -> {
+                    httpHeaders.set("X-Api-Token", serviceApiToken);
+                    httpHeaders.set("X-Service-Name",serviceName);
+                })
+                .build();
+    }
+
+    @Bean(name = "ineedhousing_api")
+    RestClient ineedhousingRestClient() {
+        return RestClient.builder()
+                .baseUrl(ineedhousingApiUrl)
                 .defaultHeaders(httpHeaders -> {
                     httpHeaders.set("X-Api-Token", serviceApiToken);
                     httpHeaders.set("X-Service-Name",serviceName);

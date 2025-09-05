@@ -3,6 +3,8 @@ package com.ineedhousing.new_listings_service.subscribers;
 import com.ineedhousing.new_listings_service.geometry.GeometrySingleton;
 import com.ineedhousing.new_listings_service.models.CityCoordinates;
 import com.ineedhousing.new_listings_service.models.HousingListing;
+import com.ineedhousing.new_listings_service.models.ThirdPartyServiceName;
+import com.ineedhousing.new_listings_service.models.events.NewDataSuccessfullyFetchedEvent;
 import com.ineedhousing.new_listings_service.models.events.NewListingsEvent;
 import com.ineedhousing.new_listings_service.repositories.HousingListingRepository;
 import com.ineedhousing.new_listings_service.services.GoogleAPIService;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.client.RestClient;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +41,7 @@ public class RentCastSubscriber {
     private final String SOURCE = "RentCast";
     private final int LIMIT = 500;
     private final int RADIUS = 30;
+    private final String SUCCESS_MESSAGE = "New listings successfully added by RentCast Service! Total runtime was: ";
 
     public RentCastSubscriber(@Qualifier("RentCast API") RestClient restClient, HousingListingRepository housingListingRepository, GoogleAPIService googleAPIService, ApplicationEventPublisher eventPublisher) {
         this.restClient = restClient;
@@ -53,7 +57,9 @@ public class RentCastSubscriber {
         stopWatch.start();
         int size = saveNewListingsAsync(housingListingRepository, this::fetchNewListings, this::transformRawListingData);
         stopWatch.stop();
-        logger.info("{} New Listings Created by RentCast. Runtime: {}", size, stopWatch.getTotalTimeMillis());
+        long runtime = stopWatch.getTotalTimeMillis();
+        logger.info("{} New Listings Created by RentCast. Runtime: {}", size, runtime);
+        eventPublisher.publishEvent(new NewDataSuccessfullyFetchedEvent(SOURCE, SUCCESS_MESSAGE + runtime, size, LocalDateTime.now()));
     }
 
     private List<Map<String, Object>> fetchNewListings(CityCoordinates cityCoordinates) {
@@ -68,7 +74,7 @@ public class RentCastSubscriber {
                             .queryParam("status", "Active")
                             .build())
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {
+                    .body(new ParameterizedTypeReference<>() {
                     });
             if (response == null) {
                 logger.warn("RentCast API request failed for {}. Check usage rates, and make sure latitude and longitude are valid.", cityCoordinates.cityName());

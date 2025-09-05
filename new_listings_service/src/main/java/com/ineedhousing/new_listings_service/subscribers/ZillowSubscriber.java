@@ -3,6 +3,7 @@ package com.ineedhousing.new_listings_service.subscribers;
 import com.ineedhousing.new_listings_service.geometry.GeometrySingleton;
 import com.ineedhousing.new_listings_service.models.CityCoordinates;
 import com.ineedhousing.new_listings_service.models.HousingListing;
+import com.ineedhousing.new_listings_service.models.events.NewDataSuccessfullyFetchedEvent;
 import com.ineedhousing.new_listings_service.models.events.NewListingsEvent;
 import com.ineedhousing.new_listings_service.repositories.HousingListingRepository;
 import com.ineedhousing.new_listings_service.services.GoogleAPIService;
@@ -12,12 +13,14 @@ import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.client.RestClient;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,12 +38,16 @@ public class ZillowSubscriber {
     private final RestClient restClient;
     private final HousingListingRepository housingListingRepository;
     private final GoogleAPIService googleGeoCodeApiService;
+    private final ApplicationEventPublisher eventPublisher;
     private final String SOURCE = "Zillow";
+    private final String SUCCESS_MESSAGE = "New listings successfully added by Zillow Service! Total runtime was: ";
 
-    public ZillowSubscriber(@Qualifier("Zillow API") RestClient restClient, HousingListingRepository housingListingRepository, GoogleAPIService googleGeoCodeApiService) {
+
+    public ZillowSubscriber(@Qualifier("Zillow API") RestClient restClient, HousingListingRepository housingListingRepository, GoogleAPIService googleGeoCodeApiService, ApplicationEventPublisher eventPublisher) {
         this.restClient = restClient;
         this.housingListingRepository = housingListingRepository;
         this.googleGeoCodeApiService = googleGeoCodeApiService;
+        this.eventPublisher = eventPublisher;
     }
 
     @EventListener
@@ -50,7 +57,10 @@ public class ZillowSubscriber {
         stopWatch.start();
         int size = saveNewListing(housingListingRepository, this::fetchNewListings, this::transformRawListingData);
         stopWatch.stop();
-        logger.info("{} New Listings Created by Zillow. Runtime: {}", size, stopWatch.getTotalTimeMillis());
+        long runtime = stopWatch.getTotalTimeMillis();
+        logger.info("{} New Listings Created by Zillow. Runtime: {}", size, runtime);
+        eventPublisher.publishEvent(new NewDataSuccessfullyFetchedEvent(SOURCE, SUCCESS_MESSAGE + runtime, size, LocalDateTime.now()));
+
     }
 
     private List<Map<String, Object>> fetchNewListings(CityCoordinates cityCoordinates) {
