@@ -46,7 +46,7 @@ def run_application(mvn_path, curr_working_dir, isOSWindows):
     print(process)
 
 def main():
-    verify_postgres_db_status()
+    #verify_postgres_db_status()
     load_env_file()
     mvn_path = find_maven_home()
     print(mvn_path)

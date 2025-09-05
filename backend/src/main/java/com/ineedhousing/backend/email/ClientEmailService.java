@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,6 +38,7 @@ public class ClientEmailService {
         mailSender.send(message);
     }
 
+    @Async
     public void sendVerificationEmail(String code, String email) throws MessagingException {
         log.info("sending verification email for user " + email);
         String subject = "Verification Email";
@@ -163,6 +165,7 @@ public class ClientEmailService {
         sendEmail(email, subject, body);
     }
 
+    @Async
     public void sendResetPasswordEmail(String code, String email) throws MessagingException {
         log.info("sending forgot password email for user " + email);
         String subject = "Reset Password";

@@ -27,8 +27,20 @@ public class INeedHousingAPIService {
 
     public void sendNewListingsMadeEmail(NewDataSuccessfullyFetchedEvent event) {
         try {
-            restClient.post()
-                    .uri("/emails/")
+            String response = restClient.post()
+                    .uri("/emails/notifications/new-listings")
+                    .body(event)
+                    .retrieve()
+                    .body(String.class);
+            if (response == null) {
+                logger.warn("New listings email request failed to be sent to INeedHousing API");
+            }
+            else {
+                logger.info(response);
+            }
+        }
+        catch (Exception e) {
+            logger.error("Failed to send New Listings email request to ineedHousing API. Error message {}" , e.getMessage());
         }
     }
 }

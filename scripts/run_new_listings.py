@@ -22,7 +22,7 @@ def load_env_file():
             print(f"Set environment variable: {key}={value}")
             
 def main():
-    verify_postgres_db_status()
+    #verify_postgres_db_status()
     load_env_file()
     mvn_path = find_maven_home()
     print(mvn_path)

@@ -23,7 +23,7 @@ def load_env_file():
             print(f"Set environment variable: {key}={value}")
             
 def main():
-    verify_postgres_db_status()
+    #verify_postgres_db_status()
     load_env_file()
     process = subprocess.run(["quarkus", "dev"], cwd=str(keymaster), shell=isOSWindows)
     print(process)
