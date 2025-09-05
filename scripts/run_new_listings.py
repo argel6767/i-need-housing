@@ -1,9 +1,9 @@
 import os
-import subprocess
+
 from pathlib import Path
 import platform
 from run_backend import find_maven_home, run_application
-from run_postgres import verify_postgres_db_status
+from run_postgres import verify_db_status
 
 new_listings_service = Path.cwd()/"new_listings_service"
 isOSWindows = platform.system() == "Windows"
@@ -22,7 +22,7 @@ def load_env_file():
             print(f"Set environment variable: {key}={value}")
             
 def main():
-    #verify_postgres_db_status()
+    verify_db_status()
     load_env_file()
     mvn_path = find_maven_home()
     print(mvn_path)

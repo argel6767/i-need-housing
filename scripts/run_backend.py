@@ -2,7 +2,7 @@ import os
 import subprocess
 from pathlib import Path
 import platform
-from run_postgres import verify_postgres_db_status
+from run_postgres import verify_db_status
 
 '''
 loads env variables for the desired environment of the backend Dev or Prod
@@ -16,7 +16,7 @@ def load_env_file():
     file_path=""
     
     if (environment == "Y"):
-        file_path = backend/"dev.env"
+        file_path = backend/".env"
     else:
         file_path = backend/"prod.env"
     
@@ -46,7 +46,7 @@ def run_application(mvn_path, curr_working_dir, isOSWindows):
     print(process)
 
 def main():
-    #verify_postgres_db_status()
+    verify_db_status()
     load_env_file()
     mvn_path = find_maven_home()
     print(mvn_path)
