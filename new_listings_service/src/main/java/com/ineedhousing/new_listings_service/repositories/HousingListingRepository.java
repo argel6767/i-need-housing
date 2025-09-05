@@ -6,8 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
+import java.util.Set;
+
 public interface HousingListingRepository extends JpaRepository<HousingListing, Long> {
 
-    @Query("SELECT CASE WHEN COUNT(l) > 0 THEN true ELSE false END FROM HousingListing l WHERE l.location = :location")
-    boolean existsByLocation(@Param("location") Point location);
+    @Query("SELECT l.location FROM HousingListing l WHERE l.location IN :locations")
+    Set<Point> findExistingLocations(@Param("locations") Collection<Point> locations);
 }
