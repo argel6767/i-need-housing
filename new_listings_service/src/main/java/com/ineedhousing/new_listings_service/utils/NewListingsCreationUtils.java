@@ -3,7 +3,10 @@ package com.ineedhousing.new_listings_service.utils;
 import com.ineedhousing.new_listings_service.models.CityCoordinates;
 import com.ineedhousing.new_listings_service.models.HousingListing;
 import com.ineedhousing.new_listings_service.repositories.HousingListingRepository;
+import com.ineedhousing.new_listings_service.subscribers.RentCastSubscriber;
 import org.locationtech.jts.geom.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.util.HashSet;
@@ -21,6 +24,10 @@ import static com.ineedhousing.new_listings_service.constants.LocationCoordinate
 
 
 public class NewListingsCreationUtils {
+
+    private static int BATCH_SIZE = 5000;
+    private static final Logger logger = LoggerFactory.getLogger(NewListingsCreationUtils.class);
+
 
     public static  <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
@@ -68,8 +75,8 @@ public class NewListingsCreationUtils {
                         .toList();
 
                 List<HousingListing> nonDuplicateListings = filterDuplicateListings(housingListingRepository, newListings);
-                housingListingRepository.saveAll(nonDuplicateListings);
-                return newListings.size();
+                batchSaveNewListings(housingListingRepository, nonDuplicateListings);
+                return nonDuplicateListings.size();
             }
     }
 
@@ -84,8 +91,20 @@ public class NewListingsCreationUtils {
 
         List<HousingListing> nonDuplicateListings = filterDuplicateListings(housingListingRepository, newListings);
 
-        housingListingRepository.saveAll(nonDuplicateListings);
-        return newListings.size();
+        batchSaveNewListings(housingListingRepository, nonDuplicateListings);
+        return nonDuplicateListings.size();
+    }
+
+    private static void batchSaveNewListings(HousingListingRepository repository, List<HousingListing> newListings) {
+        for (int i = 0; i < newListings.size(); i += BATCH_SIZE) {
+            int end = Math.min(i + BATCH_SIZE, newListings.size());
+            try {
+                repository.saveAll(newListings.subList(i, end));
+            }
+            catch (Exception e) {
+                logger.error("Failed to save new listings {} to {} when batch saving. Error message: {}", i, end, e.getMessage());
+            }
+        }
     }
 
 }
