@@ -10,7 +10,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.ineedhousing.new_listings_service.models.ApiTokenAuthenticationToken;
 import com.ineedhousing.new_listings_service.services.ServiceAuthorizationService;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
