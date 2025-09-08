@@ -11,7 +11,7 @@ app_service_name = "cron-job-service"
 def main():
     check_if_docker_is_running()
     if not is_cicd_pipeline():
-        print("Skipping env file loading\nRunning locally\n\n")
+        print("Running locally\n\n")
         load_env_file()
     sign_in_to_azure()
     sign_in_to_acr()

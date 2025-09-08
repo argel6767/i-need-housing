@@ -87,7 +87,6 @@ def main():
 
     sign_in_to_azure()
     sign_in_to_acr()
-    configure_docker_for_gcr()
     image_name = build_and_push_with_unique_tag(repo_name="images/new_listings_service", service=app_service_name, directory=new_listings_service, image_name_creator=make_azure_image_name)
     update_container_app(image_name, app_service_name)
     restart_container_app(app_service_name)
