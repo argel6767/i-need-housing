@@ -1,7 +1,6 @@
 package com.ineedhousing.new_listings_service.constants;
 
 import com.ineedhousing.new_listings_service.models.CityCoordinates;
-
 import java.util.List;
 
 public class LocationCoordinates {
