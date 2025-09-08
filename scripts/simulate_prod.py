@@ -3,6 +3,7 @@ import platform
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from build_backend_image import build_image, check_if_docker_is_running
+from run_postgres import verify_db_status
 
 rootDirectory = Path.cwd()
 ineedhousing_api = rootDirectory / "backend"
@@ -15,7 +16,7 @@ service_env_variables = {"ineedhousing_api": {}, "cron_job_service": {}, "new_li
 isOsWindows = platform.system() == "Windows"
 
 def create_image_name(repo_name, tag):
-    return f"{repo_name}:{tag}"
+    return f"ineedhousing-services/{repo_name}:{tag}"
 
 
 def build_service_images():
@@ -27,7 +28,7 @@ def build_service_images():
         futures = [
             executor.submit(
                 build_image,
-                repo_name="prod_simulation",
+                repo_name=service[0],
                 service=service[0],
                 directory=service[1],
                 image_name_creator=create_image_name
@@ -44,6 +45,7 @@ def build_service_images():
             except Exception as e:
                 print(f"Build failed: {e}")
 
+    print(f"Images built {image_names}")
     return image_names
 
 def fill_env_variable_for_service(service):
@@ -59,8 +61,8 @@ def fill_env_variable_for_service(service):
             if line.startswith("#") or not line.strip():
                 continue
             key, _, value = line.strip().partition("=")
-        current_service_env[key] = value
-        print(f"Set environment variable: {key}={value} for service {service_name}")
+            current_service_env[key] = value
+            print(f"Set environment variable: {key}={value} for service {service_name}")
 
 def fill_service_env_variables():
     print("Filling environment variables for all services \n\n")
@@ -70,7 +72,9 @@ def fill_service_env_variables():
 def run_service_images(image_names):
     print("Running all service images \n\n")
     for image_name in image_names:
-        service_name = image_name.split(":")[1]
+        service_repo = image_name.split(":")[0]
+        service_name = service_repo.split("/")[1]
+        print(f"Inject environment variables for service: {service_name}\n\n")
         env_vars = service_env_variables.get(service_name)
 
         env_args = []
@@ -84,6 +88,7 @@ def run_service_images(image_names):
 
 def main():
     check_if_docker_is_running()
+    verify_db_status()
     image_names = build_service_images()
     fill_service_env_variables()
     run_service_images(image_names)
