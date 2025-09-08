@@ -4,8 +4,9 @@ import platform
 import subprocess
 import tempfile
 import base64
-from build_backend_image import check_if_docker_is_running
-from push_backend_image import build_and_push_with_unique_tag, is_cicd_pipeline, load_env_file
+from build_backend_image import check_if_docker_is_running, make_azure_image_name
+from push_backend_image import build_and_push_with_unique_tag, is_cicd_pipeline, load_env_file, sign_in_to_azure, \
+    sign_in_to_acr
 
 new_listings_service = Path.cwd()/"new_listings_service"
 isOSWindows = platform.system() == "Windows"
@@ -53,19 +54,43 @@ def deploy_new_image(image_name, service_name):
         "--platform=managed"
     ], check=True)
 
+
+def update_container_app(image_name, container_app, resource_group="INeedHousing", environment_name=None):
+    print(f"Updating {container_app} Container App with new image: {image_name}\n")
+    update_cmd = [
+        "az", "containerapp", "update",
+        "--name", container_app,
+        "--resource-group", resource_group,
+        "--image", image_name
+    ]
+
+    update = subprocess.run(update_cmd, shell=isOSWindows, capture_output=True, text=True)
+    print(update)
+    print("Container app update completed\n\n")
+
+
+def restart_container_app(container_app, resource_group="INeedHousing"):
+    print(f"Creating new revision for {container_app} Container App\n")
+    restart_cmd = [
+        "az", "containerapp", "revision", "restart",
+        "--name", container_app,
+        "--resource-group", resource_group
+    ]
+    restart = subprocess.run(restart_cmd, shell=isOSWindows, capture_output=True, text=True)
+    print(restart)
+    print("Container app restarted\n\n")
+
 def main():
-    project_id = os.environ["PROJECT_ID"]
     check_if_docker_is_running()
-    
     if not is_cicd_pipeline():
         load_env_file()
 
-    key = decode_gcp_service_account_key()
-    file_path = create_tmp_service_acc_key_file(key=key)
-    sign_in_to_gcp(file_path=file_path, project_id=project_id)
+    sign_in_to_azure()
+    sign_in_to_acr()
     configure_docker_for_gcr()
-    image_name = build_and_push_with_unique_tag(repo_name="new-listings-service-repo", service=app_service_name, directory=new_listings_service, image_name_creator=make_gcp_image)
-    deploy_new_image(image_name=image_name, service_name=app_service_name)
+    image_name = build_and_push_with_unique_tag(repo_name="images/new_listings_service", service=app_service_name, directory=new_listings_service, image_name_creator=make_azure_image_name)
+    update_container_app(image_name, app_service_name)
+    restart_container_app(app_service_name)
 
 
 if __name__ == "__main__":
