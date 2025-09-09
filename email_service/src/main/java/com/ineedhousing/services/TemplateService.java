@@ -1,6 +1,10 @@
 package com.ineedhousing.services;
 
 import com.ineedhousing.models.EmailTemplate;
+import io.quarkus.cache.CacheInvalidate;
+import io.quarkus.cache.CacheInvalidateAll;
+import io.quarkus.cache.CacheKey;
+import io.quarkus.cache.CacheResult;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
@@ -10,10 +14,12 @@ import static com.ineedhousing.models.EmailTemplate.*;
 @ApplicationScoped
 public class TemplateService {
 
-    public EmailTemplate getEmailTemplate(String templateName) {
+    @CacheResult(cacheName = "templates")
+    public EmailTemplate getEmailTemplate(@CacheKey String templateName) {
         return findByName(templateName);
     }
 
+    @CacheResult(cacheName = "templates")
     public List<EmailTemplate> getAllEmailTemplates() {
         return findAllTemplates();
     }
@@ -22,11 +28,13 @@ public class TemplateService {
         return createTemplate(templateName, templateContent);
     }
 
-    public EmailTemplate updateEmailTemplate(String templateName, String templateContent) {
+    @CacheInvalidateAll(cacheName = "templates")
+    public EmailTemplate updateEmailTemplate(@CacheKey String templateName, String templateContent) {
         return updateTemplate(templateName, templateContent);
     }
 
-    public void deleteEmailTemplate(String templateName) {
+    @CacheInvalidateAll(cacheName = "templates")
+    public void deleteEmailTemplate(@CacheKey String templateName) {
         deleteByName(templateName);
     }
 }
