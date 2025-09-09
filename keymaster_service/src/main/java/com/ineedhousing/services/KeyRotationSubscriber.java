@@ -22,6 +22,7 @@ public class KeyRotationSubscriber {
     MainAPIEmailServiceRestClient mainAPIEmailServiceRestClient;
 
     @Inject
+    @RestClient
     EmailServiceRestClient emailServiceRestClient;
 
     @Inject
