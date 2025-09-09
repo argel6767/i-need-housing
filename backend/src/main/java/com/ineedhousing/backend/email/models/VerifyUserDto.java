@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.auth.requests;
+package com.ineedhousing.backend.email.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class VerifyUserDto {
 
     private String email;
-    private String verificationToken;
+    private String verificationCode;
 
 }

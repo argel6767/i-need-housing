@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.email;
+package com.ineedhousing.backend.email.v1;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

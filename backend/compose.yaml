@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: 'postgis/postgis:latest'
+    environment:
+      - 'POSTGRES_DB=i-need-housing'
+      - 'POSTGRES_PASSWORD=secret'
+      - 'POSTGRES_USER=myuser'
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data # Persist data
+volumes:
+  postgres-data:

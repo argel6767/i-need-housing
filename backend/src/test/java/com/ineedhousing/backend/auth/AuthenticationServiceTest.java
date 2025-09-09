@@ -5,9 +5,9 @@ import com.ineedhousing.backend.auth.exceptions.ExpiredVerificationCodeException
 import com.ineedhousing.backend.auth.requests.AuthenticateUserDto;
 import com.ineedhousing.backend.auth.requests.ChangePasswordDto;
 import com.ineedhousing.backend.auth.requests.ForgotPasswordDto;
-import com.ineedhousing.backend.auth.requests.VerifyUserDto;
-import com.ineedhousing.backend.email.ClientEmailService;
-import com.ineedhousing.backend.email.EmailVerificationException;
+import com.ineedhousing.backend.email.models.VerifyUserDto;
+import com.ineedhousing.backend.email.v1.ClientEmailService;
+import com.ineedhousing.backend.email.exceptions.EmailVerificationException;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserRepository;
 import jakarta.mail.MessagingException;

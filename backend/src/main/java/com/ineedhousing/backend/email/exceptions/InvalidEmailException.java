@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.email;
+package com.ineedhousing.backend.email.exceptions;
 
 public class InvalidEmailException extends RuntimeException{
 

@@ -5,6 +5,7 @@ import com.ineedhousing.backend.auth.exceptions.AuthenticationException;
 import com.ineedhousing.backend.auth.exceptions.ExpiredVerificationCodeException;
 import com.ineedhousing.backend.auth.requests.*;
 import com.ineedhousing.backend.auth.responses.LoginResponse;
+import com.ineedhousing.backend.email.models.VerifyUserDto;
 import com.ineedhousing.backend.jwt.JwtService;
 import com.ineedhousing.backend.user.User;
 import jakarta.mail.MessagingException;

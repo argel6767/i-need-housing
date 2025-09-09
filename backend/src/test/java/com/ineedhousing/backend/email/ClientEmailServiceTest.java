@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.email;
 
+import com.ineedhousing.backend.email.v1.ClientEmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;

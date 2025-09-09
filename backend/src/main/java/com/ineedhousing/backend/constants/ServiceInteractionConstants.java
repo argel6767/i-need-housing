@@ -22,6 +22,9 @@ public final class ServiceInteractionConstants {
     @Value("${new.listings.service.url}")
     private String newListingsServiceUrl;
 
+    @Value("${email.service.url}")
+    private String emailServiceUrl;
+
     @Value("${service.api.token}")
     private String apiToken;
 
@@ -29,7 +32,7 @@ public final class ServiceInteractionConstants {
     private String serviceName;
 
     public List<String> getServiceUrls() {
-        return List.of(cronJobServiceUrl, keymasterServiceUrl, newListingsServiceUrl);
+        return List.of(cronJobServiceUrl, keymasterServiceUrl, newListingsServiceUrl, emailServiceUrl);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.email;
+package com.ineedhousing.backend.email.v1;
 
 
 import jakarta.mail.MessagingException;

@@ -46,7 +46,7 @@ public class EmailResource {
     }
 
     @POST
-    @Path(MediaType.APPLICATION_JSON)
+    @Path("/clients/reset-password")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response resetPassword(VerificationCodeDto verificationCodeDto) {
         clientEmailService.sendResetPasswordEmail(verificationCodeDto, 0);

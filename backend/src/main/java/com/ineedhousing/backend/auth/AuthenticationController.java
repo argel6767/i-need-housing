@@ -6,8 +6,9 @@ import com.ineedhousing.backend.auth.exceptions.ExpiredVerificationCodeException
 import com.ineedhousing.backend.auth.exceptions.InvalidPasswordException;
 import com.ineedhousing.backend.auth.exceptions.UserAlreadyVerifiedException;
 import com.ineedhousing.backend.auth.requests.*;
-import com.ineedhousing.backend.email.EmailVerificationException;
-import com.ineedhousing.backend.email.InvalidEmailException;
+import com.ineedhousing.backend.email.exceptions.EmailVerificationException;
+import com.ineedhousing.backend.email.exceptions.InvalidEmailException;
+import com.ineedhousing.backend.email.models.VerifyUserDto;
 import com.ineedhousing.backend.jwt.JwtService;
 import com.ineedhousing.backend.jwt.JwtUtils;
 import com.ineedhousing.backend.user.User;

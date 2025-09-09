@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.email;
+package com.ineedhousing.backend.email.v1;
 
 import com.ineedhousing.backend.email.models.NewDataSuccessfullyFetchedEvent;
 import lombok.extern.slf4j.Slf4j;

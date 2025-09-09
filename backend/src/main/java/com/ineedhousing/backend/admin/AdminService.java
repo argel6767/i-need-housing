@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 
 import com.ineedhousing.backend.admin.exceptions.UnauthorizedAccessException;
 import com.ineedhousing.backend.auth.requests.AuthenticateUserDto;
-import com.ineedhousing.backend.email.EmailVerificationException;
-import com.ineedhousing.backend.email.InvalidEmailException;
+import com.ineedhousing.backend.email.exceptions.EmailVerificationException;
+import com.ineedhousing.backend.email.exceptions.InvalidEmailException;
 import com.ineedhousing.backend.housing_listings.HousingListing;
 import com.ineedhousing.backend.housing_listings.HousingListingRepository;
 import com.ineedhousing.backend.jwt.JwtService;

@@ -7,14 +7,16 @@ import com.ineedhousing.backend.auth.exceptions.UserAlreadyVerifiedException;
 import com.ineedhousing.backend.auth.requests.AuthenticateUserDto;
 import com.ineedhousing.backend.auth.requests.ChangePasswordDto;
 import com.ineedhousing.backend.auth.requests.ForgotPasswordDto;
-import com.ineedhousing.backend.auth.requests.VerifyUserDto;
-import com.ineedhousing.backend.email.ClientEmailService;
-import com.ineedhousing.backend.email.EmailVerificationException;
-import com.ineedhousing.backend.email.InvalidEmailException;
+import com.ineedhousing.backend.email.models.VerifyUserDto;
+import com.ineedhousing.backend.email.v1.ClientEmailService;
+import com.ineedhousing.backend.email.exceptions.EmailVerificationException;
+import com.ineedhousing.backend.email.exceptions.InvalidEmailException;
+import com.ineedhousing.backend.email.v2.EmailService;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserRepository;
 import jakarta.mail.MessagingException;
 
+import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,6 +28,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,13 +43,15 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final ClientEmailService clientEmailService;
+    private final EmailService emailService;
 
     public AuthenticationService(UserRepository userRepository, AuthenticationManager authenticationManager, @Qualifier("BCrypt") PasswordEncoder passwordEncoder,
-                                 ClientEmailService clientEmailService) {
+                                 ClientEmailService clientEmailService, EmailService emailService) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.clientEmailService = clientEmailService;
+        this.emailService = emailService;
     }
 
     /**
@@ -53,6 +59,17 @@ public class AuthenticationService {
      */
     public User signUp(AuthenticateUserDto request) throws MessagingException {
         log.info("Signing up user");
+        verifyUserDetails(request);
+        log.info("Creating new user " + request.getUsername());
+        User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()));
+        user.setAuthorities("ROLE_USER");
+        String code = setVerificationCode(user);
+        sendVerificationEmail(user, code);
+        log.info("User " + request.getUsername() + " created");
+        return userRepository.save(user);
+    }
+
+    private void verifyUserDetails(AuthenticateUserDto request) {
         if (userRepository.findByEmail(request.getUsername()).isPresent()) {
             log.warning("User with email " + request.getUsername() + " already exists");
             throw new AuthenticationException("Email is already in use");
@@ -65,13 +82,43 @@ public class AuthenticationService {
             log.warning("Invalid password " + request.getPassword());
             throw new InvalidPasswordException(request.getPassword() + " is an invalid password");
         }
-        log.info("Creating new user " + request.getUsername());
+    }
+
+    @SneakyThrows
+    public User signUpV2(AuthenticateUserDto request) {
+        log.info("Signing up user");
+        verifyUserDetails(request);
         User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()));
         user.setAuthorities("ROLE_USER");
         String code = setVerificationCode(user);
-        sendVerificationEmail(user, code);
+        VerifyUserDto verifyUserDto = new VerifyUserDto(code, request.getUsername());
+        sendEmailAsynchronous(emailService::sendVerificationCodeEmail, verifyUserDto);
         log.info("User " + request.getUsername() + " created");
         return userRepository.save(user);
+    }
+
+    private void sendEmailAsynchronous(Consumer<VerifyUserDto> emailType, VerifyUserDto request){
+        CompletableFuture.runAsync(() -> {
+            log.info("Sending email request asynchronously");
+            sendEmail(emailType, request);
+        });
+    }
+
+    private void sendEmail(Consumer<VerifyUserDto> emailType, VerifyUserDto request) {
+        try {
+            emailType.accept(request);
+            log.info("Email request sent successfully");
+        }
+        catch (Exception e) {
+            log.warning("Failed to send request, trying once more. Error message: " + e.getMessage());
+            try {
+                emailType.accept(request);
+                log.info("Email request sent successfully after retrying");
+            }
+            catch (Exception e2) {
+                log.warning("Failed to send email even after retrying");
+            }
+        }
     }
 
 
@@ -152,18 +199,18 @@ public class AuthenticationService {
             throw new UserAlreadyVerifiedException("User is already verified");
         }
         if (user.getCodeExpiry().isBefore(LocalDateTime.now())) {
-            log.warning("verification code expired: " + request.getVerificationToken());
+            log.warning("verification code expired: " + request.getVerificationCode());
             throw new ExpiredVerificationCodeException("Verification code expired");
         }
         log.info("verifying user submitting token");
-        if (request.getVerificationToken().equals(user.getVerificationCode())) {
+        if (request.getVerificationCode().equals(user.getVerificationCode())) {
             user.setCodeExpiry(null);
             user.setIsEnabled(true);
             log.info("user verified");
             userRepository.save(user);
         }
         else {
-            log.warning("verification code invalid: " + request.getVerificationToken());
+            log.warning("verification code invalid: " + request.getVerificationCode());
             throw new RuntimeException("Invalid verification token");
         }
 
@@ -196,6 +243,20 @@ public class AuthenticationService {
         userRepository.save(user);
     }
 
+    @SneakyThrows
+    public void resendVerificationEmailV2(String email) {
+        User user = getUser(email);
+        if (user.isEnabled()) {
+            log.warning("user already verified: " + email);
+            throw new EmailVerificationException("Email is already verified");
+        }
+        log.info("resending verification email with new code" + email);
+        String code = setVerificationCode(user);
+        VerifyUserDto dto = new VerifyUserDto(email, code);
+        sendEmailAsynchronous(emailService::sendVerificationCodeEmail, dto);
+        userRepository.save(user);
+    }
+
     /**
      * changes user's password to new one, only if:
      * they exist and if they send their correct current password
@@ -222,6 +283,15 @@ public class AuthenticationService {
         String code = setVerificationCode(user);
         sendResetPasswordEmail(user, code);
         userRepository.save(user);
+    }
+
+    @SneakyThrows
+    public void sendForgottenPasswordVerificationCodeV2(String email) {
+        log.info("sending forgotten password verification code for user " + email);
+        User user = getUser(email);
+        String code = setVerificationCode(user);
+        VerifyUserDto dto = new VerifyUserDto(email, code);
+        sendEmailAsynchronous(emailService::sendResetPasswordEmail, dto);
     }
 
     /**
