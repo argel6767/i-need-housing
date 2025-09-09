@@ -1,66 +1,187 @@
-# email_service
+# INeedHousing Email Service
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+A Quarkus-based microservice responsible for handling email communications within the INeedHousing platform, including user verification emails, notifications, and system alerts.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## 🚀 Features
 
-## Running the application in dev mode
+### Email Management
+- **User Verification Emails**: Send email verification codes for user registration
+- **Password Reset Emails**: Handle password reset requests and notifications
+- **System Notifications**: Send administrative and system-related emails
+- **Email Templates**: Structured email templates for consistent messaging
 
-You can run your application in dev mode that enables live coding using:
+### Integration Features
+- **Main API Integration**: REST client integration with the main INeedHousing API
+- **Service Authentication**: Secure service-to-service communication via API tokens
+- **Rate Limiting**: Built-in rate limiting to prevent API abuse
+- **Health Monitoring**: Health checks and service status endpoints
 
-```shell script
-./mvnw quarkus:dev
+## 🛠️ Technical Stack
+
+- **Framework**: Quarkus 3.26.2
+- **Language**: Java 21
+- **Database**: PostgreSQL with Hibernate ORM Panache
+- **Build Tool**: Maven
+- **Containerization**: Docker with native and JVM modes
+- **Deployment**: Google Cloud Run via GitHub Actions
+
+## 📦 Dependencies
+
+Key dependencies include:
+
+- **Quarkus Core**: Arc (CDI), REST, REST Client, Jackson
+- **Database**: PostgreSQL JDBC driver with Hibernate ORM Panache
+- **Email**: Quarkus Mail for email functionality
+- **Health**: SmallRye Health for monitoring
+- **Testing**: JUnit 5, REST Assured
+
+## 🏗️ Project Structure
+
+```txt
+src/main/java/com/ineedhousing/
+├── configs/                   # Application configuration
+├── constants/                 # Application constants
+├── exception/                 # Exception handling
+├── filters/                   # Request filtering
+├── models/                    # Data models and DTOs
+├── resources/                 # REST endpoints
+├── rest_clients/              # External service clients
+└── services/                  # Business logic services
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+## ⚙️ Configuration
 
-## Packaging and running the application
+The application uses environment variables for configuration:
 
-The application can be packaged using:
+### Required Configuration
+- Database connection settings for PostgreSQL
+- Email server configuration (SMTP settings)
+- Main API service URL and authentication
+- Service-specific configuration parameters
 
-```shell script
-./mvnw package
+## 🚀 Getting Started
+
+1. **Prerequisites**
+   - Java 21
+   - Maven
+   - PostgreSQL database
+   - Docker (optional)
+   - Google Cloud account (for deployment)
+
+2. **Local Development**
+
+   ```bash
+   # Clone the repository
+   git clone [repository-url]
+   
+   # Navigate to service directory
+   cd email_service
+   
+   # Set up environment variables
+   # Configure database connections and email settings
+   
+   # Run in development mode
+   ./mvnw compile quarkus:dev
+   ```
+
+3. **Docker Deployment**
+
+   ```bash
+   # Build the application
+   ./mvnw package
+   
+   # Build Docker image
+   docker build -f src/main/docker/Dockerfile.jvm -t ineedhousing/email-service .
+   
+   # Run container
+   docker run -p 8080:8080 --env-file .env ineedhousing/email-service
+   ```
+
+4. **Native Build** (Optional)
+
+   ```bash
+   # Build native executable
+   ./mvnw package -Dnative
+   
+   # Build native Docker image
+   docker build -f src/main/docker/Dockerfile.native -t ineedhousing/email-service:native .
+   ```
+
+5. **Production Deployment**
+
+   The service is automatically deployed to Google Cloud Run via GitHub Actions when changes are pushed to the `production` branch.
+
+## 📝 API Endpoints
+
+### Email Operations
+- `POST /email/send-verification` - Send user verification email
+- `POST /email/send-password-reset` - Send password reset email
+- `POST /email/send-notification` - Send system notification
+
+### Health & Status
+- `GET /ping` - Basic connectivity test
+- `GET /q/health` - Detailed health check
+
+## 🔌 Integration
+
+The Email Service integrates with other INeedHousing services:
+
+- **Backend Service**: Receives email requests from the main API
+- **Keymaster Service**: Authenticates service-to-service communication
+- **Admin Dashboard**: Provides email service monitoring and management
+
+## 🧪 Testing
+
+```bash
+# Run unit tests
+./mvnw test
+
+# Run integration tests
+./mvnw verify
+
+# Run with coverage
+./mvnw test jacoco:report
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+## 🔒 Security
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+- **Service Authentication**: API token-based authentication with Keymaster Service
+- **Email Security**: Secure SMTP configuration and email validation
+- **Database Security**: Encrypted connections and credential management
+- **Request Filtering**: Global request filter for access token validation
 
-If you want to build an _über-jar_, execute the following command:
+## 🐳 Container Support
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+The service is optimized for containerized deployments:
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+- **JVM Mode**: Standard Docker container with fast startup
+- **Native Mode**: GraalVM native executable for minimal resource usage
+- **Kubernetes Ready**: Health checks and graceful shutdown support
+- **Cloud Run**: Optimized for Google Cloud Run deployment
 
-## Creating a native executable
+## 🚀 Deployment
 
-You can create a native executable using:
+### Automated Deployment
 
-```shell script
-./mvnw package -Dnative
-```
+- **GitHub Actions**: Automated deployment to Google Cloud Run
+- **Production Branch**: Deploys when code is pushed to `production` branch
+- **Smart Change Detection**: Only deploys when email service changes are detected
+- **GCP Integration**: Seamless deployment to Google Cloud Platform
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+### Manual Deployment
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
+- Use the provided Python scripts in the `/scripts` directory
+- Docker-based deployment for containerized environments
+- Google Cloud CLI deployment for direct GCP integration
 
-You can then execute your native executable with: `./target/email_service-1.0.0-SNAPSHOT-runner`
+## 📄 License
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+This project is licensed under the terms specified in the project's license file.
 
-## Related Guides
+## 👥 Authors
 
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
+- Argel Hernandez Amaya
 
-## Provided Code
+## 📞 Support
 
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+For support, please contact the project maintainers or open an issue in the repository.

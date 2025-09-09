@@ -10,18 +10,26 @@ INeedHousing operates as a main monolith with additional microservices system ac
 
 ### Cloud Infrastructure
 
-#### Azure Cloud (Primary Backend)
+#### Vercel
+
 - **INeedHousing Web App (Next.js)**: Modern frontend application deployed on Vercel
-- **INeedHousing Backend (Spring Boot 3.4.4)**: Core REST API service with comprehensive business logic
-- **Cron Job Service (Quarkus 3.22.3)**: Automated maintenance and cleanup service
+- **INeedHousing Admin Dashboard Web App (Next.js)**: Modern admin dashboard application deployed on Vercel
+
+#### Azure Cloud
+
+- **INeedHousing API (Spring Boot)**: Core REST API service with comprehensive business logic
+- **Cron Job Service (Quarkus)**: Automated maintenance and cleanup service
+- **New Listings Service (Spring Boot)**: Handles listing ingestion and third-party API integration
 - **Azure PostgreSQL (Shared DB)**: Centralized relational database for all user and listing data
 - **Azure Blob Storage**: File storage for user profile pictures and media
 - **Azure Container Registry**: Docker image management for Azure services
 - **Azure App Service**: Hosting platform for backend and cron job services
+- **Azure Container Apps**: Serverless hosting platform for New Listings Service
 
-#### Google Cloud Platform (Data Processing)
-- **New Listings Service (Spring Boot 3.5.4)**: Handles listing ingestion and third-party API integration
-- **Keymaster Service (Quarkus 3.25.4)**: Service registration and API token generation for secure service-to-service communication
+#### Google Cloud Platform
+
+- **Keymaster Service (Quarkus)**: Service registration and API token generation for secure service-to-service communication
+- **Email Service (Quarkus)**: Handles all email communications including user verification, password resets, and system notifications
 - **Database Proxy (VM)**: Secure gateway for GCP services to access Azure PostgreSQL
 - **Cloud Run**: Serverless container hosting for GCP services
 
@@ -74,6 +82,7 @@ INeedHousing operates as a main monolith with additional microservices system ac
 - **New Listings Service**: Spring Boot 3.5.4 with Spring Cloud
 - **Cron Job Service**: Quarkus 3.22.3 with WebSocket support
 - **Keymaster Service**: Quarkus 3.25.4 for service registration and API token management
+- **Email Service**: Quarkus 3.26.2 for email communications and notifications
 
 ### Database & Storage
 - **Primary Database**: Azure PostgreSQL with Hibernate Spatial
@@ -110,6 +119,8 @@ i-need-housing/
 │   └── src/main/java/      # Scheduled tasks & cleanup
 ├── keymaster_service/       # Quarkus 3.25.4 service management
 │   └── src/main/java/      # Service registration & API token generation
+├── email_service/           # Quarkus 3.26.2 email communications
+│   └── src/main/java/      # Email service implementation
 ├── scripts/                 # Deployment & utility scripts
 ├── .github/workflows/       # CI/CD automation
 └── docs/                    # Architecture & documentation
@@ -126,7 +137,7 @@ i-need-housing/
 
 ### Environment Management
 - **Azure Environment**: Backend, Cron Job Service, and Database
-- **GCP Environment**: New listings service and Keymaster service
+- **GCP Environment**: Email Service, New Listings Service and Keymaster Service
 - **Cross-Cloud Communication**: Secure proxy-based data access
 - **Environment Variables**: Secure management via GitHub Secrets
 
@@ -164,6 +175,9 @@ i-need-housing/
    
    # New Listings Service
    python scripts/run_new_listing.py
+   
+   # Email Service
+   python scripts/run_email_service.py
    ```
 
 ### Production Deployment
