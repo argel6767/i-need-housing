@@ -1,6 +1,5 @@
 package com.ineedhousing.backend.email.v1;
 
-
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.java.Log;
@@ -10,12 +9,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Lazy;
 
 /**
  * houses the business logic of formatting an email
  */
 @Log
 @Service
+@Lazy
 public class ClientEmailService {
 
     @Autowired

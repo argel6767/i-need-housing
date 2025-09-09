@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping("/emails")
+@Lazy
 public class EmailController {
 
     private final ServiceEmailService serviceEmailService;
