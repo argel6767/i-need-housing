@@ -2,6 +2,7 @@ package com.ineedhousing.backend.exception;
 
 import com.ineedhousing.backend.exception.exceptions.ServiceUnavailableException;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
@@ -60,4 +61,10 @@ public class GlobalExceptionHandler {
                 .body(exc.getMessage());
     }
 
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<String> handleMessagingException(MessagingException me) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(me.getMessage());
+    }
 }

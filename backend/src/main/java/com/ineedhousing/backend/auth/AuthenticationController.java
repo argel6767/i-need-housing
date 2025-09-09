@@ -77,6 +77,21 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("/v2/register")
+    @RateLimiter(name = "auths")
+    public ResponseEntity<?> registerV2(@RequestBody AuthenticateUserDto request) {
+        try {
+            User registeredUser = authenticationService.signUpV2(request);
+            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+        }
+        catch (AuthenticationException ae) {
+            return new ResponseEntity<>(ae.getMessage(), HttpStatus.CONFLICT);
+        }
+        catch (InvalidEmailException | InvalidPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     /**
      * login user endpoint
      */
@@ -150,6 +165,21 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("/v2/resend")
+    @RateLimiter(name = "auths")
+    public ResponseEntity<?> resendV2(@RequestBody ResendEmailDto email) {
+        try {
+            authenticationService.resendVerificationEmailV2(email.getEmail());
+            return ResponseEntity.ok("Verification code resent!");
+        }
+        catch (EmailVerificationException eve) {
+            return ResponseEntity.badRequest().body(eve.getMessage());
+        }
+        catch (UsernameNotFoundException unfe) {
+            return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
     /**
      * changes passwords for user
      * THIS IS USED ONLY FOR WHEN A USER WANTS TO UPDATE PASSWORD
@@ -182,6 +212,21 @@ public class AuthenticationController {
             return ResponseEntity.notFound().build();
         } catch (MessagingException me) {
             return ResponseEntity.internalServerError().body(me.getMessage());
+        }
+    }
+
+    /**
+     * sends email for reset password request
+     */
+    @PostMapping("/v2/forgot/{email}")
+    @RateLimiter(name = "auths")
+    public ResponseEntity<?> forgotPasswordV2(@PathVariable String email) {
+        try {
+            authenticationService.sendForgottenPasswordVerificationCodeV2(email);
+            return ResponseEntity.ok("Forgot password verification code sent!");
+        }
+        catch (UsernameNotFoundException unfe) {
+            return ResponseEntity.notFound().build();
         }
     }
 
