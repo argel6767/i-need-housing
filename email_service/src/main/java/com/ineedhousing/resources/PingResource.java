@@ -7,7 +7,7 @@ import jakarta.ws.rs.Path;
 import java.time.temporal.ChronoUnit;
 
 @Path("/ping")
-public class PingResource {
+public  class PingResource {
 
     @POST
     @RateLimit(windowUnit = ChronoUnit.MINUTES)

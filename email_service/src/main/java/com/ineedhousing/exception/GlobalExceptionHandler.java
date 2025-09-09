@@ -1,14 +1,13 @@
 package com.ineedhousing.exception;
 
 
+import com.ineedhousing.models.responses.FailedRequestDto;
 import io.quarkus.logging.Log;
 import io.smallrye.faulttolerance.api.RateLimitException;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
-import main.java.com.ineedhousing.exception.model.FailedRequestDto;
 import org.jboss.resteasy.reactive.ClientWebApplicationException;
 
 import java.time.Instant;

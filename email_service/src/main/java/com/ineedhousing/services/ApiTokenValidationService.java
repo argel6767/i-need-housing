@@ -2,8 +2,8 @@ package com.ineedhousing.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ineedhousing.configs.ServiceInteractionConfiguration;
-import com.ineedhousing.models.ServiceVerificationDto;
-import com.ineedhousing.models.VerifiedServiceDto;
+import com.ineedhousing.models.requests.ServiceVerificationDto;
+import com.ineedhousing.models.responses.VerifiedServiceDto;
 import com.ineedhousing.rest_clients.KeymasterServiceRestClient;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;

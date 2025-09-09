@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.Config;
+import com.ineedhousing.exception.exceptions.MissingConfigurationValueException;
 
 @ApplicationScoped
 public class ServiceInteractionConfiguration {
@@ -16,9 +17,9 @@ public class ServiceInteractionConfiguration {
     @PostConstruct
     void init() {
         apiToken = config.getOptionalValue("service.api.token", String.class)
-                .orElseThrow(() -> new main.java.com.ineedhousing.exception.exceptions.MissingConfigurationValueException("new_listings_service API token not present!"));
+                .orElseThrow(() -> new MissingConfigurationValueException("new_listings_service API token not present!"));
         serviceName = config.getOptionalValue("service.name", String.class)
-                .orElseThrow(() -> new main.java.com.ineedhousing.exception.exceptions.MissingConfigurationValueException("new_listings_service service name not present!"));
+                .orElseThrow(() -> new MissingConfigurationValueException("new_listings_service service name not present!"));
     }
 
     public String getApiToken() {
