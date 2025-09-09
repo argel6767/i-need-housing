@@ -8,6 +8,7 @@ import com.ineedhousing.backend.auth.requests.ForgotPasswordDto;
 import com.ineedhousing.backend.email.models.VerifyUserDto;
 import com.ineedhousing.backend.email.v1.ClientEmailService;
 import com.ineedhousing.backend.email.exceptions.EmailVerificationException;
+import com.ineedhousing.backend.email.v2.EmailService;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserRepository;
 import jakarta.mail.MessagingException;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +38,10 @@ class AuthenticationServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private ClientEmailService clientEmailService;
+    @Mock
+    private EmailService emailService;
+    @Mock
+    private TaskExecutor taskExecutor;
 
     private AuthenticationService authenticationService;
 
@@ -50,7 +56,9 @@ class AuthenticationServiceTest {
                 userRepository,
                 authenticationManager,
                 passwordEncoder,
-                clientEmailService
+                clientEmailService,
+                emailService,
+                taskExecutor
         );
 
         successfulUser.setEmail("test@example.com");

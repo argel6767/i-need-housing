@@ -12,6 +12,7 @@ import com.ineedhousing.backend.email.v1.ClientEmailService;
 import com.ineedhousing.backend.email.exceptions.EmailVerificationException;
 import com.ineedhousing.backend.email.exceptions.InvalidEmailException;
 import com.ineedhousing.backend.email.v2.EmailService;
+import com.ineedhousing.backend.functions.ExceptionalConsumer;
 import com.ineedhousing.backend.user.User;
 import com.ineedhousing.backend.user.UserRepository;
 import jakarta.mail.MessagingException;
@@ -20,6 +21,7 @@ import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,7 +31,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,14 +45,16 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final ClientEmailService clientEmailService;
     private final EmailService emailService;
+    private final TaskExecutor taskExecutor;
 
     public AuthenticationService(UserRepository userRepository, AuthenticationManager authenticationManager, @Qualifier("BCrypt") PasswordEncoder passwordEncoder,
-                                 ClientEmailService clientEmailService, EmailService emailService) {
+                                 ClientEmailService clientEmailService, EmailService emailService, @Qualifier("virtualThreadTaskExecutor") TaskExecutor taskExecutor) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.clientEmailService = clientEmailService;
         this.emailService = emailService;
+        this.taskExecutor = taskExecutor;
     }
 
     /**
@@ -97,14 +100,14 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    private void sendEmailAsynchronous(Consumer<VerifyUserDto> emailType, VerifyUserDto request){
+    private void sendEmailAsynchronous(ExceptionalConsumer<VerifyUserDto, Exception> emailType, VerifyUserDto request){
         CompletableFuture.runAsync(() -> {
             log.info("Sending email request asynchronously");
             sendEmail(emailType, request);
-        });
+        }, taskExecutor);
     }
 
-    private void sendEmail(Consumer<VerifyUserDto> emailType, VerifyUserDto request) {
+    private void sendEmail(ExceptionalConsumer<VerifyUserDto, Exception> emailType, VerifyUserDto request) {
         try {
             emailType.accept(request);
             log.info("Email request sent successfully");

@@ -4,6 +4,7 @@ import com.ineedhousing.backend.exception.exceptions.ServiceUnavailableException
 import com.ineedhousing.backend.keymaster_service.models.requests.ServiceRegistrationDto;
 import com.ineedhousing.backend.keymaster_service.models.responses.RegisteredServiceDto;
 import com.ineedhousing.backend.keymaster_service.models.responses.RegistrationKeyDto;
+import com.ineedhousing.backend.model.FailedServiceInteractionDto;
 import com.ineedhousing.backend.ping_services.models.models.PingEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+
+import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -57,13 +60,13 @@ public class KeymasterRestService {
                     .body(RegisteredServiceDto.class);
             if (newService == null) {
                 log.error("Service was unsuccessfully registered by Keymaster Service");
-                throw new ServiceUnavailableException("Service was not successfully registered");
+                throw new ServiceUnavailableException("Service was not successfully registered", new FailedServiceInteractionDto("Service was not successfully registered", LocalDateTime.now(), null));
             }
             return newService;
         }
         catch (RestClientException e) {
             log.error("Service was unsuccessfully registered by Keymaster Service: {},", e.getMessage());
-            throw new ServiceUnavailableException(String.format("Service was not successfully registered by Keymaster Service. Message: %s ", e.getMessage()));
+            throw new ServiceUnavailableException(String.format("Service was not successfully registered by Keymaster Service. Message: %s ", e.getMessage()), new FailedServiceInteractionDto(e.getMessage(), LocalDateTime.now(), e.getCause().toString()));
         }
     }
 
@@ -76,7 +79,7 @@ public class KeymasterRestService {
                     .body(RegistrationKeyDto.class);
             if (registrationKeyDto == null) {
                 log.error("Keymaster Service request was unsuccessful in fetching Registration Key");
-                throw new ServiceUnavailableException("Fetching Registration Key from Keymaster Service was unsuccessful");
+                throw new ServiceUnavailableException("Fetching Registration Key from Keymaster Service was unsuccessful", new FailedServiceInteractionDto("Fetching Registration Key from Keymaster Service was unsuccessful", LocalDateTime.now(), null));
             }
             log.info("Registration Key fetched. Timestamp {},", registrationKeyDto.timeStamp());
             log.info(registrationKeyDto.toString());
@@ -84,7 +87,7 @@ public class KeymasterRestService {
         }
         catch (RestClientException e) {
             log.error("Keymaster Service request was unsuccessful in fetching Registration Key: {},", e.getMessage());
-            throw new ServiceUnavailableException("Fetching Registration Key from Keymaster Service was unsuccessful. Response: " + e.getMessage());
+            throw new ServiceUnavailableException("Fetching Registration Key from Keymaster Service was unsuccessful. Response: " + e.getMessage(), new FailedServiceInteractionDto(e.getMessage(), LocalDateTime.now(), e.getCause().toString()));
         }
 
     }
