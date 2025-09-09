@@ -22,7 +22,7 @@ public class ContainerRegistryResource {
     @GET
     @Path("/repos")
     @Produces(MediaType.APPLICATION_JSON)
-    @RateLimit(value = 10, window = 5, windowUnit = ChronoUnit.MINUTES)
+    @RateLimit(value = 10, window = 3, windowUnit = ChronoUnit.MINUTES)
     public String listRepositories() {
         return containerRegistryService.getRepositories();
     }
