@@ -21,7 +21,8 @@ jobs:
       cron-changed: ${{ steps.filter.outputs.cron_job_service }}
       new-listings-changed: ${{ steps.filter.outputs.new_listings_service }}
       keymaster-changed: ${{ steps.filter.outputs.keymaster_service }}
-    
+      email-service-changed: ${{ steps.filter.outputs.email_service }}
+
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
@@ -37,6 +38,8 @@ jobs:
               - 'new_listings_service/**'
             keymaster_service:
               - 'keymaster_service/**'
+            email_service:
+              - 'email_service/**'
 
   deploy-backend:
     name: Deploy Backend
@@ -44,7 +47,7 @@ jobs:
     needs: check-changes
     if: ${{ needs.check-changes.outputs.backend-changed == 'true' }}
     environment: prod-env
-    
+
     env:
       AZURE_CONTAINER_REGISTRY: ineedhousing.azurecr.io
       BACKEND_APP_SERVICE: i-need-housing-backend
@@ -77,7 +80,7 @@ jobs:
     needs: check-changes
     if: ${{ needs.check-changes.outputs.cron-changed == 'true' }}
     environment: prod-env
-    
+
     env:
       AZURE_CONTAINER_REGISTRY: ineedhousing.azurecr.io
       BACKEND_APP_SERVICE: i-need-housing-backend
@@ -110,7 +113,7 @@ jobs:
     needs: check-changes
     if: ${{ needs.check-changes.outputs.new-listings-changed == 'true' }}
     environment: prod-env
-    
+
     env:
       AZURE_CONTAINER_REGISTRY: ineedhousing.azurecr.io
       BACKEND_APP_SERVICE: i-need-housing-backend
@@ -162,6 +165,31 @@ jobs:
         run: |
           python scripts/push_keymaster_image.py cicd
 
+  deploy-email-service:
+    name: Deploy Email Service
+    runs-on: ubuntu-latest
+    needs: check-changes
+    if: ${{ needs.check-changes.outputs.email-service-changed == 'true' }}
+    environment: prod-env
+
+    env:
+      SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Build and Push Email Service Image
+        run: |
+          python scripts/push_email_image.py cicd
+
   deployment-summary:
     name: Deployment Summary
     runs-on: ubuntu-latest
@@ -171,7 +199,8 @@ jobs:
         deploy-backend,
         deploy-cron-service,
         deploy-new-listings-service,
-        deploy-keymaster-service
+        deploy-keymaster-service,
+        deploy-email-service
       ]
     if: always()
 
@@ -184,6 +213,7 @@ jobs:
           echo "Cron service changes detected: ${{ needs.check-changes.outputs.cron-changed }}"
           echo "New Listings service changes detected: ${{ needs.check-changes.outputs.new-listings-changed }}"
           echo "Key Master service changes detected: ${{ needs.check-changes.outputs.keymaster-changed }}"
+          echo "Email service changes detected: ${{ needs.check-changes.outputs.email-service-changed }}"
           echo ""
           
           # Check backend deployment status
@@ -230,6 +260,17 @@ jobs:
             echo "⏭️ Key Master service skipped (no changes)"
           fi
           
+          # Check email service deployment status
+          if [[ "${{ needs.check-changes.outputs.email-service-changed }}" == "true" ]]; then
+            if [[ "${{ needs.deploy-email-service.result }}" == "success" ]]; then
+              echo "✅ Email service deployed successfully"
+            else
+              echo "❌ Email service deployment failed"
+            fi
+          else
+            echo "⏭️ Email service skipped (no changes)"
+          fi
+          
           echo ""
           echo "=== Final Status ==="
           
@@ -241,7 +282,8 @@ jobs:
           if [[ "${{ needs.check-changes.outputs.backend-changed }}" == "true" ]] || \
              [[ "${{ needs.check-changes.outputs.cron-changed }}" == "true" ]] || \
              [[ "${{ needs.check-changes.outputs.new-listings-changed }}" == "true" ]] || \
-             [[ "${{ needs.check-changes.outputs.keymaster-changed }}" == "true" ]]; then
+             [[ "${{ needs.check-changes.outputs.keymaster-changed }}" == "true" ]] || \
+             [[ "${{ needs.check-changes.outputs.email-service-changed }}" == "true" ]]; then
             all_skipped=false
           fi
           
@@ -256,6 +298,9 @@ jobs:
             any_failed=true
           fi
           if [[ "${{ needs.check-changes.outputs.keymaster-changed }}" == "true" ]] && [[ "${{ needs.deploy-keymaster-service.result }}" != "success" ]]; then
+            any_failed=true
+          fi
+          if [[ "${{ needs.check-changes.outputs.email-service-changed }}" == "true" ]] && [[ "${{ needs.deploy-email-service.result }}" != "success" ]]; then
             any_failed=true
           fi
           
