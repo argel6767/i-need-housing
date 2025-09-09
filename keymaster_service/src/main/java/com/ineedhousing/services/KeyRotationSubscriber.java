@@ -2,6 +2,7 @@ package com.ineedhousing.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ineedhousing.models.SuccessfulKeyRotationEvent;
+import com.ineedhousing.rest_clients.EmailServiceRestClient;
 import com.ineedhousing.rest_clients.MainAPIEmailServiceRestClient;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -19,6 +20,9 @@ public class KeyRotationSubscriber {
     @Inject
     @RestClient
     MainAPIEmailServiceRestClient mainAPIEmailServiceRestClient;
+
+    @Inject
+    EmailServiceRestClient emailServiceRestClient;
 
     @Inject
     Config config;
@@ -41,7 +45,13 @@ public class KeyRotationSubscriber {
             }
             Map<String, String> dto = Map.of("message", successfulKeyRotationEvent.message(), "newKey", successfulKeyRotationEvent.newKey());
             String dtoJson = objectMapper.writeValueAsString(dto);
-            mainAPIEmailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, dtoJson);
+            try {
+                emailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, dtoJson);
+            }
+            catch (WebApplicationException e) {
+                Log.error("Email service request service failed. Falling back to legacy INeedHousing API email service. Error message: " + e.getMessage());
+                mainAPIEmailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, dtoJson);
+            }
             Log.info("Notify New Key Rotation Event Successfully!");
         }
         catch (WebApplicationException e) {
