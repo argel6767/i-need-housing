@@ -19,6 +19,8 @@ import static com.ineedhousing.constants.TemplateNames.REGISTER_KEY_ROTATION;
 @ApplicationScoped
 public class ServiceInteractionEmailService {
 
+    private final int MAX_RETRIES = 10;
+
     @Inject
     Mailer mailer;
 
@@ -27,6 +29,7 @@ public class ServiceInteractionEmailService {
 
     @Inject
     TemplateService templateService;
+
 
     public void sendEmail(String to, String subject, String body) {
         Mail mail = Mail.withHtml(to, subject, body);
@@ -58,10 +61,10 @@ public class ServiceInteractionEmailService {
                 .map(result -> (String) result)
                 .toList();
 
-        submitEmailTasks(emails, subject, body);
+        submitEmailTasks(emails, subject, body, 0);
     }
 
-    private void submitEmailTasks(List<String> recipients, String subject, String body) {
+    private void submitEmailTasks(List<String> recipients, String subject, String body, int attempts) {
         try(var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             recipients.forEach(recipient -> {
                 executor.submit(() -> {
@@ -69,7 +72,13 @@ public class ServiceInteractionEmailService {
                         sendEmail(recipient, subject, body);
                     }
                     catch (Exception e) {
-                        Log.error("Failed to send email to " + recipient, e);
+                        if (attempts >= MAX_RETRIES) {
+                            Log.error(String.format("Failed to send email to %s. Error message: %s. Trying again", recipient, e.getMessage()));
+                            submitEmailTasks(recipients, subject, body, attempts + 1);
+                        }
+                        else {
+                            Log.error("Failed to send email to %s. Error message: " + e.getMessage());
+                        }
                     }
                 });
             });
