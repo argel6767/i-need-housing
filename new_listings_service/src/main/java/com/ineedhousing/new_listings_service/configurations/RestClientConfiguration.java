@@ -37,6 +37,9 @@ public class RestClientConfiguration {
     @Value("${ineedhousing.api.url}")
     private String ineedhousingApiUrl;
 
+    @Value("${email.service.url}")
+    private String emailServiceUrl;
+
     @Value("${service.api.token}")
     private String serviceApiToken;
 
@@ -112,5 +115,15 @@ public class RestClientConfiguration {
                     httpHeaders.set("X-Service-Name",serviceName);
                 })
                 .build();
+    }
+
+    @Bean(name = "email_service")
+    RestClient emailServiceRestClient() {
+        return RestClient.builder()
+                .baseUrl(emailServiceUrl)
+                .defaultHeaders(httpHeaders -> {
+                    httpHeaders.set("X-Api-Token", serviceApiToken);
+                    httpHeaders.set("X-Service-Name",serviceName);
+                }).build();
     }
 }

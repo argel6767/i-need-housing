@@ -42,7 +42,6 @@ public class ZillowSubscriber {
     private final String SOURCE = "Zillow";
     private final String SUCCESS_MESSAGE = "New listings successfully added by Zillow Service! Total runtime was: ";
 
-
     public ZillowSubscriber(@Qualifier("Zillow API") RestClient restClient, HousingListingRepository housingListingRepository, GoogleAPIService googleGeoCodeApiService, ApplicationEventPublisher eventPublisher) {
         this.restClient = restClient;
         this.housingListingRepository = housingListingRepository;

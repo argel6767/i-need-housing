@@ -1,5 +1,6 @@
 package com.ineedhousing.new_listings_service.services;
 
+import com.ineedhousing.new_listings_service.models.events.LegacyEmailEvent;
 import com.ineedhousing.new_listings_service.models.events.NewDataSuccessfullyFetchedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +20,10 @@ public class INeedHousingAPIService {
         this.restClient = restClient;
     }
 
-    @EventListener(NewDataSuccessfullyFetchedEvent.class)
+    @EventListener(LegacyEmailEvent.class)
     @Async
-    public void onNewDataSuccessfullyFetchedEvent(NewDataSuccessfullyFetchedEvent event) {
-        sendNewListingsMadeEmail(event);
+    public void onLegacyEmailEvent(LegacyEmailEvent event) {
+        sendNewListingsMadeEmail(event.event());
     }
 
     public void sendNewListingsMadeEmail(NewDataSuccessfullyFetchedEvent event) {

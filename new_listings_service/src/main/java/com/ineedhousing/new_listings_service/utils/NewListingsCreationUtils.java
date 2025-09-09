@@ -3,7 +3,6 @@ package com.ineedhousing.new_listings_service.utils;
 import com.ineedhousing.new_listings_service.models.CityCoordinates;
 import com.ineedhousing.new_listings_service.models.HousingListing;
 import com.ineedhousing.new_listings_service.repositories.HousingListingRepository;
-import com.ineedhousing.new_listings_service.subscribers.RentCastSubscriber;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
