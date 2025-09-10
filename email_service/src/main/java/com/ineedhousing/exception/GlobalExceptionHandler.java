@@ -1,76 +1,67 @@
 package com.ineedhousing.exception;
 
-
 import com.ineedhousing.models.responses.FailedRequestDto;
 import io.quarkus.logging.Log;
 import io.smallrye.faulttolerance.api.RateLimitException;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.ext.ExceptionMapper;
-import jakarta.ws.rs.ext.Provider;
 import org.jboss.resteasy.reactive.ClientWebApplicationException;
+import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 
 import java.time.Instant;
 
-import static com.ineedhousing.exception.UtilFunctions.buildFailedRequestDto;
+public class GlobalExceptionHandler {
 
-@Provider
-class ExceptionHandler implements ExceptionMapper<Exception> {
-    @Override
-    public Response toResponse(Exception exception) {
-        Log.error("Internal Server Error:\n" + exception);
-        FailedRequestDto dto = buildFailedRequestDto(exception);
-        return Response.serverError().entity(dto).build();
+    @ServerExceptionMapper
+    public Response handleBadRequest(BadRequestException exception) {
+        return buildResponse(Response.Status.BAD_REQUEST, exception, "Bad Request");
     }
-}
 
-@Provider
-class BadRequestExceptionHandler implements ExceptionMapper<BadRequestException> {
-   @Override
-    public Response toResponse(BadRequestException exception) {
-        Log.error("Bad Request:\n" + exception.getMessage());
-        FailedRequestDto dto = buildFailedRequestDto(exception);
-        return Response.status(Response.Status.BAD_REQUEST).entity(dto).build();
+    @ServerExceptionMapper
+    public Response handleIllegalArgument(IllegalArgumentException exception) {
+        return buildResponse(Response.Status.BAD_REQUEST, exception, "Illegal Argument");
     }
-}
 
-@Provider
-class IllegalArgumentExceptionHandler implements ExceptionMapper<IllegalArgumentException> {
-    @Override
-    public Response toResponse(IllegalArgumentException exception) {
-        Log.error("Illegal Argument:\n" + exception.getMessage());
-        FailedRequestDto dto = buildFailedRequestDto(exception);
-        return Response.status(Response.Status.BAD_REQUEST).entity(dto).build();
+    @ServerExceptionMapper
+    public Response handleClientWebApp(ClientWebApplicationException exception) {
+        return buildResponse(Response.Status.BAD_GATEWAY, exception, "Failed Downstream Request");
     }
-}
 
-@Provider
-class ClientWebApplicationExceptionHandler implements ExceptionMapper<ClientWebApplicationException> {
-    @Override
-    public Response toResponse(ClientWebApplicationException exception) {
-        Log.error("Failed Downstream Request Error:\n" + exception.getMessage());
-        FailedRequestDto dto = buildFailedRequestDto(exception);
-        return Response.status(Response.Status.BAD_GATEWAY).entity(dto).build();
+    @ServerExceptionMapper
+    public Response handleRateLimit(RateLimitException exception) {
+        return buildResponse(Response.Status.TOO_MANY_REQUESTS, exception, "Rate Limit Exceeded");
     }
-}
 
-@Provider
-class RateLimitExceptionHandler implements ExceptionMapper<RateLimitException> {
-    @Override
-    public Response toResponse(RateLimitException exception) {
-        Log.error("Rate Limit Exception:\n" + exception.getMessage());
-        FailedRequestDto dto = buildFailedRequestDto(exception);
-        return Response.status(Response.Status.TOO_MANY_REQUESTS).entity(dto).build();
+    @ServerExceptionMapper
+    public Response handleGeneric(Throwable exception) {
+        return buildResponse(Response.Status.INTERNAL_SERVER_ERROR, exception, "Internal Server Error");
+    }
+
+    private Response buildResponse(
+            Response.Status status,
+            Throwable exception,
+            String logPrefix
+    ) {
+        Log.errorf(exception, "%s: %s", logPrefix, exception.getMessage());
+
+        FailedRequestDto dto = UtilFunctions.buildFailedRequestDto(exception);
+
+        return Response.status(status)
+                .entity(dto)
+                .build();
     }
 }
 
 class UtilFunctions {
-    public static FailedRequestDto buildFailedRequestDto(Exception exception) {
-        return new FailedRequestDto(exception.getMessage(), getTimeStamp(), exception.toString());
+    public static FailedRequestDto buildFailedRequestDto(Throwable exception) {
+        return new FailedRequestDto(
+                exception.getMessage(),
+                getTimeStamp(),
+                exception.getClass().getName()
+        );
     }
 
-    public static String getTimeStamp() {
-        Long time = Instant.now().toEpochMilli();
-        return String.valueOf(time);
+    private static String getTimeStamp() {
+        return String.valueOf(Instant.now().toEpochMilli());
     }
 }

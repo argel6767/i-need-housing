@@ -24,6 +24,7 @@ public class TemplateService {
         return findAllTemplates();
     }
 
+    @CacheInvalidateAll(cacheName = "templates")
     public EmailTemplate createEmailTemplate(String templateName, String templateContent) {
         return createTemplate(templateName, templateContent);
     }
