@@ -6,8 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestClient;
 
-import com.ineedhousing.backend.apis.NewListingsRetrievalRestClientConfiguration;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class GoogleCronJobServiceNewListingsRetrievalRestClientConfigurationTest {
