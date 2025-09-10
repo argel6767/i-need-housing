@@ -7,8 +7,10 @@ import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.BadRequestException;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
 import static com.ineedhousing.constants.TemplateNames.EMAIL_VERIFICATION;
 import static com.ineedhousing.constants.TemplateNames.RESET_PASSWORD;
@@ -22,6 +24,9 @@ public class ClientEmailService {
     @Inject
     TemplateService templateService;
 
+    @Inject
+    ExecutorService virtualThreadExecutor;
+
     private final String VERIFICATION_EMAIL_SUBJECT = "Verify your email - INeedHousing";
     private final String FORGET_PASSWORD_SUBJECT = "Reset your password - INeedHousing";
     private final int MAX_TRIES = 10;
@@ -32,6 +37,7 @@ public class ClientEmailService {
     }
 
     public void sendEmailVerificationEmail(VerificationCodeDto verificationCodeDto, int attempts) {
+        verifyPayload(verificationCodeDto);
         EmailTemplate emailTemplate = templateService.getEmailTemplate(EMAIL_VERIFICATION);
         String body = String.format(emailTemplate.templateContent, verificationCodeDto.verificationCode());
         CompletableFuture.runAsync(() -> {
@@ -48,10 +54,11 @@ public class ClientEmailService {
                     Log.error("Failed to send verification email after max tries");
                 }
             }
-        });
+        }, virtualThreadExecutor);
     }
 
     public void sendResetPasswordEmail(VerificationCodeDto verificationCodeDto, int attempts) {
+        verifyPayload(verificationCodeDto);
         EmailTemplate emailTemplate = templateService.getEmailTemplate(RESET_PASSWORD);
         String body = String.format(emailTemplate.templateContent, verificationCodeDto.verificationCode());
         CompletableFuture.runAsync(() -> {
@@ -67,7 +74,14 @@ public class ClientEmailService {
                     Log.error("Failed to send password reset email after max tries");
                 }
             }
-        });
+        }, virtualThreadExecutor);
+    }
+
+    private void verifyPayload(VerificationCodeDto verificationCodeDto) {
+        Log.info("Verifying payload: " + verificationCodeDto.toString());
+        if (verificationCodeDto == null || verificationCodeDto.verificationCode() == null ||  verificationCodeDto.email() == null) {
+            throw new BadRequestException("Invalid verification payload");
+        }
     }
 
 }

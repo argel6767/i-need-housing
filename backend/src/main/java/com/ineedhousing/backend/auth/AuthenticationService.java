@@ -94,7 +94,7 @@ public class AuthenticationService {
         User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()));
         user.setAuthorities("ROLE_USER");
         String code = setVerificationCode(user);
-        VerifyUserDto verifyUserDto = new VerifyUserDto(code, request.getUsername());
+        VerifyUserDto verifyUserDto = new VerifyUserDto(request.getUsername(), code);
         sendEmailAsynchronous(emailService::sendVerificationCodeEmail, verifyUserDto);
         log.info("User " + request.getUsername() + " created");
         return userRepository.save(user);

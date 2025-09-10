@@ -1,4 +1,7 @@
 package com.ineedhousing.models.requests;
 
-public record VerificationCodeDto(String email, String verificationCode) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record VerificationCodeDto(@JsonProperty("email") String email,
+                                  @JsonProperty("verificationCode") String verificationCode) {
 }

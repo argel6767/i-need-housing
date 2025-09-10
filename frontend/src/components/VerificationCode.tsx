@@ -15,7 +15,7 @@ export const VerificationCode = () => {
     const router = useRouter();
     const [credentials, setCredentials] = useState<VerifyUserDto> ({
         email: "",
-        verificationToken:""
+        verificationCode:""
     })
     const [isVerified, setIsVerified] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -39,7 +39,7 @@ export const VerificationCode = () => {
     }
 
     const handleCodeChange = (event : React.ChangeEvent<HTMLInputElement>) => {
-        setCredentials({...credentials, verificationToken:event.target.value.replace(/\D/g, "").slice(0,6)});
+        setCredentials({...credentials, verificationCode:event.target.value.replace(/\D/g, "").slice(0,6)});
     }
 
     const handleVerificationCall = async () => {
@@ -104,7 +104,7 @@ export const VerificationCode = () => {
                     inputMode="numeric"
                     className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 text-center"
                     name="email"
-                    value={credentials.verificationToken}
+                    value={credentials.verificationCode}
                     onChange={handleCodeChange}
                     maxLength={6}
                     />

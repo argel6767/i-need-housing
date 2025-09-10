@@ -11,6 +11,10 @@ import jakarta.ws.rs.ext.Provider;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 
 @Provider
 @Priority(1000)

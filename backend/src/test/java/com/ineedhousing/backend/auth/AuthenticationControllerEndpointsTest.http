@@ -14,7 +14,7 @@ Content-Type: application/json
 
 {
   "email": "argel6767@gmail.com",
-  "verificationToken": "272497"
+  "verificationCode": "272497"
 }
 
 ### Post Request that will be 200 and return JWT Token and time till expiration

@@ -21,5 +21,5 @@ export interface ResendEmailDto {
 
 export interface VerifyUserDto {
     email: string,
-    verificationToken: string
+    verificationCode: string
 }

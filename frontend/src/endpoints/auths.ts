@@ -41,6 +41,24 @@ export const register = async (requestBody: AuthenticateUserDto): Promise<any> =
 }
 
 /**
+ * V2 version register user
+ * @param requestBody
+ */
+export const registerV2 = async (requestBody: AuthenticateUserDto): Promise<any> => {
+    try {
+        await apiClient.post(MODULE_MAPPING+"/v2/register", requestBody);
+        return {message:"user created", email:requestBody.username};
+    }
+    catch (error: any) {
+        console.log(failedCallMessage(error));
+        if (error.response.status === 409) {
+            return "Email is already in use."
+        }
+        return "User could not be created, try again later.";
+    }
+}
+
+/**
  * login user
  * @param requestBody 
  */
@@ -116,6 +134,25 @@ export const resendVerificationEmail = async (email: ResendEmailDto): Promise<an
 }
 
 /**
+ * V2 version resends verification code email
+ * @param email
+ */
+export const resendVerificationEmailV2 = async (email: ResendEmailDto): Promise<any> => {
+    try {
+        const response = await apiClient.post(MODULE_MAPPING+"/v2/resend", email);
+        if (response.status === 200) {
+            return response.data;
+        }
+        console.log(response.data);
+        return null;
+    }
+    catch(error:any) {
+        console.log(failedCallMessage(error));
+        return null;
+    }
+}
+
+/**
  * updates password with the new given password
  * @param requestBody 
  */
@@ -144,6 +181,26 @@ export const sendPasswordVerification = async (email: string): Promise<any> => {
         const response = await apiClient.post(`${MODULE_MAPPING}/${email}`);
         if (response.status === 200) {
             return response.data; 
+        }
+        console.log(response.data);
+        return null;
+    }
+    catch(error) {
+        console.log(error);
+        return failedCallMessage(error);
+    }
+}
+
+/**
+ * V2 version sends email for verification code for a rest password request
+ * @param email
+ * @returns
+ */
+export const sendPasswordVerificationV2 = async (email: string): Promise<any> => {
+    try {
+        const response = await apiClient.post(`${MODULE_MAPPING}/${email}`);
+        if (response.status === 200) {
+            return response.data;
         }
         console.log(response.data);
         return null;

@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.ineedhousing.constants.TemplateNames.NEW_LISTINGS_CREATED;
@@ -30,6 +31,8 @@ public class ServiceInteractionEmailService {
     @Inject
     TemplateService templateService;
 
+    @Inject
+    ExecutorService virtualThreadExecutor;
 
     public void sendEmail(String to, String subject, String body) {
         Mail mail = Mail.withHtml(to, subject, body);
@@ -81,7 +84,7 @@ public class ServiceInteractionEmailService {
                         }
                     }
                 });
-            });
+            }, virtualThreadExecutor);
         }
     }
 }

@@ -5,7 +5,7 @@ import { FormHeader } from "@/components/FormHeader";
 import Link from "next/link";
 import Image from "next/image";
 import icon from "../../../../public/file.svg"
-import { register} from "@/endpoints/auths";
+import {registerV2} from "@/endpoints/auths";
 import {useState} from "react";
 import {useRouter} from "next/navigation";
 import {AuthenticateUserDto} from "@/interfaces/requests/authsRequests";
@@ -22,7 +22,7 @@ const SignUp = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const signUpUser = async (credentials: AuthenticateUserDto) => {
-        const response = await register(credentials);
+        const response = await registerV2(credentials);
         if (response.message === "user created") {
             sessionStorage.setItem("email", response.email)
             router.push("/sign-up/verify");
