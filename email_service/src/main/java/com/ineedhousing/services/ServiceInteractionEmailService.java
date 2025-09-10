@@ -55,7 +55,7 @@ public class ServiceInteractionEmailService {
     public void sendMailToAdmins(String subject, String body) {
         Log.info("Sending email to admins");
         List<String> emails = entityManager
-                .createNativeQuery("SELECT email FROM USERS WHERE role LIKE '%ROLE_ADMIN%'")
+                .createNativeQuery("SELECT email FROM USERS WHERE authorities LIKE '%ROLE_ADMIN%'")
                 .getResultList()
                 .stream()
                 .map(result -> (String) result)
