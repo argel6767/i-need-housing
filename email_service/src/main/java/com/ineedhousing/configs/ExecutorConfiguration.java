@@ -1,5 +1,6 @@
 package com.ineedhousing.configs;
 
+import com.ineedhousing.qualifiers.VirtualThreadPool;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -15,6 +16,7 @@ public class ExecutorConfiguration {
 
     @Produces
     @ApplicationScoped
+    @VirtualThreadPool
     public ExecutorService virtualThreadExecutor() {
         return virtualThreadExecutor;
     }

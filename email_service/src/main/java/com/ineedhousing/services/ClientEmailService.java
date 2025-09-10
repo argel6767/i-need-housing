@@ -2,6 +2,7 @@ package com.ineedhousing.services;
 
 import com.ineedhousing.models.EmailTemplate;
 import com.ineedhousing.models.requests.VerificationCodeDto;
+import com.ineedhousing.qualifiers.VirtualThreadPool;
 import io.quarkus.logging.Log;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
@@ -25,6 +26,7 @@ public class ClientEmailService {
     TemplateService templateService;
 
     @Inject
+    @VirtualThreadPool
     ExecutorService virtualThreadExecutor;
 
     private final String VERIFICATION_EMAIL_SUBJECT = "Verify your email - INeedHousing";
@@ -78,8 +80,11 @@ public class ClientEmailService {
     }
 
     private void verifyPayload(VerificationCodeDto verificationCodeDto) {
+        if (verificationCodeDto == null) {
+            throw new BadRequestException("VerificationDto is null");
+        }
         Log.info("Verifying payload: " + verificationCodeDto.toString());
-        if (verificationCodeDto == null || verificationCodeDto.verificationCode() == null ||  verificationCodeDto.email() == null) {
+        if (verificationCodeDto.verificationCode() == null ||  verificationCodeDto.email() == null) {
             throw new BadRequestException("Invalid verification payload");
         }
     }
