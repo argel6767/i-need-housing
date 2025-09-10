@@ -31,9 +31,6 @@ public class ServiceInteractionEmailService {
     @Inject
     TemplateService templateService;
 
-    @Inject
-    ExecutorService virtualThreadExecutor;
-
     public void sendEmail(String to, String subject, String body) {
         Mail mail = Mail.withHtml(to, subject, body);
         mailer.send(mail);
@@ -58,12 +55,8 @@ public class ServiceInteractionEmailService {
     public void sendMailToAdmins(String subject, String body) {
         Log.info("Sending email to admins");
         List<String> emails = entityManager
-                .createNativeQuery("SELECT email FROM USERS WHERE authorities LIKE '%ROLE_ADMIN%'")
-                .getResultList()
-                .stream()
-                .map(result -> (String) result)
-                .toList();
-
+                .createNativeQuery("SELECT email FROM USERS WHERE authorities LIKE '%ROLE_ADMIN%'", String.class)
+                .getResultList();
         submitEmailTasks(emails, subject, body, 0);
     }
 
@@ -84,7 +77,7 @@ public class ServiceInteractionEmailService {
                         }
                     }
                 });
-            }, virtualThreadExecutor);
+            });
         }
     }
 }
