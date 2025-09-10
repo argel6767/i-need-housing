@@ -10,7 +10,6 @@ import java.util.List;
 @Entity
 public class EmailTemplate extends PanacheEntity {
     public String templateName;
-    @Lob
     @Column(name = "template_content", columnDefinition = "TEXT")
     public String templateContent;
     public LocalDateTime createdAt;
