@@ -3,6 +3,7 @@ package com.ineedhousing.exception;
 import com.ineedhousing.models.responses.FailedRequestDto;
 import io.quarkus.logging.Log;
 import io.smallrye.faulttolerance.api.RateLimitException;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.ClientWebApplicationException;
@@ -10,6 +11,7 @@ import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 
 import java.time.Instant;
 
+@ApplicationScoped
 public class GlobalExceptionHandler {
 
     @ServerExceptionMapper
