@@ -2,11 +2,16 @@ package com.ineedhousing.backend.email.v2;
 
 import com.ineedhousing.backend.email.models.VerifyUserDto;
 import com.ineedhousing.backend.email.v1.ClientEmailService;
+import com.ineedhousing.backend.ping_services.models.models.PingEvent;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.event.EventListener;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 
 @Service
 @Slf4j
@@ -54,5 +59,29 @@ public class EmailService {
             log.error("Failed to send reset password email request to Email Service. Error message: {}. Falling back to legacy email service ", e.getMessage());
             clientEmailService.sendVerificationEmail(verifyUserDto.getVerificationCode(), verifyUserDto.getEmail());
         }
+    }
+
+    public void pingService() {
+        try {
+            String response = restClient.post()
+                    .uri("/ping")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .body(String.class);
+            log.info(response);
+        }
+        catch (RestClientException e) {
+            log.warn("Service was pinged but overall request was not successful: {},", e.getMessage());
+        }
+        catch (Exception e) {
+            log.error("Service was unsuccessful: {},", e.getMessage());
+        }
+    }
+
+    @EventListener(PingEvent.class)
+    @Async
+    public void onPingEvent(PingEvent pingEvent) {
+        log.info("Pinging Email Service");
+        pingService();
     }
 }
