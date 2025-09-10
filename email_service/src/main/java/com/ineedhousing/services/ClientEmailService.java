@@ -34,6 +34,8 @@ public class ClientEmailService {
     private final int MAX_TRIES = 10;
 
     public void sendEmail(String to, String subject, String body) {
+        String privateEmail = to.substring(0,3) + "*****";
+        Log.info("Sending mail to: " + privateEmail);
         Mail mail = Mail.withHtml(to, subject, body);
         mailer.send(mail);
     }
@@ -80,11 +82,7 @@ public class ClientEmailService {
     }
 
     private void verifyPayload(VerificationCodeDto verificationCodeDto) {
-        if (verificationCodeDto == null) {
-            throw new BadRequestException("VerificationDto is null");
-        }
-        Log.info("Verifying payload: " + verificationCodeDto.toString());
-        if (verificationCodeDto.verificationCode() == null ||  verificationCodeDto.email() == null) {
+        if (verificationCodeDto == null || verificationCodeDto.verificationCode() == null ||  verificationCodeDto.email() == null) {
             throw new BadRequestException("Invalid verification payload");
         }
     }
