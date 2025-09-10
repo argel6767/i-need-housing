@@ -1,9 +1,7 @@
 package com.ineedhousing.models;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
 import java.time.LocalDateTime;
@@ -12,6 +10,8 @@ import java.util.List;
 @Entity
 public class EmailTemplate extends PanacheEntity {
     public String templateName;
+    @Lob
+    @Column(name = "template_content")
     public String templateContent;
     public LocalDateTime createdAt;
     public LocalDateTime updatedAt;
