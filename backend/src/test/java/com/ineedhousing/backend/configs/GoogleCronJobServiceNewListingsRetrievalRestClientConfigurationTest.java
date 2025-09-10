@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.configs;
 
+import com.ineedhousing.backend.apis.RestClientConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -22,7 +23,7 @@ class GoogleCronJobServiceNewListingsRetrievalRestClientConfigurationTest {
     private static final String CRAIGSLIST_API_KEY = "test-craigslist-key";
 
     @InjectMocks
-    private NewListingsRetrievalRestClientConfiguration newListingsRetrievalRestClientConfiguration;
+    private RestClientConfiguration restClientConfiguration;
 
     @BeforeEach
     void setUp() {
