@@ -44,7 +44,7 @@ const SignIn = () => {
         }
         else {
             setErrorState({ isError: true, message: response });
-            await sleep(1500);
+            await sleep(3000);
             setErrorState({ isError: false, message: "" });
         }
     }
