@@ -1,9 +1,11 @@
 package com.ineedhousing.backend.exception;
 
+import com.ineedhousing.backend.admin.exceptions.UnauthorizedAccessException;
+import com.ineedhousing.backend.email.exceptions.EmailVerificationException;
+import com.ineedhousing.backend.exception.exceptions.NotFoundException;
 import com.ineedhousing.backend.exception.exceptions.BadRequestException;
 import com.ineedhousing.backend.exception.exceptions.ServiceUnavailableException;
 import com.ineedhousing.backend.model.FailedServiceInteractionDto;
-import com.ineedhousing.backend.model.ServiceInteractionDto;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletException;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
@@ -113,6 +116,38 @@ public class GlobalExceptionHandler {
         log.error("A bad request sent {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(EmailVerificationException.class)
+    public ResponseEntity<String> handleEmailVerificationException(EmailVerificationException ex) {
+        log.error("An email verification failed due to {}", ex.getMessage());
+        return  ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<String> handleUnauthorizedAccessException(UnauthorizedAccessException ex) {
+        log.error("An unauthorized access due to {}", ex.getMessage());
+        return  ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        log.error("An username not found due to {}", ex.getMessage());
+        return  ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
+        log.error("An resource not found due to {}", ex.getMessage());
+        return  ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
     }
 }

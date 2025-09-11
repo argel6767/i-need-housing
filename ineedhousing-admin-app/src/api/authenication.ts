@@ -1,4 +1,5 @@
 import {apiClient, failedCallMessage} from "@/api/apiConfig";
+import {AxiosError} from "axios";
 
 export const checkCookie = async (): Promise<string> => {
     try {
@@ -10,13 +11,18 @@ export const checkCookie = async (): Promise<string> => {
     }
 }
 
-export const login = async (request: AuthenticateDto): Promise<UserDto | null> => {
+export const login = async (request: AuthenticateDto): Promise<string> => {
     try {
         const response = await apiClient.post("admin/login", request);
-        return response.data;
+        const user = JSON.stringify(response.data);
+        sessionStorage.setItem("user", JSON.stringify(user));
+        return "User logged in";
     }
     catch (error) {
         console.error(failedCallMessage(error));
-        return null;
+        if (error instanceof AxiosError) {
+            return error?.response?.data;
+        }
+        return "Request failed with error";
     }
 }
