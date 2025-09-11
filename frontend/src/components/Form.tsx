@@ -44,7 +44,7 @@ export const Form = ({buttonLabel, request, isLoading, formType}:NewFormProps) =
         }
         else if (!isValidPassword(credentials.password) && formType === "signUp") {
             handlePasswordValidity(true);
-            await sleep(1500);
+            await sleep(3000);
             handlePasswordValidity(false);
         }
         else {

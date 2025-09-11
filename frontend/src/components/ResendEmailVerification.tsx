@@ -1,5 +1,5 @@
 "use client"
-import { resendVerificationEmail } from "@/endpoints/auths"
+import {resendVerificationEmailV2} from "@/endpoints/auths"
 import { useState } from "react"
 
 interface props {
@@ -11,7 +11,7 @@ export const ResendVerificationEmail = ({email, message, button}:props) => {
     const [isCalledFailed, setIsCalledFailed] = useState<boolean>(false)
 
     const handleResendRequest = async() => {
-        await resendVerificationEmail({email: email});
+        await resendVerificationEmailV2({email: email});
     }
 
     return (
