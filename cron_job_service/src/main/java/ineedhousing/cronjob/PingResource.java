@@ -21,9 +21,6 @@ import java.util.List;
 @Path("")
 public class PingResource {
 
-    @Inject
-    @Any
-    Instance<HealthCheck> healthChecks;
 
     @Inject
     LogService logService;
@@ -36,14 +33,10 @@ public class PingResource {
     @Path("/ping")
     @Produces(MediaType.APPLICATION_JSON)
     @RateLimit(windowUnit = ChronoUnit.MINUTES)
-    public HealthPing pingService() {
-        logService.publish("Health check endpoint hit", LoggingLevel.INFO);
-        List<HealthCheckResponse> healthCheckResponses = healthChecks.stream()
-                .map(HealthCheck::call)
-                .toList();
-        return new HealthPing("Cron_Job_Service pinged. Health info:", healthCheckResponses);
+    public String pingService() {
+        logService.publish("Ping endpoint hit", LoggingLevel.INFO);
+        return "Pong";
     }
 
 }
 
-record HealthPing(String message, List<HealthCheckResponse> healthCheckResponses) {}

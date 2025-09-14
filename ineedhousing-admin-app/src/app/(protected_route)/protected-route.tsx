@@ -39,7 +39,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
             else {
                 setIsAuthorized(false);
                 setIsAuthLoading(false);
-                router.replace('/sign-in');
+                router.replace('/');
             }
         }
 
@@ -55,7 +55,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
                 console.log('403 detected - redirecting to sign in');
                 setIsAuthorized(false);
                 setIsAuthLoading(false);
-                router.replace('/sign-in');
+                router.replace('/');
             }
         };
 

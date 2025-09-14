@@ -5,14 +5,15 @@ import com.ineedhousing.backend.keymaster_service.models.requests.ServiceRegistr
 import com.ineedhousing.backend.keymaster_service.models.responses.RegisteredServiceDto;
 import com.ineedhousing.backend.keymaster_service.models.responses.RegistrationKeyDto;
 import com.ineedhousing.backend.model.FailedServiceInteractionDto;
-import com.ineedhousing.backend.ping_services.models.models.PingEvent;
+import com.ineedhousing.backend.ping_services.models.models.PingAllServicesEvent;
+import com.ineedhousing.backend.ping_services.models.models.service_pings.PingKeymasterServiceEvent;
+import com.ineedhousing.backend.ping_services.models.models.service_pings.PingNewListingsServiceEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
@@ -28,10 +29,7 @@ public class KeymasterRestService {
         this.restClient = restClient;
     }
 
-    @EventListener
-    @Async
-    public void pingService(PingEvent pingEvent) {
-        log.info("Pinging Keymaster Service");
+    public void pingService() {
         try {
             String response = restClient.post()
                     .uri("/ping")
@@ -46,6 +44,20 @@ public class KeymasterRestService {
         catch (Exception e) {
             log.error("Service was unsuccessful: {},", e.getMessage());
         }
+    }
+
+    @EventListener
+    @Async
+    public void onPingAllServicesEvent(PingAllServicesEvent pingAllServicesEvent) {
+        log.info("Pinging Keymaster Service during all services pinged event");
+        pingService();
+    }
+
+    @EventListener
+    @Async
+    public void onPingServiceEvent(PingKeymasterServiceEvent pingServiceEvent) {
+        log.info("Pinging Keymaster Service");
+        pingService();
     }
 
     public RegisteredServiceDto registerNewService(String serviceName) {

@@ -1,8 +1,8 @@
 package com.ineedhousing.backend.cron_job_service.rest;
 
-import com.ineedhousing.backend.cron_job_service.model.HealthPing;
 import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
-import com.ineedhousing.backend.ping_services.models.models.PingEvent;
+import com.ineedhousing.backend.ping_services.models.models.PingAllServicesEvent;
+import com.ineedhousing.backend.ping_services.models.models.service_pings.PingEmailServiceEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
@@ -24,18 +24,24 @@ public class CronJobRestService {
      * Pings the service while getting back a health check
      * @return
      */
-    public HealthPing pingService() {
-        HealthPing successfulPing = restClient
+    public String pingService() {
+        return restClient
                 .get()
                 .uri("/ping")
                 .retrieve()
-                .body(HealthPing.class);
-        return successfulPing;
+                .body(String.class);
     }
 
     @EventListener
     @Async
-    public void pingService(PingEvent pingEvent) {
+    public void onPingAllServicesEvent(PingAllServicesEvent pingAllServicesEvent) {
+        log.info("Pinging Cron Job Service during all services pinged event");
+        pingService();
+    }
+
+    @EventListener
+    @Async
+    public void onPingServiceEvent(PingEmailServiceEvent pingServiceEvent) {
         log.info("Pinging Cron Job Service");
         pingService();
     }

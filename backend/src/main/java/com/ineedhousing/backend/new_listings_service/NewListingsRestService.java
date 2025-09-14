@@ -1,6 +1,8 @@
 package com.ineedhousing.backend.new_listings_service;
 
-import com.ineedhousing.backend.ping_services.models.models.PingEvent;
+import com.ineedhousing.backend.ping_services.models.models.PingAllServicesEvent;
+import com.ineedhousing.backend.ping_services.models.models.PingServiceEvent;
+import com.ineedhousing.backend.ping_services.models.models.service_pings.PingNewListingsServiceEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
@@ -39,7 +41,14 @@ public class NewListingsRestService {
 
     @EventListener
     @Async
-    public void pingService(PingEvent pingEvent) {
+    public void onPingAllServicesEvent(PingAllServicesEvent pingAllServicesEvent) {
+        log.info("Pinging New Listings Service during all services pinged event");
+        pingService();
+    }
+
+    @EventListener
+    @Async
+    public void onPingServiceEvent(PingNewListingsServiceEvent pingServiceEvent) {
         log.info("Pinging New Listings Service");
         pingService();
     }

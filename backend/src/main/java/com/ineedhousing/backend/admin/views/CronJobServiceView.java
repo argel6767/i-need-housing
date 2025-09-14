@@ -3,9 +3,8 @@ package com.ineedhousing.backend.admin.views;
 import com.ineedhousing.backend.admin.components.Navigation;
 import com.ineedhousing.backend.cron_job_service.model.HealthPing;
 import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
-import com.ineedhousing.backend.cron_job_service.model.PublishedParsedLog;
 import com.ineedhousing.backend.cron_job_service.rest.CronJobRestService;
-import com.ineedhousing.backend.cron_job_service.ws.CronJobLogStreamManager;
+import com.ineedhousing.backend.cron_job_service.ws.v1.CronJobLogStreamManager;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.button.Button;
@@ -16,9 +15,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.shared.Registration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.event.EventListener;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -37,7 +34,7 @@ public class CronJobServiceView extends VerticalLayout {
     private final CronJobLogStreamManager cronJobLogStreamManager;
     private final CronJobRestService cronJobRestService;
     private List<LogEventResponse.LogEvent> recentLogs = new ArrayList<>();
-    private HealthPing healthPing = new HealthPing("", new ArrayList<>());
+    //private String healthPing = new HealthPing("", new ArrayList<>());
     private final Grid<LogEventResponse.LogEvent> logGrid = buildLogEventsGrid(recentLogs);
     private boolean isLiveStreaming = false;
     private final Button viewLiveButton = new Button("View Live Logs");
@@ -49,37 +46,10 @@ public class CronJobServiceView extends VerticalLayout {
         setSizeFull();
         add(new H1("Cron Job Service Overview"));
         add(Navigation.getHorizontalNav());
-        add(createPingView());
         add(createLogViewer());
     }
 
-    public Div createPingView() {
-        healthPing = cronJobRestService.pingService();
-        Div card = new Div();
-        card.setTitle("Cron Job Service Status");
-        card.add(new H3(healthPing.message()));
-        List<Component> healthChecks = healthPing.healthCheckResponses()
-                .stream()
-                .<Component>map(healthCheck -> {
-                    H4 name = new H4(healthCheck.name());
-                    Paragraph status = new Paragraph("Status: " + healthCheck.status());
-                    H4 data = new H4("Additional Data:");
-                    List<Component> dataValues = healthCheck.data()
-                            .entrySet()
-                            .stream()
-                            .<Component>map(entry -> new Paragraph(entry.getKey() + ": " + entry.getValue()))
-                            .toList();
-                    Div div =  new Div( name, status, data);
-                    div.add(dataValues);
-                    return div;
-                }).toList();
 
-        card.add(healthChecks);
-        Button button = new Button("Ping Cron Job Service");
-        button.addClickListener(buttonClickEvent -> healthPing =  cronJobRestService.pingService());
-        card.add(button);
-        return card;
-    }
 
     public Div createLogViewer() {
         LogEventResponse logs = cronJobRestService.getMostRecentLogs(10);

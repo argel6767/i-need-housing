@@ -39,6 +39,9 @@ public class SecurityConfiguration{
     @Value("${frontend.domain}")
     private String frontendDomain;
 
+    @Value("${admin.app.domain}")
+    private String adminAppDomain;
+
     public SecurityConfiguration(AuthenticationProvider authenticationProvider, JwtAuthenticationFilter jwtAuthenticationFilter, ServiceApiTokenFilter serviceApiTokenFilter) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -55,7 +58,7 @@ public class SecurityConfiguration{
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/auths/**", "/ping", "/admin/login").permitAll()
+                .requestMatchers("/", "/auths/**", "/ping/**", "/admin/login").permitAll()
                 .requestMatchers("/VAADIN/**", "/frontend/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
@@ -75,7 +78,7 @@ public class SecurityConfiguration{
     @Bean
 CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration corsConfiguration = new CorsConfiguration();
-    corsConfiguration.setAllowedOrigins(List.of(frontendDomain));
+    corsConfiguration.setAllowedOrigins(List.of(frontendDomain, adminAppDomain));
     corsConfiguration.addAllowedHeader("*");
     corsConfiguration.addAllowedMethod("*");
     corsConfiguration.setAllowCredentials(true); // Important for cookies

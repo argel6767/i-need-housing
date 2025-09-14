@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -84,6 +85,11 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
     } catch (NullPointerException npe) {
         log.error("NPE during attempting to authenticate client, {}", npe.getMessage());
         handlerExceptionResolver.resolveException(request, response, null, npe);
+    }
+    catch (AuthorizationDeniedException ade) {
+        response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        filterChain.doFilter(request, response);
     }
     }
 }

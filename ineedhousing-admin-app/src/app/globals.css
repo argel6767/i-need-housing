@@ -14,14 +14,13 @@
   --font-mono: var(--font-geist-mono);
   --color-primary: #176087;
   --color-secondary: #bb4430;
+  --color-primary-light: #457F9F;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.bg-primary-light {
+  background-color: var(--color-primary-light);
 }
+
 
 body {
   background: var(--background);

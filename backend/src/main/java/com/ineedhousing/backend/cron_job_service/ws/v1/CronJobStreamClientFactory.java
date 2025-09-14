@@ -1,8 +1,7 @@
-package com.ineedhousing.backend.cron_job_service.ws;
+package com.ineedhousing.backend.cron_job_service.ws.v1;
 
 import com.ineedhousing.backend.constants.ServiceInteractionConstants;
 import com.ineedhousing.backend.cron_job_service.LogStreamProcessor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 

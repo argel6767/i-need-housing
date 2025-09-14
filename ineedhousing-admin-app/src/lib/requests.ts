@@ -1,4 +1,4 @@
 interface AuthenticateDto {
-    email: string;
+    username: string;
     password: string;
 }

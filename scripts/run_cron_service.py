@@ -2,7 +2,7 @@ import os
 import subprocess
 from pathlib import Path
 import platform
-from run_postgres import verify_postgres_db_status
+from run_postgres import verify_db_status
 
 '''
 loads env variables to run cron job service dev server
@@ -23,7 +23,7 @@ def load_env_file():
             print(f"Set environment variable: {key}={value}")
             
 def main():
-    verify_postgres_db_status()
+    verify_db_status()
     load_env_file()
     process = subprocess.run(["quarkus", "dev"], cwd=str(cron_job), shell=isOSWindows)
     print(process)

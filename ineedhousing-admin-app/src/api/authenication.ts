@@ -26,3 +26,14 @@ export const login = async (request: AuthenticateDto): Promise<string> => {
         return "Request failed with error";
     }
 }
+
+export const logout = async() => {
+    try {
+        const response = await apiClient.post('/auths/logout');
+        return response.data;
+    }
+    catch(error) {
+        console.log(failedCallMessage(error))
+        return "user could not be logged out."
+    }
+}

@@ -1,5 +1,6 @@
 package ineedhousing.cronjob.log.ws;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.model.LogEvent;
 import ineedhousing.cronjob.log.model.LoggingLevel;
@@ -17,6 +18,9 @@ public class LogWebSocket {
 
     @Inject
     WebSocketAuthService authService;
+
+    @Inject
+    ObjectMapper objectMapper;
 
     @OnOpen
     public void onOpen(WebSocketConnection connection) {
@@ -44,7 +48,8 @@ public class LogWebSocket {
     public void onLogMessage(@ObservesAsync LogEvent log) {
         if (currentConnection != null) {
             try {
-                currentConnection.sendTextAndAwait(log.toString());
+                String message = objectMapper.writeValueAsString(log);
+                currentConnection.sendTextAndAwait(message);
             }
             catch (Exception e) {
                 currentConnection = null;

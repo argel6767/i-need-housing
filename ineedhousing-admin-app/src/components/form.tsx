@@ -8,16 +8,11 @@ import {login} from "@/api/authenication";
 import {useFailedRequest} from "@/hooks/use-failed-request";
 import {sleep} from "@/lib/utils";
 
-interface FailedState {
-    errorMessage: string;
-    isFailed: boolean;
-}
-
 const Form = () => {
 
     const {value: isLoading, toggleValue: toggleLoading} = useToggle(false);
     const {resetFailedRequest, failedRequest, setRequestFailed} = useFailedRequest();
-    const [formData, setFormData] = useState<AuthenticateDto>({email: '', password: ''});
+    const [formData, setFormData] = useState<AuthenticateDto>({username: '', password: ''});
     const router = useRouter();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +49,7 @@ const Form = () => {
     }
 
     const isInputEmpty = () => {
-        return formData.email.length === 0 && formData.password.length === 0;
+        return formData.username.length === 0 && formData.password.length === 0;
     }
 
     if (isLoading) {
@@ -81,15 +76,14 @@ const Form = () => {
             <span className={"flex flex-col items-center justify-center p-4 gap-3"}>
                 <fieldset className="fieldset">
                     <legend className="fieldset-legend text-black">Email</legend>
-                    <input type="email" name={"email"} value={formData.email} onChange={handleInputChange} className="input bg-slate-100 text-black" placeholder="example@email.com"/>
+                    <input type="email" name={"username"} value={formData.username} onChange={handleInputChange} className="input bg-slate-100 text-black" placeholder="example@email.com"/>
                 </fieldset>
                 <fieldset className="fieldset">
                     <legend className="fieldset-legend text-black">Password</legend>
                     <input type="password" name={"password"} value={formData.password} onChange={handleInputChange} className="input bg-slate-100 text-black" placeholder="******"/>
                 </fieldset>
-                <button className={" bg-primary p-2 rounded-lg shadow-lg text-lg hover:bg-[#457F9F] disabled:bg-primary"} type={"submit"} disabled={isInputEmpty()}>Sign In</button>
+                <button className={" bg-primary p-2 rounded-lg shadow-lg text-lg hover:bg-[#457F9F] disabled:bg-primary text-white"} type={"submit"} disabled={isInputEmpty()}>Sign In</button>
             </span>
-
         </form>
     )
 

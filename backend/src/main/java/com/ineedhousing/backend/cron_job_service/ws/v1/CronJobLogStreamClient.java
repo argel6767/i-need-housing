@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.cron_job_service.ws;
+package com.ineedhousing.backend.cron_job_service.ws.v1;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ineedhousing.backend.cron_job_service.LogStreamProcessor;

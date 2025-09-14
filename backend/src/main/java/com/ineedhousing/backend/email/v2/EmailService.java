@@ -2,7 +2,9 @@ package com.ineedhousing.backend.email.v2;
 
 import com.ineedhousing.backend.email.models.VerifyUserDto;
 import com.ineedhousing.backend.email.v1.ClientEmailService;
-import com.ineedhousing.backend.ping_services.models.models.PingEvent;
+import com.ineedhousing.backend.ping_services.models.models.PingAllServicesEvent;
+import com.ineedhousing.backend.ping_services.models.models.service_pings.PingEmailServiceEvent;
+import com.ineedhousing.backend.ping_services.models.models.service_pings.PingKeymasterServiceEvent;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -78,9 +80,16 @@ public class EmailService {
         }
     }
 
-    @EventListener(PingEvent.class)
+    @EventListener
     @Async
-    public void onPingEvent(PingEvent pingEvent) {
+    public void onPingAllServicesEvent(PingAllServicesEvent pingAllServicesEvent) {
+        log.info("Pinging Email Service during all services pinged event");
+        pingService();
+    }
+
+    @EventListener
+    @Async
+    public void onPingServiceEvent(PingEmailServiceEvent pingServiceEvent) {
         log.info("Pinging Email Service");
         pingService();
     }
