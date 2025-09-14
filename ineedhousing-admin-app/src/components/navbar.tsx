@@ -1,5 +1,7 @@
 import Link from "next/link";
 import {Logout} from "@/components/logout";
+import svg from "../../public/file.svg";
+import Image from "next/image";
 
 export const Navbar = () => {
     return (
@@ -31,7 +33,7 @@ export const Navbar = () => {
                 </div>
             </div>
             <div className="navbar-center">
-                <h1 className="text-primary text-4xl font-semibold">INeedHousing</h1>
+                <h1 className="text-primary text-4xl font-semibold flex gap-1">INeedHousing <Image src={svg} alt={"INeedHousing Logo"} width={40} height={40}/></h1>
             </div>
             <div className="navbar-end">
 
