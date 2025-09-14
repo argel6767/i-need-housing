@@ -3,7 +3,8 @@
 
 import { useWebSocket } from '@/hooks/use-web-socket';
 import {useToggle} from "@/hooks/use-toggle";
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
+import axios from "axios";
 
 type LogEvent = {
     timeStamp: string;
@@ -73,14 +74,62 @@ export const LogStreamViewer = ({ serviceEndpoint, service }: LogStreamViewerPro
 );
 }
 
-interface PingServiceProps {
-    service: string;
+const ping = async (serviceUrl: string) => {
+    if (!serviceUrl) {
+        throw new Error("Service URL is missing");
+    }
+
+    try {
+        await axios.post(serviceUrl+"/ping")
+        return "Service Pinged"
+    }
+    catch (error) {
+        return "Failed to ping service, try again later";
+    }
+
 }
 
-export const PingService({service}: PingServiceProps)=> {
+type ServiceName = "Cron Job Service" | "Keymaster Service" | "New Listings Service" | "Email Service";
+interface PingServiceProps {
+    service: ServiceName;
+}
+
+export const PingService = ({service}: PingServiceProps)=> {
+    const serviceUrls: Record<ServiceName, string | undefined> = {
+        "Cron Job Service": process.env.NEXT_PUBLIC_CRON_JOB_SERVICE_URL,
+        "Keymaster Service": process.env.NEXT_PUBLIC_KEYMASTER_SERVICE_URL,
+        "New Listings Service": process.env.NEXT_PUBLIC_NEW_LISTINGS_SERVICE_URL,
+        "Email Service": process.env.NEXT_PUBLIC_EMAIL_SERVICE_URL
+    }
+
+    const {value: isLoading, toggleValue: toggleLoading} = useToggle(false);
+    const [message, setMessage] = useState("");
 
     const pingService = async () => {
-
+        toggleLoading()
+        const url = serviceUrls[service];
+        const response = await ping(url!);
+        console.log(response);
+        setMessage(response);
+        toggleLoading()
     }
+
+    const getButtonMessage = () => {
+        if (isLoading) {
+            return (
+                <span className="loading loading-spinner loading-sm"></span>
+            )
+        }
+        return `Ping ${service}`
+    }
+
+
+    return (
+        <main className={"p-4 flex flex-col items-center justify-center bg-slate-200 rounded-lg shadow-lg gap-4"}>
+            <button className={"btn-md bg-primary hover:bg-primary-light p-3 text-white rounded-lg shadow-lg"} onClick={pingService}>{getButtonMessage()}</button>
+            <p>{message}</p>
+        </main>
+
+    )
 
 }

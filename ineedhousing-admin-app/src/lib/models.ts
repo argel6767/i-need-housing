@@ -17,3 +17,12 @@ export interface HealthCheckModel {
     status: string,
     data: object,
 }
+
+export type Status = "SUCCESS" | "FAILURE";
+
+export interface Job {
+    status: Status,
+    jobName: string,
+    timeStamp: string,
+    failureReason?: string
+}

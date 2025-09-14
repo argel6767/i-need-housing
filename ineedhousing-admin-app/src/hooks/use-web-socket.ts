@@ -74,6 +74,7 @@ export function useWebSocket(
         wsRef.current?.close();
         wsRef.current = null;
         setIsConnected(false);
+        setMessages([])
     }, []);
 
     // Cleanup when component unmounts

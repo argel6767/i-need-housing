@@ -35,7 +35,6 @@ const Form = () => {
         const response = await login(formData);
 
         if (response === "User logged in") {
-            toggleLoading();
             router.push("/dashboard");
         }
         else {

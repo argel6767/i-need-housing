@@ -1,17 +1,17 @@
-import {LogStreamViewer} from "@/components/service-functions";
+import {LogStreamViewer, PingService} from "@/components/service-functions";
 import {Navbar} from "@/components/navbar";
 
 export default function CronJobServicePage()  {
     return (
-        <main className="h-screen">
+        <main className="h-screen overflow-clip">
             <Navbar />
-            <span className={"flex h-full w-full p-2"}>
-                <section className={"w-3/6"}>
+            <h1 className={"text-5xl  text-center py-4"}>Cron Job Service</h1>
+            <span className={"flex h-full w-full p-4"}>
+                <section className={"w-4/6"}>
                 <LogStreamViewer serviceEndpoint={"/cron_job/logs"} service={"Cron Job Service"}/>
             </section>
-            <section className={"w-3/6 flex flex-col items-center justify-center"}>
-                <h1>Some stuff</h1>
-                <h2>SOme more stuff</h2>
+            <section className={"w-2/6 flex flex-col items-center "}>
+                <PingService service={"Cron Job Service"}/>
             </section>
             </span>
 
