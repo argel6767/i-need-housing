@@ -2,8 +2,8 @@ package com.ineedhousing.services;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ineedhousing.models.ServiceVerificationDto;
-import com.ineedhousing.models.VerifiedServiceDto;
+import com.ineedhousing.models.dtos.ServiceVerificationDto;
+import com.ineedhousing.models.dtos.VerifiedServiceDto;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 

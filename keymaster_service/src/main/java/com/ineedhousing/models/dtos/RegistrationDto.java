@@ -1,4 +1,4 @@
-package com.ineedhousing.models;
+package com.ineedhousing.models.dtos;
 
 public record RegistrationDto(String serviceName, String registrationKey) {
 }

@@ -1,7 +1,7 @@
 package com.ineedhousing.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ineedhousing.models.SuccessfulKeyRotationEvent;
+import com.ineedhousing.models.events.SuccessfulKeyRotationEvent;
 import com.ineedhousing.rest_clients.EmailServiceRestClient;
 import com.ineedhousing.rest_clients.MainAPIEmailServiceRestClient;
 import io.quarkus.logging.Log;

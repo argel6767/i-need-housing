@@ -1,8 +1,8 @@
 package com.ineedhousing.services;
 
-import com.ineedhousing.models.RegistrationKeyDto;
-import com.ineedhousing.models.RotatingKeyEvent;
-import com.ineedhousing.models.SuccessfulKeyRotationEvent;
+import com.ineedhousing.models.dtos.RegistrationKeyDto;
+import com.ineedhousing.models.events.RotatingKeyEvent;
+import com.ineedhousing.models.events.SuccessfulKeyRotationEvent;
 import io.quarkus.logging.Log;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.annotation.PostConstruct;

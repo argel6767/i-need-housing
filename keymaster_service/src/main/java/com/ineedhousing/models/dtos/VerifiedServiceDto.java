@@ -1,4 +1,4 @@
-package com.ineedhousing.models;
+package com.ineedhousing.models.dtos;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 

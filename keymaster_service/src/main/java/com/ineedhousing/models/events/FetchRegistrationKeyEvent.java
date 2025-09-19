@@ -1,4 +1,4 @@
-package com.ineedhousing.models;
+package com.ineedhousing.models.events;
 
 import java.time.LocalDateTime;
 

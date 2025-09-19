@@ -1,6 +1,6 @@
 package com.ineedhousing.exceptions;
 
-import com.ineedhousing.models.FailedRequestDto;
+import com.ineedhousing.models.dtos.FailedRequestDto;
 import io.quarkus.logging.Log;
 import io.smallrye.faulttolerance.api.RateLimitException;
 import jakarta.ws.rs.BadRequestException;
