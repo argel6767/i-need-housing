@@ -1,7 +1,7 @@
 package com.ineedhousing.resources;
 
-import com.ineedhousing.models.RegistrationKeyDto;
-import com.ineedhousing.models.RotatingKeyEvent;
+import com.ineedhousing.models.dtos.RegistrationKeyDto;
+import com.ineedhousing.models.events.RotatingKeyEvent;
 import com.ineedhousing.services.RegistrationKeyRotator;
 import io.smallrye.faulttolerance.api.RateLimit;
 import jakarta.enterprise.event.Event;

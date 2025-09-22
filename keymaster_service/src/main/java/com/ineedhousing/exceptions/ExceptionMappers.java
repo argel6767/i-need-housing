@@ -1,8 +1,11 @@
 package com.ineedhousing.exceptions;
 
-import com.ineedhousing.models.FailedRequestDto;
+import com.ineedhousing.models.dtos.FailedRequestDto;
+import com.ineedhousing.models.enums.LoggingLevel;
+import com.ineedhousing.services.LogService;
 import io.quarkus.logging.Log;
 import io.smallrye.faulttolerance.api.RateLimitException;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
@@ -13,30 +16,33 @@ import java.time.Instant;
 
 public class ExceptionMappers {
 
+    @Inject
+    LogService log;
+
     @ServerExceptionMapper
     public Response mapBadRequestException(BadRequestException exception) {
-        Log.error("Bad Request:\n" + exception.getMessage());
+        log.publish("Bad Request:\n" + exception.getMessage(), LoggingLevel.ERROR);
         FailedRequestDto dto = UtilFunctions.buildFailedRequestDto(exception);
         return Response.status(Response.Status.BAD_REQUEST).entity(dto).build();
     }
 
     @ServerExceptionMapper
     public Response mapIllegalStateException(IllegalStateException exception) {
-        Log.error("Illegal Argument:\n" + exception.getMessage());
+        log.publish("Illegal Argument:\n" + exception.getMessage(), LoggingLevel.ERROR);
         FailedRequestDto dto = UtilFunctions.buildFailedRequestDto(exception);
         return Response.status(Response.Status.BAD_REQUEST).entity(dto).build();
     }
 
     @ServerExceptionMapper
     public Response mapSecurityException(SecurityException exception) {
-        Log.error("Security Exception:\n" + exception.getMessage());
+        log.publish("Security Exception:\n" + exception.getMessage(), LoggingLevel.ERROR);
         FailedRequestDto dto = UtilFunctions.buildFailedRequestDto(exception);
         return Response.status(Response.Status.FORBIDDEN).entity(dto).build();
     }
 
     @ServerExceptionMapper
     public Response mapRateLimitException(RateLimitException exception) {
-        Log.error("Rate Limit Exception:\n" + exception.getMessage());
+        log.publish("Rate Limit Exception:\n" + exception.getMessage(), LoggingLevel.ERROR);
         FailedRequestDto dto = new FailedRequestDto("Too many requests being sent. Try again later.",
                 UtilFunctions.getTimeStamp(),
                 exception.toString());
@@ -45,21 +51,21 @@ public class ExceptionMappers {
 
     @ServerExceptionMapper
     public Response mapClientWebApplicationException(ClientWebApplicationException exception) {
-        Log.error("Client Web Application Exception:\n" + exception.getMessage());
+        log.publish("Client Web Application Exception:\n" + exception.getMessage(), LoggingLevel.ERROR);
         FailedRequestDto dto = UtilFunctions.buildFailedRequestDto(exception);
         return Response.status(Response.Status.BAD_GATEWAY).entity(dto).build();
     }
 
     @ServerExceptionMapper
     public Response mapWebApplicationException(WebApplicationException exception) {
-        Log.error("Web Application Exception:\n" + exception.getMessage());
+        log.publish("Web Application Exception:\n" + exception.getMessage(), LoggingLevel.ERROR);
         FailedRequestDto dto = UtilFunctions.buildFailedRequestDto(exception);
         return Response.status(exception.getResponse().getStatus()).entity(dto).build();
     }
 
     @ServerExceptionMapper
     public Response mapGeneralException(Exception exception) {
-        Log.error("Internal Server Error:\n" + exception);
+        log.publish("Internal Server Error:\n" + exception.getMessage(), LoggingLevel.ERROR);
         FailedRequestDto dto = UtilFunctions.buildFailedRequestDto(exception);
         return Response.serverError().entity(dto).build();
     }

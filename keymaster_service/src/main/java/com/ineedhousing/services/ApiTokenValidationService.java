@@ -2,8 +2,9 @@ package com.ineedhousing.services;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ineedhousing.models.ServiceVerificationDto;
-import com.ineedhousing.models.VerifiedServiceDto;
+import com.ineedhousing.models.dtos.ServiceVerificationDto;
+import com.ineedhousing.models.dtos.VerifiedServiceDto;
+import com.ineedhousing.models.enums.LoggingLevel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -15,7 +16,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import io.quarkus.logging.Log;
 import jakarta.ws.rs.BadRequestException;
 
 @ApplicationScoped
@@ -30,9 +30,12 @@ public class ApiTokenValidationService {
     @Inject
     ObjectMapper objectMapper;
 
+    @Inject
+    LogService log;
+
     public VerifiedServiceDto isServiceAuthenticated(String serviceVerificationDto, String requestingService) {
         ServiceVerificationDto dtoParsed = parseRequestBody(serviceVerificationDto);
-        Log.warn(String.format("Checking authorization status of %s for %s", dtoParsed.serviceName(), requestingService));
+        log.publish(String.format("Checking authorization status of %s for %s", dtoParsed.serviceName(), requestingService), LoggingLevel.INFO);
         if (!isServiceAuthorized(dtoParsed.apiToken(), dtoParsed.serviceName())) {
             return new VerifiedServiceDto("Service is not authorized", LocalDateTime.now());
         }
@@ -48,11 +51,11 @@ public class ApiTokenValidationService {
     }
 
     public boolean isServiceAuthorized(String token, String serviceName) {
-        Log.warn("Verifying authorization status for " + serviceName);
+        log.publish("Verifying authorization status for " + serviceName, LoggingLevel.INFO);
         Optional<String> tokenHash = getApiTokenHash(serviceName);
 
         if (!tokenHash.isPresent()) {
-            Log.warn("No API token has been found for " + serviceName);
+            log.publish("No API token has been found for " + serviceName, LoggingLevel.INFO);
             return false;
         }
         return isApiTokenCorrect(token, tokenHash.get());
@@ -73,7 +76,7 @@ public class ApiTokenValidationService {
             }
 
         } catch (SQLException e) {
-            Log.error("Failed to fetch api token hash from Database", e);
+            log.publish("Failed to fetch api token hash from Database. Returning empty as default. Error Message: " +  e.getMessage(), LoggingLevel.ERROR);
         }
         return Optional.empty();
     }
@@ -83,7 +86,7 @@ public class ApiTokenValidationService {
             return tokenHasher.matches(token, tokenHash);
         }
         catch (Exception e) {
-            Log.error("Failed to verify api token", e);
+            log.publish("Failed to verify api token. Error Message: " +  e.getMessage(), LoggingLevel.ERROR);
         }
         return false;
     }

@@ -1,8 +1,8 @@
 package com.ineedhousing.resources;
 
-import com.ineedhousing.models.RegisteredServiceDto;
-import com.ineedhousing.models.RegistrationDto;
-import com.ineedhousing.models.VerifiedServiceDto;
+import com.ineedhousing.models.dtos.RegisteredServiceDto;
+import com.ineedhousing.models.dtos.RegistrationDto;
+import com.ineedhousing.models.dtos.VerifiedServiceDto;
 import com.ineedhousing.services.ApiTokenValidationService;
 import com.ineedhousing.services.ServiceAuthenticatorService;
 import io.smallrye.faulttolerance.api.RateLimit;

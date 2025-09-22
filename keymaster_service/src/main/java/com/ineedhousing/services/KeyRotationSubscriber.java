@@ -1,7 +1,8 @@
 package com.ineedhousing.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ineedhousing.models.SuccessfulKeyRotationEvent;
+import com.ineedhousing.models.enums.LoggingLevel;
+import com.ineedhousing.models.events.SuccessfulKeyRotationEvent;
 import com.ineedhousing.rest_clients.EmailServiceRestClient;
 import com.ineedhousing.rest_clients.MainAPIEmailServiceRestClient;
 import io.quarkus.logging.Log;
@@ -24,6 +25,9 @@ public class KeyRotationSubscriber {
     @Inject
     @RestClient
     EmailServiceRestClient emailServiceRestClient;
+
+    @Inject
+    LogService logService;
 
     @Inject
     Config config;
@@ -50,17 +54,18 @@ public class KeyRotationSubscriber {
                 emailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, dtoJson);
             }
             catch (WebApplicationException e) {
-                Log.error("Email service request service failed. Falling back to legacy INeedHousing API email service. Error message: " + e.getMessage());
+                logService.publish("Email service request service failed. Falling back to legacy INeedHousing API email service. Error message: " + e.getMessage(), LoggingLevel.ERROR);
                 mainAPIEmailServiceRestClient.notifyNewKeyRotation(apiToken, serviceName, dtoJson);
             }
-            Log.info("Notify New Key Rotation Event Successfully!");
+            logService.publish("Notify New Key Rotation Event Successfully!", LoggingLevel.INFO);
         }
         catch (WebApplicationException e) {
-            Log.error("Notify New Key Rotation Event Failed! Cause: " +  e.getResponse().getStatusInfo().getReasonPhrase());
+            logService.publish("Notify New Key Rotation Event Failed! Cause: " +  e.getResponse().getStatusInfo().getReasonPhrase(), LoggingLevel.ERROR);
+            logService.publish("Logging response: " + e.getResponse().readEntity(String.class), LoggingLevel.ERROR);
             Log.error("Logging response: " + e.getResponse().readEntity(String.class));
         }
         catch (Exception e) {
-            Log.error("Notify New Key Rotation Event Failed! Cause: " + e.getMessage());
+            logService.publish("Notify New Key Rotation Event Failed! Cause: " + e.getMessage(), LoggingLevel.ERROR);
         }
     }
 }

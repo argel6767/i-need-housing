@@ -27,14 +27,16 @@ public class ApiTokenValidationService {
     @Inject
     ObjectMapper objectMapper;
 
+    @Inject
+    LogService log;
+
     public boolean isServiceAuthenticated(String token, String serviceName) {
         try {
-            Log.info("Verifying " + serviceName);
+            log.info("Verifying " + serviceName);
             String apiToken = serviceInteractionConfiguration.getApiToken();
             String cronJobServiceName = serviceInteractionConfiguration.getServiceName();
 
-
-            Log.info(String.format("Verifying incoming service: %s", serviceName));
+            log.info(String.format("Verifying incoming service: %s", serviceName));
             ServiceVerificationDto dto = new ServiceVerificationDto(token, serviceName, LocalDateTime.now());
             String dtoJson = objectMapper.writeValueAsString(dto);
             String response = keymasterServiceRestClient.verifyServiceRequest(apiToken, cronJobServiceName, dtoJson);
@@ -45,16 +47,16 @@ public class ApiTokenValidationService {
         catch (WebApplicationException e) {
             Response response = e.getResponse();
             String errorBody = response.readEntity(String.class);
-            Log.error(String.format("Failed to verify with Keymaster. Status: %d, Error: %s",
+            log.error(String.format("Failed to verify with Keymaster. Status: %d, Error: %s",
                     response.getStatus(), errorBody));
-            Log.error(String.format("Exception type: %s, Message: %s",
+            log.error(String.format("Exception type: %s, Message: %s",
                     e.getClass().getName(), e.getMessage()));
             return false;
         } catch (Exception e) {
-            Log.error(String.format("Unexpected error during verification: %s - %s",
+            log.error(String.format("Unexpected error during verification: %s - %s",
                     e.getClass().getName(), e.getMessage()));
             if (e.getCause() != null) {
-                Log.error(String.format("Caused by: %s - %s",
+                log.error(String.format("Caused by: %s - %s",
                         e.getCause().getClass().getName(), e.getCause().getMessage()));
             }
             return false;

@@ -1,7 +1,7 @@
 package com.ineedhousing.services;
 
-import com.ineedhousing.models.RegisteredServiceDto;
-import com.ineedhousing.models.RegistrationDto;
+import com.ineedhousing.models.dtos.RegisteredServiceDto;
+import com.ineedhousing.models.dtos.RegistrationDto;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;

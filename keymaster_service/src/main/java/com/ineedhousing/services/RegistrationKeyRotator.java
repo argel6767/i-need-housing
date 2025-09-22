@@ -1,9 +1,9 @@
 package com.ineedhousing.services;
 
-import com.ineedhousing.models.RegistrationKeyDto;
-import com.ineedhousing.models.RotatingKeyEvent;
-import com.ineedhousing.models.SuccessfulKeyRotationEvent;
-import io.quarkus.logging.Log;
+import com.ineedhousing.models.dtos.RegistrationKeyDto;
+import com.ineedhousing.models.enums.LoggingLevel;
+import com.ineedhousing.models.events.RotatingKeyEvent;
+import com.ineedhousing.models.events.SuccessfulKeyRotationEvent;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -37,16 +37,19 @@ public class RegistrationKeyRotator {
     @Inject
     Event<SuccessfulKeyRotationEvent> publisher;
 
+    @Inject
+    LogService log;
+
     public void onStartup(@Observes StartupEvent ev) {
-        Log.info("Service Initialized, setting first key");
+        log.publish("Service Initialized, setting first key", LoggingLevel.INFO);
         key = generateKey();
-        Log.info("Registration key successfully generated at startup, firing notify event");
+        log.publish("Registration key successfully generated at startup, firing notify event", LoggingLevel.INFO);
         publisher.fireAsync(new SuccessfulKeyRotationEvent("Key Successfully Rotated", key, LocalDateTime.now()));
     }
 
     public void rotateKey(@ObservesAsync RotatingKeyEvent event) {
         key = generateKey();
-        Log.info("Key successfully rotated, firing notify event");
+        log.publish("Key successfully rotated, firing notify event", LoggingLevel.INFO);
         publisher.fireAsync(new SuccessfulKeyRotationEvent("Key Successfully Rotated", key, LocalDateTime.now()));
     }
 
@@ -59,7 +62,7 @@ public class RegistrationKeyRotator {
 
     public String getKey() {
         if (key == null) {
-            Log.warn("Key should not be null, generating emergency key.");
+            log.publish("Key should not be null, generating emergency key.", LoggingLevel.WARN);
             key = generateKey();
         }
         return key;
@@ -67,7 +70,7 @@ public class RegistrationKeyRotator {
 
     public RegistrationKeyDto getRegistrationKey(String serviceName) {
         if (!serviceName.equals(mainApiServiceName)) {
-            Log.warn("Registration key can only be accessed by INeedHousing API only");
+            log.publish("Registration key can only be accessed by INeedHousing API only", LoggingLevel.INFO);
             throw new SecurityException("Registration key can only be accessed by INeedHousing API only");
         }
         return new RegistrationKeyDto(key, LocalDateTime.now());

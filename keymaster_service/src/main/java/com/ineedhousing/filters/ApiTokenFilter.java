@@ -1,6 +1,8 @@
 package com.ineedhousing.filters;
 
+import com.ineedhousing.models.enums.LoggingLevel;
 import com.ineedhousing.services.ApiTokenValidationService;
+import com.ineedhousing.services.LogService;
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -8,7 +10,6 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 
-import io.quarkus.logging.Log;
 
 @Provider
 @Priority(1000)
@@ -16,6 +17,9 @@ public class ApiTokenFilter implements ContainerRequestFilter {
 
     @Inject
     ApiTokenValidationService apiTokenValidationService;
+
+    @Inject
+    LogService log;
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
@@ -28,7 +32,7 @@ public class ApiTokenFilter implements ContainerRequestFilter {
         String serviceName = requestContext.getHeaderString("X-Service-Name");
 
         if (areValuesMissing(apiToken, serviceName)) {
-            Log.warn("Missing required headers \"X-Api-Token\" or \"X-Service-Name\". Unauthenticated request attempted:\n" + requestContext.getRequest().toString());
+            log.publish("Missing required headers \"X-Api-Token\" or \"X-Service-Name\". Unauthenticated request attempted:\n" + requestContext.getUriInfo().getPath(), LoggingLevel.WARN);
             requestContext.abortWith(
                     Response.status(Response.Status.BAD_REQUEST)
                             .entity("Missing required headers \"X-Api-Token\" or \"X-Service-Name\"")
@@ -37,7 +41,7 @@ public class ApiTokenFilter implements ContainerRequestFilter {
         }
 
         if (!apiTokenValidationService.isServiceAuthorized(apiToken, serviceName)) {
-            Log.warn("Invalid API token  \"X-Api-Token\" or \"X-Service-Name\". Unauthenticated request attempted:\n" + requestContext.getRequest().toString());
+            log.publish("Invalid API token \"X-Api-Token\" or invalid service name \"X-Service-Name\". Unauthenticated request attempted:\n" + requestContext.getUriInfo().getPath(), LoggingLevel.WARN);
             requestContext.abortWith(
                     Response.status(Response.Status.FORBIDDEN)
                             .entity(String.format("%s is not a valid API token or %s is not registered", apiToken, serviceName))
