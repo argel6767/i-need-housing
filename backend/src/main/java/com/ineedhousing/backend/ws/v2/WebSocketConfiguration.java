@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.cron_job_service.ws.v2;
+package com.ineedhousing.backend.ws.v2;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +21,6 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(logStreamWebSocketHandler, "cron_job/logs").setAllowedOriginPatterns(adminAppUrl);
+        registry.addHandler(logStreamWebSocketHandler, "cron_job/logs", "keymaster/logs", "email_service/logs", "new_listings/log").setAllowedOriginPatterns(adminAppUrl);
     }
 }

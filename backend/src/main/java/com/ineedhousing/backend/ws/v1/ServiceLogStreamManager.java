@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.cron_job_service.ws.v1;
+package com.ineedhousing.backend.ws.v1;
 
 import com.ineedhousing.backend.cron_job_service.model.ClearSavedLogsEvent;
 import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
@@ -15,24 +15,24 @@ import java.util.function.Consumer;
 
 @Log
 @Service
-public class CronJobLogStreamManager {
+public class ServiceLogStreamManager {
 
-    private final CronJobStreamClientFactory clientFactory;
-    private final CronJobLogStreamService cronJobLogStreamService;
+    private final ServiceStreamClientFactory clientFactory;
+    private final ServiceLogStreamService serviceLogStreamService;
     private volatile WebSocketClient currentClient;
     private final List<Consumer<LogEventResponse.LogEvent>> listeners = new ArrayList<>();
 
 
-    public CronJobLogStreamManager(CronJobStreamClientFactory clientFactory, CronJobLogStreamService cronJobLogStreamService) {
+    public ServiceLogStreamManager(ServiceStreamClientFactory clientFactory, ServiceLogStreamService serviceLogStreamService) {
         this.clientFactory = clientFactory;
-        this.cronJobLogStreamService = cronJobLogStreamService;
+        this.serviceLogStreamService = serviceLogStreamService;
     }
 
-    public void startLogStream() throws URISyntaxException {
+    public void startLogStream(com.ineedhousing.backend.constants.Service service) throws URISyntaxException {
         if (currentClient != null) {
             stopLogStream();
         }
-        currentClient = clientFactory.createClient();
+        currentClient = clientFactory.createClient(service);
         currentClient.connect();
     }
 
@@ -66,11 +66,11 @@ public class CronJobLogStreamManager {
 
     @EventListener
     public void onLogStreamClosed(ClearSavedLogsEvent clearLogs) {
-        cronJobLogStreamService.clearSavedLogs();
+        serviceLogStreamService.clearSavedLogs();
     }
 
     public LogEventResponse getLogs() {
-        return new LogEventResponse(cronJobLogStreamService.getLogs());
+        return new LogEventResponse(serviceLogStreamService.getLogs());
     }
 
 }

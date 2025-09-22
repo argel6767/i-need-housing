@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.cron_job_service.ws.v2;
+package com.ineedhousing.backend.ws.v2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
@@ -21,9 +21,8 @@ public class LogBroadcasterBridge {
 
     @EventListener
     public void onLogReceived(PublishedParsedLog parsedLog) {
-        // send log to websocket subscribers
         LogEventResponse.LogEvent event = parsedLog.log();
-        // You can convert to JSON string if needed
+
         String payload;
         try {
             payload = objectMapper.writeValueAsString(event);

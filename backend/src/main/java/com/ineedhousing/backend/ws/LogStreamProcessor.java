@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.cron_job_service;
+package com.ineedhousing.backend.ws;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

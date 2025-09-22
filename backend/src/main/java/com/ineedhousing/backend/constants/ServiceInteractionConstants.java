@@ -31,8 +31,27 @@ public final class ServiceInteractionConstants {
     @Value("${service.name}")
     private String serviceName;
 
+    @Value("${spring.devtools.restart.enabled}")
+    private boolean isDev;
+
     public List<String> getServiceUrls() {
         return List.of(cronJobServiceUrl, keymasterServiceUrl, newListingsServiceUrl, emailServiceUrl);
+    }
+
+    public String getWebSocketEndpoint(Service services) {
+        String url = switch (services) {
+            case CRON_JOB_SERVICE -> cronJobServiceUrl;
+            case KEYMASTER_SERVICE -> keymasterServiceUrl;
+            case EMAIL_SERVICE -> emailServiceUrl;
+            case NEW_LISTINGS_SERVICE -> newListingsServiceUrl;
+        };
+
+        if (isDev) {
+            return url.replaceFirst("^https?://", "wss://");
+        } else {
+            return url.replaceFirst("^http://", "ws://")
+                    .replaceFirst("^https://", "wss://");
+        }
     }
 
 }
