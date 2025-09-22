@@ -34,6 +34,26 @@ public class LogService {
         logEventPublisher.fireAsync(logEvent);
     }
 
+    public void info(String message) {
+        publish(message, LoggingLevel.INFO);
+    }
+
+    public void debug(String message) {
+        publish(message, LoggingLevel.DEBUG);
+    }
+
+    public void trace(String message) {
+        publish(message, LoggingLevel.TRACE);
+    }
+
+    public void warn(String message) {
+        publish(message, LoggingLevel.WARN);
+    }
+
+    public void error(String message) {
+        publish(message, LoggingLevel.ERROR);
+    }
+
     public LogsWrapper getMostRecentLogs(Integer limit) {
         List<LogEvent> logs =  mostRecentLogsCircularBuffer.getMostRecentLogs(limit);
         return new LogsWrapper(logs);

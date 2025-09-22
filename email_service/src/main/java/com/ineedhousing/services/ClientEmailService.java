@@ -29,13 +29,16 @@ public class ClientEmailService {
     @VirtualThreadPool
     ExecutorService virtualThreadExecutor;
 
+    @Inject
+    LogService log;
+
     private final String VERIFICATION_EMAIL_SUBJECT = "Verify your email - INeedHousing";
     private final String FORGET_PASSWORD_SUBJECT = "Reset your password - INeedHousing";
     private final int MAX_TRIES = 10;
 
     public void sendEmail(String to, String subject, String body) {
         String privateEmail = to.substring(0,3) + "*****";
-        Log.info("Sending mail to: " + privateEmail);
+        log.info("Sending mail to: " + privateEmail);
         Mail mail = Mail.withHtml(to, subject, body);
         mailer.send(mail);
     }
@@ -47,15 +50,16 @@ public class ClientEmailService {
         CompletableFuture.runAsync(() -> {
             try {
                 sendEmail(verificationCodeDto.email(), VERIFICATION_EMAIL_SUBJECT, body);
-                Log.info("Email verification email sent");
+                log.info("Email verification email sent");
             }
             catch (Exception e) {
+                String privateEmail = verificationCodeDto.email().substring(0,3) + "*****";
                 if (attempts < MAX_TRIES) {
-                    Log.error("Failed to send email verification email, trying once more", e);
+                    log.error(String.format("Failed to send email verification to new user %s, trying once more. Error Message: %s", privateEmail, e.getMessage()));
                     sendEmailVerificationEmail(verificationCodeDto,  attempts + 1);
                 }
                 else {
-                    Log.error("Failed to send verification email after max tries");
+                    log.error(String.format("Failed to send verification email to new user %s after max tries", privateEmail));
                 }
             }
         }, virtualThreadExecutor);
@@ -70,8 +74,9 @@ public class ClientEmailService {
                 sendEmail(verificationCodeDto.email(), FORGET_PASSWORD_SUBJECT, body);
             }
             catch (Exception e) {
+                String privateEmail = verificationCodeDto.email().substring(0,3) + "*****";
                 if (attempts < MAX_TRIES) {
-                    Log.error("Failed to send reset password email, trying once more", e);
+                    log.error(String.format("Failed to send reset password email to user %s, trying once more. Error Message: %s", privateEmail, e.getMessage()));
                     sendResetPasswordEmail(verificationCodeDto, attempts + 1);
                 }
                 else {
