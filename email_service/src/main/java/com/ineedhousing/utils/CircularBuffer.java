@@ -2,20 +2,21 @@ package com.ineedhousing.utils;
 
 import java.util.ArrayDeque;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Circular Buffer that throws out entries after MAX_SIZE is reached
  * @param <T>
  */
 public class CircularBuffer<T> {
-    private final ArrayDeque<T> buffer;
+    private final ConcurrentLinkedDeque<T> buffer;
     private final int MAX_SIZE = 100; // 100 most recent logs
 
     public CircularBuffer() {
-        buffer = new ArrayDeque<>(MAX_SIZE);
+        buffer = new ConcurrentLinkedDeque<>();
     }
 
-    public void add(T t) {
+    public synchronized void add(T t) {
         if (buffer.size() >= MAX_SIZE) {
             buffer.removeFirst();
         }
@@ -26,7 +27,7 @@ public class CircularBuffer<T> {
         buffer.clear();
     }
 
-    public List<T> getMostRecentLogs(int numOfLogs) {
+    public synchronized List<T> getMostRecentLogs(int numOfLogs) {
         if (numOfLogs > MAX_SIZE) {
             throw new IllegalArgumentException("Number of logs requested is too large. The max is " + MAX_SIZE);
         }
@@ -43,7 +44,7 @@ public class CircularBuffer<T> {
                 .toList();
     }
 
-    public ArrayDeque<T> getBuffer() {
+    public synchronized ConcurrentLinkedDeque<T> getBuffer() {
         return buffer;
     }
 }

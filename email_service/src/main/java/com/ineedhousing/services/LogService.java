@@ -21,7 +21,7 @@ public class LogService {
 
     private final String SERVICE_NAME = "EMAIL_SERVICE";
 
-    private final CircularBuffer<LogEvent> mostRecentLogsCircularBuffer = new CircularBuffer<>();
+    private final CircularBuffer<LogEvent> mostRecentLogsCircularBuffer = new CircularBuffer<LogEvent>();
 
     public void publish(String message, LoggingLevel level) {
         switch (level) {
