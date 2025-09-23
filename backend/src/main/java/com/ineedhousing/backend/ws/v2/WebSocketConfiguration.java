@@ -21,6 +21,6 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(logStreamWebSocketHandler, "cron_job/logs", "keymaster/logs", "email_service/logs", "new_listings/log").setAllowedOriginPatterns(adminAppUrl);
+        registry.addHandler(logStreamWebSocketHandler, "cron_job/logs", "keymaster/logs", "email_service/logs", "new_listings/logs").setAllowedOriginPatterns(adminAppUrl);
     }
 }

@@ -32,14 +32,13 @@ public class ApiTokenValidationService {
 
     public boolean isServiceAuthenticated(String token, String serviceName) {
         try {
-            log.info("Verifying " + serviceName);
             String apiToken = serviceInteractionConfiguration.getApiToken();
-            String cronJobServiceName = serviceInteractionConfiguration.getServiceName();
+            String emailServiceName = serviceInteractionConfiguration.getServiceName();
 
             log.info(String.format("Verifying incoming service: %s", serviceName));
             ServiceVerificationDto dto = new ServiceVerificationDto(token, serviceName, LocalDateTime.now());
             String dtoJson = objectMapper.writeValueAsString(dto);
-            String response = keymasterServiceRestClient.verifyServiceRequest(apiToken, cronJobServiceName, dtoJson);
+            String response = keymasterServiceRestClient.verifyServiceRequest(apiToken, emailServiceName, dtoJson);
 
             VerifiedServiceDto verifiedServiceDto = objectMapper.readValue(response, VerifiedServiceDto.class);
             return verifiedServiceDto.authorizedStatus().equals("Service is authorized");

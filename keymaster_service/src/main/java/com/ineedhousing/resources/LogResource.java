@@ -1,5 +1,6 @@
 package com.ineedhousing.resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ineedhousing.models.enums.LoggingLevel;
 import com.ineedhousing.models.events.LogEvent;
 import com.ineedhousing.services.LogService;
@@ -17,6 +18,9 @@ public class LogResource {
 
     @Inject
     WebSocketAuthService authService;
+
+    @Inject
+    ObjectMapper objectMapper;
 
     @OnOpen
     public void onOpen(WebSocketConnection connection) {
@@ -44,7 +48,8 @@ public class LogResource {
     public void onLogMessage(@ObservesAsync LogEvent log) {
         if (currentConnection != null) {
             try {
-                currentConnection.sendTextAndAwait(log.toString());
+                String message = objectMapper.writeValueAsString(log);
+                currentConnection.sendTextAndAwait(message);
             }
             catch (Exception e) {
                 currentConnection = null;

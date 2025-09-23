@@ -64,7 +64,7 @@ public class CronJobServiceView extends VerticalLayout {
         Button last100 = new Button("View Last 100 Logs");
         last100.addClickListener(event -> {
             if (isLiveStreaming) {
-                serviceLogStreamManager.stopLogStream();
+                serviceLogStreamManager.stopLogStream(Service.CRON_JOB_SERVICE);
             }
             recentLogs.clear();
             recentLogs.addAll(cronJobRestService.getMostRecentLogs().logs());
@@ -106,7 +106,7 @@ public class CronJobServiceView extends VerticalLayout {
 
     private void fetchMostRecentLogs(int limit) {
         if (isLiveStreaming) {
-            serviceLogStreamManager.stopLogStream();
+            serviceLogStreamManager.stopLogStream(Service.CRON_JOB_SERVICE);
         }
         recentLogs.clear();
         recentLogs.addAll(cronJobRestService.getMostRecentLogs(limit).logs());
@@ -128,7 +128,7 @@ public class CronJobServiceView extends VerticalLayout {
     }
 
     private void stopLiveStreaming() {
-        serviceLogStreamManager.stopLogStream();
+        serviceLogStreamManager.stopLogStream(Service.CRON_JOB_SERVICE);
         isLiveStreaming = false;
         setupViewLiveButton();
         if (logListener != null) {

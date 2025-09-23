@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 public class LogStreamProcessor {
 
     private final ObjectMapper mapper;
-    private static final Pattern LOG_EVENT_PATTERN = Pattern.compile("LogEvent\\[log=(.+?), level=(.+?), timeStamp=(.+?)]");
+    private static final Pattern LOG_EVENT_PATTERN = Pattern.compile("LogEvent\\[log=(.+?), level=(.+?), service=(.+?), timeStamp=(.+?)]");
 
     public LogStreamProcessor(@Qualifier("objectMapper") ObjectMapper mapper) {
         this.mapper = mapper;
@@ -42,11 +42,12 @@ public class LogStreamProcessor {
 
         String logMessage = matcher.group(1);
         String level = matcher.group(2);
-        String timeStampStr = matcher.group(3);
+        com.ineedhousing.backend.constants.Service service = com.ineedhousing.backend.constants.Service.valueOf(matcher.group(3));
+        String timeStampStr = matcher.group(4);
 
         try {
             LocalDateTime timeStamp = LocalDateTime.parse(timeStampStr);
-            return new LogEventResponse.LogEvent(logMessage, level, timeStamp);
+            return new LogEventResponse.LogEvent(logMessage, level, service, timeStamp);
         } catch (Exception e) {
             log.warning("Failed to map timeStamp " + e);
             throw new IllegalArgumentException("Invalid timestamp format: " + timeStampStr, e);

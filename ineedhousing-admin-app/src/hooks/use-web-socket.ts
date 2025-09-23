@@ -45,6 +45,7 @@ export function useWebSocket(
                         log: String(event.data),
                         level: "INFO",
                         timeStamp: new Date().toISOString(),
+                        service: serviceEndpoint,
                     },
                 ]);
             }

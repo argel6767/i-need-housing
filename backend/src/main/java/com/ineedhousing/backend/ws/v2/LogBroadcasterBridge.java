@@ -32,6 +32,6 @@ public class LogBroadcasterBridge {
             payload = event.toString();
         }
 
-        webSocketHandler.broadcastLog(payload);
+        webSocketHandler.broadcastLog(event.service(), payload);
     }
 }

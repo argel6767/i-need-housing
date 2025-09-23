@@ -13,9 +13,6 @@ public final class ServiceInteractionConstants {
     @Value("${cron.job.service.url}")
     private String cronJobServiceUrl;
 
-    @Value("${cron.job.service.web.socket.endpoint}")
-    private String webSocketEndpoint;
-
     @Value("${key.master.service.url}")
     private String keymasterServiceUrl;
 
@@ -46,11 +43,10 @@ public final class ServiceInteractionConstants {
             case NEW_LISTINGS_SERVICE -> newListingsServiceUrl;
         };
 
-        if (isDev) {
-            return url.replaceFirst("^https?://", "wss://");
+        if (!isDev) {
+            return url.replaceFirst("^https?://", "wss://") + "/live-logs";
         } else {
-            return url.replaceFirst("^http://", "ws://")
-                    .replaceFirst("^https://", "wss://");
+            return url.replaceFirst("^http://", "ws://") +  "/live-logs";
         }
     }
 

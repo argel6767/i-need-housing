@@ -9,6 +9,7 @@ export interface UserDto {
 export interface LogEvent {
     log: string,
     level: string,
+    service: string,
     timeStamp: string,
 }
 

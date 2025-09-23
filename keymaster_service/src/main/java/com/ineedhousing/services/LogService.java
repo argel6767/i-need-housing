@@ -19,6 +19,8 @@ public class LogService {
     @Inject
     Event<LogEvent> logEventPublisher;
 
+    private final String SERVICE_NAME = "KEYMASTER_SERVICE";
+
     private final CircularBuffer<LogEvent> mostRecentLogsCircularBuffer = new CircularBuffer<>();
 
     public void publish(String message, LoggingLevel level) {
@@ -29,7 +31,7 @@ public class LogService {
             case LoggingLevel.WARN -> Log.warn(message);
             case LoggingLevel.ERROR -> Log.error(message);
         }
-        LogEvent logEvent = new LogEvent(message, level.toString(), LocalDateTime.now());
+        LogEvent logEvent = new LogEvent(message, level.toString(), SERVICE_NAME, LocalDateTime.now());
         mostRecentLogsCircularBuffer.add(logEvent);
         logEventPublisher.fireAsync(logEvent);
     }
