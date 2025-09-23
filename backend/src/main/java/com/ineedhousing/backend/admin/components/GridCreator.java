@@ -2,7 +2,7 @@ package com.ineedhousing.backend.admin.components;
 
 import java.util.List;
 
-import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
+import com.ineedhousing.backend.cron_job_service.models.LogEventResponse;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 

@@ -1,0 +1,29 @@
+package com.ineedhousing.backend.cron_job_service.rest;
+
+import com.azure.core.annotation.QueryParam;
+import com.ineedhousing.backend.cron_job_service.models.JobEvent;
+import com.ineedhousing.backend.cron_job_service.models.JobStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/admin/cron-job")
+public class CronJobController {
+
+    private final CronJobRestService cronJobRestService;
+
+    public CronJobController(CronJobRestService cronJobRestService) {
+        this.cronJobRestService = cronJobRestService;
+    }
+
+    @GetMapping("/jobs")
+    public List<JobEvent> getJobs(@QueryParam("jobStatus") JobStatus jobStatus, @QueryParam("quantity") Integer quantity) {
+        return cronJobRestService.getJobEvents(jobStatus, quantity);
+    }
+
+    @PostMapping("/jobs/{jobName}")
+    public void triggerJob(@PathVariable("jobName") String jobName) {
+        cronJobRestService.triggerJob(jobName);
+    }
+}

@@ -2,7 +2,7 @@ package com.ineedhousing.backend.ws;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
+import com.ineedhousing.backend.cron_job_service.models.LogEventResponse;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

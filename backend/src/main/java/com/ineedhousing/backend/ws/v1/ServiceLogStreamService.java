@@ -1,6 +1,6 @@
 package com.ineedhousing.backend.ws.v1;
 
-import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
+import com.ineedhousing.backend.cron_job_service.models.LogEventResponse;
 import com.ineedhousing.backend.model.CircularBuffer;
 import org.springframework.stereotype.Service;
 

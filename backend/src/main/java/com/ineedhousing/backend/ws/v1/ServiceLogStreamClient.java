@@ -2,9 +2,9 @@ package com.ineedhousing.backend.ws.v1;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ineedhousing.backend.ws.LogStreamProcessor;
-import com.ineedhousing.backend.cron_job_service.model.ClearSavedLogsEvent;
-import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
-import com.ineedhousing.backend.cron_job_service.model.PublishedParsedLog;
+import com.ineedhousing.backend.cron_job_service.models.ClearSavedLogsEvent;
+import com.ineedhousing.backend.cron_job_service.models.LogEventResponse;
+import com.ineedhousing.backend.cron_job_service.models.PublishedParsedLog;
 import lombok.extern.java.Log;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;

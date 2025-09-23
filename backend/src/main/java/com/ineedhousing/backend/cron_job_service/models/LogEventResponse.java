@@ -1,4 +1,4 @@
-package com.ineedhousing.backend.cron_job_service.model;
+package com.ineedhousing.backend.cron_job_service.models;
 
 import com.ineedhousing.backend.constants.Service;
 

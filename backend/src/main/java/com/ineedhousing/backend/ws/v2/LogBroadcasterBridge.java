@@ -1,8 +1,8 @@
 package com.ineedhousing.backend.ws.v2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
-import com.ineedhousing.backend.cron_job_service.model.PublishedParsedLog;
+import com.ineedhousing.backend.cron_job_service.models.LogEventResponse;
+import com.ineedhousing.backend.cron_job_service.models.PublishedParsedLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;

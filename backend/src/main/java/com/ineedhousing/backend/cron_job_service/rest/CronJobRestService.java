@@ -1,14 +1,20 @@
 package com.ineedhousing.backend.cron_job_service.rest;
 
-import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
+import com.ineedhousing.backend.cron_job_service.models.JobEvent;
+import com.ineedhousing.backend.cron_job_service.models.JobStatus;
+import com.ineedhousing.backend.cron_job_service.models.LogEventResponse;
 import com.ineedhousing.backend.ping_services.models.models.PingAllServicesEvent;
 import com.ineedhousing.backend.ping_services.models.models.service_pings.PingEmailServiceEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -76,4 +82,67 @@ public class CronJobRestService {
         return successfulLogRequest;
     }
 
+    public List<JobEvent> getJobEvents(JobStatus status, int limit) {
+        return restClient
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/jobs")
+                        .queryParam("jobStatus", status)
+                        .queryParam("quantity", limit)
+                        .build())
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {
+                });
+    }
+
+    public void triggerJob(String jobName) {
+        switch (jobName) {
+            case "i-need-housing_image" -> triggerINeedHousingImageJob();
+            case "cron-job_image" -> triggerCronJobImageJob();
+            case "new-listings_image" -> triggerNewListingsImageJob();
+            case "old-listings" -> triggerOldListingsJob();
+            case "key-rotation" -> triggerKeyRotationJob();
+            default -> throw new IllegalArgumentException("Invalid job name given");
+        }
+    }
+
+    public void triggerINeedHousingImageJob(){
+        String response = restClient.post()
+                .uri("/cron-jobs/images/i-need-housing")
+                .retrieve()
+                .body(String.class);
+        log.info(response);
+    }
+
+    public void triggerCronJobImageJob(){
+        String response = restClient.post()
+                .uri("/cron-jobs/images/cron-job")
+                .retrieve()
+                .body(String.class);
+        log.info(response);
+    }
+
+    public void triggerNewListingsImageJob(){
+        String response = restClient.post()
+                .uri("/cron-jobs/images/new-listings")
+                .retrieve()
+                .body(String.class);
+        log.info(response);
+    }
+
+    public void triggerOldListingsJob(){
+        String response = restClient.post()
+                .uri("/cron-jobs/listings")
+                .retrieve()
+                .body(String.class);
+        log.info(response);
+    }
+
+    public void triggerKeyRotationJob(){
+        String response = restClient.post()
+                .uri("/triggers/key-rotation")
+                .retrieve()
+                .body(String.class);
+        log.info(response);
+    }
 }

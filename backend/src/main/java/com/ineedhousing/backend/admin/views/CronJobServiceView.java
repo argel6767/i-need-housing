@@ -2,7 +2,7 @@ package com.ineedhousing.backend.admin.views;
 
 import com.ineedhousing.backend.admin.components.Navigation;
 import com.ineedhousing.backend.constants.Service;
-import com.ineedhousing.backend.cron_job_service.model.LogEventResponse;
+import com.ineedhousing.backend.cron_job_service.models.LogEventResponse;
 import com.ineedhousing.backend.cron_job_service.rest.CronJobRestService;
 import com.ineedhousing.backend.ws.v1.ServiceLogStreamManager;
 import com.vaadin.flow.component.DetachEvent;
