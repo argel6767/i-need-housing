@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import {UserDto} from "@/lib/models";
 
 export const useGetUser = () => {
     const [user, setUser] = useState<UserDto | null>(null);
