@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import ineedhousing.cronjob.log.LogService;
-import ineedhousing.cronjob.log.model.LoggingLevel;
+import ineedhousing.cronjob.log.models.LoggingLevel;
 import ineedhousing.cronjob.new_listings_service.NewListingsEventPublisher;
 import io.agroal.api.AgroalDataSource;
 import io.quarkus.logging.Log;
@@ -31,7 +31,7 @@ public class DatabaseService {
         Log.info("Deleting old listings");
 
         String sql = """
-            DELETE FROM house_listings
+            DELETE FROM housing_listing
             WHERE created_at IS NULL OR 
             created_at < NOW() - INTERVAL '6 months';
         """;

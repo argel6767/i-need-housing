@@ -3,7 +3,7 @@ package ineedhousing.cronjob.keymaster;
 import ineedhousing.cronjob.configs.ServiceInteractionConfiguration;
 import ineedhousing.cronjob.keymaster.models.RotatingKeyEvent;
 import ineedhousing.cronjob.log.LogService;
-import ineedhousing.cronjob.log.model.LoggingLevel;
+import ineedhousing.cronjob.log.models.LoggingLevel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.rest.client.inject.RestClient;

@@ -2,7 +2,7 @@ package ineedhousing.cronjob.log;
 
 import java.time.temporal.ChronoUnit;
 
-import ineedhousing.cronjob.log.model.LogEventListWrapper;
+import ineedhousing.cronjob.log.models.LogEventListWrapper;
 import io.smallrye.faulttolerance.api.RateLimit;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;

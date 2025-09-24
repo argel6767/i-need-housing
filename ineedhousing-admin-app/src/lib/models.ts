@@ -19,11 +19,14 @@ export interface HealthCheckModel {
     data: object,
 }
 
-export type Status = "SUCCESS" | "FAILURE";
+export type Status = "SUCCESS" | "FAILURE" | "TRIGGERED";
 
 export interface Job {
     status: Status,
     jobName: string,
     timeStamp: string,
     failureReason?: string
+    id: number
 }
+
+export type JobName = "i-need-housing_image" | "cron-job_image" | "new-listings_image" | "old-listings" | "key-rotation";

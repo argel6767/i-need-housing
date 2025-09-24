@@ -7,7 +7,7 @@ import ineedhousing.cronjob.azure.container_registry.models.ManifestsDeletedDto;
 import ineedhousing.cronjob.azure.container_registry.models.TagsDto;
 import ineedhousing.cronjob.exception.exceptions.MissingConfigurationValueException;
 import ineedhousing.cronjob.log.LogService;
-import ineedhousing.cronjob.log.model.LoggingLevel;
+import ineedhousing.cronjob.log.models.LoggingLevel;
 import io.quarkus.virtual.threads.VirtualThreads;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;

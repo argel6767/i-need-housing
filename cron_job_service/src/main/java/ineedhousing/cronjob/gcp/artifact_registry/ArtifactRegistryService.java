@@ -7,7 +7,7 @@ import ineedhousing.cronjob.gcp.models.GetImagesDto;
 import ineedhousing.cronjob.gcp.models.ImageVersionDto;
 import ineedhousing.cronjob.gcp.models.ImageVersionDto.*;
 import ineedhousing.cronjob.log.LogService;
-import ineedhousing.cronjob.log.model.LoggingLevel;
+import ineedhousing.cronjob.log.models.LoggingLevel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.time.StopWatch;

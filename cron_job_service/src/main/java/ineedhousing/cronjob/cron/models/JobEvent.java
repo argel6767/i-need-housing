@@ -1,4 +1,6 @@
 package ineedhousing.cronjob.cron.models;
 
-public record JobEvent() {
+import java.time.LocalDateTime;
+
+public record JobEvent(Long id, String job, JobStatus status, LocalDateTime timestamp) {
 }

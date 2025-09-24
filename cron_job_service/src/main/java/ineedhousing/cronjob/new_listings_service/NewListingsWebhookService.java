@@ -2,7 +2,7 @@ package ineedhousing.cronjob.new_listings_service;
 
 import ineedhousing.cronjob.configs.ServiceInteractionConfiguration;
 import ineedhousing.cronjob.log.LogService;
-import ineedhousing.cronjob.log.model.LoggingLevel;
+import ineedhousing.cronjob.log.models.LoggingLevel;
 import ineedhousing.cronjob.new_listings_service.models.NewListingEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.ObservesAsync;

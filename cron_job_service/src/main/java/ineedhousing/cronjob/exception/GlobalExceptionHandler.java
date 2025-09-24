@@ -11,9 +11,9 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 
-import ineedhousing.cronjob.exception.model.FailedRequestDto;
+import ineedhousing.cronjob.exception.models.FailedRequestDto;
 import ineedhousing.cronjob.log.LogService;
-import ineedhousing.cronjob.log.model.LoggingLevel;
+import ineedhousing.cronjob.log.models.LoggingLevel;
 
 @ApplicationScoped
 public class GlobalExceptionHandler {

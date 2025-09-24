@@ -1,49 +1,54 @@
-package ineedhousing.cronjob.log.model;
+package ineedhousing.cronjob.log.models;
 
-import java.util.ArrayDeque;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Circular Buffer to keep track of the MAX_SIZE most recent logs
  * @param <T>
  */
-public class MostRecentLogsCircularBuffer<T> {
-    private final ArrayDeque<T> buffer;
-    private final int MAX_SIZE = 100; // 100 most recent logs
+public class CircularBuffer<T> {
+    private final ConcurrentLinkedDeque<T> buffer;
+    private int maxSize = 100; // 100 most recent logs
 
-    public MostRecentLogsCircularBuffer() {
-        buffer = new ArrayDeque<>(MAX_SIZE);
+    public CircularBuffer() {
+        buffer = new ConcurrentLinkedDeque<>();
+    }
+
+    public CircularBuffer(int maxSize) {
+        this.maxSize = maxSize;
+        buffer = new ConcurrentLinkedDeque<>();
     }
 
     public void add(T t) {
-        if (buffer.size() >= MAX_SIZE) {
+        if (buffer.size() >= maxSize) {
             buffer.removeFirst();
         }
         buffer.addLast(t);
     }
 
-    public void clear() {
+    public synchronized void clear() {
         buffer.clear();
     }
 
-    public List<T> getMostRecentLogs(int numOfLogs) {
-        if (numOfLogs > MAX_SIZE) {
-            throw new IllegalArgumentException("Number of logs requested is too large. The max is " + MAX_SIZE);
+    public synchronized List<T> getMostRecentEntries(int numOfEntries) {
+        if (numOfEntries > maxSize) {
+            throw new IllegalArgumentException("Number of entries requested is too large. The max is " + maxSize);
         }
-        if (numOfLogs < 0) {
-            throw new IllegalArgumentException("Number of logs requested is negative. What is a negative amount of logs?");
+        if (numOfEntries < 0) {
+            throw new IllegalArgumentException("Number of entries requested is negative. What is a negative amount of logs?");
         }
-        if (buffer.size() < numOfLogs) {
+        if (buffer.size() < numOfEntries) {
             return buffer.stream().toList();
         }
 
         List<T> bufferList = buffer.stream().toList();
         return bufferList.stream()
-                .skip(bufferList.size() - numOfLogs)
+                .skip(bufferList.size() - numOfEntries)
                 .toList();
     }
 
-    public ArrayDeque<T> getBuffer() {
+    public synchronized ConcurrentLinkedDeque<T> getBuffer() {
         return buffer;
     }
 }

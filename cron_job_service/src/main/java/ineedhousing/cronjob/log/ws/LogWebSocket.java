@@ -2,8 +2,8 @@ package ineedhousing.cronjob.log.ws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ineedhousing.cronjob.log.LogService;
-import ineedhousing.cronjob.log.model.LogEvent;
-import ineedhousing.cronjob.log.model.LoggingLevel;
+import ineedhousing.cronjob.log.models.LogEvent;
+import ineedhousing.cronjob.log.models.LoggingLevel;
 import io.quarkus.websockets.next.*;
 import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;

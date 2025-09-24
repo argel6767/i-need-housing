@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/cron-job")
+@RequestMapping("/admin/cron-jobs")
 public class CronJobController {
 
     private final CronJobRestService cronJobRestService;

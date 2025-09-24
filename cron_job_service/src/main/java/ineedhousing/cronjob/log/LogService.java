@@ -1,9 +1,9 @@
 package ineedhousing.cronjob.log;
 
-import ineedhousing.cronjob.log.model.LogEvent;
-import ineedhousing.cronjob.log.model.LogEventListWrapper;
-import ineedhousing.cronjob.log.model.LoggingLevel;
-import ineedhousing.cronjob.log.model.MostRecentLogsCircularBuffer;
+import ineedhousing.cronjob.log.models.LogEvent;
+import ineedhousing.cronjob.log.models.LogEventListWrapper;
+import ineedhousing.cronjob.log.models.LoggingLevel;
+import ineedhousing.cronjob.log.models.CircularBuffer;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -12,6 +12,7 @@ import jakarta.enterprise.event.Event;
 import java.time.LocalDateTime;
 import java.util.ArrayDeque;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 @ApplicationScoped
 public class LogService {
@@ -21,7 +22,7 @@ public class LogService {
 
     private final String SERVICE_NAME = "CRON_JOB_SERVICE";
 
-    private final MostRecentLogsCircularBuffer<LogEvent> mostRecentLogsCircularBuffer = new MostRecentLogsCircularBuffer<>();
+    private final CircularBuffer<LogEvent> circularBuffer = new CircularBuffer<>();
 
     public void publish(String message, LoggingLevel level) {
         switch (level) {
@@ -32,17 +33,17 @@ public class LogService {
             case LoggingLevel.ERROR -> Log.error(message);
         }
         LogEvent logEvent = new LogEvent(message, level.toString(), SERVICE_NAME, LocalDateTime.now());
-        mostRecentLogsCircularBuffer.add(logEvent);
+        circularBuffer.add(logEvent);
         logEventPublisher.fireAsync(logEvent);
     }
 
     public LogEventListWrapper getMostRecentLogs(Integer limit) {
-        List<LogEvent> logs =  mostRecentLogsCircularBuffer.getMostRecentLogs(limit);
+        List<LogEvent> logs =  circularBuffer.getMostRecentEntries(limit);
         return new LogEventListWrapper(logs);
     }
 
     public LogEventListWrapper getMostRecentLogsCircularBuffer() {
-        ArrayDeque<LogEvent> logs =  mostRecentLogsCircularBuffer.getBuffer();
+        ConcurrentLinkedDeque<LogEvent> logs =  circularBuffer.getBuffer();
         return new LogEventListWrapper(logs);
     }
 }

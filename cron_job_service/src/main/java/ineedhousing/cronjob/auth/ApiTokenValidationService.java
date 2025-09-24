@@ -6,7 +6,7 @@ import ineedhousing.cronjob.keymaster.KeymasterServiceRestClient;
 import ineedhousing.cronjob.keymaster.models.ServiceVerificationDto;
 import ineedhousing.cronjob.keymaster.models.VerifiedServiceDto;
 import ineedhousing.cronjob.log.LogService;
-import ineedhousing.cronjob.log.model.LoggingLevel;
+import ineedhousing.cronjob.log.models.LoggingLevel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;

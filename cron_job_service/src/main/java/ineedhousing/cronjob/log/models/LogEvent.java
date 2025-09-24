@@ -1,4 +1,4 @@
-package ineedhousing.cronjob.log.model;
+package ineedhousing.cronjob.log.models;
 
 import java.time.LocalDateTime;
 
