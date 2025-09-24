@@ -10,8 +10,8 @@ import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 
 import java.time.LocalDateTime;
-import java.util.ArrayDeque;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 @ApplicationScoped
 public class LogService {
@@ -62,7 +62,7 @@ public class LogService {
     }
 
     public LogsWrapper getMostRecentLogsCircularBuffer() {
-        ArrayDeque<LogEvent> logs =  mostRecentLogsCircularBuffer.getBuffer();
+        ConcurrentLinkedDeque<LogEvent> logs =  mostRecentLogsCircularBuffer.getBuffer();
         return new LogsWrapper(logs);
     }
 }
