@@ -8,7 +8,7 @@ export const apiClient = axios.create({
 
 
 
-export const failedCallMessage = (error: any): string => {
+export const failedCallMessage = (error: unknown): string => {
     return `Something went wrong and the api call failed: ${JSON.stringify(error)}`
 };
 
