@@ -54,11 +54,10 @@ public class SecurityConfiguration{
    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-            // Enable CSRF for cookie-based auth
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/auths/**", "/ping/**", "/admin/login").permitAll()
+                .requestMatchers("/", "/auths/**", "/ping/**", "/admin/login", "/actuator/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
