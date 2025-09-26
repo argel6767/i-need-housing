@@ -57,7 +57,7 @@ public class AdminService {
         }
         user.setLastLogin(LocalDateTime.now());
         String token = jwtService.generateToken(user);
-        String cookie = jwtService.generateCookie(token, Optional.empty());
+        String cookie = jwtService.generateCookie(token, Optional.empty(), "None");
         userRepository.save(user);
         UserDto dto = createUserDto(user);
         log.info("Signed in user: {}", dto);

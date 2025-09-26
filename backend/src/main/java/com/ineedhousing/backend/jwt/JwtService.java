@@ -82,15 +82,15 @@ public class JwtService {
      * @param token
      * @return
      */
-    public String generateCookie(String token, Optional<Long> expirationTime) {
+    public String generateCookie(String token, Optional<Long> expirationTime, String sameSite) {
         long expiration = expirationTime.orElse(getExpirationTime());
         Cookie jwtCookie = new Cookie("jwt", token);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setSecure(isSecureCookie); // For HTTPS, will be false during DEV, true during PROD
         jwtCookie.setPath("/"); // Global path
-        jwtCookie.setMaxAge((int) (expiration/ 1000)); // Convert from ms to seconds
-        String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Strict",
-            jwtCookie.getName(), jwtCookie.getValue(), jwtCookie.getMaxAge(), jwtCookie.getPath());
+        jwtCookie.setMaxAge((int) (expiration/ 1000));// Convert from ms to seconds
+        String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=%s",
+            jwtCookie.getName(), jwtCookie.getValue(), jwtCookie.getMaxAge(), jwtCookie.getPath(), sameSite);
         return cookieHeader;
     }
 
