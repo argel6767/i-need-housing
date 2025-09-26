@@ -19,7 +19,6 @@ export function useWebSocket(
     const [isConnected, setIsConnected] = useState(false);
 
     const connect = useCallback(() => {
-        // If already connected, skip
         if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
             return;
         }
