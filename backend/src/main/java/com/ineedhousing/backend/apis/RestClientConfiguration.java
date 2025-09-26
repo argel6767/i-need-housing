@@ -11,6 +11,7 @@ import org.springframework.web.client.RestClient;
  */
 @Lazy
 @Configuration("housingGatheringRestClientConfiguration")
+@Deprecated
 public class RestClientConfiguration {
 
     @Value("${rent.cast.base.url}")

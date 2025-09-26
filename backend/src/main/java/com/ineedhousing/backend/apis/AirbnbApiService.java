@@ -30,6 +30,7 @@ import com.ineedhousing.backend.housing_listings.HousingListingRepository;
 @Service
 @Lazy
 @Log
+@Deprecated
 public class AirbnbApiService {
 
     private final RestClient restClient;

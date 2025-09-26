@@ -29,6 +29,7 @@ import lombok.extern.java.Log;
 @Service
 @Log
 @Lazy
+@Deprecated
 public class ZillowApiService {
 
     private final RestClient restClient;
