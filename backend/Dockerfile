@@ -16,7 +16,7 @@ RUN mvn dependency:go-offline
 COPY . .
 
 # Package the Spring Boot application
-RUN mvn clean package -Pproduction -DskipTests
+RUN mvn clean package -DskipTests
 
 # Final stage - use JRE instead of JDK
 FROM eclipse-temurin:21-jre-jammy
