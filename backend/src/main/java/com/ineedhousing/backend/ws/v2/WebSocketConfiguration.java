@@ -2,12 +2,14 @@ package com.ineedhousing.backend.ws.v2;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 @Configuration
 @EnableWebSocket
+@Lazy
 public class WebSocketConfiguration implements WebSocketConfigurer {
 
     private final LogStreamWebSocketHandler logStreamWebSocketHandler;
