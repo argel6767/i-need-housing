@@ -1,38 +1,33 @@
 # Build stage
 FROM eclipse-temurin:21-jdk-jammy AS builder
 
-# Install Node.js and npm in a single RUN command
-RUN apt-get update && apt-get install -y curl maven \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
+# Install Maven
+RUN apt-get update && apt-get install -y maven \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /app
 
-# Copy pom.xml separately to leverage Docker cache
+# Copy pom.xml and download dependencies (use Docker cache)
 COPY pom.xml .
-# Download dependencies
 RUN mvn dependency:go-offline
 
-# Copy the rest of the application
+# Copy the rest of the source code
 COPY . .
 
-# Build the application
+# Package the Spring Boot application
 RUN mvn clean package -Pproduction -DskipTests
 
 # Final stage - use JRE instead of JDK
 FROM eclipse-temurin:21-jre-jammy
 
-# Set working directory
 WORKDIR /app
 
-# Copy the built application
+# Copy the built JAR from the builder stage
 COPY --from=builder /app/target/*.jar app.jar
 
-# Expose port
+# Expose port 8080
 EXPOSE 8080
 
-# Run the application
+# Launch the app
 CMD ["java", "-jar", "app.jar"]
