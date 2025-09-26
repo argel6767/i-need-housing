@@ -3,7 +3,7 @@ import {AxiosError} from "axios";
 
 export const checkCookie = async (): Promise<string> => {
     try {
-        const response = await apiClient.post("auths/cookie-status")
+        const response = await apiClient.post("/auths/cookie-status")
         return response.data;
     }
     catch (error) {
@@ -13,7 +13,7 @@ export const checkCookie = async (): Promise<string> => {
 
 export const login = async (request: AuthenticateDto): Promise<string> => {
     try {
-        const response = await apiClient.post("admin/login", request);
+        const response = await apiClient.post("/admin/login", request);
         const user = JSON.stringify(response.data);
         sessionStorage.setItem("user", JSON.stringify(user));
         return "User logged in";
