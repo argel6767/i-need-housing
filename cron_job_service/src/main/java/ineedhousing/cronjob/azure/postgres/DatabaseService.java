@@ -32,7 +32,7 @@ public class DatabaseService {
 
         String sql = """
             DELETE FROM housing_listing
-            WHERE created_at IS NULL OR 
+            WHERE created_at IS NULL OR
             created_at < NOW() - INTERVAL '6 months';
         """;
 
@@ -41,11 +41,8 @@ public class DatabaseService {
 
             int rowsDeleted = ps.executeUpdate();
             logService.publish("Deleted " + rowsDeleted + " old listings", LoggingLevel.INFO);
-
-            if (rowsDeleted > 5000) {
-                logService.publish("Triggering new-listings-service webhook", LoggingLevel.INFO);
-                newListingsEventPublisher.publishNewListingEvent("Webhook event created, " + rowsDeleted + " total listings deleted");
-            }
+            logService.publish("Triggering new-listings-service webhook", LoggingLevel.INFO);
+            newListingsEventPublisher.publishNewListingEvent("Webhook event created, " + rowsDeleted + " total listings deleted");
         } catch (Exception e) {
             Log.error("Error deleting old listings", e);
             logService.publish("Error deleting old listings\n" + e, LoggingLevel.ERROR);
