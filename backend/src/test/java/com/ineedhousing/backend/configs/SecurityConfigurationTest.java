@@ -1,7 +1,7 @@
 package com.ineedhousing.backend.configs;
 
 
-import com.ineedhousing.backend.keymaster_service.ServiceApiTokenFilter;
+import com.ineedhousing.backend.service_interaction.ServiceApiTokenFilter;
 import com.ineedhousing.backend.jwt.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;

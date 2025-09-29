@@ -1,18 +1,58 @@
 'use client'
 import {useToggle} from "@/hooks/use-toggle";
-import {useRef, useState} from "react";
-import {triggerJob} from "@/api/cron-job";
+import {useEffect, useRef, useState} from "react";
+import {getJobs, triggerJob} from "@/api/cron-job";
 import {sleep} from "@/lib/utils";
+import {Job, Status} from "@/lib/models";
 
 interface JobStatusProps {
-    status: string;
+    status: Status;
 }
 export const JobsStatus = ({status}: JobStatusProps) => {
-    const {value, toggleValue} = useToggle(true);
+    const [loading, setLoading] = useState(true);
+    const [job, setJob] = useState<Job | null>(null);
+    const jobStatus = status === "SUCCESS"? "Successful" : "Failed";
+
+    useEffect(() => {
+        const fetchJob = async() => {
+            if (loading) {
+                const job = await getJobs(1, status)
+                if (job.length > 0) {
+                    setJob(job[0]);
+                }
+                setLoading(false);
+            }
+        }
+        fetchJob();
+    }, [status])
+
+    if (loading) {
+        return (
+            <main className={"bg-slate-100 flex flex-col items-center justify-center rounded-lg shadow-lg p-3"}>
+                <h1>Last {jobStatus} job</h1>
+                <span className="loading loading-spinner loading-xl"></span>
+            </main>
+        )
+    }
+
+    if (!job && !loading) {
+        return (
+            <main className={"bg-slate-100 flex flex-col items-center justify-center rounded-lg shadow-lg p-3 gap-3"}>
+                <h1>Last {jobStatus} job</h1>
+                <p className={"text-sm"}>No recent job with status {status}</p>
+            </main>
+        )
+    }
 
     return (
-        <main>
-            <h1>Last {status} job</h1>
+        <main className={"bg-slate-100 flex flex-col items-center justify-center rounded-lg shadow-lg p-3 gap-3"}>
+            <h1>Last {jobStatus} job</h1>
+            <ul className={"text-sm"}>
+                <li>Job ID: {job?.id}</li>
+                <li>Name: {job?.jobName}</li>
+                {status === "FAILED"? <li>Reason for failure: {job?.failureReason}</li> : null}
+                <li>Timestamp of job: {job?.timeStamp}</li>
+            </ul>
         </main>
     )
 }

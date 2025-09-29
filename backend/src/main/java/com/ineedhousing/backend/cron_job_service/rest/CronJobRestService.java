@@ -83,8 +83,9 @@ public class CronJobRestService {
     }
 
     public List<JobEvent> getJobEvents(JobStatus status, int limit) {
+        log.info("Finding {} jobs of status {}", limit, status);
         return restClient
-                .post()
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/jobs")
                         .queryParam("jobStatus", status)

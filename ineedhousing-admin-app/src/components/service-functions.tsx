@@ -89,7 +89,7 @@ const ping = async (serviceUrl: string) => {
 
 }
 
-type ServiceName = "Cron Job Service" | "Keymaster Service" | "New Listings Service" | "Email Service";
+type ServiceName = "Cron Job Service" | "Keymaster Service" | "New Listings Service" | "Email Service" | "INeedHousing API";
 interface PingServiceProps {
     service: ServiceName;
 }
@@ -99,8 +99,9 @@ export const PingService = ({service}: PingServiceProps)=> {
         "Cron Job Service": process.env.NEXT_PUBLIC_CRON_JOB_SERVICE_URL,
         "Keymaster Service": process.env.NEXT_PUBLIC_KEYMASTER_SERVICE_URL,
         "New Listings Service": process.env.NEXT_PUBLIC_NEW_LISTINGS_SERVICE_URL,
-        "Email Service": process.env.NEXT_PUBLIC_EMAIL_SERVICE_URL
-    }
+        "Email Service": process.env.NEXT_PUBLIC_EMAIL_SERVICE_URL,
+        "INeedHousing API": process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL
+}
 
     const {value: isLoading, toggleValue: toggleLoading} = useToggle(false);
     const [message, setMessage] = useState("");
@@ -109,7 +110,6 @@ export const PingService = ({service}: PingServiceProps)=> {
         toggleLoading()
         const url = serviceUrls[service];
         const response = await ping(url!);
-        console.log(response);
         setMessage(response);
         toggleLoading()
     }
@@ -122,7 +122,6 @@ export const PingService = ({service}: PingServiceProps)=> {
         }
         return `Ping ${service}`
     }
-
 
     return (
         <main className={"p-4 flex flex-col items-center justify-center bg-slate-200 rounded-lg shadow-lg gap-4"}>

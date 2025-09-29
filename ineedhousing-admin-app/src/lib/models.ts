@@ -19,7 +19,7 @@ export interface HealthCheckModel {
     data: object,
 }
 
-export type Status = "SUCCESS" | "FAILURE" | "TRIGGERED";
+export type Status = "SUCCESS" | "FAILED" | "TRIGGERED";
 
 export interface Job {
     status: Status,
@@ -30,3 +30,10 @@ export interface Job {
 }
 
 export type JobName = "i-need-housing_image" | "cron-job_image" | "new-listings_image" | "old-listings" | "key-rotation";
+
+export interface RegisteredServiceDto {
+    message: string,
+    apiToken: string,
+    serviceName: string,
+    timestamp: string,
+}

@@ -24,6 +24,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @ControllerAdvice
 @Slf4j
@@ -88,7 +89,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<FailedServiceInteractionDto> handleHttpClientErrorException(HttpClientErrorException ex) {
         log.error("A service call failed due to a client error. {}", ex.getMessage());
         String errorMessage = ex.getResponseBodyAsString();
-        FailedServiceInteractionDto dto = new FailedServiceInteractionDto(errorMessage, LocalDateTime.now(), ex.getCause().toString());
+        String cause = getExceptionCause(ex);
+        FailedServiceInteractionDto dto = new FailedServiceInteractionDto(errorMessage, LocalDateTime.now(), cause);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(dto);
@@ -98,7 +100,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<FailedServiceInteractionDto> handleHttpServerErrorException(HttpServerErrorException ex) {
         log.error("A service call failed due to a service error. {}", ex.getMessage());
         String errorMessage = ex.getResponseBodyAsString();
-        FailedServiceInteractionDto dto = new FailedServiceInteractionDto(errorMessage, LocalDateTime.now(), ex.getCause().toString());
+        String cause = getExceptionCause(ex);
+        FailedServiceInteractionDto dto = new FailedServiceInteractionDto(errorMessage, LocalDateTime.now(), cause);
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(dto);
@@ -107,7 +110,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceAccessException.class)
     public ResponseEntity<FailedServiceInteractionDto> handleResourceAccessException(ResourceAccessException ex) {
         log.error("A service call failed due to timeout. {}", ex.getMessage());
-        FailedServiceInteractionDto dto = new FailedServiceInteractionDto(ex.getMessage(), LocalDateTime.now(), ex.getCause().toString());
+        String cause = getExceptionCause(ex);
+        FailedServiceInteractionDto dto = new FailedServiceInteractionDto(ex.getMessage(), LocalDateTime.now(), cause);
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(dto);
@@ -167,5 +171,10 @@ public class GlobalExceptionHandler {
         return  ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(ex.getMessage());
+    }
+
+    private String getExceptionCause(Exception ex) {
+        Optional<Throwable> cause = Optional.ofNullable(ex.getCause());
+        return cause.map(Throwable::getMessage).orElse("No cause present");
     }
 }

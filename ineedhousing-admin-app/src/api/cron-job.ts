@@ -5,8 +5,8 @@ export const getJobs = async (numberOfJobs: number, status: Status): Promise<Job
     try {
         const response = await apiClient.get(`/admin/cron-jobs/jobs`, {
             params: {
-                status: status,
-                jobs: numberOfJobs,
+                jobStatus: status,
+                quantity: numberOfJobs,
             }
         });
         return response.data;

@@ -1,7 +1,7 @@
 'use client'
 
 
-import {useState} from "react";
+import {ChangeEvent, FormEvent, useState} from "react";
 import {useRouter} from "next/navigation";
 import {useToggle} from "@/hooks/use-toggle";
 import {login} from "@/api/authenication";
@@ -15,7 +15,7 @@ const Form = () => {
     const [formData, setFormData] = useState<AuthenticateDto>({username: '', password: ''});
     const router = useRouter();
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
@@ -29,7 +29,7 @@ const Form = () => {
         }));
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         toggleLoading();
         const response = await login(formData);

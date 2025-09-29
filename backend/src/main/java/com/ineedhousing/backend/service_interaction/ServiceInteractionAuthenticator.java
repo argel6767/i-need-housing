@@ -1,5 +1,6 @@
-package com.ineedhousing.backend.keymaster_service;
+package com.ineedhousing.backend.service_interaction;
 
+import com.ineedhousing.backend.keymaster_service.RegisteredServiceRepository;
 import com.ineedhousing.backend.keymaster_service.models.requests.ServiceVerificationDto;
 import com.ineedhousing.backend.keymaster_service.models.responses.VerifiedServiceDto;
 import lombok.extern.slf4j.Slf4j;

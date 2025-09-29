@@ -13,8 +13,10 @@ export default function CronJobServicePage()  {
             </section>
             <section className={"w-2/6 flex flex-col items-center justify-items-stretch gap-20 p-4"}>
                 <PingService service={"Cron Job Service"}/>
-                <JobsStatus status={"Successful"}/>
-                <JobsStatus status={"Failed"}/>
+                <div className={"flex flex-col items-center justify-center bg-slate-200 rounded-lg shadow-lg gap-4 p-4"}>
+                   <JobsStatus status={"SUCCESS"}/>
+                    <JobsStatus status={"FAILED"}/>
+                </div>
                 <ManualJobTriggers/>
             </section>
             </span>
