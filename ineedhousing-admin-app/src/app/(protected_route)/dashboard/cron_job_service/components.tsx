@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from "react";
 import {getJobs, triggerJob} from "@/api/cron-job";
 import {sleep} from "@/lib/utils";
 import {Job, Status} from "@/lib/models";
+import {useDialog} from "@/hooks/use-dialog";
 
 interface JobStatusProps {
     status: Status;
@@ -122,24 +123,12 @@ export const ManualJobTriggers = () => {
         }
     ]
 
-    const dialogRef = useRef<HTMLDialogElement>(null);
-
-    const openModal = () => {
-        if (dialogRef.current) {
-            dialogRef.current.showModal();
-        }
-    }
-
-    const closeModal = () => {
-        if (dialogRef.current) {
-            dialogRef.current.close();
-        }
-    }
+    const {dialogRef, open, close} = useDialog();
 
     return (
         <main>
             <div className={"p-4 flex flex-col items-center justify-center bg-slate-200 rounded-lg shadow-lg gap-4"}>
-                <button className="btn bg-primary rounded-lg" onClick={openModal}>Trigger Cron Job</button>
+                <button className="btn bg-primary rounded-lg" onClick={open}>Trigger Cron Job</button>
             </div>
             <dialog className="modal" ref={dialogRef}>
                 <div className="modal-box bg-primary-light rounded-lg text-white shadow-lg">
@@ -150,7 +139,7 @@ export const ManualJobTriggers = () => {
                         ))}
                     </ul>
                     <div className="modal-action">
-                        <button className="btn rounded-full bg-slate-300 text-black" onClick={closeModal}>Close</button>
+                        <button className="btn rounded-full bg-slate-300 text-black" onClick={close}>Close</button>
                     </div>
                 </div>
             </dialog>

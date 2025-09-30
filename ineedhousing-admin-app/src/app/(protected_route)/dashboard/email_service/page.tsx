@@ -1,5 +1,6 @@
 import {Navbar} from "@/components/navbar";
 import {LogStreamViewer, PingService} from "@/components/service-functions";
+import {CreateNewEmailTemplate, EditEmailTemplate} from "@/app/(protected_route)/dashboard/email_service/components";
 
 export default function EmailServicePage() {
     return (
@@ -10,8 +11,16 @@ export default function EmailServicePage() {
                 <section className={"w-4/6"}>
                 <LogStreamViewer serviceEndpoint={"/email_service/logs"} service={"Email Service"}/>
             </section>
-            <section className={"w-2/6 flex flex-col items-center "}>
+            <section className={"w-2/6 flex flex-col items-center gap-6"}>
                 <PingService service={"Email Service"}/>
+                <div>
+                    <CreateNewEmailTemplate>
+                        {null}
+                    </CreateNewEmailTemplate>
+                    <EditEmailTemplate>
+                        {null}
+                    </EditEmailTemplate>
+                </div>
             </section>
             </span>
         </main>

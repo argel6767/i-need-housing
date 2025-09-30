@@ -37,3 +37,16 @@ export interface RegisteredServiceDto {
     serviceName: string,
     timestamp: string,
 }
+
+export interface TemplateDto {
+    templateName: string,
+    templateContent: string,
+}
+
+export interface EmailTemplate {
+    templateName: string,
+    templateContent: string,
+    id: number
+    createdAt: string,
+    updatedAt: string,
+}

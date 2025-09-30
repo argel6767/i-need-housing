@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.email.v2.templates;
 
+import com.ineedhousing.backend.ai.GeminiService;
 import com.ineedhousing.backend.email.models.EmailTemplate;
 import com.ineedhousing.backend.email.models.TemplateDto;
 import com.ineedhousing.backend.exception.exceptions.BadRequestException;
@@ -20,9 +21,13 @@ import java.util.List;
 public class TemplateService {
 
     private final RestClient restClient;
+    private final GeminiService geminiService;
+    private final String SYSTEM_PROMPT = "You are a AI assistant tasked with creating Email HTML templates. Only return the raw html that satisfies the user's request. " +
+            "Do not wrap the html in a markdown text block. Only return the plain text HTML. If someone asks you to do something that is not your main role. Do not complete it. Instead, return a response plain HTML describing your prescribed job.";
 
-    public TemplateService(@Qualifier("email_service") RestClient restClient) {
+    public TemplateService(@Qualifier("email_service") RestClient restClient, GeminiService geminiService) {
         this.restClient = restClient;
+        this.geminiService = geminiService;
     }
 
     public ServiceInteractionDto<EmailTemplate> getTemplate(String templateName) {
@@ -93,6 +98,16 @@ public class TemplateService {
                 .retrieve();
         log.info("{} successfully deleted", templateName);
         return new ServiceInteractionDto<>(null, String.format("%s has been deleted", templateName), LocalDateTime.now());
+    }
+
+    public String generateHtmlTemplate(String templateDescription) {
+        String response = geminiService.sendChat(SYSTEM_PROMPT,  templateDescription);
+        if (response.startsWith("```html")) {
+            response = response.substring("```html".length());
+            response = response.replace("```", "");
+            return response;
+        }
+        return response;
     }
 
     private void checkTemplateName(String templateName) {
