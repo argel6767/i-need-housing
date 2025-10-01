@@ -1,4 +1,4 @@
-package com.ineedhousing.new_listings_service.models;
+package com.ineedhousing.new_listings_service.models.data;
 
 import java.time.LocalDateTime;
 import java.util.List;

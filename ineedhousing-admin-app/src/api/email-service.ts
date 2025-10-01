@@ -33,3 +33,14 @@ export const updateEmailTemplate = async (template: TemplateDto): Promise<EmailT
         return {id: -1, templateContent: `Could not create new template ${template.templateName} try again later`, templateName:template.templateName, createdAt: "Failed to create new template", updatedAt: ""};
     }
 }
+
+export const generateEmailTemplate = async (prompt: string): Promise<string> => {
+    try {
+        const response = await apiClient.post("/admin/templates/ai", prompt);
+        return response.data;
+    }
+    catch (error) {
+        console.error(error);
+        return `<p style="color: red">Could not create new template try again later</p><p style="color: red">Prompt given: ${prompt}</p>`;
+    }
+}

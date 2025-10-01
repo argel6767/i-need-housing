@@ -2,8 +2,7 @@ package com.ineedhousing.new_listings_service.subscribers;
 
 import com.ineedhousing.new_listings_service.geometry.GeometrySingleton;
 import com.ineedhousing.new_listings_service.models.CityCoordinates;
-import com.ineedhousing.new_listings_service.models.HousingListing;
-import com.ineedhousing.new_listings_service.models.ThirdPartyServiceName;
+import com.ineedhousing.new_listings_service.models.data.HousingListing;
 import com.ineedhousing.new_listings_service.models.events.NewDataSuccessfullyFetchedEvent;
 import com.ineedhousing.new_listings_service.models.events.NewListingsEvent;
 import com.ineedhousing.new_listings_service.repositories.HousingListingRepository;

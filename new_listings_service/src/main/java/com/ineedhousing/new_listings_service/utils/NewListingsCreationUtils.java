@@ -1,7 +1,7 @@
 package com.ineedhousing.new_listings_service.utils;
 
 import com.ineedhousing.new_listings_service.models.CityCoordinates;
-import com.ineedhousing.new_listings_service.models.HousingListing;
+import com.ineedhousing.new_listings_service.models.data.HousingListing;
 import com.ineedhousing.new_listings_service.repositories.HousingListingRepository;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;

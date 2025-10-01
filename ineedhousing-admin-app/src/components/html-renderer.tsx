@@ -4,11 +4,12 @@ interface HtmlRendererProps {
     content: string;
 }
 
-export const HtmlRenderer = ({content}: HtmlRendererProps) => {
-    const sanitizedContent = DOMPurify.santitize(content);
+export const HtmlRenderer = ({ content }: HtmlRendererProps) => {
+    const sanitizedContent = DOMPurify.sanitize(content);
     return (
-        <div className={"w-full rounded-lg shadow-lg"} dangerouslySetInnerHTML={{ __html: sanitizedContent }}>
-            {sanitizedContent}
-        </div>
-    )
-}
+        <div
+            className="w-full p-2"
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+        />
+    );
+};

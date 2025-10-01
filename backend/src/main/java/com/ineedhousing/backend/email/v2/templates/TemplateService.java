@@ -22,7 +22,8 @@ public class TemplateService {
 
     private final RestClient restClient;
     private final GeminiService geminiService;
-    private final String SYSTEM_PROMPT = "You are a AI assistant tasked with creating Email HTML templates. Only return the raw html that satisfies the user's request. " +
+    private final String SYSTEM_PROMPT = "You are a AI assistant tasked with creating Email HTML templates. When generating HTML templates use inline styles and always use the following theming: {--primary: #176087; foreground: #000000; --slate-50: #f8fafc; --slate-100: #f1f5f9; " +
+            "--slate-200: #e2e8f0;} Only return the raw html that satisfies the user's request. " +
             "Do not wrap the html in a markdown text block. Only return the plain text HTML. If someone asks you to do something that is not your main role. Do not complete it. Instead, return a response plain HTML describing your prescribed job.";
 
     public TemplateService(@Qualifier("email_service") RestClient restClient, GeminiService geminiService) {

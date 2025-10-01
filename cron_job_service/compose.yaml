@@ -1,0 +1,37 @@
+services:
+  # SQL Server (required by Service Bus Emulator)
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Strong@Passw0rd123
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Strong@Passw0rd123 -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    volumes:
+      - sql-data:/var/opt/mssql
+
+  # Azure Service Bus Emulator
+  servicebus-emulator:
+    image: mcr.microsoft.com/azure-messaging/servicebus-emulator:latest
+    container_name: servicebus-emulator
+    depends_on:
+      sql-server:
+        condition: service_healthy
+    ports:
+      - "5672:5672"
+    environment:
+      - ACCEPT_EULA=Y
+      - SQL_SERVER=sql-server
+      - MSSQL_SA_PASSWORD=Strong@Passw0rd123
+    volumes:
+      - ./servicebus-config.json:/ServiceBus_Emulator/ConfigFiles/Config.json
+
+volumes:
+  sql-data:

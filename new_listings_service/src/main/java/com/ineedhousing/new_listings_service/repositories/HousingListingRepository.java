@@ -1,6 +1,6 @@
 package com.ineedhousing.new_listings_service.repositories;
 
-import com.ineedhousing.new_listings_service.models.HousingListing;
+import com.ineedhousing.new_listings_service.models.data.HousingListing;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

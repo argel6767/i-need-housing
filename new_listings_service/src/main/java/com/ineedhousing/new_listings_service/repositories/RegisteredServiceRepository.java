@@ -1,6 +1,6 @@
 package com.ineedhousing.new_listings_service.repositories;
 
-import com.ineedhousing.new_listings_service.models.RegisteredService;
+import com.ineedhousing.new_listings_service.models.data.RegisteredService;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
