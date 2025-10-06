@@ -14,4 +14,11 @@ public interface EmailServiceRestClient {
     @Produces(MediaType.APPLICATION_JSON)
     @Retry(maxRetries = 5, delay = 1000)
     String notifyNewKeyRotation(@HeaderParam("X-Api-Token") String apiToken, @HeaderParam("X-Service-Name") String serviceName, String dtoJson);
+
+    @POST
+    @Path("/v1/emails/services/service-registered")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Retry(maxRetries = 5, delay = 1000)
+    String notifyNewServiceRegistration(@HeaderParam("X-Api-Token") String apiToken, @HeaderParam("X-Service-Name") String serviceName, String dtoJson);
 }

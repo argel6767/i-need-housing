@@ -2,9 +2,13 @@ package com.ineedhousing.services;
 
 import com.ineedhousing.models.dtos.RegisteredServiceDto;
 import com.ineedhousing.models.dtos.RegistrationDto;
+import com.ineedhousing.models.enums.LoggingLevel;
+import com.ineedhousing.models.events.NewServiceRegisteredEvent;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.InternalServerErrorException;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -24,6 +28,12 @@ public class ServiceAuthenticatorService {
 
     @Inject
     TokenHasher tokenHasher;
+
+    @Inject
+    LogService log;
+
+    @Inject
+    Event<NewServiceRegisteredEvent> publisher;
 
     public RegisteredServiceDto registerService(RegistrationDto registrationDto) {
         String registrationKey = rotator.getKey();
@@ -52,10 +62,13 @@ public class ServiceAuthenticatorService {
             statement.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
             statement.execute();
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to register new service", e);
+            throw new InternalServerErrorException("Failed to register new service", e);
         }
 
-        return new RegisteredServiceDto(String.format("%s service successfully registered", registrationDto.serviceName()), apiToken, registrationDto.serviceName(), LocalDateTime.now());
+        String successMessage = String.format("%s service successfully registered", registrationDto.serviceName());
+        LocalDateTime timestamp = LocalDateTime.now();
+        publisher.fireAsync(new NewServiceRegisteredEvent(registrationDto.serviceName(), successMessage, timestamp));
+        return new RegisteredServiceDto(successMessage, apiToken, registrationDto.serviceName(), timestamp);
     }
 
     private boolean areAnyValuesNull(RegistrationDto registrationDto) {
@@ -72,7 +85,8 @@ public class ServiceAuthenticatorService {
             return resultSet.next();
         }
         catch (SQLException e) {
-            throw new RuntimeException("Unable to handle SQL request", e);
+            log.publish(String.format("Unable to handle SQL Request. Error message: %s. Returning true as a safeguard", e.getMessage()), LoggingLevel.ERROR);
+            return true;
         }
     }
 
@@ -81,7 +95,7 @@ public class ServiceAuthenticatorService {
             return tokenHasher.hashToken(apiToken);
         }
         catch (Exception e) {
-            throw new RuntimeException("Failed to hash API Token", e);
+            throw new InternalServerErrorException("Failed to hash API Token", e);
         }
     }
 }
