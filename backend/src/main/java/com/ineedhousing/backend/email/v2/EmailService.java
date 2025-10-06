@@ -8,6 +8,7 @@ import com.ineedhousing.backend.ping_services.models.models.service_pings.PingKe
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestClientException;
 
 @Service
 @Slf4j
+@Lazy
 public class EmailService {
 
     private final ClientEmailService clientEmailService;

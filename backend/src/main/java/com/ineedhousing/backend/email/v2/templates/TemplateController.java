@@ -1,14 +1,14 @@
 package com.ineedhousing.backend.email.v2.templates;
 
-import com.ineedhousing.backend.ai.GeminiService;
-import com.ineedhousing.backend.ai.models.AiMessage;
 import com.ineedhousing.backend.email.models.EmailTemplate;
 import com.ineedhousing.backend.email.models.TemplateDto;
 import com.ineedhousing.backend.model.ServiceInteractionDto;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Lazy
 @RestController
 @RequestMapping("/admin")
 public class TemplateController {

@@ -8,6 +8,7 @@ import com.ineedhousing.backend.exception.exceptions.ServiceUnavailableException
 import com.ineedhousing.backend.model.ServiceInteractionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Lazy
 @Service
 @Slf4j
 public class TemplateService {

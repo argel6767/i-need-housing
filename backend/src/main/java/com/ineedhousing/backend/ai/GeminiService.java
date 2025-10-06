@@ -3,8 +3,10 @@ package com.ineedhousing.backend.ai;
 import com.google.genai.Client;
 import com.ineedhousing.backend.ai.models.AiMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+@Lazy
 @Service
 @Slf4j
 public class GeminiService {
