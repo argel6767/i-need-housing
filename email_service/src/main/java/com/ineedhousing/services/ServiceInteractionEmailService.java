@@ -3,6 +3,7 @@ package com.ineedhousing.services;
 import com.ineedhousing.models.EmailTemplate;
 import com.ineedhousing.models.requests.KeyRotationEvent;
 import com.ineedhousing.models.requests.NewListingsMadeEvent;
+import com.ineedhousing.models.requests.NewServiceRegisteredEvent;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -12,8 +13,7 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-import static com.ineedhousing.constants.TemplateNames.NEW_LISTINGS_CREATED;
-import static com.ineedhousing.constants.TemplateNames.REGISTER_KEY_ROTATION;
+import static com.ineedhousing.constants.TemplateNames.*;
 
 @ApplicationScoped
 public class ServiceInteractionEmailService {
@@ -50,6 +50,13 @@ public class ServiceInteractionEmailService {
         String body = String.format(emailTemplate.templateContent, newListingsMadeEvent.source(), newListingsMadeEvent.message(),
                 newListingsMadeEvent.newListingsCount(), newListingsMadeEvent.timeStamp(), newListingsMadeEvent.source());
         sendMailToAdmins(newListingsMadeEvent.message(), body);
+    }
+
+    public void sendServiceRegisteredEmail(NewServiceRegisteredEvent newServiceRegisteredEvent) {
+        log.info("Sending service registered email to admins");
+        EmailTemplate emailTemplate = templateService.getEmailTemplate(SERVICE_REGISTERED);
+        String body = String.format(emailTemplate.templateContent, newServiceRegisteredEvent.serviceName(), newServiceRegisteredEvent.timestamp());
+        sendMailToAdmins(newServiceRegisteredEvent.message(), body);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

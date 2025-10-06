@@ -2,6 +2,7 @@ package com.ineedhousing.resources;
 
 import com.ineedhousing.models.requests.KeyRotationEvent;
 import com.ineedhousing.models.requests.NewListingsMadeEvent;
+import com.ineedhousing.models.requests.NewServiceRegisteredEvent;
 import com.ineedhousing.models.requests.VerificationCodeDto;
 import com.ineedhousing.services.ClientEmailService;
 import com.ineedhousing.services.ServiceInteractionEmailService;
@@ -39,6 +40,15 @@ public class EmailResource {
     @RateLimit(value = 20, window = 10, windowUnit = ChronoUnit.MINUTES)
     public Response newListingMade(NewListingsMadeEvent newListingsMadeEvent) {
         serviceInteractionEmailService.sendNewListingsEmail(newListingsMadeEvent);
+        return Response.status(Response.Status.ACCEPTED).build();
+    }
+
+    @POST
+    @Path("/services/service-registered")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RateLimit(value = 20, window = 10, windowUnit = ChronoUnit.MINUTES)
+    public Response serviceRegistered(NewServiceRegisteredEvent newServiceRegisteredEvent) {
+        serviceInteractionEmailService.sendServiceRegisteredEmail(newServiceRegisteredEvent);
         return Response.status(Response.Status.ACCEPTED).build();
     }
 

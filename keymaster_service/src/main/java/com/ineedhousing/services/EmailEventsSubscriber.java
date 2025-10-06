@@ -38,6 +38,7 @@ public class EmailEventsSubscriber {
     private String apiToken;
     private String serviceName;
 
+    @Deprecated
     public void notifyNewKeyRotation(@ObservesAsync SuccessfulKeyRotationEvent successfulKeyRotationEvent) {
         setServiceInteractionValues();
         try {

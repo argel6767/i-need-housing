@@ -7,5 +7,5 @@ public class TemplateNames {
     public static final String RESET_PASSWORD = "reset_password";
     public static final String REGISTER_KEY_ROTATION = "register_key_rotation";
     public static final String NEW_LISTINGS_CREATED = "new_listings_created";
-
+    public static final String SERVICE_REGISTERED = "service_registered";
 }
