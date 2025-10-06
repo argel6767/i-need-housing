@@ -43,14 +43,12 @@ public class RegistrationKeyRotator {
     public void onStartup(@Observes StartupEvent ev) {
         log.publish("Service Initialized, setting first key", LoggingLevel.INFO);
         key = generateKey();
-        log.publish("Registration key successfully generated at startup, firing notify event", LoggingLevel.INFO);
-        publisher.fireAsync(new SuccessfulKeyRotationEvent("Key Successfully Rotated", key, LocalDateTime.now()));
+        log.publish("Registration key successfully generated at startup. Keymaster ready to register new services", LoggingLevel.INFO);
     }
 
     public void rotateKey(@ObservesAsync RotatingKeyEvent event) {
         key = generateKey();
-        log.publish("Key successfully rotated, firing notify event", LoggingLevel.INFO);
-        publisher.fireAsync(new SuccessfulKeyRotationEvent("Key Successfully Rotated", key, LocalDateTime.now()));
+        log.publish("Key successfully rotated", LoggingLevel.INFO);
     }
 
     private String generateKey() {
