@@ -50,6 +50,10 @@ public class ServiceAuthenticatorService {
             throw new SecurityException("Service name is already in use");
         }
 
+        String cleanedUpServiceName = registrationDto.serviceName()
+                .toLowerCase()
+                .replace(" ", "_");
+
         String apiToken = apiTokenGenerator.generateApiToken(registrationDto.registrationKey());
         String tokenHash = hashToken(apiToken);
 
@@ -57,7 +61,7 @@ public class ServiceAuthenticatorService {
         String sqlStatement = "INSERT INTO registered_service (id, service_name, api_token_hash, created_date) VALUES (nextval('registered_service_seq'), ?, ?, ?)";
         try (Connection preparedStatement = dataSource.getConnection()) {
             PreparedStatement statement = preparedStatement.prepareStatement(sqlStatement);
-            statement.setString(1, registrationDto.serviceName());
+            statement.setString(1, cleanedUpServiceName);
             statement.setString(2, tokenHash);
             statement.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
             statement.execute();
