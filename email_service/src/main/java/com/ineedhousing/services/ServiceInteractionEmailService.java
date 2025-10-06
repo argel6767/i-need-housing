@@ -54,8 +54,9 @@ public class ServiceInteractionEmailService {
 
     public void sendServiceRegisteredEmail(NewServiceRegisteredEvent newServiceRegisteredEvent) {
         log.info("Sending service registered email to admins");
+        log.info("Handling current object: " + newServiceRegisteredEvent);
         EmailTemplate emailTemplate = templateService.getEmailTemplate(SERVICE_REGISTERED);
-        String body = String.format(emailTemplate.templateContent, newServiceRegisteredEvent.serviceName(), newServiceRegisteredEvent.timestamp());
+        String body = String.format(emailTemplate.templateContent, newServiceRegisteredEvent.serviceName(), newServiceRegisteredEvent.timestamp().toString());
         sendMailToAdmins(newServiceRegisteredEvent.message(), body);
     }
 
