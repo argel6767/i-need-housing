@@ -1,17 +1,15 @@
 package ineedhousing.cronjob.new_listings_service;
 
+import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusMessage;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
-import com.azure.messaging.servicebus.administration.ServiceBusAdministrationClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ineedhousing.cronjob.azure.postgres.DatabaseService;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.models.LoggingLevel;
 import ineedhousing.cronjob.new_listings_service.models.NewListingsCollectionEvent;
 import ineedhousing.cronjob.new_listings_service.models.ServiceCollectionEvent;
 import ineedhousing.cronjob.new_listings_service.models.ThirdPartyServiceName;
-import io.quarkus.runtime.LaunchMode;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
@@ -20,7 +18,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Instant;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -37,20 +35,23 @@ public class NewListingsWebhookService {
     LogService logService;
 
     @Inject
-    DatabaseService  databaseService;
+    private ServiceBusClientBuilder clientBuilder;
 
-    @Inject
     ServiceBusSenderClient serviceBusSenderClient;
-
-    @Inject
-    ServiceBusAdministrationClient serviceBusAdministrationClient;
 
     @Inject
     ObjectMapper objectMapper;
 
-    private final String queueName = "new-listings-job-queue";
+    private final String QUEUE_NAME = "new-listings-job-queue";
 
     public void onSuccessfulListingsDeletion(@ObservesAsync NewListingsCollectionEvent newListingsCollectionEvent) {
+        if (serviceBusSenderClient == null) {
+            serviceBusSenderClient = clientBuilder
+                    .sender()
+                    .queueName(QUEUE_NAME)
+                    .buildClient();
+        }
+
         try {
             List<ThirdPartyServiceName> services = ThirdPartyServiceName.all();
 
@@ -74,23 +75,10 @@ public class NewListingsWebhookService {
                     .map(ServiceBusMessage::new)
                     .toList();
 
-            if (!isQueuePresent()) {
-                logService.publish(String.format("Queue does not exist. Making Queue: %s now", queueName), LoggingLevel.WARN);
-                serviceBusAdministrationClient.createQueue(queueName);
-            }
-
             logService.publish("Sending messages to Queue", LoggingLevel.INFO);
             serviceBusSenderClient.sendMessages(serviceJobMessages);
         } catch (Exception e) {
             logService.publish("Failed to trigger new listings job: " + e.getMessage(), LoggingLevel.ERROR);
         }
-    }
-
-    private boolean isQueuePresent() {
-        if (LaunchMode.current().isDevOrTest()) {
-            logService.publish("App currently in development mode, skipping check", LoggingLevel.INFO);
-            return true;
-        }
-        return serviceBusAdministrationClient.getQueueExists(queueName);
     }
 }
