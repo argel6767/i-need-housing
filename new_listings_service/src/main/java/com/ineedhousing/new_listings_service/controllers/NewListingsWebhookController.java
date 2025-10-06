@@ -11,6 +11,7 @@ import com.ineedhousing.new_listings_service.services.NewListingsEventPublisher;
 
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 
+@Deprecated
 @RestController
 @RequestMapping("/v1/webhooks")
 @RateLimiter(name = "webhooks")
@@ -25,6 +26,6 @@ public class NewListingsWebhookController {
     @PostMapping("/new-listings")
     public ResponseEntity<String> publishNewListingsEvent(NewListingsEvent newListingsEvent) {
         eventPublisher.publishEvent(newListingsEvent);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("New Listings Event Published");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("New Listings Event Published. This webhook is no longer used and is considered deprecated. All collection events are now handled via Azure ServiceBus");
     }
 }

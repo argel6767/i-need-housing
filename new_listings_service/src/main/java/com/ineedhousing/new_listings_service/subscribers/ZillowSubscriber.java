@@ -5,6 +5,7 @@ import com.ineedhousing.new_listings_service.models.CityCoordinates;
 import com.ineedhousing.new_listings_service.models.data.HousingListing;
 import com.ineedhousing.new_listings_service.models.events.NewDataSuccessfullyFetchedEvent;
 import com.ineedhousing.new_listings_service.models.events.NewListingsEvent;
+import com.ineedhousing.new_listings_service.models.events.new_listings.ZillowCollectionEvent;
 import com.ineedhousing.new_listings_service.repositories.HousingListingRepository;
 import com.ineedhousing.new_listings_service.services.GoogleAPIService;
 import org.locationtech.jts.geom.Coordinate;
@@ -51,12 +52,12 @@ public class ZillowSubscriber {
 
     @EventListener
     @Async
-    public void handleNewListingsEvent(NewListingsEvent event) {
+    public void handleNewListingsEvent(ZillowCollectionEvent event) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         int size = saveNewListing(housingListingRepository, this::fetchNewListings, this::transformRawListingData);
         stopWatch.stop();
-        long runtime = stopWatch.getTotalTimeMillis();
+        long runtime = stopWatch.getTotalTimeMillis()/60000;
         logger.info("{} New Listings Created by Zillow. Runtime: {}", size, runtime);
         eventPublisher.publishEvent(new NewDataSuccessfullyFetchedEvent(SOURCE, SUCCESS_MESSAGE + runtime, size, LocalDateTime.now()));
 

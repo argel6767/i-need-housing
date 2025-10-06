@@ -8,8 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ineedhousing.cronjob.azure.postgres.DatabaseService;
 import ineedhousing.cronjob.log.LogService;
 import ineedhousing.cronjob.log.models.LoggingLevel;
-import ineedhousing.cronjob.new_listings_service.models.CityDto;
-import ineedhousing.cronjob.new_listings_service.models.NewListingEvent;
+import ineedhousing.cronjob.new_listings_service.models.NewListingsCollectionEvent;
+import ineedhousing.cronjob.new_listings_service.models.ServiceCollectionEvent;
+import ineedhousing.cronjob.new_listings_service.models.ThirdPartyServiceName;
 import io.quarkus.runtime.LaunchMode;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.ObservesAsync;
@@ -19,7 +20,10 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class NewListingsWebhookService {
@@ -46,20 +50,23 @@ public class NewListingsWebhookService {
 
     private final String queueName = "new-listings-job-queue";
 
-    public void onSuccessfulListingsDeletion(@ObservesAsync NewListingEvent newListingEvent) {
+    public void onSuccessfulListingsDeletion(@ObservesAsync NewListingsCollectionEvent newListingsCollectionEvent) {
         try {
-            List<CityDto> cities = databaseService.fetchAllCities();
-            if (cities == null || cities.isEmpty()) {
-                logService.publish("No cities found. Canceling job", LoggingLevel.ERROR);
+            List<ThirdPartyServiceName> services = ThirdPartyServiceName.all();
+
+            if (services.isEmpty()) {
+                logService.publish("No services found. Canceling job", LoggingLevel.ERROR);
                 return;
             }
 
-            List<ServiceBusMessage> messages = cities.stream()
-                    .map(cityDto -> {
+            List<ServiceBusMessage> serviceJobMessages = services.stream()
+                    .map(serviceName -> new ServiceCollectionEvent(serviceName, newListingsCollectionEvent.message(), LocalDateTime.now(), UUID.randomUUID()))
+                    .map(serviceCollection -> {
                         try {
-                            return objectMapper.writeValueAsString(cityDto);
-                        } catch (JsonProcessingException e) {
-                            logService.publish(String.format("Failed to parse city %s to JSON String", cityDto.cityName()), LoggingLevel.ERROR);
+                            return objectMapper.writeValueAsString(serviceCollection);
+                        }
+                        catch (JsonProcessingException e) {
+                            logService.publish(String.format("Error converting service collection to JSON: %s. Error message: %s", serviceCollection.serviceName(), e.getMessage()), LoggingLevel.ERROR);
                             return "";
                         }
                     })
@@ -73,7 +80,7 @@ public class NewListingsWebhookService {
             }
 
             logService.publish("Sending messages to Queue", LoggingLevel.INFO);
-            serviceBusSenderClient.sendMessages(messages);
+            serviceBusSenderClient.sendMessages(serviceJobMessages);
         } catch (Exception e) {
             logService.publish("Failed to trigger new listings job: " + e.getMessage(), LoggingLevel.ERROR);
         }

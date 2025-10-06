@@ -1,6 +1,6 @@
 package ineedhousing.cronjob.new_listings_service;
 
-import ineedhousing.cronjob.new_listings_service.models.NewListingEvent;
+import ineedhousing.cronjob.new_listings_service.models.NewListingsCollectionEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 public class NewListingsEventPublisher {
 
     @Inject
-    Event<NewListingEvent> publisher;
+    Event<NewListingsCollectionEvent> publisher;
 
     public void publishNewListingEvent(String message) {
-        publisher.fireAsync(new NewListingEvent(message, LocalDateTime.now()));
+        publisher.fireAsync(new NewListingsCollectionEvent(message, LocalDateTime.now()));
     }
 }

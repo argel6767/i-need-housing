@@ -4,7 +4,7 @@ import com.ineedhousing.new_listings_service.geometry.GeometrySingleton;
 import com.ineedhousing.new_listings_service.models.CityCoordinates;
 import com.ineedhousing.new_listings_service.models.data.HousingListing;
 import com.ineedhousing.new_listings_service.models.events.NewDataSuccessfullyFetchedEvent;
-import com.ineedhousing.new_listings_service.models.events.NewListingsEvent;
+import com.ineedhousing.new_listings_service.models.events.new_listings.RentCastCollectionEvent;
 import com.ineedhousing.new_listings_service.repositories.HousingListingRepository;
 import com.ineedhousing.new_listings_service.services.GoogleAPIService;
 import org.locationtech.jts.geom.Coordinate;
@@ -51,12 +51,12 @@ public class RentCastSubscriber {
 
     @EventListener
     @Async
-    public void handleNewListingsEvent(NewListingsEvent event) {
+    public void handleNewListingsEvent(RentCastCollectionEvent event) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         int size = saveNewListingsAsync(housingListingRepository, this::fetchNewListings, this::transformRawListingData);
         stopWatch.stop();
-        long runtime = stopWatch.getTotalTimeMillis();
+        long runtime = stopWatch.getTotalTimeMillis()/60000;
         logger.info("{} New Listings Created by RentCast. Runtime: {}", size, runtime);
         eventPublisher.publishEvent(new NewDataSuccessfullyFetchedEvent(SOURCE, SUCCESS_MESSAGE + runtime, size, LocalDateTime.now()));
     }

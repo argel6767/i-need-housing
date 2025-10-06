@@ -1,6 +1,7 @@
 package ineedhousing.cronjob.new_listings_service;
 
-import ineedhousing.cronjob.new_listings_service.models.NewListingEvent;
+import ineedhousing.cronjob.new_listings_service.models.NewListingsCollectionEvent;
+import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -11,12 +12,12 @@ import java.time.LocalDateTime;
 public class NewListingWebhookResource {
 
     @Inject
-    NewListingsWebhookService newListingsWebhookService;
+    Event<NewListingsCollectionEvent> event;
 
     @POST
     @Path("/webhook-trigger")
     public String manuallyTriggerWebHook() {
-        newListingsWebhookService.onSuccessfulListingsDeletion(new NewListingEvent("Manual webhook trigger from hitting endpoint", LocalDateTime.now()));
+        event.fireAsync(new NewListingsCollectionEvent("Manual webhook trigger from hitting endpoint", LocalDateTime.now()));
         return "Successfully triggered webhook!";
     }
 }

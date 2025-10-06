@@ -1,7 +1,7 @@
 package com.ineedhousing.new_listings_service.consumers;
 
 
-import com.azure.spring.messaging.servicebus.implementation.core.annotation.ServiceBusListener;
+import com.azure.spring.cloud.service.servicebus.consumer.ServiceBusRecordMessageListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ineedhousing.new_listings_service.models.responses.CityDto;
 import org.slf4j.Logger;
@@ -13,12 +13,14 @@ public class ServiceBusConsumer {
     Logger logger = LoggerFactory.getLogger(ServiceBusConsumer.class);
     private final ObjectMapper objectMapper;
     private final String queueName = "new-listings-job-queue";
+    private final ServiceBusRecordMessageListener serviceBusRecordMessageListener;
 
-    public ServiceBusConsumer(ObjectMapper objectMapper) {
+    public ServiceBusConsumer(ObjectMapper objectMapper, ServiceBusRecordMessageListener serviceBusRecordMessageListener) {
         this.objectMapper = objectMapper;
+        this.serviceBusRecordMessageListener = serviceBusRecordMessageListener;
     }
 
-    @ServiceBusListener(destination = queueName)
+
     public void processMessage(String jsonBody) {
         try {
             logger.info("Received message from queue: {}", jsonBody);
