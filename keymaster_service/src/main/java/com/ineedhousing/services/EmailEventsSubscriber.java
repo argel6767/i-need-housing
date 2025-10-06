@@ -66,7 +66,6 @@ public class EmailEventsSubscriber {
         setServiceInteractionValues();
         try {
             String dtoJson = objectMapper.writeValueAsString(newServiceRegisteredEvent);
-            logService.publish("Sending the following dto: " + dtoJson, LoggingLevel.INFO);
             emailServiceRestClient.notifyNewServiceRegistration(apiToken, serviceName, dtoJson);
             logService.publish("Notify New Service Registered Event Successfully!", LoggingLevel.INFO);
         }

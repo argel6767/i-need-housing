@@ -54,9 +54,9 @@ public class ServiceInteractionEmailService {
 
     public void sendServiceRegisteredEmail(NewServiceRegisteredEvent newServiceRegisteredEvent) {
         log.info("Sending service registered email to admins");
-        log.info("Handling current object: " + newServiceRegisteredEvent);
         EmailTemplate emailTemplate = templateService.getEmailTemplate(SERVICE_REGISTERED);
-        String body = String.format(emailTemplate.templateContent, newServiceRegisteredEvent.serviceName(), newServiceRegisteredEvent.timestamp().toString());
+        String formattedTemplate = escapeForFormat(emailTemplate.templateContent);
+        String body = String.format(formattedTemplate, newServiceRegisteredEvent.serviceName(), newServiceRegisteredEvent.timestamp().toString());
         sendMailToAdmins(newServiceRegisteredEvent.message(), body);
     }
 
@@ -88,5 +88,10 @@ public class ServiceInteractionEmailService {
                 });
             });
         }
+    }
+
+    private String escapeForFormat(String rawTemplateContent) {
+        return rawTemplateContent.replace("%", "%%")
+                .replace("%%s", "%s");
     }
 }
