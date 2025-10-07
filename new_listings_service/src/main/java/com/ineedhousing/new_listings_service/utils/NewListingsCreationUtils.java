@@ -79,7 +79,7 @@ public class NewListingsCreationUtils {
             }
     }
 
-    public static int  saveNewListing(HousingListingRepository housingListingRepository, Function<CityCoordinates, List<Map<String, Object>>> fetchListings, Function<List<Map<String, Object>>, List<HousingListing>> transformRawListingData) {
+    public static int saveNewListing(HousingListingRepository housingListingRepository, Function<CityCoordinates, List<Map<String, Object>>> fetchListings, Function<List<Map<String, Object>>, List<HousingListing>> transformRawListingData) {
         List<CityCoordinates> cities = getCityCoordinates();
         List<HousingListing> newListings = cities.stream()
                 .map(fetchListings)
@@ -92,6 +92,29 @@ public class NewListingsCreationUtils {
 
         int successfulSaves = batchSaveNewListings(housingListingRepository, nonDuplicateListings);
         return successfulSaves;
+    }
+
+    public static int saveNewListingsSequential(HousingListingRepository housingListingRepository, Function<CityCoordinates, List<Map<String, Object>>> fetchListings, Function<List<Map<String, Object>>, List<HousingListing>> transformRawListingData) {
+        List<CityCoordinates> cities = getCityCoordinates();
+
+        int totalSaved = 0;
+
+        for (CityCoordinates cityCoordinates : cities) {
+            List<Map<String, Object>> rawListings = fetchListings.apply(cityCoordinates);
+
+            List<HousingListing> transformedListings = transformRawListingData.apply(rawListings);
+
+            List<HousingListing> distinctListings = transformedListings.stream()
+                    .filter(distinctByKey(HousingListing::getLocation))
+                    .toList();
+            List<HousingListing> newListings =
+                    filterDuplicateListings(housingListingRepository, distinctListings);
+            int savedForCity = batchSaveNewListings(housingListingRepository, newListings);
+
+            totalSaved += savedForCity;
+        }
+
+        return totalSaved;
     }
 
     private static int batchSaveNewListings(HousingListingRepository repository, List<HousingListing> newListings) {

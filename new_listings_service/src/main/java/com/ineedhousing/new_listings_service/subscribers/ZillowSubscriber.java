@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static ch.qos.logback.core.util.StringUtil.capitalizeFirstLetter;
-import static com.ineedhousing.new_listings_service.utils.NewListingsCreationUtils.saveNewListing;
+import static com.ineedhousing.new_listings_service.utils.NewListingsCreationUtils.saveNewListingsSequential;
 
 @Component
 public class ZillowSubscriber {
@@ -55,7 +55,7 @@ public class ZillowSubscriber {
     public void handleNewListingsEvent(ZillowCollectionEvent event) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        int size = saveNewListing(housingListingRepository, this::fetchNewListings, this::transformRawListingData);
+        int size = saveNewListingsSequential(housingListingRepository, this::fetchNewListings, this::transformRawListingData);
         stopWatch.stop();
         long runtime = stopWatch.getTotalTimeMillis()/60000;
         logger.info("{} New Listings Created by Zillow. Runtime: {}", size, runtime);
