@@ -122,7 +122,6 @@ public class UserController {
      * deletes the current authenticated user
      * @return ResponseEntity
      */
-    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/me")
     @RateLimiter(name = "user")
     public ResponseEntity<?> deleteCurrentUser(HttpServletResponse response) {
