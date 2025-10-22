@@ -70,7 +70,7 @@ public class JwtUtils {
         return isAdmin;
     }
 
-    public static UserDetails getCurrentUser() {
+    public static User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new IllegalStateException("No authenticated user found");

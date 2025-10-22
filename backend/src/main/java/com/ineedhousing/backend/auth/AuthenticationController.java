@@ -135,6 +135,7 @@ public class AuthenticationController {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/logout")
     @RateLimiter(name = "auths")
     public ResponseEntity<?> logout(HttpServletResponse response) {   
