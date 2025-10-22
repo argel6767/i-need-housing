@@ -101,7 +101,7 @@ public class AuthenticationController {
         try {
             User user = authenticationService.authenticateUser(request);
             String token = jwtService.generateToken(user);
-            String cookieHeader = jwtService.generateCookie(token, Optional.empty(), "Strict");
+            String cookieHeader = jwtService.generateCookie(token, "Strict");
             response.setHeader("Set-Cookie", cookieHeader);
             // Return user info without token in body
             return ResponseEntity.ok(user);
@@ -140,7 +140,7 @@ public class AuthenticationController {
     @RateLimiter(name = "auths")
     public ResponseEntity<?> logout(HttpServletResponse response) {   
         // Set cookie header with SameSite
-        String cookieHeader = jwtService.generateCookie("", Optional.of(0L), "None");
+        String cookieHeader = jwtService.generateCookie("", 0L, "None");
         response.setHeader("Set-Cookie", cookieHeader);
         return ResponseEntity.ok("Logged out successfully");
     }

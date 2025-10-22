@@ -130,7 +130,7 @@ public class UserController {
             String email = JwtUtils.getCurrentUserEmail();
             String responseMessage = userService.deleteUser(email);
 
-            String cookieHeader = jwtService.generateCookie("", Optional.of(0L), "None");
+            String cookieHeader = jwtService.generateCookie("",0L, "None");
             response.setHeader("Set-Cookie", cookieHeader);
             return ResponseEntity.ok(responseMessage);
         }

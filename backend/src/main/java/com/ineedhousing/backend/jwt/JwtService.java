@@ -78,12 +78,12 @@ public class JwtService {
     }
 
     /**
-     * Generates cookie header using the generated jwt token
+     * Generates cookie header using the given jwt token
      * @param token
      * @return
      */
-    public String generateCookie(String token, Optional<Long> expirationTime, String sameSite) {
-        long expiration = expirationTime.orElse(getExpirationTime());
+    public String generateCookie(String token, Long expirationTime, String sameSite) {
+        long expiration = expirationTime;
         Cookie jwtCookie = new Cookie("jwt", token);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setSecure(isSecureCookie); // For HTTPS, will be false during DEV, true during PROD
@@ -92,6 +92,16 @@ public class JwtService {
         String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=%s",
             jwtCookie.getName(), jwtCookie.getValue(), jwtCookie.getMaxAge(), jwtCookie.getPath(), sameSite);
         return cookieHeader;
+    }
+
+    /**
+     * Makes cookie header with the default expiration time
+     * @param token
+     * @param sameSite
+     * @return
+     */
+    public String generateCookie(String token, String sameSite) {
+        return generateCookie(token, getExpirationTime(), sameSite);
     }
 
     /*
