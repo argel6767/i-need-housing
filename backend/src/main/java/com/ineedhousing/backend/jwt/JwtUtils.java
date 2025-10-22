@@ -1,6 +1,7 @@
 package com.ineedhousing.backend.jwt;
 
 import com.ineedhousing.backend.user.User;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,17 +16,7 @@ public class JwtUtils {
      * @throws IllegalStateException if no user is authenticated
      */
     public static String getCurrentUserEmail() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("No authenticated user found");
-        }
-        
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails userDetails) {
-            return userDetails.getUsername();
-        }
-        
-        return principal.toString();
+       return getCurrentUser().getUsername();
     }
 
     /**
@@ -34,18 +25,8 @@ public class JwtUtils {
      * @return long
      */
     public static Long getCurrentUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("No authenticated user found");
-        }
-
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails userDetails) {
-            User user = (User) userDetails;
-            return user.getId();
-        }
-
-        return -1L;
+        User user = (User) getCurrentUser();
+       return user.getId();
     }
 
     /**
@@ -54,35 +35,26 @@ public class JwtUtils {
      * @throws IllegalStateException if no user is authenticated or the use has no roles
      */
     public static boolean isUserAdmin() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("No authenticated user found");
-        }
-        
-        Object principal = authentication.getPrincipal();
-        if (!(principal instanceof UserDetails)) {
-            throw new IllegalStateException();
-        }
-
-        boolean isAdmin = ((UserDetails) principal).getAuthorities().stream()
+        UserDetails userDetails = getCurrentUser();
+        boolean isAdmin = (userDetails).getAuthorities().stream()
         .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
         return isAdmin;
     }
 
-    public static User getCurrentUser() {
+    public static UserDetails getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("No authenticated user found");
+            throw new IllegalStateException("No authentication found");
         }
 
         Object principal = authentication.getPrincipal();
 
         if (!(principal instanceof UserDetails)) {
-            throw new IllegalStateException("Currently authenticated requester is not a user");
+            throw new InsufficientAuthenticationException("Currently authenticated principal is not a user. They could be a service instead");
         }
 
-        return (User) principal;
+        return (UserDetails) principal;
     }
 }
 
