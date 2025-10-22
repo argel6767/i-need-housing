@@ -1,5 +1,6 @@
 import { SetUserTypeDto } from "@/interfaces/requests/userRequests";
 import { apiClient, failedCallMessage } from "./apiConfig";
+import {UserDto} from "@/interfaces/entities";
 
 const MODULE_MAPPING = "/users"
 
@@ -17,4 +18,13 @@ export const updateUserType = async (requestBody: SetUserTypeDto) => {
         console.log(failedCallMessage(error));
         return "call failed!";
     }
+}
+
+export const getUser = async (): Promise<UserDto> => {
+    const response = await apiClient.get(`${MODULE_MAPPING}/me`);
+    return response.data;
+}
+
+export const deleteUser = async () => {
+    await apiClient.delete(`${MODULE_MAPPING}/me`);
 }

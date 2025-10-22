@@ -17,7 +17,7 @@ const isValidFileType = (file: File) => {
     );
 }
 
-const isSucessfulUpload = (response: string ):boolean => {
+const isSuccessfulUpload = (response: string ):boolean => {
     return (
         response !== "user does not have profile picture, create an initial profile picture" &&
         response !== "server error, try again later" &&
@@ -58,7 +58,7 @@ const UploadProfilePicture = ({setIsModalUp, setProfilePictureUrl, uploadFileFun
     const uploadProfilePicture = async () => {
         setIsLoading(true);
         const newURL = await uploadFileFunction(file!);
-        if (isSucessfulUpload(newURL)) {
+        if (isSuccessfulUpload(newURL)) {
             setProfilePictureUrl(newURL);
             // Invalidate the React Query cache for profile picture queries
             await queryClient.invalidateQueries({ queryKey: ['profilePictureURL'] });

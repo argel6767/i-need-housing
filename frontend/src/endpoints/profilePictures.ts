@@ -118,7 +118,7 @@ export const getProfilePicture = async (profilePictureURL: string): Promise<stri
 
 export const deleteProfilePicture = async () => {
     try {
-        await apiClient.delete(MODULE_MAPPING);
+        await apiClient.delete(MODULE_MAPPING+"/me");
         return "profile picture deleted!";
     }
     catch (error: any) {

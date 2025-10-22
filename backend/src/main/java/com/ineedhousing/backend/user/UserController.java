@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.user;
 
+import com.ineedhousing.backend.user.responses.UserDto;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,8 @@ public class UserController {
         try {
             String email = JwtUtils.getCurrentUserEmail();
             User user = userService.getUserByEmail(email);
-            return ResponseEntity.ok(user);
+            UserDto userDto = new UserDto(user.getId(), user.getEmail(), user.getAuthorities(),  user.getLastLogin(), user.getCreatedAt());
+            return ResponseEntity.ok(userDto);
         }
         catch (UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
@@ -61,6 +63,22 @@ public class UserController {
         try {
             String email = JwtUtils.getCurrentUserEmail();
             User updatedUser = userService.updateUser(user, email);
+            return ResponseEntity.ok(updatedUser);
+        }
+        catch (UsernameNotFoundException unfe) {
+            return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        catch (IllegalStateException ise) {
+            return new ResponseEntity<>(ise.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping("/v2/me")
+    @RateLimiter(name = "user")
+    public ResponseEntity<?> updateCurrentUser(@RequestBody UserDto userDto) {
+        try {
+            String email = JwtUtils.getCurrentUserEmail();
+            UserDto updatedUser = userService.updateUser(userDto, email);
             return ResponseEntity.ok(updatedUser);
         }
         catch (UsernameNotFoundException unfe) {

@@ -1,5 +1,5 @@
 'use client'
-import { FavoriteListing, User, UserPreference } from "@/interfaces/entities";
+import {FavoriteListing, UserDto, UserPreference} from "@/interfaces/entities";
 import { RawUserPreferenceDto } from "@/interfaces/requests/userPreferencesRequests";
 import {createContext, useContext, useMemo, useState, ReactNode} from "react";
 
@@ -14,8 +14,8 @@ interface GlobalContextType {
     setCenterLat: React.Dispatch<React.SetStateAction<number>>
     centerLong: number
     setCenterLong: React.Dispatch<React.SetStateAction<number>>
-    user: User | null;
-    setUser: React.Dispatch<React.SetStateAction<User | null>>
+    user: UserDto | null;
+    setUser: React.Dispatch<React.SetStateAction<UserDto | null>>
     userPreferences: UserPreference | null;
     setUserPreferences: React.Dispatch<React.SetStateAction<UserPreference | null>>
     favoriteListings: FavoriteListing[]
@@ -44,7 +44,7 @@ interface GlobalProviderProps {
 export const GlobalProvider = ({children}:GlobalProviderProps) => {
     const [centerLat, setCenterLat] = useState<number>(0.0);
     const [centerLong, setCenterLong] = useState<number>(0.0);
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserDto | null>(null);
     const [userPreferences, setUserPreferences] = useState<UserPreference | null>(null);
     const [favoriteListings, setFavoriteListings] = useState<FavoriteListing[]>([]);
     const [newUserInfo, setNewUserInfo] = useState<NewUserObjects>({userType: '',  newUserPreferencesDto:{}})

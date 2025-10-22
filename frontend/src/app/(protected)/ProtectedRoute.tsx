@@ -28,7 +28,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       isAuthorized, setIsAuthorized, isAuthLoading, setIsAuthLoading
   }), [isAuthorized, isAuthLoading])
 
-
   useEffect(() => {
     // Check for token immediately on component mount
     const checkCookieStatus = async () => {
@@ -80,7 +79,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
             <div className='flex justify-center'>
                 <LoadingBars/>
             </div>
-
         </main>
     );
   }

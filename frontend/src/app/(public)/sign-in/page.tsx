@@ -8,10 +8,11 @@ import icon from "../../../../public/file.svg"
 import { login } from "@/endpoints/auths";
 import {useGlobalContext} from "@/components/GlobalContext";
 import {AuthenticateUserDto} from "@/interfaces/requests/authsRequests";
-import {useState} from "react";
+import React, {useState} from "react";
 import {useRouter} from "next/navigation";
 import {sleep} from "@/utils/utils";
 import {ResendVerificationEmail} from "@/components/ResendEmailVerification";
+import {BackButton} from "@/components/back";
 
 const SignIn = () => {
     const {setIsFirstTimeUser} = useGlobalContext();
@@ -29,11 +30,13 @@ const SignIn = () => {
         const response = await login(credentials);
         setIsLoading(false);
         if (response === "new user") {
+            sessionStorage.setItem("userEmail", credentials.username);
             setIsFirstTimeUser(true);
             router.prefetch("/new-user/user-type")
             router.push("/new-user/user-type");
         }
         else if (response === "logged in") {
+            sessionStorage.setItem("userEmail", credentials.username);
             sessionStorage.setItem("status", "signed in")
             router.prefetch("/home")
             router.push("/home");
@@ -55,23 +58,31 @@ const SignIn = () => {
     }
 
     return (
-            <main className="h-screen flex flex-col items-center justify-between">
-                <Link href={"/"} className="flex items-center text-primary text-4xl sm:text-5xl md:text-6xl font-semibold gap-2 pt-5 cursor:pointer">INeedHousing<Image src={icon} alt="Logo" width={40} height={40}/></Link>
-                <section className="rounded-md p-2 bg-white items-center">
-                    <div className="flex items-center justify-center my-3">
+        <main className="h-screen flex flex-col items-center justify-between">
+            <nav className={"flex justify-start w-full p-2"}>
+                <BackButton backPath={"/"}/>
+            </nav>
+            <Link href={"/"}
+                  className="flex items-center text-primary text-4xl sm:text-5xl md:text-6xl font-semibold gap-2 pt-5 cursor:pointer">INeedHousing<Image
+                src={icon} alt="Logo" width={40} height={40}/></Link>
+            <section className="rounded-md p-2 bg-white items-center">
+                <div className="flex items-center justify-center my-3">
                     <div className="xl:mx-auto shadow-lg rounded-lg p-4 xl:w-full xl:max-w-sm 2xl:max-w-md">
-                        <FormHeader header="Sign in to INeedHousing" text="Not already a member? " buttonLabel="Sign Up" path="/sign-up"/>
+                        <FormHeader header="Sign in to INeedHousing" text="Not already a member? " buttonLabel="Sign Up"
+                                    path="/sign-up"/>
                         <Form buttonLabel="Sign In" request={loginUser} isLoading={isLoading} formType={"signIn"}/>
-                        <div className={`font-semibold ${isRequestingEmail ? "display" : "hidden"}`  } onClick={handleResendHref}>
-                            <ResendVerificationEmail email={email} message={"Your account is not verified."} button={"Request code."}/>
+                        <div className={`font-semibold ${isRequestingEmail ? "display" : "hidden"}`}
+                             onClick={handleResendHref}>
+                            <ResendVerificationEmail email={email} message={"Your account is not verified."}
+                                                     button={"Request code."}/>
                         </div>
                         <p className={"text-red-500 text-center font-semibold animate-fade"}>{errorState.message}</p>
                     </div>
-                    </div>
-                </section>
-                <div className="w-full border-t-2">
-                    <Footer/>
                 </div>
+            </section>
+            <div className="w-full border-t-2">
+                <Footer/>
+            </div>
         </main>
     )
 }

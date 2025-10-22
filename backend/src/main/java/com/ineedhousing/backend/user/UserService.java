@@ -1,5 +1,6 @@
 package com.ineedhousing.backend.user;
 
+import com.ineedhousing.backend.user.responses.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -10,7 +11,6 @@ import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
 
 import jakarta.transaction.Transactional;
 
-import java.util.ArrayList;
 
 /**
  * Handles business logic of Users
@@ -40,9 +40,9 @@ public class UserService {
      * @throws UsernameNotFoundException
      * @return User
      */
-    @Cacheable("users")
+    @Cacheable(cacheNames = "users", key = "#email")
     public User getUserByEmail(String email) {
-        return  userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
@@ -59,12 +59,21 @@ public class UserService {
      * @throws UsernameNotFoundException
      * @return User
      */
-    @Cacheable(value="users", key="$user.id")
+    @CacheEvict(cacheNames="users", key="#email")
     @Transactional
     public User updateUser(User newUserDetails, String email) {
         User user = getUserByEmail(email);
         BeanUtils.copyProperties(newUserDetails, user, "id", "email");
         return userRepository.save(user);
+    }
+
+    @CacheEvict(cacheNames="users", key="#email")
+    @Transactional
+    public UserDto updateUser(UserDto newUserDetails, String email) {
+        User user = getUserByEmail(email);
+        BeanUtils.copyProperties(newUserDetails, user, "id", "email", "authorities", "createdAt");
+        userRepository.save(user);
+        return new UserDto(user.getId(), user.getEmail(), user.getAuthorities(), user.getCreatedAt(), user.getLastLogin());
     }
 
     /**
@@ -75,6 +84,7 @@ public class UserService {
      * @return User
      */
     @Transactional
+    @CacheEvict(cacheNames="users", key="#email")
     public User setUserType(SetUserTypeRequest request, String email) {
         User user = getUserByEmail(email);
         user.setUserType(request.getUserType());
@@ -87,7 +97,7 @@ public class UserService {
      * @throws UsernameNotFoundException
      * @return String
      */
-    @CacheEvict(value="users", key="#email")
+    @CacheEvict(cacheNames="users", key="#email")
     public String deleteUser(String email) {
         User user = getUserByEmail(email);
         userRepository.delete(user);

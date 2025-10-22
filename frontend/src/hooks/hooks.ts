@@ -6,12 +6,13 @@ import {GetListingsInAreaRequest, GetListingsInAreaRequestV2} from "@/interfaces
 import { useQuery} from "@tanstack/react-query"
 import {useGlobalContext} from "@/components/GlobalContext";
 import {getProfilePicture, getProfilePictureURL} from "@/endpoints/profilePictures";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {useHomeContext} from "@/app/(protected)/(existing_user)/home/HomeContext";
 import {useExistingUserContext} from "@/app/(protected)/(existing_user)/ExistingUserContext";
 import {DEFAULT_PROFILE_PICTURE_URL} from "@/utils/utils";
 import {useProtectedContext} from "@/app/(protected)/ProtectedRoute";
 import {ListingsResultsPageDto} from "@/interfaces/responses/listingsResponses";
+import {getUser} from "@/endpoints/users";
 
 // fetches listings
 export const useGetListings = (requestBody: GetListingsInAreaRequest | null, options?: { enabled?: boolean }) => {
@@ -206,3 +207,28 @@ export const usePingServer = () => {
         }
     }, [backendUrl]);
 };
+
+export const useGetUserDetails = (email: string) => {
+    return useQuery({
+        queryKey: ['user: ' + email],
+        queryFn: getUser
+    })
+}
+
+export function useDialog<T extends HTMLDialogElement = HTMLDialogElement>() {
+    const dialogRef = useRef<T>(null);
+
+    const open = useCallback(() => {
+        if (dialogRef.current) {
+            dialogRef.current.showModal();
+        }
+    }, []);
+
+    const close = useCallback(() => {
+        if (dialogRef.current) {
+            dialogRef.current.close();
+        }
+    }, []);
+
+    return { dialogRef, open, close };
+}

@@ -13,6 +13,14 @@ export interface User {
     createdAt: Date
 }
 
+export interface UserDto {
+    id: number;
+    email: string;
+    authorities: string[];
+    lastLogin: string;
+    createdAt: string;
+}
+
 export interface UserPreference {
     id: number,
     jobLocation: Array<number>,

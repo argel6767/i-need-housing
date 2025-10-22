@@ -96,7 +96,7 @@ public class AuthenticationService {
         String code = setVerificationCode(user);
         VerifyUserDto verifyUserDto = new VerifyUserDto(request.getUsername(), code);
         sendEmailAsynchronous(emailService::sendVerificationCodeEmail, verifyUserDto);
-        log.info("User " + request.getUsername() + " created");
+        log.info("User " + request.getUsername().substring(0,2) + "***** created");
         return userRepository.save(user);
     }
 
