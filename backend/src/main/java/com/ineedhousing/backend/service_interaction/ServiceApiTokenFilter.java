@@ -30,7 +30,7 @@ public class ServiceApiTokenFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         // Skip this filter if already authenticated by JWT
         return request.getRequestURI().startsWith("/actuator") || isClientAuthenticated(request) ||  request.getRequestURI().startsWith("/ping")
-                || request.getRequestURI().startsWith("/admin/login") ||  request.getRequestURI().startsWith("/auths");
+                || request.getRequestURI().startsWith("/admin/login") ||  request.getRequestURI().startsWith("/auths") || request.getRequestURI().equals("/");
 
     }
 
