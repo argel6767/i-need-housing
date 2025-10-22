@@ -69,5 +69,20 @@ public class JwtUtils {
 
         return isAdmin;
     }
+
+    public static UserDetails getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("No authenticated user found");
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof UserDetails)) {
+            throw new IllegalStateException("Currently authenticated requester is not a user");
+        }
+
+        return (User) principal;
+    }
 }
 
