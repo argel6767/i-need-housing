@@ -1,61 +1,87 @@
 package com.ineedhousing.new_listings_service.configurations;
 
+import com.azure.messaging.servicebus.ServiceBusClientBuilder;
+import com.azure.messaging.servicebus.ServiceBusErrorContext;
+import com.azure.messaging.servicebus.ServiceBusErrorSource;
+import com.azure.messaging.servicebus.ServiceBusProcessorClient;
 import com.azure.messaging.servicebus.ServiceBusReceivedMessage;
 import com.azure.messaging.servicebus.ServiceBusReceivedMessageContext;
-import com.azure.spring.cloud.service.servicebus.consumer.ServiceBusErrorHandler;
-import com.azure.spring.cloud.service.servicebus.consumer.ServiceBusRecordMessageListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ineedhousing.new_listings_service.models.events.ServiceCollectionEvent;
 import com.ineedhousing.new_listings_service.models.events.new_listings.AirbnbCollectionEvent;
 import com.ineedhousing.new_listings_service.models.events.new_listings.RentCastCollectionEvent;
 import com.ineedhousing.new_listings_service.models.events.new_listings.ZillowCollectionEvent;
-import com.ineedhousing.new_listings_service.services.ServiceAuthorizationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 
-@Configuration(proxyBeanMethods = false)
-public class ServiceBusProcessorClientConfiguration {
+@Configuration
+public class ServiceBusProcessorClientConfiguration implements ApplicationListener<ApplicationReadyEvent> {
 
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private static final Logger logger =
+            LoggerFactory.getLogger(ServiceBusProcessorClientConfiguration.class);
+
+    private final ApplicationEventPublisher eventPublisher;
     private final ObjectMapper objectMapper;
-    private final Logger logger = LoggerFactory.getLogger(ServiceBusProcessorClientConfiguration.class);
+    private final ServiceBusClientBuilder clientBuilder;
 
-    public ServiceBusProcessorClientConfiguration(ApplicationEventPublisher applicationEventPublisher, ObjectMapper objectMapper) {
-        this.applicationEventPublisher = applicationEventPublisher;
+    public ServiceBusProcessorClientConfiguration(
+            ApplicationEventPublisher eventPublisher,
+            ObjectMapper objectMapper,
+            ServiceBusClientBuilder clientBuilder) {
+        this.eventPublisher = eventPublisher;
         this.objectMapper = objectMapper;
+        this.clientBuilder = clientBuilder;
     }
 
-    @Bean
-    ServiceBusRecordMessageListener processMessage() {
-        return this::handleMessage;
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        logger.info("ApplicationReadyEvent received – starting Service Bus listener...");
+
+        ServiceBusProcessorClient processorClient =
+                clientBuilder
+                        .processor()
+                        .queueName("your-queue-name")
+                        .processMessage(this::handleMessage)
+                        .processError(this::handleError)
+                        .buildProcessorClient();
+
+        processorClient.start();
+
+        logger.info("Service Bus listener started successfully.");
     }
 
-    private void handleMessage(ServiceBusReceivedMessageContext serviceBusReceivedMessageContext) {
-        ServiceBusReceivedMessage message = serviceBusReceivedMessageContext.getMessage();
+    private void handleMessage(ServiceBusReceivedMessageContext context) {
+        ServiceBusReceivedMessage message = context.getMessage();
         try {
-            ServiceCollectionEvent event = objectMapper.readValue(message.getBody().toString(), ServiceCollectionEvent.class);
-            logger.info("Successfully received ServiceCollectionEvent: {}. Firing the appropriate event type", event);
+            ServiceCollectionEvent event =
+                    objectMapper.readValue(message.getBody().toString(), ServiceCollectionEvent.class);
+
+            logger.info("Received ServiceCollectionEvent for service '{}'", event.serviceName());
 
             switch (event.serviceName()) {
-                case Zillow -> applicationEventPublisher.publishEvent(new ZillowCollectionEvent());
-                case RentCast -> applicationEventPublisher.publishEvent(new RentCastCollectionEvent());
-                case Airbnb ->  applicationEventPublisher.publishEvent(new AirbnbCollectionEvent());
+                case Zillow -> eventPublisher.publishEvent(new ZillowCollectionEvent());
+                case RentCast -> eventPublisher.publishEvent(new RentCastCollectionEvent());
+                case Airbnb -> eventPublisher.publishEvent(new AirbnbCollectionEvent());
             }
-        }
-        catch (IOException ex) {
-            logger.error("Failed to parse ServiceCollectionEvent: {}. Ending job", ex.getMessage());
+        } catch (IOException ex) {
+            logger.error("Failed to parse ServiceCollectionEvent: {}", ex.getMessage());
         }
     }
 
-    @Bean
-    ServiceBusErrorHandler processError() {
-        return context -> {
-            logger.error("Error when receiving messages from namespace: '{}'. Entity: '{}", context.getFullyQualifiedNamespace(), context.getEntityPath());
-        };
+    private void handleError(ServiceBusErrorContext context) {
+        if (context.getErrorSource() == ServiceBusErrorSource.RECEIVE) {
+            logger.error(
+                    "Error receiving messages from '{}': {}",
+                    context.getEntityPath(),
+                    context.getException().getMessage());
+        } else {
+            logger.error("Service Bus error: {}", context.getException().getMessage());
+        }
     }
 }
