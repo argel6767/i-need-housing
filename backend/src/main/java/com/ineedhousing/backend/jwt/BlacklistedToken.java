@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 })
 @Data
 @NoArgsConstructor
-public class BlackListedToken {
+public class BlacklistedToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
