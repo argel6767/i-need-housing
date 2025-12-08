@@ -1,9 +1,12 @@
 package com.ineedhousing.backend.user;
 
+import com.ineedhousing.backend.jwt.JwtService;
 import com.ineedhousing.backend.user.responses.UserDto;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +20,8 @@ import com.ineedhousing.backend.user.requests.SetUserTypeRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Optional;
+
 /**
  * Houses endpoints for User interactions
  */
@@ -26,9 +31,11 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
     private final UserService userService;
+    private final JwtService jwtService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtService jwtService) {
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     /**
@@ -117,11 +124,14 @@ public class UserController {
      */
     @DeleteMapping("/me")
     @RateLimiter(name = "user")
-    public ResponseEntity<?> deleteCurrentUser() {
+    public ResponseEntity<?> deleteCurrentUser(HttpServletResponse response) {
         try {
             String email = JwtUtils.getCurrentUserEmail();
-            String response = userService.deleteUser(email);
-            return ResponseEntity.ok(response);
+            String responseMessage = userService.deleteUser(email);
+
+            String cookieHeader = jwtService.generateCookie("",0L, "None");
+            response.setHeader("Set-Cookie", cookieHeader);
+            return ResponseEntity.ok(responseMessage);
         }
         catch(UsernameNotFoundException unfe) {
             return new ResponseEntity<>(unfe.getMessage(), HttpStatus.NOT_FOUND);
