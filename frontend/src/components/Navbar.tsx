@@ -69,14 +69,6 @@ const MobileListItems = ({ children, isModalUp=false}: MobileListItemsProps) => 
  * @returns
  */
 export const Navbar = () => {
-    usePingServer();
-    const isSignedIn = () => {
-        if (sessionStorage.getItem("status") === null) {
-            sessionStorage.setItem("status", "signed out")
-        }
-        return sessionStorage.getItem("status") === "signed in";
-    }
-
   return (
       <main className="navbar bg-background border-b-2 border-gray-200 shadow-md" data-testid="navbar">
         <div className="navbar-start">
@@ -92,7 +84,6 @@ export const Navbar = () => {
           </ul>
         </div>
         <div className="navbar-end">
-            {!isSignedIn() && <Link className="btn btn-primary hover:bg-[#457F9F] w-32" href="/sign-in">Sign In</Link>}
         </div>
       </main>
   )
@@ -103,11 +94,9 @@ export const Navbar = () => {
  * @returns
  */
 export const MobileNavbar = () => {
-    usePingServer();
   return (
     <main className="navbar bg-base-100">
       <MobileListItems>
-        <Link href="/home">View Listings</Link>
         <Link href={"/about"}>About</Link>
         <Link href={"https://github.com/argel6767/i-need-housing"}>Source Code</Link>
       </MobileListItems>
